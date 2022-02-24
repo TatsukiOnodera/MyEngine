@@ -1,31 +1,15 @@
-﻿#include "MyGame.h"
+﻿#include "OnoGame.h"
+#include "safeDelete.h"
 
 //# Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	//ゲームポインタ置き場
-	MyGame* game = new MyGame;
+	OnoGame* game = new OnoGame;
 
-	//ゲーム初期化
-	game->Initialize();
+	game->Run();
 
-	while (1)  // ゲームループ
-	{
-		//ゲーム毎フレーム更新
-		game->Update();
-
-		//ゲーム終了リクエスト
-		if (game->IsEndRequest())
-		{
-			break;
-		}
-
-		//ゲーム描画
-		game->Draw();
-	}
-
-	//ゲーム終了
-	game->Finalize();
+	safe_delete(game);
 
 	return 0;
 }

@@ -171,10 +171,12 @@
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
+    <ClCompile Include="FrameWork.cpp" />
     <ClCompile Include="GameScene\GameScene.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model\Model.cpp" />
+    <ClCompile Include="OnoGame.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Window\WinApp.cpp" />
   </ItemGroup>
@@ -188,9 +190,11 @@
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
     <ClInclude Include="DirectXCommon\SafeDelete.h" />
+    <ClInclude Include="FrameWork.h" />
     <ClInclude Include="GameScene\GameScene.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Model\Model.h" />
+    <ClInclude Include="OnoGame.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Window\WinApp.h" />
   </ItemGroup>

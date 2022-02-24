@@ -8,42 +8,41 @@
 #include "ParticleManager.h"
 #include "SafeDelete.h"
 
-class MyGame
+class FrameWork
 {
-private: //ポインタ置き場
+protected: //ポインタ置き場
 	WinApp* win = nullptr;
 	Input* input = nullptr;
 	Camera* camera = nullptr;
 	Audio* audio = nullptr;
 	DirectXCommon* dx_cmd = nullptr;
-	GameScene* game_scene = nullptr;
 
-private: //その他変数
+public: //その他変数
 	bool end_request = false;
 
-public: //関数
+public:
+	/// <summary>
+	/// 実行
+	/// </summary>
+	void Run();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	virtual void Initialize();
 
 	/// <summary>
 	/// 終了
 	/// </summary>
-	void Finalize();
+	virtual void Finalize();
 
 	/// <summary>
 	/// 毎フレーム更新
 	/// </summary>
-	void Update();
+	virtual void Update() = 0;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
-
-	/// <summary>
-	/// 終了リクエストの成否
-	/// </summary>
-	bool IsEndRequest() { return end_request; }
+	virtual void Draw();
 };

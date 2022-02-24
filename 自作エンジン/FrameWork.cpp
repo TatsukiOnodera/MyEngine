@@ -1,6 +1,30 @@
-#include "MyGame.h"
+#include "FrameWork.h"
 
-void MyGame::Initialize()
+void FrameWork::Run()
+{
+	//ゲーム初期化
+	Initialize();
+
+	while (1)  // ゲームループ
+	{
+		//ゲーム毎フレーム更新
+		Update();
+
+		//ゲーム終了リクエスト
+		if (end_request)
+		{
+			break;
+		}
+
+		//ゲーム描画
+		Draw();
+	}
+
+	//ゲーム終了
+	Finalize();
+}
+
+void FrameWork::Initialize()
 {
 	//windowsアプリケーションの初期化
 	win = new WinApp;
@@ -41,16 +65,11 @@ void MyGame::Initialize()
 	{
 		assert(0);
 	}
-
-	//ゲームシーン初期化
-	game_scene = new GameScene;
-	game_scene->Initialize(dx_cmd, input, audio, camera);
 }
 
-void MyGame::Finalize()
+void FrameWork::Finalize()
 {
 	//開放
-	safe_delete(game_scene);
 	safe_delete(dx_cmd);
 	safe_delete(camera);
 	safe_delete(input);
@@ -61,7 +80,7 @@ void MyGame::Finalize()
 	safe_delete(win);
 }
 
-void MyGame::Update()
+void FrameWork::Update()
 {
 	//終了リクエスト
 	if (win->ProcessMessage() || input->PushKey(DIK_ESCAPE))
@@ -71,16 +90,9 @@ void MyGame::Update()
 
 	//キー情報取得
 	input->Update();
-	
-	//ゲームシーン
-	game_scene->Update();
 }
 
-void MyGame::Draw()
+void FrameWork::Draw()
 {
-	dx_cmd->PreDraw();
 
-	game_scene->Draw();
-
-	dx_cmd->PostDraw();
 }
