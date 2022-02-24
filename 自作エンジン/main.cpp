@@ -13,9 +13,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Input* input = nullptr;
 	DirectXCommon* dx_cmd = nullptr;
 	Audio* audio = new Audio;
-	Camera* camera = new Camera;
+	Camera* camera = nullptr;
 	GameScene* gameScene = new GameScene;
 
+	//windowsアプリケーションの初期化
 	win = new WinApp;
 	win->CreateGameWindow();
 

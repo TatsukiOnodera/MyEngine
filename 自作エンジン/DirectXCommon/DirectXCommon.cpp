@@ -102,7 +102,7 @@ void DirectXCommon::PostDraw()
 	// バッファをフリップ（裏表の入替え）
 	swapchain->Present(1, 0);
 
-	// コマンドリストの実行完了を待つ
+	// コマンドキューの実行完了を待つ
 	cmdQueue->Signal(fence.Get(), ++fenceVal);
 	if (fence->GetCompletedValue() != fenceVal) {
 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
