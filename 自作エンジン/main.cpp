@@ -23,6 +23,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	input = new Input;
 	input->Initialize(win->GetWindowInstance(), win->GetHWND());
 
+	//カメラ初期化
+	camera = new Camera;
+	camera->Initialize(WinApp::window_width, WinApp::window_height);
+
 	// DirectX初期化処理
 	dx_cmd = new DirectXCommon();
 	if (!dx_cmd->Initialize(win))

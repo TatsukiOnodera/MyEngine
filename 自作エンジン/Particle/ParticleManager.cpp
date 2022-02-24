@@ -1,6 +1,7 @@
 ﻿#include "ParticleManager.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
+#include "Object3d.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -28,10 +29,7 @@ CD3DX12_CPU_DESCRIPTOR_HANDLE ParticleManager::cpuDescHandleSRV;
 CD3DX12_GPU_DESCRIPTOR_HANDLE ParticleManager::gpuDescHandleSRV;
 XMMATRIX ParticleManager::matView{};
 XMMATRIX ParticleManager::matProjection{};
-//XMFLOAT3 Object3d::eye = { 0, 0, -50.0f };(2_04)
-XMFLOAT3 ParticleManager::eye = { 0, 0, -5.0f };
-XMFLOAT3 ParticleManager::target = { 0, 0, 0 };
-XMFLOAT3 ParticleManager::up = { 0, 1, 0 };
+Camera* ParticleManager::camera = nullptr;
 D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
 //D3D12_INDEX_BUFFER_VIEW Object3d::ibView{};(2_03)
 ParticleManager::VertexPos ParticleManager::vertices[vertexCount];
@@ -56,12 +54,10 @@ bool ParticleManager::StaticInitialize(ID3D12Device* device, int window_width, i
 	}
 
 	ParticleManager::device = device;
+	ParticleManager::camera = Object3d::GetCamera();
 
 	// デスクリプタヒープの初期化
 	InitializeDescriptorHeap();
-
-	// カメラ初期化
-	InitializeCamera(window_width, window_height);
 
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
@@ -118,48 +114,6 @@ ParticleManager* ParticleManager::Create()
 	return object3d;
 }
 
-void ParticleManager::SetEye(XMFLOAT3 eye)
-{
-	ParticleManager::eye = eye;
-
-	UpdateViewMatrix();
-}
-
-void ParticleManager::SetTarget(XMFLOAT3 target)
-{
-	ParticleManager::target = target;
-
-	UpdateViewMatrix();
-}
-
-void ParticleManager::CameraMoveVector(XMFLOAT3 move)
-{
-	XMFLOAT3 eye_moved = GetEye();
-	XMFLOAT3 target_moved = GetTarget();
-
-	eye_moved.x += move.x;
-	eye_moved.y += move.y;
-	eye_moved.z += move.z;
-
-	target_moved.x += move.x;
-	target_moved.y += move.y;
-	target_moved.z += move.z;
-
-	SetEye(eye_moved);
-	SetTarget(target_moved);
-}
-
-void ParticleManager::CameraMoveEyeVector(XMFLOAT3 move)
-{
-	XMFLOAT3 eye_moved = GetEye();
-
-	eye_moved.x += move.x;
-	eye_moved.y += move.y;
-	eye_moved.z += move.z;
-
-	SetEye(eye_moved);
-}
-
 void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel,float start_scale, float end_scale, XMFLOAT4 start_color, XMFLOAT4 end_color)
 {
 	//リストに要素を追加
@@ -199,29 +153,6 @@ bool ParticleManager::InitializeDescriptorHeap()
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	return true;
-}
-
-void ParticleManager::InitializeCamera(int window_width, int window_height)
-{
-	// ビュー行列の生成(1 - 05)
-	/*matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&eye),
-		XMLoadFloat3(&target),
-		XMLoadFloat3(&up));*/
-		//ビュー行列の計算
-	UpdateViewMatrix();
-
-	// 平行投影による射影行列の生成
-	//constMap->mat = XMMatrixOrthographicOffCenterLH(
-	//	0, window_width,
-	//	window_height, 0,
-	//	0, 1);
-	// 透視投影による射影行列の生成
-	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
-		(float)window_width / window_height,
-		0.1f, 1000.0f
-	);
 }
 
 bool ParticleManager::InitializeGraphicsPipeline()
@@ -733,11 +664,11 @@ void ParticleManager::UpdateViewMatrix()
 	// ビュー行列の更新(1 - 05)
 	//matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
 	//視点移動
-	XMVECTOR eyePosition = XMLoadFloat3(&eye);
+	XMVECTOR eyePosition = XMLoadFloat3(&camera->GetEye());
 	//注視点座標
-	XMVECTOR targetPosition = XMLoadFloat3(&target);
+	XMVECTOR targetPosition = XMLoadFloat3(&camera->GetTarget());
 	//(仮の)上方向
-	XMVECTOR upVector = XMLoadFloat3(&up);
+	XMVECTOR upVector = XMLoadFloat3(&camera->GetUp());
 	//カメラz軸
 	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPosition, eyePosition);
 

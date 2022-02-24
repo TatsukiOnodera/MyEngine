@@ -49,6 +49,9 @@ public: //静的関数
 	//オブジェクト生成
 	static Object3d* Create(const std::string& modelName);
 
+	//カメラインスタンスのアクセッサ
+	static Camera* GetCamera();
+
 public: //サブクラス
 	//定数バッファ用データ構造体
 	struct ConstBufferData

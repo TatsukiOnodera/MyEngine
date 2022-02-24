@@ -5,7 +5,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
-
+#include "Camera.h"
 #include <forward_list>
 
 /// <summary>
@@ -117,39 +117,6 @@ public: // 静的メンバ関数
 	static ParticleManager* Create();
 
 	/// <summary>
-	/// 視点座標の取得
-	/// </summary>
-	/// <returns>座標</returns>
-	static const XMFLOAT3& GetEye() { return eye; }
-
-	/// <summary>
-	/// 視点座標の設定
-	/// </summary>
-	/// <param name="position">座標</param>
-	static void SetEye(XMFLOAT3 eye);
-
-	/// <summary>
-	/// 注視点座標の取得
-	/// </summary>
-	/// <returns>座標</returns>
-	static const XMFLOAT3& GetTarget() { return target; }
-
-	/// <summary>
-	/// 注視点座標の設定
-	/// </summary>
-	/// <param name="position">座標</param>
-	static void SetTarget(XMFLOAT3 target);
-
-	/// <summary>
-	/// ベクトルによる移動
-	/// </summary>
-	/// <param name="move">移動量</param>
-	static void CameraMoveVector(XMFLOAT3 move);
-
-	//ベクトルによる視点移動
-	static void CameraMoveEyeVector(XMFLOAT3 move);
-
-	/// <summary>
 	/// パーティクルの追加(3_02)(3_03)
 	/// </summary>
 	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, XMFLOAT4 start_color, XMFLOAT4 end_color);
@@ -181,12 +148,8 @@ private: // 静的メンバ変数
 	static XMMATRIX matView;
 	// 射影行列
 	static XMMATRIX matProjection;
-	// 視点座標
-	static XMFLOAT3 eye;
-	// 注視点座標
-	static XMFLOAT3 target;
-	// 上方向ベクトル
-	static XMFLOAT3 up;
+	// カメラクラス
+	static Camera* camera;
 	// 頂点バッファビュー
 	static D3D12_VERTEX_BUFFER_VIEW vbView;
 	// インデックスバッファビュー
@@ -208,13 +171,6 @@ private:// 静的メンバ関数
 	/// </summary>
 	/// <returns></returns>
 	static bool InitializeDescriptorHeap();
-
-	/// <summary>
-	/// カメラ初期化
-	/// </summary>
-	/// <param name="window_width">画面横幅</param>
-	/// <param name="window_height">画面縦幅</param>
-	static void InitializeCamera(int window_width, int window_height);
 
 	/// <summary>
 	/// グラフィックパイプライン生成

@@ -30,8 +30,6 @@ bool Object3d::StaticInitialize(ID3D12Device* device, Camera* camera, int window
 
 	CreateGraphicsPipeline();
 
-	Object3d::camera->Initialize(window_width, window_height);
-
 	return true;
 }
 
@@ -194,6 +192,11 @@ Object3d* Object3d::Create(const std::string& modelName)
 	object->Update();
 
 	return object;
+}
+
+Camera* Object3d::GetCamera()
+{
+	return camera;
 }
 
 void Object3d::Initialize()
