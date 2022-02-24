@@ -78,11 +78,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)GameScene\;$(ProjectDir)Input\;$(ProjectDir)lib\DirectXTex\include\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)GameScene\;$(ProjectDir)Input\;$(ProjectDir)lib\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)GameScene\;$(ProjectDir)Input\;$(ProjectDir)lib\DirectXTex\include\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)GameScene\;$(ProjectDir)Input\;$(ProjectDir)lib\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
