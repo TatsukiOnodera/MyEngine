@@ -1,4 +1,5 @@
 #include "OnoGame.h"
+#include "GamePlayScene.h"
 
 void OnoGame::Initialize()
 {
@@ -31,7 +32,12 @@ void OnoGame::Draw()
 {
 	dx_cmd->PreDraw();
 
-	game_scene->Draw();
+	game_scene->DrawBackSprite(); //前景スプライト
+	game_scene->Draw(); //オブジェクト＆スプライト描画
+	//game_scene->DrawParticles(); //パーティクル描画
+	game_scene->DrawUI(); //UI描画
+
+	game_scene->DrawDebugText(); //デバッグテキスト描画
 
 	dx_cmd->PostDraw();
 }

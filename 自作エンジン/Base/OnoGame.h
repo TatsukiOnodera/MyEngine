@@ -1,6 +1,8 @@
 #pragma once
 #include "FrameWork.h"
 
+class GamePlayScene;
+
 class OnoGame : public FrameWork
 {
 private: //ポインタ置き場

@@ -59,9 +59,29 @@ public: //メンバ関数
 	void Update();
 
 	/// <summary>
+	/// 背景スプライト描画
+	/// </summary>
+	void DrawBackSprite();
+
+	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// パーティクル描画
+	/// </summary>
+	void DrawParticles();
+
+	/// <summary>
+	/// UI描画
+	/// </summary>
+	void DrawUI();
+
+	/// <summary>
+	/// デバッグテキスト描画
+	/// </summary>
+	void DrawDebugText();
 
 	/// <summary>
 	/// 変数初期化

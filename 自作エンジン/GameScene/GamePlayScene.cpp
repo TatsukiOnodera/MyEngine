@@ -86,40 +86,67 @@ void GamePlayScene::Update()
 	obj->Update();
 }
 
-void GamePlayScene::Draw()
+void GamePlayScene::DrawBackSprite()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//前景スプライト描画
-	Sprite::PreDraw(cmdList); //ここから
+	Sprite::PreDraw(cmdList);
 
 	demo_back->Draw();
 
-	Sprite::PostDraw(); //ここまで
+	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
+}
+
+void GamePlayScene::Draw()
+{
+	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//オブジェクト描画
-	Object3d::PreDraw(cmdList); //ここから
+	Object3d::PreDraw(cmdList);
 
 	chr->Draw();
 	obj->Draw();
 
-	Object3d::PostDraw(); //ここまで
-
-	//パーティクル
-	//particle->Draw(cmdList);
+	Object3d::PostDraw();
 
 	//スプライト描画
-	Sprite::PreDraw(cmdList); //ここから
+	Sprite::PreDraw(cmdList);
 
 	demo_spr->Draw();
 
-	Sprite::PostDraw(); //ここまで
+	Sprite::PostDraw();
+}
 
-	//デバッグテキスト描画
-	Sprite::PreDraw(cmdList); //ここから
+void GamePlayScene::DrawUI()
+{
+	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
+
+	//UI描画
+	Sprite::PreDraw(cmdList);
+
+	
+
+	Sprite::PostDraw();
+}
+
+void GamePlayScene::DrawParticles()
+{
+	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
+
+	//パーティクル描画
+	particle->Draw(cmdList);
+}
+
+void GamePlayScene::DrawDebugText()
+{
+	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
+
+	//スプライト描画
+	Sprite::PreDraw(cmdList);
 
 	debugText.Draw();
 
-	Sprite::PostDraw(); //ここまで
+	Sprite::PostDraw();
 }
