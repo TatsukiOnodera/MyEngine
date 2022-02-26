@@ -1,4 +1,4 @@
-#include "GameScene.h"
+#include "GamePlayScene.h"
 #include <time.h>
 #include <stdlib.h>
 #include "SafeDelete.h"
@@ -6,12 +6,12 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-GameScene::GameScene()
+GamePlayScene::GamePlayScene()
 {
 
 }
 
-GameScene::~GameScene()
+GamePlayScene::~GamePlayScene()
 {
 	safe_delete(particle);
 	safe_delete(demo_back);
@@ -20,37 +20,37 @@ GameScene::~GameScene()
 	safe_delete(obj);
 }
 
-void GameScene::Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera)
+void GamePlayScene::Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera)
 {
 	this->dx_cmd = dx_cmd;
 	this->input = input;
 	this->audio = sound;
 	this->camera = camera;
 
-	/*スプライトテクスチャ読み込み*/
+	//スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/texture.png");
 	Sprite::LoadTexture(2, L"Resources/background.png");
 
-	/*前景スプライト*/
+	//前景スプライト
 	debugText.Initialize(fontNumber);
 
-	/*スプライト*/
+	//スプライト
 	demo_spr = Sprite::CreateSprite(1);
 	demo_back = Sprite::CreateSprite(2);
 
-	/*オブジェクト*/
+	//オブジェクト
 	chr = Object3d::Create("chr_sword");
 	obj = Object3d::Create("Bullet");
 
-	/*パラメーター*/
-	ResetParameters();
+	//パラメーター
+	ResetVariable();
 
-	/*オーディオ*/
+	//オーディオ
 	audio->Initialize();
 }
 
-void GameScene::ResetParameters()
+void GamePlayScene::ResetVariable()
 {
 	chr->SetScale({5.0f, 5.0f, 5.0f});
 	chr->Update();
@@ -61,7 +61,7 @@ void GameScene::ResetParameters()
 	obj->Update();
 }
 
-void GameScene::Update()
+void GamePlayScene::Update()
 {
 	XMFLOAT3 pos = { 0, 0, 0 };
 	if (input->PushKey(DIK_W))
@@ -86,11 +86,11 @@ void GameScene::Update()
 	obj->Update();
 }
 
-void GameScene::Draw()
+void GamePlayScene::Draw()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
-	/*前景スプライト描画*/
+	//前景スプライト描画
 	Sprite::PreDraw(cmdList); //ここから
 
 	demo_back->Draw();
@@ -98,7 +98,7 @@ void GameScene::Draw()
 	Sprite::PostDraw(); //ここまで
 	dx_cmd->ClearDepth();
 
-	/*オブジェクト描画*/
+	//オブジェクト描画
 	Object3d::PreDraw(cmdList); //ここから
 
 	chr->Draw();
@@ -106,17 +106,17 @@ void GameScene::Draw()
 
 	Object3d::PostDraw(); //ここまで
 
-	/*パーティクル*/
+	//パーティクル
 	//particle->Draw(cmdList);
 
-	/*スプライト描画*/
+	//スプライト描画
 	Sprite::PreDraw(cmdList); //ここから
 
 	demo_spr->Draw();
 
 	Sprite::PostDraw(); //ここまで
 
-	/*デバッグテキスト描画*/
+	//デバッグテキスト描画
 	Sprite::PreDraw(cmdList); //ここから
 
 	debugText.Draw();

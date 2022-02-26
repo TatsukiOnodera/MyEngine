@@ -6,7 +6,7 @@ void OnoGame::Initialize()
 	FrameWork::Initialize();
 
 	//ƒQ[ƒ€ƒV[ƒ“‰Šú‰»
-	game_scene = new GameScene;
+	game_scene = new GamePlayScene;
 	game_scene->Initialize(dx_cmd, input, audio, camera);
 }
 

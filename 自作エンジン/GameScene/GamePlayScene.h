@@ -11,7 +11,7 @@
 #include "Camera.h"
 #include "DirectXCommon.h"
 
-class GameScene
+class GamePlayScene
 {
 public: // エイリアス
 	// Microsoft::WRL::を省略
@@ -22,35 +22,49 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private:
+private: //メモリ置き場
 	DirectXCommon* dx_cmd = nullptr;
 	Input* input = nullptr;
 	Audio* audio = nullptr;
 	Camera* camera = nullptr;
 
 private: //メンバ変数
-	/*デバッグテキスト*/
+	//デバッグテキスト
 	DebugText debugText;
 	const int fontNumber = 0;
 
-	/*パーティクル*/
+	//パーティクル
 	ParticleManager* particle = nullptr;
 
-	/*スプライト*/
+	//スプライト
 	Sprite* demo_back = nullptr;
 	Sprite* demo_spr = nullptr;
 
-	/*オブジェクト*/
+	//オブジェクト
 	Object3d* chr = nullptr;
 	Object3d* obj = nullptr;
 
 public: //メンバ関数
-	GameScene();
-	~GameScene();
+	GamePlayScene();
+	~GamePlayScene();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera);
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
-	void ResetParameters();
+	/// <summary>
+	/// 変数初期化
+	/// </summary>
+	void ResetVariable();
 };

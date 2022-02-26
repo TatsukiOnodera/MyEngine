@@ -4,7 +4,7 @@
 #include "DirectXCommon.h"
 #include "Audio.h"
 #include "Camera.h"
-#include "GameScene.h"
+#include "GamePlayScene.h"
 #include "ParticleManager.h"
 #include "SafeDelete.h"
 

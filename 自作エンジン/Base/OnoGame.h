@@ -4,7 +4,7 @@
 class OnoGame : public FrameWork
 {
 private: //ポインタ置き場
-	GameScene* game_scene = nullptr;
+	GamePlayScene* game_scene = nullptr;
 
 public: //関数
 	/// <summary>
