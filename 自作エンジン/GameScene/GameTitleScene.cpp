@@ -1,10 +1,10 @@
-#include "GamePlayScene.h"
+#include "GameTitleScene.h"
 #include "SafeDelete.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-GamePlayScene::GamePlayScene(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera, SceneManager* scene_manager) : BaseScene(scene_manager)
+GameTitleScene::GameTitleScene(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera, SceneManager* scene_manager) : BaseScene(scene_manager)
 {
 	this->dx_cmd = dx_cmd;
 	this->input = input;
@@ -12,31 +12,26 @@ GamePlayScene::GamePlayScene(DirectXCommon* dx_cmd, Input* input, Audio* sound, 
 	this->camera = camera;
 }
 
-GamePlayScene::~GamePlayScene()
+GameTitleScene::~GameTitleScene()
 {
 	safe_delete(particle);
 	safe_delete(demo_back);
-	safe_delete(demo_spr);
-	safe_delete(chr);
 	safe_delete(obj);
 }
 
-void GamePlayScene::Initialize()
+void GameTitleScene::Initialize()
 {
 	//スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-	Sprite::LoadTexture(1, L"Resources/texture.png");
-	Sprite::LoadTexture(2, L"Resources/background.png");
+	Sprite::LoadTexture(1, L"Resources/background.png");
 
 	//前景スプライト
 	debugText.Initialize(fontNumber);
 
 	//スプライト
-	demo_spr = Sprite::CreateSprite(1);
-	demo_back = Sprite::CreateSprite(2);
+	demo_back = Sprite::CreateSprite(1);
 
 	//オブジェクト
-	chr = Object3d::Create("chr_sword");
 	obj = Object3d::Create("Bullet");
 
 	//パラメーター
@@ -46,43 +41,25 @@ void GamePlayScene::Initialize()
 	audio->Initialize();
 }
 
-void GamePlayScene::ResetVariable()
+void GameTitleScene::ResetVariable()
 {
-	chr->SetScale({5.0f, 5.0f, 5.0f});
-	chr->Update();
-
 	obj->SetPosition({10.0f, 0.0f, 0.0f});
 	obj->SetScale({ 5.0f, 5.0f, 5.0f });
 	obj->SetColor({1, 1, 1, 0.8f});
 	obj->Update();
 }
 
-void GamePlayScene::Update()
+void GameTitleScene::Update()
 {
-	XMFLOAT3 pos = { 0, 0, 0 };
-	if (input->PushKey(DIK_W))
+	if (input->TriggerKey(DIK_SPACE))
 	{
-		pos.y += 0.5f;
-	}
-	if (input->PushKey(DIK_S))
-	{
-		pos.y -= 0.5f;
-	}
-	if (input->PushKey(DIK_D))
-	{
-		pos.x += 0.5f;
-	}
-	if (input->PushKey(DIK_A))
-	{
-		pos.x -= 0.5f;
-	}
-	camera->MoveCamera(pos);
 
-	chr->Update();
+	}
+
 	obj->Update();
 }
 
-void GamePlayScene::Draw()
+void GameTitleScene::Draw()
 {
 	DrawBackSprite(); //前景スプライト
 	DrawObject(); //オブジェクト＆スプライト描画
@@ -92,7 +69,7 @@ void GamePlayScene::Draw()
 	//DrawDebugText(); //デバッグテキスト描画
 }
 
-void GamePlayScene::DrawBackSprite()
+void GameTitleScene::DrawBackSprite()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
@@ -105,14 +82,13 @@ void GamePlayScene::DrawBackSprite()
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::DrawObject()
+void GameTitleScene::DrawObject()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//オブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	chr->Draw();
 	obj->Draw();
 
 	Object3d::PostDraw();
@@ -120,12 +96,12 @@ void GamePlayScene::DrawObject()
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	demo_spr->Draw();
+
 
 	Sprite::PostDraw();
 }
 
-void GamePlayScene::DrawParticles()
+void GameTitleScene::DrawParticles()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
@@ -133,19 +109,19 @@ void GamePlayScene::DrawParticles()
 	particle->Draw(cmdList);
 }
 
-void GamePlayScene::DrawUI()
+void GameTitleScene::DrawUI()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//UI描画
 	Sprite::PreDraw(cmdList);
 
-	
+
 
 	Sprite::PostDraw();
 }
 
-void GamePlayScene::DrawDebugText()
+void GameTitleScene::DrawDebugText()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 

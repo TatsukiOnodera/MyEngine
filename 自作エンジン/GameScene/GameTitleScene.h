@@ -13,7 +13,7 @@
 #include "BaseScene.h"
 #include "SceneManager.h"
 
-class GamePlayScene : public BaseScene
+class GameTitleScene : public BaseScene
 {
 public: // エイリアス
 	// Microsoft::WRL::を省略
@@ -40,15 +40,13 @@ private: //メンバ変数
 
 	//スプライト
 	Sprite* demo_back = nullptr;
-	Sprite* demo_spr = nullptr;
 
 	//オブジェクト
-	Object3d* chr = nullptr;
 	Object3d* obj = nullptr;
 
 public: //メンバ関数
-	GamePlayScene(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera, SceneManager* scene_manager);
-	~GamePlayScene();
+	GameTitleScene(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera, SceneManager* scene_manager);
+	~GameTitleScene();
 
 	/// <summary>
 	/// 初期化
@@ -71,7 +69,7 @@ public: //メンバ関数
 	void DrawBackSprite();
 
 	/// <summary>
-	/// オブジェクト描画
+	/// 描画
 	/// </summary>
 	void DrawObject();
 
