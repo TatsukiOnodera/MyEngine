@@ -4,9 +4,10 @@
 //# Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	//ゲームポインタ置き場
+	//ポインタ置き場
 	OnoGame* game = new OnoGame;
 
+	//ゲーム開始
 	game->Run();
 
 	safe_delete(game);
