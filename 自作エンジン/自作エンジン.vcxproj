@@ -78,11 +78,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)GameScene\;$(ProjectDir)Input\;$(ProjectDir)lib\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)Scene\;$(ProjectDir)Input\;$(ProjectDir)lib\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)GameScene\;$(ProjectDir)Input\;$(ProjectDir)lib\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)Scene\;$(ProjectDir)Input\;$(ProjectDir)lib\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -173,11 +173,11 @@
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
-    <ClCompile Include="GameScene\GamePlayScene.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model\Model.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
+    <ClCompile Include="Scene\GamePlayScene.cpp" />
     <ClCompile Include="Window\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -191,11 +191,11 @@
     <ClInclude Include="Collision\CollisionPrimitive.h" />
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
-    <ClInclude Include="GameScene\GamePlayScene.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Model\Model.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
+    <ClInclude Include="Scene\GamePlayScene.h" />
     <ClInclude Include="Window\WinApp.h" />
   </ItemGroup>
   <ItemGroup>
