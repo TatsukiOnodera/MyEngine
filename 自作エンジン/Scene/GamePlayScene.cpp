@@ -86,6 +86,15 @@ void GamePlayScene::Update()
 	obj->Update();
 }
 
+void GamePlayScene::Draw()
+{
+	DrawBackSprite();
+	DrawObject();
+	DrawUI();
+	DrawParticles();
+	DrawDebugText();
+}
+
 void GamePlayScene::DrawBackSprite()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
@@ -99,7 +108,7 @@ void GamePlayScene::DrawBackSprite()
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::Draw()
+void GamePlayScene::DrawObject()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
@@ -136,7 +145,7 @@ void GamePlayScene::DrawParticles()
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//パーティクル描画
-	particle->Draw(cmdList);
+	//particle->Draw(cmdList);
 }
 
 void GamePlayScene::DrawDebugText()
@@ -146,7 +155,7 @@ void GamePlayScene::DrawDebugText()
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	debugText.Draw();
+	//debugText.Draw();
 
 	Sprite::PostDraw();
 }

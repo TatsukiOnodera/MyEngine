@@ -54,9 +54,19 @@ public: //メンバ関数
 	void Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera);
 
 	/// <summary>
+	/// 変数初期化
+	/// </summary>
+	void ResetVariable();
+
+	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw();
 
 	/// <summary>
 	/// 背景スプライト描画
@@ -66,7 +76,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void DrawObject();
 
 	/// <summary>
 	/// パーティクル描画
@@ -82,9 +92,4 @@ public: //メンバ関数
 	/// デバッグテキスト描画
 	/// </summary>
 	void DrawDebugText();
-
-	/// <summary>
-	/// 変数初期化
-	/// </summary>
-	void ResetVariable();
 };
