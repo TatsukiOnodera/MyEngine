@@ -97,11 +97,11 @@
     <ClCompile Include="Window\WinApp.cpp">
       <Filter>ソース＆ヘッダーファイル\WinApp</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース＆ヘッダーファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\GamePlayScene.cpp">
       <Filter>ソース＆ヘッダーファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース＆ヘッダーファイル\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
