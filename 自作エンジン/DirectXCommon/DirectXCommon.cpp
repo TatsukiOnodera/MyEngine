@@ -1,5 +1,12 @@
 #include "DirectXCommon.h"
 
+DirectXCommon* DirectXCommon::GetInstance()
+{
+	static DirectXCommon dx_cmd;
+
+	return &dx_cmd;
+}
+
 DirectXCommon::DirectXCommon()
 {
 

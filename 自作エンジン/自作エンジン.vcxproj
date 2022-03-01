@@ -78,12 +78,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)Scene\;$(ProjectDir)Input\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\;$(ProjectDir)lib\</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)Scene\;$(ProjectDir)Input\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\;$(ProjectDir)lib\;$(ProjectDir)lib\DirectXTex\include\;$(ProjectDir)lib\DirectXTex\lib\</IncludePath>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)Scene\;$(ProjectDir)Input\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\;$(ProjectDir)lib\</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)Scene\;$(ProjectDir)Input\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\;$(ProjectDir)lib\;$(ProjectDir)lib\DirectXTex\include\;$(ProjectDir)lib\DirectXTex\lib\</IncludePath>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -170,7 +170,6 @@
     <ClCompile Include="2D\Sprite.cpp" />
     <ClCompile Include="3D\Object3d.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
-    <ClCompile Include="BaseScene.cpp" />
     <ClCompile Include="Base\FrameWork.cpp" />
     <ClCompile Include="Base\OnoGame.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
@@ -182,6 +181,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model\Model.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Scene\BaseScene.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Window\WinApp.cpp" />
@@ -190,7 +191,6 @@
     <ClInclude Include="2D\Sprite.h" />
     <ClInclude Include="3D\Object3d.h" />
     <ClInclude Include="Audio\Audio.h" />
-    <ClInclude Include="BaseScene.h" />
     <ClInclude Include="Base\FrameWork.h" />
     <ClInclude Include="Base\OnoGame.h" />
     <ClInclude Include="Camera\Camera.h" />
@@ -202,6 +202,8 @@
     <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Model\Model.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\GamePlayScene.h" />
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Window\WinApp.h" />

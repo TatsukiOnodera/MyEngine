@@ -60,8 +60,10 @@ public: // サブクラス
 		WAVEFORMAT	fmt;   // 波形フォーマット
 	};
 
-public: // メンバ関数
+public: //静的メンバ関数
+	static Audio* GetInstance();
 
+public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>

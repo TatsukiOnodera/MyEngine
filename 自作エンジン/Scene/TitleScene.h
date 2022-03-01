@@ -10,8 +10,9 @@
 #include "Collision.h"
 #include "Camera.h"
 #include "DirectXCommon.h"
+#include "BaseScene.h"
 
-class TitleScene
+class TitleScene : public BaseScene
 {
 public: // エイリアス
 	// Microsoft::WRL::を省略
@@ -43,28 +44,28 @@ private: //メンバ変数
 	
 
 public: //メンバ関数
-	TitleScene();
+	TitleScene(SceneManager* scene_manager);
 	~TitleScene();
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera);
+	void Initialize() override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update() override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw() override;
 
 	/// <summary>
 	/// 変数初期化
 	/// </summary>
 	void ResetVariable();
-
-	/// <summary>
-	/// 更新
-	/// </summary>
-	void Update();
-
-	/// <summary>
-	/// 描画
-	/// </summary>
-	void Draw();
 
 	/// <summary>
 	/// 背景スプライト描画

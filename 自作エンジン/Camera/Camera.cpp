@@ -2,6 +2,12 @@
 
 using namespace DirectX;
 
+Camera* Camera::GetInstance()
+{
+	static Camera camera;
+	return &camera;
+}
+
 Camera::Camera(XMFLOAT3 eye, XMFLOAT3 target, XMFLOAT3 up)
 {
 	this->eye = eye;

@@ -4,6 +4,13 @@
 
 #pragma comment(lib,"xaudio2.lib")
 
+Audio* Audio::GetInstance()
+{
+	static Audio audio;
+
+	return &audio;
+}
+
 void Audio::Initialize()
 {
 	HRESULT result;

@@ -1,14 +1,15 @@
 #include "GamePlayScene.h"
+#include "SceneManager.h"
 #include <time.h>
 #include <stdlib.h>
-#include "SafeDelete.h"
+#include <SafeDelete.h>
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-GamePlayScene::GamePlayScene()
+GamePlayScene::GamePlayScene(SceneManager* scene_manager) : BaseScene(scene_manager)
 {
-
+	
 }
 
 GamePlayScene::~GamePlayScene()
@@ -20,13 +21,13 @@ GamePlayScene::~GamePlayScene()
 	safe_delete(obj);
 }
 
-void GamePlayScene::Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera)
+void GamePlayScene::Initialize()
 {
-	this->dx_cmd = dx_cmd;
-	this->input = input;
-	this->audio = sound;
-	this->camera = camera;
-
+	dx_cmd = DirectXCommon::GetInstance();
+	input = Input::GetInstance();
+	audio = Audio::GetInstance();
+	camera = Camera::GetInstance();
+	
 	//スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/texture.png");

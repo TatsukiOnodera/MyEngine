@@ -7,7 +7,8 @@
 #include "Object3d.h"
 #include "Sprite.h"
 #include "ParticleManager.h"
-#include "SafeDelete.h"
+#include <SafeDelete.h>
+#include "SceneManager.h"
 
 class FrameWork
 {
@@ -17,9 +18,9 @@ protected: //ポインタ置き場
 	Camera* camera = nullptr;
 	Audio* audio = nullptr;
 	DirectXCommon* dx_cmd = nullptr;
-
-public: //その他変数
 	bool end_request = false;
+
+	SceneManager* scene_manager = nullptr;
 
 public:
 	/// <summary>
@@ -40,7 +41,7 @@ public:
 	/// <summary>
 	/// 毎フレーム更新
 	/// </summary>
-	virtual void Update() = 0;
+	virtual void Update();
 
 	/// <summary>
 	/// 描画

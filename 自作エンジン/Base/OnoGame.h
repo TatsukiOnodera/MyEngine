@@ -1,15 +1,8 @@
 #pragma once
 #include "FrameWork.h"
 
-class GamePlayScene;
-class TitleScene;
-
 class OnoGame : public FrameWork
 {
-private: //ポインタ置き場
-	//GamePlayScene* game_scene = nullptr;
-	TitleScene* scene = nullptr;
-
 public: //関数
 	/// <summary>
 	/// 初期化

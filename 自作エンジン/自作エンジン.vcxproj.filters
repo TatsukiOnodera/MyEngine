@@ -105,7 +105,10 @@
     <ClCompile Include="Scene\TitleScene.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="BaseScene.cpp">
+    <ClCompile Include="Scene\BaseScene.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
@@ -161,7 +164,10 @@
     <ClInclude Include="Scene\TitleScene.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="BaseScene.h">
+    <ClInclude Include="Scene\BaseScene.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>

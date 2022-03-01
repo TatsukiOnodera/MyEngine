@@ -1,12 +1,14 @@
 #include "TitleScene.h"
+#include "GamePlayScene.h"
+#include "SceneManager.h"
 #include <time.h>
 #include <stdlib.h>
-#include "SafeDelete.h"
+#include <SafeDelete.h>
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-TitleScene::TitleScene()
+TitleScene::TitleScene(SceneManager* scene_manager)	 : BaseScene(scene_manager)
 {
 
 }
@@ -16,12 +18,12 @@ TitleScene::~TitleScene()
 	safe_delete(particle);
 }
 
-void TitleScene::Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera)
+void TitleScene::Initialize()
 {
-	this->dx_cmd = dx_cmd;
-	this->input = input;
-	this->audio = sound;
-	this->camera = camera;
+	dx_cmd = DirectXCommon::GetInstance();
+	input = Input::GetInstance();
+	audio = Audio::GetInstance();
+	camera = Camera::GetInstance();
 
 	//スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
@@ -47,7 +49,12 @@ void TitleScene::ResetVariable()
 
 void TitleScene::Update()
 {
-	
+	if (input->TriggerKey(DIK_RETURN))
+	{
+		//シーン切り替え
+		BaseScene* scene = new GamePlayScene(scene_manager);
+		scene_manager->SetNextScene(scene);
+	}
 }
 
 void TitleScene::Draw()

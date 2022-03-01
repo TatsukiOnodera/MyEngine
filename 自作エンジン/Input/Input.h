@@ -68,12 +68,13 @@ private: //メンバ変数
 	//スティックの無反応範囲
 	LONG unresponsive_range = 200;
 
+public: //静的メンバ関数
+	static Input* GetInstance();
+
 public: //メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	/// <param name="hInstance"></param>
-	/// <param name="hwnd"></param>
 	void Initialize(HINSTANCE hInstance, HWND hwnd);
 
 	/// <summary>
@@ -81,19 +82,19 @@ public: //メンバ関数
 	/// </summary>
 	void Update();
 
-	/*キー操作*/
+	//キー操作
 	//入力
 	bool PushKey(BYTE key);
 	//入力（長押し不可）
 	bool TriggerKey(BYTE key);
 
-	/*クリック*/
+	//クリック
 	//左クリック
 	bool PushMouse(int Mouse);
 	//左クリック（長押し不可）
 	bool TriggerMouse(int Mouse);
 
-	/*ゲームパッド*/
+	//ゲームパッド
 	//ゲームパッドスティック
 	bool TiltStick(int stick);
 	//ゲームパッドスティック（長押し不可）

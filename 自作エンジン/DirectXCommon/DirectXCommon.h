@@ -34,22 +34,44 @@ private:
 
 	WinApp* win;
 
-public:
+public: //静的メンバ関数
+	static DirectXCommon* GetInstance();
+
+public: //メンバ関数
+	//コンストラクタ
 	DirectXCommon();
+	//デストラクタ
 	~DirectXCommon();
 
+	//アクセッサ
 	ID3D12Device *GetDev() { return dev.Get(); }
 	ID3D12GraphicsCommandList* GetCmdList() { return cmdList.Get(); }
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	bool Initialize(WinApp* app);
 
-	void OnDebugLayer();
+	/// <summary>
+	/// 震度バッファのクリア
+	/// </summary>
+	void ClearDepth();
+
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
 	void PreDraw();
+
+	/// <summary>
+	/// 描画後処理
+	/// </summary>
 	void PostDraw();
+
+private: //メンバ関数
+	void OnDebugLayer();
 	bool CreateDevice();
 	bool CreateCmdList();
 	bool CreateDoubleBuffer();
 	bool CreateFence();
 	bool CreateDepthBuffer();
-	void ClearDepth();
 };
