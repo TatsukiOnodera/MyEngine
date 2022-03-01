@@ -108,7 +108,7 @@
     <ClCompile Include="Scene\BaseScene.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
+    <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
@@ -167,7 +167,7 @@
     <ClInclude Include="Scene\BaseScene.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
+    <ClInclude Include="Scene\SceneManager.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
