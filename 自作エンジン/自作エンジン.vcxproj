@@ -182,6 +182,7 @@
     <ClCompile Include="Model\Model.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
+    <ClCompile Include="Scene\GameTitleScene.cpp" />
     <ClCompile Include="Window\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +201,7 @@
     <ClInclude Include="Model\Model.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Scene\GamePlayScene.h" />
+    <ClInclude Include="Scene\GameTitleScene.h" />
     <ClInclude Include="Window\WinApp.h" />
   </ItemGroup>
   <ItemGroup>

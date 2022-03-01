@@ -13,145 +13,154 @@
     <Filter Include="シェーダーファイル\SpriteShader">
       <UniqueIdentifier>{5a593820-27eb-4b01-901a-177b843d937c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル">
+    <Filter Include="ソースファイル">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\Audio">
+    <Filter Include="ソースファイル\Audio">
       <UniqueIdentifier>{ad7143b8-9804-47d9-b9d6-5a4915d6a27c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\Camera">
+    <Filter Include="ソースファイル\Camera">
       <UniqueIdentifier>{6524ad39-69e6-4db8-9525-dca7ce069669}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\Collision">
+    <Filter Include="ソースファイル\Collision">
       <UniqueIdentifier>{d9091e8c-4bbb-40ec-859a-a8ad07591e98}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\DebugText">
+    <Filter Include="ソースファイル\DebugText">
       <UniqueIdentifier>{8d007385-c15a-43b1-90de-7ffcff132ba3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\Input">
+    <Filter Include="ソースファイル\Input">
       <UniqueIdentifier>{c54a6cf0-3f99-47bb-b3c9-56f853f9f8d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\Scene">
+    <Filter Include="ソースファイル\Scene">
       <UniqueIdentifier>{f566e345-a1ca-4949-bac1-c7de535404ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\3D">
+    <Filter Include="ソースファイル\3D">
       <UniqueIdentifier>{5b1fc15c-b2c4-4ed4-8aa9-bb1c48138d50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\Particle">
+    <Filter Include="ソースファイル\Particle">
       <UniqueIdentifier>{6d060861-cb8e-4e49-933a-ef3b6fe04466}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\2D">
+    <Filter Include="ソースファイル\2D">
       <UniqueIdentifier>{64959e26-10b5-4238-b6de-4cb4f632c621}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\WinApp">
+    <Filter Include="ソースファイル\WinApp">
       <UniqueIdentifier>{8c5ccaaa-6912-432e-a301-4e9a3f032beb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\Base">
+    <Filter Include="ソースファイル\Base">
       <UniqueIdentifier>{c23b63d0-8c9c-4ca2-a89d-5314117daddc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース＆ヘッダーファイル\DirectXCommon">
+    <Filter Include="ソースファイル\DirectXCommon">
       <UniqueIdentifier>{08b49d2f-9537-4a23-baa2-bed04c0261fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル">
+      <UniqueIdentifier>{1fb14f97-0df9-47c1-9f89-56ed23e0e420}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
-      <Filter>ソース＆ヘッダーファイル\Audio</Filter>
+      <Filter>ソースファイル\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Camera\Camera.cpp">
-      <Filter>ソース＆ヘッダーファイル\Camera</Filter>
+      <Filter>ソースファイル\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Collision\Collision.cpp">
-      <Filter>ソース＆ヘッダーファイル\Collision</Filter>
+      <Filter>ソースファイル\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Collision\CollisionPrimitive.cpp">
-      <Filter>ソース＆ヘッダーファイル\Collision</Filter>
+      <Filter>ソースファイル\Collision</Filter>
     </ClCompile>
     <ClCompile Include="DebugText\DebugText.cpp">
-      <Filter>ソース＆ヘッダーファイル\DebugText</Filter>
+      <Filter>ソースファイル\DebugText</Filter>
     </ClCompile>
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp">
-      <Filter>ソース＆ヘッダーファイル\DirectXCommon</Filter>
+      <Filter>ソースファイル\DirectXCommon</Filter>
     </ClCompile>
     <ClCompile Include="Base\FrameWork.cpp">
-      <Filter>ソース＆ヘッダーファイル\Scene</Filter>
+      <Filter>ソースファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Input\Input.cpp">
-      <Filter>ソース＆ヘッダーファイル\Input</Filter>
+      <Filter>ソースファイル\Input</Filter>
     </ClCompile>
     <ClCompile Include="3D\Object3d.cpp">
-      <Filter>ソース＆ヘッダーファイル\3D</Filter>
+      <Filter>ソースファイル\3D</Filter>
     </ClCompile>
     <ClCompile Include="Model\Model.cpp">
-      <Filter>ソース＆ヘッダーファイル\3D</Filter>
+      <Filter>ソースファイル\3D</Filter>
     </ClCompile>
     <ClCompile Include="Base\OnoGame.cpp">
-      <Filter>ソース＆ヘッダーファイル\Base</Filter>
+      <Filter>ソースファイル\Base</Filter>
     </ClCompile>
     <ClCompile Include="Particle\ParticleManager.cpp">
-      <Filter>ソース＆ヘッダーファイル\Particle</Filter>
+      <Filter>ソースファイル\Particle</Filter>
     </ClCompile>
     <ClCompile Include="2D\Sprite.cpp">
-      <Filter>ソース＆ヘッダーファイル\2D</Filter>
+      <Filter>ソースファイル\2D</Filter>
     </ClCompile>
     <ClCompile Include="Window\WinApp.cpp">
-      <Filter>ソース＆ヘッダーファイル\WinApp</Filter>
+      <Filter>ソースファイル\WinApp</Filter>
     </ClCompile>
     <ClCompile Include="Scene\GamePlayScene.cpp">
-      <Filter>ソース＆ヘッダーファイル\Scene</Filter>
+      <Filter>ソースファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>ソース＆ヘッダーファイル\Base</Filter>
+      <Filter>ソースファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\GameTitleScene.cpp">
+      <Filter>ソースファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
-      <Filter>ソース＆ヘッダーファイル\Camera</Filter>
+      <Filter>ソースファイル\Camera</Filter>
     </ClInclude>
     <ClInclude Include="3D\Object3d.h">
-      <Filter>ソース＆ヘッダーファイル\3D</Filter>
+      <Filter>ソースファイル\3D</Filter>
     </ClInclude>
     <ClInclude Include="Model\Model.h">
-      <Filter>ソース＆ヘッダーファイル\3D</Filter>
+      <Filter>ソースファイル\3D</Filter>
     </ClInclude>
     <ClInclude Include="lib\SafeDelete.h">
-      <Filter>ソース＆ヘッダーファイル\Base</Filter>
+      <Filter>ソースファイル\Base</Filter>
     </ClInclude>
     <ClInclude Include="Base\OnoGame.h">
-      <Filter>ソース＆ヘッダーファイル\Base</Filter>
+      <Filter>ソースファイル\Base</Filter>
     </ClInclude>
     <ClInclude Include="Collision\CollisionPrimitive.h">
-      <Filter>ソース＆ヘッダーファイル\Collision</Filter>
+      <Filter>ソースファイル\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Collision\Collision.h">
-      <Filter>ソース＆ヘッダーファイル\Collision</Filter>
+      <Filter>ソースファイル\Collision</Filter>
     </ClInclude>
     <ClInclude Include="DebugText\DebugText.h">
-      <Filter>ソース＆ヘッダーファイル\DebugText</Filter>
+      <Filter>ソースファイル\DebugText</Filter>
     </ClInclude>
     <ClInclude Include="DirectXCommon\DirectXCommon.h">
-      <Filter>ソース＆ヘッダーファイル\DirectXCommon</Filter>
+      <Filter>ソースファイル\DirectXCommon</Filter>
     </ClInclude>
     <ClInclude Include="Input\Input.h">
-      <Filter>ソース＆ヘッダーファイル\Input</Filter>
+      <Filter>ソースファイル\Input</Filter>
     </ClInclude>
     <ClInclude Include="Particle\ParticleManager.h">
-      <Filter>ソース＆ヘッダーファイル\Particle</Filter>
+      <Filter>ソースファイル\Particle</Filter>
     </ClInclude>
     <ClInclude Include="2D\Sprite.h">
-      <Filter>ソース＆ヘッダーファイル\2D</Filter>
+      <Filter>ソースファイル\2D</Filter>
     </ClInclude>
     <ClInclude Include="Base\FrameWork.h">
-      <Filter>ソース＆ヘッダーファイル\Scene</Filter>
+      <Filter>ソースファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Window\WinApp.h">
-      <Filter>ソース＆ヘッダーファイル\WinApp</Filter>
+      <Filter>ソースファイル\WinApp</Filter>
     </ClInclude>
     <ClInclude Include="Audio\Audio.h">
-      <Filter>ソース＆ヘッダーファイル\Audio</Filter>
+      <Filter>ソースファイル\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Scene\GamePlayScene.h">
-      <Filter>ソース＆ヘッダーファイル\Scene</Filter>
+      <Filter>ソースファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\GameTitleScene.h">
+      <Filter>ソースファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
