@@ -1,5 +1,6 @@
 #include "OnoGame.h"
 #include "GamePlayScene.h"
+#include "TitleScene.h"
 
 void OnoGame::Initialize()
 {
@@ -7,14 +8,14 @@ void OnoGame::Initialize()
 	FrameWork::Initialize();
 
 	//シーンの初期化
-	game_scene = new GamePlayScene;
-	game_scene->Initialize(dx_cmd, input, audio, camera);
+	scene = new TitleScene;
+	scene->Initialize(dx_cmd, input, audio, camera);
 }
 
 void OnoGame::Finalize()
 {
 	//シーンの開放
-	safe_delete(game_scene);
+	safe_delete(scene);
 	
 	//基底クラスの初期化
 	FrameWork::Finalize();
@@ -26,14 +27,14 @@ void OnoGame::Update()
 	FrameWork::Update();
 	
 	//シーンの更新
-	game_scene->Update();
+	scene->Update();
 }
 
 void OnoGame::Draw()
 {
 	dx_cmd->PreDraw();
 
-	game_scene->Draw();
+	scene->Draw();
 
 	dx_cmd->PostDraw();
 }

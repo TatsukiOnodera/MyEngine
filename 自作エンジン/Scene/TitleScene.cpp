@@ -1,4 +1,4 @@
-#include "GamePlayScene.h"
+#include "TitleScene.h"
 #include <time.h>
 #include <stdlib.h>
 #include "SafeDelete.h"
@@ -6,21 +6,17 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-GamePlayScene::GamePlayScene()
+TitleScene::TitleScene()
 {
 
 }
 
-GamePlayScene::~GamePlayScene()
+TitleScene::~TitleScene()
 {
 	safe_delete(particle);
-	safe_delete(demo_back);
-	safe_delete(demo_spr);
-	safe_delete(chr);
-	safe_delete(obj);
 }
 
-void GamePlayScene::Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera)
+void TitleScene::Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera)
 {
 	this->dx_cmd = dx_cmd;
 	this->input = input;
@@ -29,19 +25,13 @@ void GamePlayScene::Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound
 
 	//スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-	Sprite::LoadTexture(1, L"Resources/texture.png");
-	Sprite::LoadTexture(2, L"Resources/background.png");
 
 	//前景スプライト
 	debugText.Initialize(fontNumber);
 
 	//スプライト
-	demo_spr = Sprite::CreateSprite(1);
-	demo_back = Sprite::CreateSprite(2);
 
 	//オブジェクト
-	chr = Object3d::Create("chr_sword");
-	obj = Object3d::Create("Bullet");
 
 	//パラメーター
 	ResetVariable();
@@ -50,43 +40,17 @@ void GamePlayScene::Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound
 	audio->Initialize();
 }
 
-void GamePlayScene::ResetVariable()
+void TitleScene::ResetVariable()
 {
-	chr->SetScale({5.0f, 5.0f, 5.0f});
-	chr->Update();
-
-	obj->SetPosition({10.0f, 0.0f, 0.0f});
-	obj->SetScale({ 5.0f, 5.0f, 5.0f });
-	obj->SetColor({1, 1, 1, 0.8f});
-	obj->Update();
+	
 }
 
-void GamePlayScene::Update()
+void TitleScene::Update()
 {
-	XMFLOAT3 pos = { 0, 0, 0 };
-	if (input->PushKey(DIK_W))
-	{
-		pos.y += 0.5f;
-	}
-	if (input->PushKey(DIK_S))
-	{
-		pos.y -= 0.5f;
-	}
-	if (input->PushKey(DIK_D))
-	{
-		pos.x += 0.5f;
-	}
-	if (input->PushKey(DIK_A))
-	{
-		pos.x -= 0.5f;
-	}
-	camera->MoveCamera(pos);
-
-	chr->Update();
-	obj->Update();
+	
 }
 
-void GamePlayScene::Draw()
+void TitleScene::Draw()
 {
 	DrawBackSprite();
 	DrawObject();
@@ -95,40 +59,39 @@ void GamePlayScene::Draw()
 	DrawDebugText();
 }
 
-void GamePlayScene::DrawBackSprite()
+void TitleScene::DrawBackSprite()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	demo_back->Draw();
+	
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::DrawObject()
+void TitleScene::DrawObject()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//オブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	chr->Draw();
-	obj->Draw();
+	
 
 	Object3d::PostDraw();
 
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	demo_spr->Draw();
+	
 
 	Sprite::PostDraw();
 }
 
-void GamePlayScene::DrawUI()
+void TitleScene::DrawUI()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
@@ -140,7 +103,7 @@ void GamePlayScene::DrawUI()
 	Sprite::PostDraw();
 }
 
-void GamePlayScene::DrawParticles()
+void TitleScene::DrawParticles()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
@@ -148,7 +111,7 @@ void GamePlayScene::DrawParticles()
 	//particle->Draw(cmdList);
 }
 
-void GamePlayScene::DrawDebugText()
+void TitleScene::DrawDebugText()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 

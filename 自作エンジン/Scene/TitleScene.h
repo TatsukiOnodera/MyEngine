@@ -11,7 +11,7 @@
 #include "Camera.h"
 #include "DirectXCommon.h"
 
-class GamePlayScene
+class TitleScene
 {
 public: // エイリアス
 	// Microsoft::WRL::を省略
@@ -37,16 +37,14 @@ private: //メンバ変数
 	ParticleManager* particle = nullptr;
 
 	//スプライト
-	Sprite* demo_back = nullptr;
-	Sprite* demo_spr = nullptr;
+	
 
 	//オブジェクト
-	Object3d* chr = nullptr;
-	Object3d* obj = nullptr;
+	
 
 public: //メンバ関数
-	GamePlayScene();
-	~GamePlayScene();
+	TitleScene();
+	~TitleScene();
 
 	/// <summary>
 	/// 初期化
