@@ -12,9 +12,6 @@ private: //ポインタ置き場
 	//次のシーン
 	BaseScene* next_scene = nullptr;
 
-public: //静的メンバ関数
-	static SceneManager* GetInstance();
-
 public:
 	~SceneManager();
 

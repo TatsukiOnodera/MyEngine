@@ -67,16 +67,13 @@ void FrameWork::Initialize()
 	}
 
 	//シーンマネージャー生成
-	scene_manager = SceneManager::GetInstance();
+	scene_manager = new SceneManager;
 }
 
 void FrameWork::Finalize()
 {
 	//開放
-	safe_delete(dx_cmd);
-	safe_delete(camera);
-	safe_delete(input);
-	safe_delete(audio);
+	safe_delete(scene_manager);
 
 	// ウィンドウクラスを登録解除
 	win->TerminateGameWindow();

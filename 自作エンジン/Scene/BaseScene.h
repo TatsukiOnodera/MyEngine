@@ -14,6 +14,7 @@ protected: //ポインタ置き場
 
 public:
 	BaseScene(SceneManager* scene_manager);
+	virtual ~BaseScene();
 
 	virtual void Initialize() = 0;
 

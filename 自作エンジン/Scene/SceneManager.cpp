@@ -1,13 +1,6 @@
 #include "SceneManager.h"
 #include <SafeDelete.h>
 
-SceneManager* SceneManager::GetInstance()
-{
-	static SceneManager scene_manager;
-
-	return &scene_manager;
-}
-
 SceneManager::~SceneManager()
 {
 	safe_delete(scene);
