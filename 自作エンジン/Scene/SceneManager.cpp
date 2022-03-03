@@ -20,6 +20,7 @@ void SceneManager::Update()
 		scene = next_scene;
 		next_scene = nullptr;
 
+		scene->SetSceneManager(this);
 		scene->Initialize();
 	}
 

@@ -44,7 +44,6 @@ private: //ƒƒ“ƒo•Ï”
 	
 
 public: //ƒƒ“ƒoŠÖ”
-	TitleScene(SceneManager* scene_manager);
 	~TitleScene();
 
 	/// <summary>

@@ -46,7 +46,6 @@ private: //ƒƒ“ƒo•Ï”
 	Object3d* obj = nullptr;
 
 public: //ƒƒ“ƒoŠÖ”
-	GamePlayScene(SceneManager* scene_manager);
 	~GamePlayScene();
 
 	/// <summary>

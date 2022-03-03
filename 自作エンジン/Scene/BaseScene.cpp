@@ -1,12 +1,6 @@
 #include "BaseScene.h"
-#include <SafeDelete.h>
 
-BaseScene::BaseScene(SceneManager* scene_manager) : scene_manager(scene_manager)
+void BaseScene::SetSceneManager(SceneManager* scene_manager)
 {
-
-}
-
-BaseScene::~BaseScene()
-{
-	
+	this->scene_manager = scene_manager;
 }

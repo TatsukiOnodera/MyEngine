@@ -8,7 +8,7 @@ void OnoGame::Initialize()
 	FrameWork::Initialize();
 
 	//ƒV[ƒ“‚Ì‰Šú‰»
-	BaseScene* scene = new TitleScene(scene_manager);
+	BaseScene* scene = new TitleScene;
 	scene_manager->SetNextScene(scene);
 }
 

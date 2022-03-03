@@ -8,11 +8,6 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-TitleScene::TitleScene(SceneManager* scene_manager)	 : BaseScene(scene_manager)
-{
-
-}
-
 TitleScene::~TitleScene()
 {
 	safe_delete(particle);
@@ -52,7 +47,7 @@ void TitleScene::Update()
 	if (input->TriggerKey(DIK_RETURN))
 	{
 		//ƒV[ƒ“Ø‚è‘Ö‚¦
-		BaseScene* scene = new GamePlayScene(scene_manager);
+		BaseScene* scene = new GamePlayScene();
 		scene_manager->SetNextScene(scene);
 	}
 }

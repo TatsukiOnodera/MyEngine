@@ -7,11 +7,6 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-GamePlayScene::GamePlayScene(SceneManager* scene_manager) : BaseScene(scene_manager)
-{
-	
-}
-
 GamePlayScene::~GamePlayScene()
 {
 	safe_delete(particle);

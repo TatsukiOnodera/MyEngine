@@ -13,12 +13,13 @@ protected: //ポインタ置き場
 	SceneManager* scene_manager = nullptr;
 
 public:
-	BaseScene(SceneManager* scene_manager);
-	virtual ~BaseScene();
+	virtual ~BaseScene() = default;
 
 	virtual void Initialize() = 0;
 
 	virtual void Update() = 0;
 
 	virtual void Draw() = 0;
+
+	virtual void SetSceneManager(SceneManager* scene_manager);
 };

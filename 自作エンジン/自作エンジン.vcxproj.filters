@@ -105,10 +105,10 @@
     <ClCompile Include="Scene\TitleScene.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\BaseScene.cpp">
+    <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\SceneManager.cpp">
+    <ClCompile Include="Scene\BaseScene.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
