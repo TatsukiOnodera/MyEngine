@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <dinput.h>
 #include <wrl.h>
+#include <DirectXMath.h>
 
 #define DIRECTINPUT_VERSION             0x0800 //Direct Inputのバージョン指定
 
@@ -11,6 +12,8 @@ class Input : public InputList
 public: //エイリアス
 	//namespace省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+	// DirectX::を省略
+	using XMFLOAT2 = DirectX::XMFLOAT2;
 
 private: //メンバ変数
 	//DirectInputのインスタンス
@@ -35,8 +38,10 @@ private: //メンバ変数
 	DIJOYSTATE oldGamePadState = {};
 	//ボタンデータ
 	bool is_push[32] = {};
+	//スティックの反応範囲
+	LONG responsive_range = 100;
 	//スティックの無反応範囲
-	LONG unresponsive_range = 200;
+	LONG unresponsive_range = 40;
 
 public: //静的メンバ関数
 	static Input* GetInstance();
@@ -66,9 +71,11 @@ public: //メンバ関数
 
 	//ゲームパッド
 	//ゲームパッドスティック
-	bool TiltStick(int stick);
+	bool TiltLeftStick(int stick);
 	//ゲームパッドスティック（長押し不可）
-	bool TriggerStick(int stick);
+	bool TriggerLeftStick(int stick);
+	//ゲームパッドスティックを倒した比率
+	XMFLOAT2 LeftStickAngle();
 	//ゲームパッドボタン
 	bool PushButton(int Button);
 	//ゲームパッドボタン（長押し不可）

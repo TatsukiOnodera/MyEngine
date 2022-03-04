@@ -170,7 +170,7 @@
     <ClInclude Include="Scene\SceneManager.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="InputList.h">
+    <ClInclude Include="Input\InputList.h">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
     </ClInclude>
   </ItemGroup>
