@@ -32,7 +32,7 @@ void FrameWork::Initialize()
 
 	//Input‰Šú‰»
 	input = Input::GetInstance();
-	input->Initialize(win->GetWindowInstance(), win->GetHWND());
+	input->Initialize(win);
 
 	//ƒJƒƒ‰‰Šú‰»
 	camera = Camera::GetInstance();

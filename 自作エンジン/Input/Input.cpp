@@ -13,13 +13,13 @@ Input* Input::GetInstance()
 	return &input;
 }
 
-void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
+void Input::Initialize(WinApp* win)
 {
 	HRESULT result;
 
 	//インターフェース作成
 	result = DirectInput8Create(
-		hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dinput, nullptr);
+		win->GetWindowInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dinput, nullptr);
 	if (FAILED(result))
 	{
 		assert(0);
@@ -47,7 +47,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
 		}
 
 		//排他制御レベルセット
-		result = devkeyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		result = devkeyboard->SetCooperativeLevel(win->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 		if (FAILED(result))
 		{
 			assert(0);
@@ -64,7 +64,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
 		}
 
 		//排他制御レベルセット
-		result = devMouse->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		result = devMouse->SetCooperativeLevel(win->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 		if (FAILED(result))
 		{
 			assert(0);
@@ -110,7 +110,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
 		devGamePad->SetProperty(DIPROP_RANGE, &diprg.diph);
 
 		//排他制御レベルセット
-		result = devGamePad->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		result = devGamePad->SetCooperativeLevel(win->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 		if (FAILED(result))
 		{
 			assert(0);

@@ -1,5 +1,6 @@
 #pragma once
 #include "InputList.h"
+#include "WinApp.h"
 #include <windows.h>
 #include <dinput.h>
 #include <wrl.h>
@@ -50,7 +51,7 @@ public: //ƒƒ“ƒoŠÖ”
 	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>
-	void Initialize(HINSTANCE hInstance, HWND hwnd);
+	void Initialize(WinApp* win);
 
 	/// <summary>
 	/// XV
