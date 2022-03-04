@@ -34,23 +34,36 @@ private: //静的変数;
 	static Camera *camera; 
 
 public: //静的関数
-	//静的初期化
+	/// <summary>
+	/// 静的初期化
+	/// </summary>
 	static bool StaticInitialize(ID3D12Device* device, Camera* camera, int window_width, int window_height);
 
-	//グラフィックパイプラインの生成
+	/// <summary>
+	/// グラフィックパイプライン生成
+	/// </summary>
 	static void CreateGraphicsPipeline();
 
-	//描画前処理
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
 	static void PreDraw(ID3D12GraphicsCommandList* cmdList);
 
-	//描画後処理
+	/// <summary>
+	/// 描画後処理
+	/// </summary>
 	static void PostDraw();
 
-	//オブジェクト生成
+	/// <summary>
+	/// オブジェクト生成
+	/// </summary>
 	static Object3d* Create(const std::string& modelName);
 
-	//カメラインスタンスのアクセッサ
-	static Camera* GetCamera();
+	/// <summary>
+	/// オブジェクト
+	/// </summary>
+	/// <returns></returns>
+	static Camera* GetCamera() { return camera; };
 
 public: //サブクラス
 	//定数バッファ用データ構造体
@@ -82,29 +95,47 @@ private: //メンバ変数
 	//モデルデータ
 	Model* model = nullptr;
 
+public: //メンバ関数
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw();
+
 public: //アクセッサ
-	//座標
+	/// <summary>
+	/// 座標
+	/// </summary>
 	XMFLOAT3 GetPosition() { return position; }
-	void SetPosition(XMFLOAT3 position) { this->position = position; }
+	void SetPosition(XMFLOAT3 position);
 
-	//回転
+	/// <summary>
+	/// 回転
+	/// </summary>
 	XMFLOAT3 GetRotation() { return rotation; }
-	void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
+	void SetRotation(XMFLOAT3 rotation);
 
-	//スケール
+	/// <summary>
+	/// スケール
+	/// </summary>
 	XMFLOAT3 GetScale() { return scale; }
-	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
+	void SetScale(XMFLOAT3 scale);
 
-	//色
+	/// <summary>
+	/// 色
+	/// </summary>
 	XMFLOAT4 GetColor() { return color; }
-	void SetColor(XMFLOAT4 color) { this->color = color; }
+	void SetColor(XMFLOAT4 color);
 
 	//モデルデータセット
 	void SetModel(Model* model) { this->model = model; }
-
-public: //メンバ関数
-	//初期化・更新・描画
-	void Initialize();
-	void Update();
-	void Draw();
 };

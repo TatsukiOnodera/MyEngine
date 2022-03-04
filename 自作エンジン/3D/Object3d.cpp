@@ -194,11 +194,6 @@ Object3d* Object3d::Create(const std::string& modelName)
 	return object;
 }
 
-Camera* Object3d::GetCamera()
-{
-	return camera;
-}
-
 void Object3d::Initialize()
 {
 	HRESULT result;
@@ -252,4 +247,28 @@ void Object3d::Draw()
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 
 	model->Draw(cmdList);
+}
+
+void Object3d::SetPosition(XMFLOAT3 position)
+{
+	this->position = position;
+	Update();
+}
+
+void Object3d::SetRotation(XMFLOAT3 rotation)
+{
+	this->rotation = rotation;
+	Update();
+}
+
+void Object3d::SetScale(XMFLOAT3 scale)
+{
+	this->scale = scale;
+	Update();
+}
+
+void Object3d::SetColor(XMFLOAT4 color)
+{
+	this->color = color;
+	Update();
 }

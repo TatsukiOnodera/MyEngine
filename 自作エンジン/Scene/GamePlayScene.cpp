@@ -49,30 +49,26 @@ void GamePlayScene::Initialize()
 void GamePlayScene::ResetVariable()
 {
 	chr->SetScale({5.0f, 5.0f, 5.0f});
-	chr->Update();
 
 	obj->SetPosition({10.0f, 0.0f, 0.0f});
 	obj->SetScale({ 5.0f, 5.0f, 5.0f });
 	obj->SetColor({1, 1, 1, 0.8f});
-	obj->Update();
 }
 
 void GamePlayScene::Update()
 {
 	XMFLOAT3 pos = { input->LeftStickAngle().x / 2, input->LeftStickAngle().y / 2, 0 };
 	camera->MoveCamera(pos);
-
-	chr->Update();
-	obj->Update();
 }
 
 void GamePlayScene::Draw()
 {
+	//各描画
 	DrawBackSprite();
 	DrawObject();
-	DrawParticles();
+	//DrawParticles();
 	DrawUI();
-	DrawDebugText();
+	//DrawDebugText();
 }
 
 void GamePlayScene::DrawBackSprite()
@@ -125,7 +121,7 @@ void GamePlayScene::DrawParticles()
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//パーティクル描画
-	//particle->Draw(cmdList);
+	particle->Draw(cmdList);
 }
 
 void GamePlayScene::DrawDebugText()
@@ -135,7 +131,7 @@ void GamePlayScene::DrawDebugText()
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	//debugText.Draw();
+	debugText.Draw();
 
 	Sprite::PostDraw();
 }

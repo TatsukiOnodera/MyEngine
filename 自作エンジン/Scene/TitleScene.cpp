@@ -54,11 +54,12 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
+	//各描画
 	DrawBackSprite();
 	DrawObject();
-	DrawParticles();
+	//DrawParticles();
 	DrawUI();
-	DrawDebugText();
+	//DrawDebugText();
 }
 
 void TitleScene::DrawBackSprite()
@@ -110,7 +111,7 @@ void TitleScene::DrawParticles()
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//パーティクル描画
-	//particle->Draw(cmdList);
+	particle->Draw(cmdList);
 }
 
 void TitleScene::DrawDebugText()
@@ -120,7 +121,7 @@ void TitleScene::DrawDebugText()
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	//debugText.Draw();
+	debugText.Draw();
 
 	Sprite::PostDraw();
 }
