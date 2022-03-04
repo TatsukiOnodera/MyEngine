@@ -170,6 +170,9 @@
     <ClInclude Include="Scene\SceneManager.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="InputList.h">
+      <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\OBJPixelShader.hlsl">

@@ -1,46 +1,16 @@
 #pragma once
+#include "InputList.h"
 #include <windows.h>
 #include <dinput.h>
 #include <wrl.h>
 
 #define DIRECTINPUT_VERSION             0x0800 //Direct Inputのバージョン指定
 
-class Input
+class Input : public InputList
 {
 public: //エイリアス
 	//namespace省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-
-public: //定数
-	//ゲームパッド（ボタン）
-	enum ButtonKind
-	{
-		Button_A,
-		Button_B,
-		Button_X,
-		Button_Y,
-		Button_LB,
-		Button_RB,
-		Select,
-		Start,
-		Button_LS,
-		Button_RS,
-		Cross_Up,
-		Cross_Down,
-		Cross_Right,
-		Cross_Left,
-		ButtonMax
-	};
-	//マウス
-	enum MouseKind
-	{
-		M_Left, M_Right, M_Middle
-	};
-	//スティック
-	enum StickKind
-	{
-		S_Up, S_Down, S_Right, S_Left
-	};
 
 private: //メンバ変数
 	//DirectInputのインスタンス

@@ -198,6 +198,7 @@
     <ClInclude Include="Collision\CollisionPrimitive.h" />
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
+    <ClInclude Include="InputList.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Model\Model.h" />
