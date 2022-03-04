@@ -59,7 +59,8 @@ void GamePlayScene::ResetVariable()
 
 void GamePlayScene::Update()
 {
-	camera->MoveCamera({input->LeftStickAngle().x / 2, input->LeftStickAngle().y / 2, 0});
+	XMFLOAT3 pos = { input->LeftStickAngle().x / 2, input->LeftStickAngle().y / 2, 0 };
+	camera->MoveCamera(pos);
 
 	chr->Update();
 	obj->Update();
