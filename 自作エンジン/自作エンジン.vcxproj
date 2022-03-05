@@ -181,7 +181,6 @@
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
-    <ClCompile Include="Scene\BaseScene.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />

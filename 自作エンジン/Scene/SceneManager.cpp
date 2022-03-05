@@ -6,6 +6,13 @@ SceneManager::~SceneManager()
 	safe_delete(scene);
 }
 
+SceneManager* SceneManager::GetInstance()
+{
+	static SceneManager scene_manager;
+
+	return &scene_manager;
+}
+
 void SceneManager::Update()
 {
 	//シーン切り替えがある
@@ -17,10 +24,11 @@ void SceneManager::Update()
 			safe_delete(scene);
 		}
 
+		//シーン切り替え
 		scene = next_scene;
 		next_scene = nullptr;
 
-		scene->SetSceneManager(this);
+		//新しいシーンの初期化
 		scene->Initialize();
 	}
 

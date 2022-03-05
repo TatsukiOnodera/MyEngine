@@ -12,9 +12,19 @@ private: //ポインタ置き場
 	//次のシーン
 	BaseScene* next_scene = nullptr;
 
-public:
-	~SceneManager();
+public: //静的メンバ関数
+	/// <summary>
+	/// インスタンスの取得
+	/// </summary>
+	static SceneManager* GetInstance();
 
+private: //インストラクタ
+	SceneManager() = default;
+	~SceneManager();
+	SceneManager(const SceneManager&) = delete;
+	void operator = (const SceneManager&) = delete;
+
+public: //メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>

@@ -65,16 +65,10 @@ void FrameWork::Initialize()
 	{
 		assert(0);
 	}
-
-	//シーンマネージャー生成
-	scene_manager = new SceneManager;
 }
 
 void FrameWork::Finalize()
 {
-	//開放
-	safe_delete(scene_manager);
-
 	// ウィンドウクラスを登録解除
 	win->TerminateGameWindow();
 	safe_delete(win);
@@ -92,14 +86,14 @@ void FrameWork::Update()
 	input->Update();
 
 	//シーンの更新
-	scene_manager->Update();
+	SceneManager::GetInstance()->Update();
 }
 
 void FrameWork::Draw()
 {
 	dx_cmd->PreDraw();
 
-	scene_manager->Draw();
+	SceneManager::GetInstance()->Draw();
 
 	dx_cmd->PostDraw();
 }

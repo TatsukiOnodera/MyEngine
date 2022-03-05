@@ -48,7 +48,7 @@ void TitleScene::Update()
 	{
 		//ƒV[ƒ“Ø‚è‘Ö‚¦
 		BaseScene* scene = new GamePlayScene();
-		scene_manager->SetNextScene(scene);
+		SceneManager::GetInstance()->SetNextScene(scene);
 	}
 }
 

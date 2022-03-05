@@ -20,8 +20,6 @@ protected: //ポインタ置き場
 	DirectXCommon* dx_cmd = nullptr;
 	bool end_request = false;
 
-	SceneManager* scene_manager = nullptr;
-
 public:
 	/// <summary>
 	/// 実行

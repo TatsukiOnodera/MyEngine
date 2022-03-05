@@ -9,7 +9,8 @@ void OnoGame::Initialize()
 
 	//シーンの初期化
 	BaseScene* scene = new TitleScene;
-	scene_manager->SetNextScene(scene);
+	//シーンセット
+	SceneManager::GetInstance()->SetNextScene(scene);
 }
 
 void OnoGame::Finalize()
