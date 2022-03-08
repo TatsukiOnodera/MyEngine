@@ -9,6 +9,7 @@
 #include "ParticleManager.h"
 #include <SafeDelete.h>
 #include "SceneManager.h"
+#include "AbstractSceneFactory.h"
 
 class FrameWork
 {
@@ -19,6 +20,7 @@ protected: //ポインタ置き場
 	Audio* audio = nullptr;
 	DirectXCommon* dx_cmd = nullptr;
 	bool end_request = false;
+	AbstractSceneFactory* scene_factory = nullptr;
 
 public:
 	/// <summary>

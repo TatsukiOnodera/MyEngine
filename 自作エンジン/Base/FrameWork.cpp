@@ -69,6 +69,9 @@ void FrameWork::Initialize()
 
 void FrameWork::Finalize()
 {
+	//シーンファクトリー開放
+	safe_delete(scene_factory);
+
 	// ウィンドウクラスを登録解除
 	win->TerminateGameWindow();
 	safe_delete(win);

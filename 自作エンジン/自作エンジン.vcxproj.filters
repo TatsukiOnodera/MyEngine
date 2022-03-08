@@ -55,6 +55,9 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Game">
       <UniqueIdentifier>{3423bda9-0ddb-4362-a86a-c06a9aaa5af3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Lib">
+      <UniqueIdentifier>{80b97804-e736-4f15-b6ee-0042955fec08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -96,9 +99,6 @@
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Base\FrameWork.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\GamePlayScene.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClCompile>
@@ -111,6 +111,12 @@
     <ClCompile Include="Base\OnoGame.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Base\FrameWork.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneFactory.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -118,9 +124,6 @@
     </ClInclude>
     <ClInclude Include="3D\Object3d.h">
       <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SafeDelete.h">
-      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
     </ClInclude>
     <ClInclude Include="Collision\CollisionPrimitive.h">
       <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
@@ -142,9 +145,6 @@
     </ClInclude>
     <ClInclude Include="2D\Sprite.h">
       <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\FrameWork.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
@@ -172,6 +172,18 @@
     </ClInclude>
     <ClInclude Include="Base\OnoGame.h">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\AbstractSceneFactory.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\FrameWork.h">
+      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneFactory.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\SafeDelete.h">
+      <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

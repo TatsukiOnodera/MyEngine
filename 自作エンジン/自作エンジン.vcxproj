@@ -182,6 +182,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
+    <ClCompile Include="Scene\SceneFactory.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Window\WinApp.cpp" />
@@ -202,8 +203,10 @@
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
+    <ClInclude Include="Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\GamePlayScene.h" />
+    <ClInclude Include="Scene\SceneFactory.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Window\WinApp.h" />

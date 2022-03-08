@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include <SafeDelete.h>
+#include <assert.h>
 
 SceneManager::~SceneManager()
 {
@@ -38,4 +39,13 @@ void SceneManager::Update()
 void SceneManager::Draw()
 {
 	scene->Draw();
+}
+
+void SceneManager::ChangeScene(const std::string& scene_name)
+{
+	assert(scene_factory);
+	assert(next_scene == nullptr);
+
+	//ŽŸƒV[ƒ“‚ð¶¬
+	next_scene = scene_factory->CreateScene(scene_name);
 }

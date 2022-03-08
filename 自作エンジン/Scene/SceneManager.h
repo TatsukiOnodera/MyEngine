@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseScene.h"
+#include "AbstractSceneFactory.h"
 
 /// <summary>
 /// シーン管理
@@ -11,6 +12,8 @@ private: //ポインタ置き場
 	BaseScene* scene = nullptr;
 	//次のシーン
 	BaseScene* next_scene = nullptr;
+	//シーンファクトリー
+	AbstractSceneFactory* scene_factory = nullptr;
 
 public: //静的メンバ関数
 	/// <summary>
@@ -38,5 +41,8 @@ public: //メンバ関数
 	/// <summary>
 	/// 次のシーンセット
 	/// </summary>
-	void SetNextScene(BaseScene* next_scene) { this->next_scene = next_scene; };
+	/// <param name="scene_name">シーン名</param>
+	void ChangeScene(const std::string& scene_name);
+
+	void SetSceneFactory(AbstractSceneFactory* scene_factory) { this->scene_factory = scene_factory; };
 };

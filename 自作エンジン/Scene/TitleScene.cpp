@@ -1,5 +1,4 @@
 #include "TitleScene.h"
-#include "GamePlayScene.h"
 #include "SceneManager.h"
 #include <time.h>
 #include <stdlib.h>
@@ -47,8 +46,7 @@ void TitleScene::Update()
 	if (input->TriggerKey(DIK_RETURN))
 	{
 		//ƒV[ƒ“Ø‚è‘Ö‚¦
-		BaseScene* scene = new GamePlayScene();
-		SceneManager::GetInstance()->SetNextScene(scene);
+		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 }
 

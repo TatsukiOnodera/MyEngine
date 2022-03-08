@@ -1,6 +1,5 @@
 #include "OnoGame.h"
-#include "GamePlayScene.h"
-#include "TitleScene.h"
+#include "SceneFactory.h"
 
 void OnoGame::Initialize()
 {
@@ -8,9 +7,10 @@ void OnoGame::Initialize()
 	FrameWork::Initialize();
 
 	//シーンの初期化
-	BaseScene* scene = new TitleScene;
+	scene_factory = new SceneFactory;
+	SceneManager::GetInstance()->SetSceneFactory(scene_factory);
 	//シーンセット
-	SceneManager::GetInstance()->SetNextScene(scene);
+	SceneManager::GetInstance()->ChangeScene("TITLE");
 }
 
 void OnoGame::Finalize()
