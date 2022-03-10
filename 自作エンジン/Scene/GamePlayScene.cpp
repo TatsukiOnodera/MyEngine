@@ -65,7 +65,7 @@ void GamePlayScene::Draw()
 	DrawBackSprite(cmdList);
 	DrawObject(cmdList);
 	//DrawParticles(cmdList);
-	DrawUI(cmdList);
+	//DrawUI(cmdList);
 	//DrawDebugText(cmdList);
 }
 
