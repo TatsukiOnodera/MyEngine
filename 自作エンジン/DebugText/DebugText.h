@@ -14,7 +14,7 @@ public:
 
 	void Print(const std::string& text, float x, float y, float scale = 1.0f);
 
-	void Draw();
+	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 private:
 	Sprite* sprites[maxCharCount] = {};

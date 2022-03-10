@@ -31,18 +31,18 @@ void FrameWork::Initialize()
 	win->CreateGameWindow();
 
 	//Input初期化
-	input = new Input;
-	input->Initialize(win->GetWindowInstance(), win->GetHWND());
+	input = Input::GetInstance();
+	input->Initialize(win);
 
 	//カメラ初期化
-	camera = new Camera;
+	camera = Camera::GetInstance();
 	camera->Initialize(WinApp::window_width, WinApp::window_height);
 
 	//オーディオ初期化
-	audio = new Audio;
+	audio = Audio::GetInstance();
 
 	// DirectX初期化処理
-	dx_cmd = new DirectXCommon();
+	dx_cmd = DirectXCommon::GetInstance();
 	if (!dx_cmd->Initialize(win))
 	{
 		assert(0);
@@ -69,11 +69,8 @@ void FrameWork::Initialize()
 
 void FrameWork::Finalize()
 {
-	//開放
-	safe_delete(dx_cmd);
-	safe_delete(camera);
-	safe_delete(input);
-	safe_delete(audio);
+	//シーンファクトリー開放
+	safe_delete(scene_factory);
 
 	// ウィンドウクラスを登録解除
 	win->TerminateGameWindow();
@@ -82,17 +79,24 @@ void FrameWork::Finalize()
 
 void FrameWork::Update()
 {
-	//終了リクエスト
+	//終了のリクエスト
 	if (win->ProcessMessage() || input->PushKey(DIK_ESCAPE))
 	{
 		end_request = true;
 	}
 
-	//キー情報取得
+	//キーの情報取得
 	input->Update();
+
+	//シーンの更新
+	SceneManager::GetInstance()->Update();
 }
 
 void FrameWork::Draw()
 {
+	dx_cmd->PreDraw();
 
+	SceneManager::GetInstance()->Draw();
+
+	dx_cmd->PostDraw();
 }

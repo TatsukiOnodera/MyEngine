@@ -1,43 +1,32 @@
 #include "OnoGame.h"
-#include "GamePlayScene.h"
+#include "SceneFactory.h"
 
 void OnoGame::Initialize()
 {
 	//基底クラスの初期化
 	FrameWork::Initialize();
 
-	//ゲームシーン初期化
-	game_scene = new GamePlayScene;
-	game_scene->Initialize(dx_cmd, input, audio, camera);
+	//シーンの初期化
+	scene_factory = new SceneFactory;
+	SceneManager::GetInstance()->SetSceneFactory(scene_factory);
+	//シーンセット
+	SceneManager::GetInstance()->ChangeScene("TITLE");
 }
 
 void OnoGame::Finalize()
 {
-	//開放
-	safe_delete(game_scene);
-	
-	//基底クラスの開放
+	//基底クラスの初期化
 	FrameWork::Finalize();
 }
 
 void OnoGame::Update()
 {
+	//基底クラスの更新
 	FrameWork::Update();
-	
-	//ゲームシーン
-	game_scene->Update();
 }
 
 void OnoGame::Draw()
 {
-	dx_cmd->PreDraw();
-
-	game_scene->DrawBackSprite(); //前景スプライト
-	game_scene->Draw(); //オブジェクト＆スプライト描画
-	//game_scene->DrawParticles(); //パーティクル描画
-	game_scene->DrawUI(); //UI描画
-
-	game_scene->DrawDebugText(); //デバッグテキスト描画
-
-	dx_cmd->PostDraw();
+	//基底クラスの更新
+	FrameWork::Draw();
 }

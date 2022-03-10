@@ -11,6 +11,9 @@ private: // エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+public: //静的メンバ関数
+	static Camera* GetInstance();
+
 private: //メンバ変数
 	//始点座標
 	XMFLOAT3 eye; 

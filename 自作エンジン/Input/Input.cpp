@@ -1,16 +1,25 @@
 #include "Input.h"
 #include <assert.h>
 
+using namespace DirectX;
+
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
-void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
+Input* Input::GetInstance()
+{
+	static Input input;
+
+	return &input;
+}
+
+void Input::Initialize(WinApp* win)
 {
 	HRESULT result;
 
 	//インターフェース作成
 	result = DirectInput8Create(
-		hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dinput, nullptr);
+		win->GetWindowInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dinput, nullptr);
 	if (FAILED(result))
 	{
 		assert(0);
@@ -38,7 +47,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
 		}
 
 		//排他制御レベルセット
-		result = devkeyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		result = devkeyboard->SetCooperativeLevel(win->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 		if (FAILED(result))
 		{
 			assert(0);
@@ -55,7 +64,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
 		}
 
 		//排他制御レベルセット
-		result = devMouse->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		result = devMouse->SetCooperativeLevel(win->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 		if (FAILED(result))
 		{
 			assert(0);
@@ -90,8 +99,8 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
 		diprg.diph.dwHeaderSize = sizeof(diprg.diph);
 		diprg.diph.dwHow = DIPH_BYOFFSET;
 		diprg.diph.dwObj = DIJOFS_X;
-		diprg.lMin = -1000;
-		diprg.lMax = 1000;
+		diprg.lMin = -responsive_range;
+		diprg.lMax = responsive_range;
 
 		// X軸の値の範囲設定
 		devGamePad->SetProperty(DIPROP_RANGE, &diprg.diph);
@@ -101,7 +110,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
 		devGamePad->SetProperty(DIPROP_RANGE, &diprg.diph);
 
 		//排他制御レベルセット
-		result = devGamePad->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		result = devGamePad->SetCooperativeLevel(win->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 		if (FAILED(result))
 		{
 			assert(0);
@@ -197,7 +206,7 @@ bool Input::TriggerMouse(int Mouse)
 	return false;
 }
 
-bool Input::TiltStick(int stick)
+bool Input::TiltLeftStick(int stick)
 {
 	assert(0 <= stick && stick < 4);
 
@@ -225,7 +234,7 @@ bool Input::TiltStick(int stick)
 	return false;
 }
 
-bool Input::TriggerStick(int stick)
+bool Input::TriggerLeftStick(int stick)
 {
 	assert(0 <= stick && stick < 4);
 
@@ -251,6 +260,26 @@ bool Input::TriggerStick(int stick)
 	}
 
 	return false;
+}
+
+XMFLOAT2 Input::LeftStickAngle()
+{
+	//スティックの方向判定
+	float y_vec = static_cast<float>(-gamePadState.lY) / static_cast<float>(responsive_range);
+	float x_vec = static_cast<float>(gamePadState.lX) / static_cast<float>(responsive_range);
+
+	//横
+	if (gamePadState.lX > -unresponsive_range && gamePadState.lX < unresponsive_range)
+	{
+		x_vec = 0.0f;
+	}
+	//縦
+	if (gamePadState.lY < unresponsive_range && gamePadState.lY > -unresponsive_range)
+	{
+		y_vec = 0.0f;
+	}
+
+	return XMFLOAT2(x_vec, y_vec);
 }
 
 bool Input::PushButton(int Button)

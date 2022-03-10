@@ -78,11 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)GameScene\;$(ProjectDir)Input\;$(ProjectDir)lib\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\</IncludePath>
+    <IncludePath>$(ProjectDir)lib\;$(ProjectDir)lib\DirectXTex\include\;$(ProjectDir)lib\DirectXTex\lib\</IncludePath>
+    <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)2D\;$(ProjectDir)3D\;$(ProjectDir)Audio\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)DebugText\;$(ProjectDir)DirectXCommon\;$(ProjectDir)GameScene\;$(ProjectDir)Input\;$(ProjectDir)lib\;$(ProjectDir)Model\;$(ProjectDir)Particle\;$(ProjectDir)Window\;$(ProjectDir)Base\</IncludePath>
+    <IncludePath>$(ProjectDir)lib\;$(ProjectDir)lib\DirectXTex\include\;$(ProjectDir)lib\DirectXTex\lib\</IncludePath>
+    <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -128,12 +130,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Particle\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>
@@ -148,7 +151,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Particle\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -156,6 +159,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>
@@ -164,6 +168,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="2D\Sprite.cpp" />
+    <ClCompile Include="3D\Model.cpp" />
     <ClCompile Include="3D\Object3d.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Base\FrameWork.cpp" />
@@ -173,15 +178,18 @@
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
-    <ClCompile Include="GameScene\GamePlayScene.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Model\Model.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
+    <ClCompile Include="Scene\GamePlayScene.cpp" />
+    <ClCompile Include="Scene\SceneFactory.cpp" />
+    <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Window\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D\Sprite.h" />
+    <ClInclude Include="3D\Model.h" />
     <ClInclude Include="3D\Object3d.h" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Base\FrameWork.h" />
@@ -191,11 +199,16 @@
     <ClInclude Include="Collision\CollisionPrimitive.h" />
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
-    <ClInclude Include="DirectXCommon\SafeDelete.h" />
-    <ClInclude Include="GameScene\GamePlayScene.h" />
     <ClInclude Include="Input\Input.h" />
-    <ClInclude Include="Model\Model.h" />
+    <ClInclude Include="Input\InputList.h" />
+    <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
+    <ClInclude Include="Scene\AbstractSceneFactory.h" />
+    <ClInclude Include="Scene\BaseScene.h" />
+    <ClInclude Include="Scene\GamePlayScene.h" />
+    <ClInclude Include="Scene\SceneFactory.h" />
+    <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Window\WinApp.h" />
   </ItemGroup>
   <ItemGroup>
@@ -246,11 +259,6 @@
     <None Include="Resources\Shaders\OBJShaderHeader.hlsli" />
     <None Include="Resources\Shaders\Particle.hlsli" />
     <None Include="Resources\Shaders\Sprite.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
-      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

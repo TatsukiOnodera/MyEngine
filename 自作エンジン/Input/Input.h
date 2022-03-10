@@ -1,46 +1,20 @@
 #pragma once
+#include "InputList.h"
+#include "WinApp.h"
 #include <windows.h>
 #include <dinput.h>
 #include <wrl.h>
+#include <DirectXMath.h>
 
 #define DIRECTINPUT_VERSION             0x0800 //Direct Inputのバージョン指定
 
-class Input
+class Input : public InputList
 {
 public: //エイリアス
 	//namespace省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-
-public: //定数
-	//ゲームパッド（ボタン）
-	enum ButtonKind
-	{
-		Button_A,
-		Button_B,
-		Button_X,
-		Button_Y,
-		Button_LB,
-		Button_RB,
-		Select,
-		Start,
-		Button_LS,
-		Button_RS,
-		Cross_Up,
-		Cross_Down,
-		Cross_Right,
-		Cross_Left,
-		ButtonMax
-	};
-	//マウス
-	enum MouseKind
-	{
-		M_Left, M_Right, M_Middle
-	};
-	//スティック
-	enum StickKind
-	{
-		S_Up, S_Down, S_Right, S_Left
-	};
+	// DirectX::を省略
+	using XMFLOAT2 = DirectX::XMFLOAT2;
 
 private: //メンバ変数
 	//DirectInputのインスタンス
@@ -65,39 +39,44 @@ private: //メンバ変数
 	DIJOYSTATE oldGamePadState = {};
 	//ボタンデータ
 	bool is_push[32] = {};
+	//スティックの反応範囲
+	LONG responsive_range = 100;
 	//スティックの無反応範囲
-	LONG unresponsive_range = 200;
+	LONG unresponsive_range = 40;
+
+public: //静的メンバ関数
+	static Input* GetInstance();
 
 public: //メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	/// <param name="hInstance"></param>
-	/// <param name="hwnd"></param>
-	void Initialize(HINSTANCE hInstance, HWND hwnd);
+	void Initialize(WinApp* win);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update();
 
-	/*キー操作*/
+	//キー操作
 	//入力
 	bool PushKey(BYTE key);
 	//入力（長押し不可）
 	bool TriggerKey(BYTE key);
 
-	/*クリック*/
+	//クリック
 	//左クリック
 	bool PushMouse(int Mouse);
 	//左クリック（長押し不可）
 	bool TriggerMouse(int Mouse);
 
-	/*ゲームパッド*/
+	//ゲームパッド
 	//ゲームパッドスティック
-	bool TiltStick(int stick);
+	bool TiltLeftStick(int stick);
 	//ゲームパッドスティック（長押し不可）
-	bool TriggerStick(int stick);
+	bool TriggerLeftStick(int stick);
+	//ゲームパッドスティックを倒した比率
+	XMFLOAT2 LeftStickAngle();
 	//ゲームパッドボタン
 	bool PushButton(int Button);
 	//ゲームパッドボタン（長押し不可）
