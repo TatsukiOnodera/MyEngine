@@ -65,9 +65,6 @@ void FrameWork::Initialize()
 	{
 		assert(0);
 	}
-
-	//シーンマネージャーの生成
-	scene_manager = new SceneManager;
 }
 
 void FrameWork::Finalize()
@@ -93,16 +90,9 @@ void FrameWork::Update()
 
 	//キー情報取得
 	input->Update();
-
-	//シーン更新
-	scene_manager->Update();
 }
 
 void FrameWork::Draw()
 {
-	dx_cmd->PreDraw();
 
-	scene_manager->Draw();
-
-	dx_cmd->PostDraw();
 }

@@ -173,10 +173,7 @@
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
-    <ClCompile Include="GameScene\BaseScene.cpp" />
     <ClCompile Include="GameScene\GamePlayScene.cpp" />
-    <ClCompile Include="GameScene\GameTitleScene.cpp" />
-    <ClCompile Include="GameScene\SceneManager.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model\Model.cpp" />
@@ -196,9 +193,6 @@
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
     <ClInclude Include="DirectXCommon\SafeDelete.h" />
     <ClInclude Include="GameScene\GamePlayScene.h" />
-    <ClInclude Include="GameScene\GameTitleScene.h" />
-    <ClInclude Include="GameScene\BaseScene.h" />
-    <ClInclude Include="GameScene\SceneManager.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Model\Model.h" />
     <ClInclude Include="Particle\ParticleManager.h" />

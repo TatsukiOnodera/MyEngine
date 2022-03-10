@@ -8,19 +8,18 @@
 #include "Sprite.h"
 #include "ParticleManager.h"
 #include "SafeDelete.h"
-#include "SceneManager.h"
 
 class FrameWork
 {
-protected: //ポインタ&変数置き場
+protected: //ポインタ置き場
 	WinApp* win = nullptr;
 	Input* input = nullptr;
 	Camera* camera = nullptr;
 	Audio* audio = nullptr;
 	DirectXCommon* dx_cmd = nullptr;
-	bool end_request = false;
 
-	SceneManager* scene_manager = nullptr;
+public: //その他変数
+	bool end_request = false;
 
 public:
 	/// <summary>
@@ -41,7 +40,7 @@ public:
 	/// <summary>
 	/// 毎フレーム更新
 	/// </summary>
-	virtual void Update();
+	virtual void Update() = 0;
 
 	/// <summary>
 	/// 描画

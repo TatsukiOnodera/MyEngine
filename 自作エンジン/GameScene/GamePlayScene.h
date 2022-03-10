@@ -10,10 +10,8 @@
 #include "Collision.h"
 #include "Camera.h"
 #include "DirectXCommon.h"
-#include "BaseScene.h"
-#include "SceneManager.h"
 
-class GamePlayScene : public BaseScene
+class GamePlayScene
 {
 public: // エイリアス
 	// Microsoft::WRL::を省略
@@ -47,23 +45,18 @@ private: //メンバ変数
 	Object3d* obj = nullptr;
 
 public: //メンバ関数
-	GamePlayScene(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera, SceneManager* scene_manager);
+	GamePlayScene();
 	~GamePlayScene();
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize() override;
+	void Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update() override;
-
-	/// <summary>
-	/// 描画
-	/// </summary>
-	void Draw() override;
+	void Update();
 
 	/// <summary>
 	/// 背景スプライト描画
@@ -71,9 +64,9 @@ public: //メンバ関数
 	void DrawBackSprite();
 
 	/// <summary>
-	/// オブジェクト描画
+	/// 描画
 	/// </summary>
-	void DrawObject();
+	void Draw();
 
 	/// <summary>
 	/// パーティクル描画

@@ -1,15 +1,14 @@
 #include "GamePlayScene.h"
+#include <time.h>
+#include <stdlib.h>
 #include "SafeDelete.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-GamePlayScene::GamePlayScene(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera, SceneManager* scene_manager) : BaseScene(scene_manager)
+GamePlayScene::GamePlayScene()
 {
-	this->dx_cmd = dx_cmd;
-	this->input = input;
-	this->audio = sound;
-	this->camera = camera;
+
 }
 
 GamePlayScene::~GamePlayScene()
@@ -21,8 +20,13 @@ GamePlayScene::~GamePlayScene()
 	safe_delete(obj);
 }
 
-void GamePlayScene::Initialize()
+void GamePlayScene::Initialize(DirectXCommon* dx_cmd, Input* input, Audio* sound, Camera* camera)
 {
+	this->dx_cmd = dx_cmd;
+	this->input = input;
+	this->audio = sound;
+	this->camera = camera;
+
 	//スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/texture.png");
@@ -82,16 +86,6 @@ void GamePlayScene::Update()
 	obj->Update();
 }
 
-void GamePlayScene::Draw()
-{
-	DrawBackSprite(); //前景スプライト
-	DrawObject(); //オブジェクト＆スプライト描画
-	//DrawParticles(); //パーティクル描画
-	//DrawUI(); //UI描画
-
-	//DrawDebugText(); //デバッグテキスト描画
-}
-
 void GamePlayScene::DrawBackSprite()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
@@ -105,7 +99,7 @@ void GamePlayScene::DrawBackSprite()
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::DrawObject()
+void GamePlayScene::Draw()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
@@ -125,14 +119,6 @@ void GamePlayScene::DrawObject()
 	Sprite::PostDraw();
 }
 
-void GamePlayScene::DrawParticles()
-{
-	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
-
-	//パーティクル描画
-	particle->Draw(cmdList);
-}
-
 void GamePlayScene::DrawUI()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
@@ -143,6 +129,14 @@ void GamePlayScene::DrawUI()
 	
 
 	Sprite::PostDraw();
+}
+
+void GamePlayScene::DrawParticles()
+{
+	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
+
+	//パーティクル描画
+	particle->Draw(cmdList);
 }
 
 void GamePlayScene::DrawDebugText()
