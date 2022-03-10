@@ -9,7 +9,7 @@ using namespace Microsoft::WRL;
 
 TitleScene::~TitleScene()
 {
-	safe_delete(particle);
+
 }
 
 void TitleScene::Initialize()
@@ -52,18 +52,18 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	//各描画
-	DrawBackSprite();
-	DrawObject();
-	//DrawParticles();
-	DrawUI();
-	//DrawDebugText();
-}
-
-void TitleScene::DrawBackSprite()
-{
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
+	//各描画
+	//DrawBackSprite(cmdList);
+	//DrawObject(cmdList);
+	//DrawParticles(cmdList);
+	//DrawUI(cmdList);
+	//DrawDebugText(cmdList);
+}
+
+void TitleScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
+{
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
@@ -73,10 +73,8 @@ void TitleScene::DrawBackSprite()
 	dx_cmd->ClearDepth();
 }
 
-void TitleScene::DrawObject()
+void TitleScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
 {
-	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
-
 	//オブジェクト描画
 	Object3d::PreDraw(cmdList);
 
@@ -92,10 +90,8 @@ void TitleScene::DrawObject()
 	Sprite::PostDraw();
 }
 
-void TitleScene::DrawUI()
+void TitleScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 {
-	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
-
 	//UI描画
 	Sprite::PreDraw(cmdList);
 
@@ -104,22 +100,14 @@ void TitleScene::DrawUI()
 	Sprite::PostDraw();
 }
 
-void TitleScene::DrawParticles()
+void TitleScene::DrawParticles(ID3D12GraphicsCommandList* cmdList)
 {
-	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
-
 	//パーティクル描画
 	particle->Draw(cmdList);
 }
 
-void TitleScene::DrawDebugText()
+void TitleScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 {
-	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
-
-	//スプライト描画
-	Sprite::PreDraw(cmdList);
-
-	debugText.Draw();
-
-	Sprite::PostDraw();
+	//デバッグテキスト描画
+	debugText.Draw(cmdList);
 }

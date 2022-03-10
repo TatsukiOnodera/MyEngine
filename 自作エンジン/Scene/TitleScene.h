@@ -11,6 +11,7 @@
 #include "Camera.h"
 #include "DirectXCommon.h"
 #include "BaseScene.h"
+#include <memory>
 
 class TitleScene : public BaseScene
 {
@@ -35,7 +36,7 @@ private: //メンバ変数
 	const int fontNumber = 0;
 
 	//パーティクル
-	ParticleManager* particle = nullptr;
+	std::unique_ptr<ParticleManager> particle = nullptr;
 
 	//スプライト
 	
@@ -69,25 +70,25 @@ public: //メンバ関数
 	/// <summary>
 	/// 背景スプライト描画
 	/// </summary>
-	void DrawBackSprite();
+	void DrawBackSprite(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void DrawObject();
+	void DrawObject(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// パーティクル描画
 	/// </summary>
-	void DrawParticles();
+	void DrawParticles(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// UI描画
 	/// </summary>
-	void DrawUI();
+	void DrawUI(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// デバッグテキスト描画
 	/// </summary>
-	void DrawDebugText();
+	void DrawDebugText(ID3D12GraphicsCommandList* cmdList);
 };

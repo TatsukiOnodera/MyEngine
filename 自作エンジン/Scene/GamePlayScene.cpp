@@ -9,11 +9,7 @@ using namespace Microsoft::WRL;
 
 GamePlayScene::~GamePlayScene()
 {
-	safe_delete(particle);
-	safe_delete(demo_back);
-	safe_delete(demo_spr);
-	safe_delete(chr);
-	safe_delete(obj);
+
 }
 
 void GamePlayScene::Initialize()
@@ -32,12 +28,12 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	//スプライト
-	demo_spr = Sprite::CreateSprite(1);
-	demo_back = Sprite::CreateSprite(2);
+	demo_spr.reset(Sprite::CreateSprite(1));
+	demo_back.reset(Sprite::CreateSprite(2));
 
 	//オブジェクト
-	chr = Object3d::Create("chr_sword");
-	obj = Object3d::Create("Bullet");
+	chr.reset(Object3d::Create("chr_sword"));
+	obj.reset(Object3d::Create("Bullet"));
 
 	//パラメーター
 	ResetVariable();
@@ -63,18 +59,18 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-	//各描画
-	DrawBackSprite();
-	DrawObject();
-	//DrawParticles();
-	DrawUI();
-	//DrawDebugText();
-}
-
-void GamePlayScene::DrawBackSprite()
-{
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
+	//各描画
+	DrawBackSprite(cmdList);
+	DrawObject(cmdList);
+	//DrawParticles(cmdList);
+	DrawUI(cmdList);
+	//DrawDebugText(cmdList);
+}
+
+void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
+{
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
@@ -84,10 +80,8 @@ void GamePlayScene::DrawBackSprite()
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::DrawObject()
+void GamePlayScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
 {
-	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
-
 	//オブジェクト描画
 	Object3d::PreDraw(cmdList);
 
@@ -104,10 +98,8 @@ void GamePlayScene::DrawObject()
 	Sprite::PostDraw();
 }
 
-void GamePlayScene::DrawUI()
+void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 {
-	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
-
 	//UI描画
 	Sprite::PreDraw(cmdList);
 
@@ -116,22 +108,14 @@ void GamePlayScene::DrawUI()
 	Sprite::PostDraw();
 }
 
-void GamePlayScene::DrawParticles()
+void GamePlayScene::DrawParticles(ID3D12GraphicsCommandList* cmdList)
 {
-	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
-
 	//パーティクル描画
 	particle->Draw(cmdList);
 }
 
-void GamePlayScene::DrawDebugText()
+void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 {
-	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
-
-	//スプライト描画
-	Sprite::PreDraw(cmdList);
-
-	debugText.Draw();
-
-	Sprite::PostDraw();
+	//デバッグテキスト描画
+	debugText.Draw(cmdList);
 }
