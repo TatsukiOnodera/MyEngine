@@ -40,9 +40,6 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Input">
       <UniqueIdentifier>{c54a6cf0-3f99-47bb-b3c9-56f853f9f8d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\Particle">
-      <UniqueIdentifier>{6d060861-cb8e-4e49-933a-ef3b6fe04466}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Scene">
       <UniqueIdentifier>{f566e345-a1ca-4949-bac1-c7de535404ab}</UniqueIdentifier>
     </Filter>
@@ -57,6 +54,9 @@
     </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Lib">
       <UniqueIdentifier>{80b97804-e736-4f15-b6ee-0042955fec08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Effect">
+      <UniqueIdentifier>{6d060861-cb8e-4e49-933a-ef3b6fe04466}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -85,7 +85,7 @@
       <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
     </ClCompile>
     <ClCompile Include="Particle\ParticleManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Particle</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClCompile>
     <ClCompile Include="2D\Sprite.cpp">
       <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
@@ -141,7 +141,7 @@
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
     </ClInclude>
     <ClInclude Include="Particle\ParticleManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\Particle</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClInclude>
     <ClInclude Include="2D\Sprite.h">
       <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
