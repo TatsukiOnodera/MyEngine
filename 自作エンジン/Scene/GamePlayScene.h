@@ -11,6 +11,7 @@
 #include "Camera.h"
 #include "DirectXCommon.h"
 #include "BaseScene.h"
+#include "Light.h"
 #include <memory>
 
 class GamePlayScene : public BaseScene
@@ -24,23 +25,30 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private: //メモリ置き場
-	DirectXCommon* dx_cmd = nullptr;
-	Input* input = nullptr;
-	Audio* audio = nullptr;
-	Camera* camera = nullptr;
+private: //定数
+	const int fontNumber = 0;
 
-private: //メンバ変数
+private: //メモリ置き場
+	//DIrectXCommon
+	DirectXCommon* dx_cmd = nullptr;
+	//インプット
+	Input* input = nullptr;
+	//オーディオ
+	Audio* audio = nullptr;
+	//カメラ
+	Camera* camera = nullptr;
 	//デバッグテキスト
 	DebugText debugText;
-	const int fontNumber = 0;
+
+private: //メンバ変数
+	//ライト
+	Light* light = nullptr;
 
 	//パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
 
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;
-	std::unique_ptr<Sprite> demo_spr = nullptr;
 
 	//オブジェクト
 	std::unique_ptr<Object3d> chr = nullptr;
@@ -82,7 +90,7 @@ public: //メンバ関数
 	/// <summary>
 	/// パーティクル描画
 	/// </summary>
-	void DrawParticles(ID3D12GraphicsCommandList* cmdList);
+	void DrawParticle(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// UI描画

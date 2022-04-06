@@ -15,6 +15,7 @@ ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> Object3d::rootsignature;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
 Camera *Object3d::camera = nullptr;
+Light* Object3d::light = nullptr;
 
 bool Object3d::StaticInitialize(ID3D12Device* device, Camera* camera, int window_width, int window_height)
 {
@@ -35,7 +36,7 @@ bool Object3d::StaticInitialize(ID3D12Device* device, Camera* camera, int window
 
 void Object3d::CreateGraphicsPipeline()
 {
-	HRESULT result;
+	HRESULT result = S_FALSE;
 
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob>psBlob; // ピクセルシェーダオブジェクト
@@ -140,10 +141,11 @@ void Object3d::CreateGraphicsPipeline()
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[3];
+	CD3DX12_ROOT_PARAMETER rootparams[4];
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[2].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[3].InitAsConstantBufferView(2, 0, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
@@ -152,15 +154,30 @@ void Object3d::CreateGraphicsPipeline()
 	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 	rootSignatureDesc.Init_1_0(_countof(rootparams), rootparams, 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 	ComPtr<ID3DBlob> rootSigBlob;
+
 	//バージョン自動判定でのシリアライズ
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
+	if (FAILED(result))
+	{
+		assert(0);
+	}
+
 	//ルートシグネチャの生成
 	result = dev->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
+	if (FAILED(result)) 
+	{
+		assert(0);
+	}
+
 	// パイプラインにルートシグネチャをセット
 	gpipeline.pRootSignature = rootsignature.Get();
 
 	//パイプラインステートの生成
 	result = dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
+	if (FAILED(result))
+	{
+		assert(0);
+	}
 }
 
 void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
@@ -179,11 +196,11 @@ void Object3d::PostDraw()
 	cmdList = nullptr;
 }
 
-Object3d* Object3d::Create(const std::string& modelName)
+Object3d* Object3d::Create(const std::string& modelName, bool smooting)
 {
 	Object3d* object = new Object3d;
 
-	Model* model = Model::CreateModel(modelName);
+	Model* model = Model::CreateModel(modelName, smooting);
 
 	object->SetModel(model);
 
@@ -213,26 +230,43 @@ void Object3d::Initialize()
 void Object3d::Update()
 {
 	//ワールド行列の更新
-	matWorld = XMMatrixIdentity(); //単位行列
-	//拡大行列
-	matWorld *= XMMatrixScaling(scale.x, scale.y, scale.z);
-	//回転行列
-	matWorld *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	matWorld *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	//平行移動行列
-	matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
+	if (isBillboard == true)
+	{
+		//ビルボード行列の更新
+		matWorld = XMMatrixIdentity(); //単位行列
+		//拡大行列
+		matWorld *= XMMatrixScaling(scale.x, scale.y, scale.z);
+		//回転行列
+		matWorld *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+		matWorld *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+		matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+		//ビルボード行列
+		matWorld *= camera->GetMatBillboard();
+		//平行移動行列
+		matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
+	}
+	else
+	{
+		matWorld = XMMatrixIdentity(); //単位行列
+		//拡大行列
+		matWorld *= XMMatrixScaling(scale.x, scale.y, scale.z);
+		//回転行列
+		matWorld *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+		matWorld *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+		matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+		//平行移動行列
+		matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
+	}
 
-	//ビューの変換行列
-	Object3d::camera->Update();
-
-	XMMATRIX matView = Object3d::camera->GetMatView();
-	XMMATRIX matProjection = Object3d::camera->GetMatProject();;
+	XMMATRIX matView = camera->GetMatView();
+	XMMATRIX matProjection = camera->GetMatProject();
 
 	///定数バッファ転送
 	ConstBufferData* constMap = nullptr;
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = matWorld * matView * matProjection;
+	constMap->viewproj = matView * matProjection;
+	constMap->world = matWorld;
+	constMap->cameraPos = camera->GetEye();
 	constMap->color = color;
 	constBuff->Unmap(0, nullptr);
 
@@ -241,34 +275,35 @@ void Object3d::Update()
 
 void Object3d::Draw()
 {
+	//更新
 	Update();
-
+	
 	//定数バッファをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 
+	//ライトの描画
+	light->Draw(cmdList, 3);
+
+	//モデル描画
 	model->Draw(cmdList);
 }
 
 void Object3d::SetPosition(XMFLOAT3 position)
 {
 	this->position = position;
-	Update();
 }
 
 void Object3d::SetRotation(XMFLOAT3 rotation)
 {
 	this->rotation = rotation;
-	Update();
 }
 
 void Object3d::SetScale(XMFLOAT3 scale)
 {
 	this->scale = scale;
-	Update();
 }
 
 void Object3d::SetColor(XMFLOAT4 color)
 {
 	this->color = color;
-	Update();
 }

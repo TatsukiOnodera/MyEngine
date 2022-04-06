@@ -4,6 +4,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
+#include <unordered_map>
 
 class Model
 {
@@ -57,72 +58,96 @@ public: //サブクラス
 private: //静的メンバ変数
 	// デバイス
 	static ID3D12Device* device;
-
 	// デスクリプタサイズ
 	static UINT descriptorHandleIncrementSize;
+
+public: //静的メンバ関数
+	/// <summary>
+	/// 静的初期化
+	/// </summary>
+	static void StaticInitialize(ID3D12Device* device);
+
+	/// <summary>
+	/// モデル生成
+	/// </summary>
+	static Model* CreateModel(const std::string& modelName, bool smooting);
 
 private: //メンバ変数
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
-
 	// インデックスバッファ
 	ComPtr<ID3D12Resource> indexBuff;
-
 	// 頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vbView = {};
-
 	// インデックスバッファビュー
 	D3D12_INDEX_BUFFER_VIEW ibView = {};
-
 	// 頂点データ配列
 	std::vector<VertexPosNormalUv> vertices;
-
 	// 頂点インデックス配列
 	std::vector<unsigned short> indices;
-
 	//マテリアル
 	Material material;
-
 	// テクスチャバッファ
 	ComPtr<ID3D12Resource> texbuff;
-
 	//定数バッファ
 	ComPtr<ID3D12Resource> constBuff;
-
 	// シェーダリソースビューのハンドル(CPU)
 	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
-
 	// シェーダリソースビューのハンドル(CPU)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
-
 	// デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeap;
-
-public: //静的メンバ関数
-	//静的初期化
-	static void StaticInitialize(ID3D12Device* device);
-
-	//モデル生成
-	static Model* CreateModel(const std::string& modelName = "defaultTexture");
+	//頂点法線スムージング用データ
+	std::unordered_map<unsigned short, std::vector<unsigned short>> smoothData;
 
 public: //メンバ関数
-	//マテリアルの取得
+	/// <summary>
+	/// マテリアルの取得
+	/// </summary>
 	Material GetMaterial() { return material; }
 
-	//デスクリプタヒープの初期化
+	/// <summary>
+	/// デスクリプタヒープの初期化
+	/// </summary>
 	void InitializeDescriptorHeap();
 
-	//テクスチャ読み込み
+	/// <summary>
+	/// テクスチャ読み込み
+	/// </summary>
 	void LoadTexture(const std::string& directoryPath, const std::string& filename);
 
-	//モデル作成
-	void InitializeModel(const std::string& modelName);
+	/// <summary>
+	/// モデル作成
+	/// </summary>
+	void InitializeModel(const std::string& modelName, bool smooting);
 
-	//マテリアルの読み込み
+	/// <summary>
+	/// エッジ平滑化データの追加
+	/// </summary>
+	void AddSmoothData(unsigned short indexPosition, unsigned short indexVertex);
+
+	/// <summary>
+	/// 平滑化された頂点法線の計算
+	/// </summary>
+	void CalculateSmoothedVertexNormals();
+
+	/// <summary>
+	/// マテリアルの読み込み
+	/// </summary>
 	void LoadMaterial(const std::string& directoryPath, const std::string& filename);
 
-	//初期化・更新・描画
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update(Material material);
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 };

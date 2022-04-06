@@ -48,20 +48,26 @@ void FrameWork::Initialize()
 		assert(0);
 	}
 
-	//Sprite初期化
+	//スプライト静的初期化
 	if (!Sprite::StaticInitialize(dx_cmd->GetDev(), WinApp::window_width, WinApp::window_height))
 	{
 		assert(0);
 	}
 
-	//Object3d初期化
+	//オブジェクト静的初期化
 	if (!Object3d::StaticInitialize(dx_cmd->GetDev(), camera, WinApp::window_width, WinApp::window_height))
 	{
 		assert(0);
 	}
 
-	//パーティクル初期化
+	//パーティクル静的初期化
 	if (!ParticleManager::StaticInitialize(dx_cmd->GetDev(), WinApp::window_width, WinApp::window_height))
+	{
+		assert(0);
+	}
+
+	//ライト静的初期化
+	if (!Light::StaticInitialize(dx_cmd->GetDev()))
 	{
 		assert(0);
 	}

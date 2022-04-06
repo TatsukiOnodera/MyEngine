@@ -23,13 +23,13 @@ void Model::StaticInitialize(ID3D12Device* device)
 	Model::device = device;
 }
 
-Model *Model::CreateModel(const std::string& modelName)
+Model *Model::CreateModel(const std::string& modelName, bool smooting)
 {
 	Model* instance = new Model;
 
 	instance->InitializeDescriptorHeap();
 
-	instance->InitializeModel(modelName);
+	instance->InitializeModel(modelName, smooting);
 
 	return instance;
 }
@@ -100,7 +100,7 @@ void Model::InitializeDescriptorHeap()
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
-void Model::InitializeModel(const std::string& modelName)
+void Model::InitializeModel(const std::string& modelName, bool smooting)
 {
 	HRESULT result = S_FALSE;
 
@@ -181,6 +181,11 @@ void Model::InitializeModel(const std::string& modelName)
 				vertex.normal = normals[indexNormal - 1];
 				vertex.uv = texcoords[indexTexcoord - 1];
 				vertices.emplace_back(vertex);
+				//エッジ平滑化用のデータを追加
+				if (smooting == true)
+				{
+					AddSmoothData(indexPosition, (unsigned short)vertices.size() - 1);
+				}
 				//インデックスデータに追加
 				if (v_num < 3)
 				{
@@ -208,6 +213,11 @@ void Model::InitializeModel(const std::string& modelName)
 		}
 	}
 	file.close();
+
+	if (smooting == true)
+	{
+		CalculateSmoothedVertexNormals();
+	}
 
 	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
 	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
@@ -265,6 +275,33 @@ void Model::InitializeModel(const std::string& modelName)
 	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
 	ibView.Format = DXGI_FORMAT_R16_UINT;
 	ibView.SizeInBytes = sizeIB;
+}
+
+void Model::AddSmoothData(unsigned short indexPosition, unsigned short indexVertex)
+{
+	smoothData[indexPosition].emplace_back(indexVertex);
+}
+
+void Model::CalculateSmoothedVertexNormals()
+{
+	auto itr = smoothData.begin();
+	for (; itr != smoothData.end(); ++itr)
+	{
+		//各面の共通頂点コレクション
+		std::vector<unsigned short>& v = itr->second;
+		//全頂点の法線を平均化する
+		XMVECTOR normal = {};
+		for (unsigned short index : v)
+		{
+			normal += XMVectorSet(vertices[index].normal.x, vertices[index].normal.y, vertices[index].normal.z, 0);
+		}
+		normal = XMVector3Normalize(normal / (float)v.size());
+		//共通法線を使用するすべての頂点データに書き込む
+		for (unsigned short index : v)
+		{
+			vertices[index].normal = { normal.m128_f32[0], normal.m128_f32[1], normal.m128_f32[2] };
+		}
+	}
 }
 
 void Model::LoadTexture(const std::string& directoryPath, const std::string& filename)

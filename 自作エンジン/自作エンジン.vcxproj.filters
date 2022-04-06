@@ -58,6 +58,9 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Effect">
       <UniqueIdentifier>{6d060861-cb8e-4e49-933a-ef3b6fe04466}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Light">
+      <UniqueIdentifier>{d20748ce-68fc-4f9e-9778-76dc5ae71b49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -116,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="Scene\SceneFactory.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Light\Light.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="lib\SafeDelete.h">
       <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\Light.h">
+      <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

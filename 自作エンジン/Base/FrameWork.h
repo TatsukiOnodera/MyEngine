@@ -10,6 +10,7 @@
 #include <SafeDelete.h>
 #include "SceneManager.h"
 #include "AbstractSceneFactory.h"
+#include "Light.h"
 
 class FrameWork
 {

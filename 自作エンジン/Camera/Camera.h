@@ -16,23 +16,26 @@ public: //静的メンバ関数
 
 private: //メンバ変数
 	//始点座標
-	XMFLOAT3 eye; 
+	XMFLOAT3 eye;
 	//注意点座標
 	XMFLOAT3 target; 
 	//上方向ベクトル
-	XMFLOAT3 up; 
+	XMFLOAT3 up;
 	//ビュー行列
 	XMMATRIX matView;
 	//射影行列
 	XMMATRIX matProjection;
+	//ビルボード行列
+	XMMATRIX matBillboard;
+	//Y軸ビルボード行列
+	XMMATRIX matBillboardY;
+	//ダーティーフラグ
+	bool dirty;
 
 public: //メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="eye">カメラ座標</param>
-	/// <param name="target">焦点座標</param>
-	/// <param name="up">上下情報</param>
 	Camera(XMFLOAT3 eye = { 0, 0, -25 }, XMFLOAT3 target = { 0, 0, 0 }, XMFLOAT3 up = { 0, 1, 0 });
 
 	/// <summary>
@@ -41,22 +44,38 @@ public: //メンバ関数
 	~Camera();
 
 	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize(int window_width, int window_height);
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// カメラの移動
+	/// </summary>
+	void MoveCamera(XMFLOAT3 move);
+
+public: //アクセッサ
+	/// <summary>
 	/// 視点情報
 	/// </summary>
 	XMFLOAT3 GetEye() { return eye; }
-	void SetEye(XMFLOAT3 eye) { this->eye = eye; }
+	void SetEye(XMFLOAT3 eye);
 
 	/// <summary>
 	/// 焦点情報
 	/// </summary>
 	XMFLOAT3 GetTarget() { return target; }
-	void SetTarget(XMFLOAT3 target) { this->target = target; }
+	void SetTarget(XMFLOAT3 target);
 
 	/// <summary>
 	/// 上下情報
 	/// </summary>
 	XMFLOAT3 GetUp() { return up; }
-	void SetUp(XMFLOAT3 up) { this->up = up; }
+	void SetUp(XMFLOAT3 up);
 
 	/// <summary>
 	/// ビュー行列の取得
@@ -69,17 +88,7 @@ public: //メンバ関数
 	XMMATRIX GetMatProject() { return matProjection; }
 
 	/// <summary>
-	/// カメラの移動
+	/// ビルボード行列
 	/// </summary>
-	void MoveCamera(XMFLOAT3 move);
-
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Initialize(int window_width, int window_height);
-
-	/// <summary>
-	/// 更新
-	/// </summary>
-	void Update();
+	XMMATRIX GetMatBillboard() { return matBillboard; }
 };
