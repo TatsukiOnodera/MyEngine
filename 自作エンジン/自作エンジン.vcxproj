@@ -182,6 +182,7 @@
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Light\Light.cpp" />
+    <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
@@ -206,6 +207,8 @@
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Light\Light.h" />
+    <ClInclude Include="Light\LightGroup.h" />
+    <ClInclude Include="Light\PointLight.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Scene\BaseScene.h" />

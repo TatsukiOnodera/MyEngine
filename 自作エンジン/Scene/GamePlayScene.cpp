@@ -12,7 +12,7 @@ using namespace Microsoft::WRL;
 
 GamePlayScene::~GamePlayScene()
 {
-
+	safe_delete(light);
 }
 
 void GamePlayScene::Initialize()

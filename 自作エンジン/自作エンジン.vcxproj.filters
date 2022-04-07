@@ -123,6 +123,9 @@
     <ClCompile Include="Light\Light.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
     </ClCompile>
+    <ClCompile Include="Light\LightGroup.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -192,6 +195,12 @@
       <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
     </ClInclude>
     <ClInclude Include="Light\Light.h">
+      <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\PointLight.h">
+      <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\LightGroup.h">
       <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
     </ClInclude>
   </ItemGroup>
