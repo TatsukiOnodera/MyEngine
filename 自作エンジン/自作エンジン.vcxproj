@@ -189,6 +189,7 @@
     <ClCompile Include="Scene\SceneFactory.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
+    <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Window\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -199,8 +200,11 @@
     <ClInclude Include="Base\FrameWork.h" />
     <ClInclude Include="Base\OnoGame.h" />
     <ClInclude Include="Camera\Camera.h" />
+    <ClInclude Include="Collision\BaseCollider.h" />
     <ClInclude Include="Collision\Collision.h" />
+    <ClInclude Include="Collision\CollisionInfo.h" />
     <ClInclude Include="Collision\CollisionPrimitive.h" />
+    <ClInclude Include="Collision\CollisionType.h" />
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
     <ClInclude Include="Input\Input.h" />
@@ -216,6 +220,7 @@
     <ClInclude Include="Scene\SceneFactory.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\TitleScene.h" />
+    <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="Window\WinApp.h" />
   </ItemGroup>
   <ItemGroup>

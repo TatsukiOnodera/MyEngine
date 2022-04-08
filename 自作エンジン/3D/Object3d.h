@@ -6,6 +6,9 @@
 #include "Model.h"
 #include "Camera.h"
 #include "Light.h"
+#include "CollisionInfo.h"
+
+class BaseCollider;
 
 class Object3d
 {
@@ -78,7 +81,7 @@ public: //サブクラス
 		XMFLOAT4 color; //色(RGBA)
 	};
 
-private: //メンバ変数
+protected: //メンバ変数
 	//定数バッファ
 	ComPtr<ID3D12Resource> constBuff;
 	//平行移動
@@ -95,22 +98,36 @@ private: //メンバ変数
 	Model* model = nullptr;
 	// ビルボード
 	bool isBillboard = false;
+	//クラス名（デバッグ用）
+	const char* name = nullptr;
+	//コライダー
+	BaseCollider* collider = nullptr;
 
 public: //メンバ関数
 	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	Object3d() = default;
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	virtual ~Object3d();
+
+	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	virtual void Initialize();
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	virtual void Draw();
 
 public: //アクセッサ
 	/// <summary>
@@ -146,4 +163,22 @@ public: //アクセッサ
 	/// ビルボードセット
 	/// </summary>
 	void SetBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
+
+	/// <summary>
+	/// ワールド行列を取得
+	/// </summary>
+	/// <returns>ワールド行列</returns>
+	const XMMATRIX& GetMatWorld() { return matWorld; }
+
+	/// <summary>
+	/// コライダーのセット
+	/// </summary>
+	/// <param name="collider">コライダー</param>
+	void SetCollider(BaseCollider* collider);
+
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
+	virtual void OnCollision(const CollisionInfo& info) {};
 };

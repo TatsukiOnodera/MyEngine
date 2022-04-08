@@ -55,7 +55,6 @@ void GamePlayScene::ResetVariable()
 
 	obj->SetPosition({10.0f, 0.0f, 0.0f});
 	obj->SetScale({ 5.0f, 5.0f, 5.0f });
-	obj->SetColor({1, 1, 1, 1});
 	obj->Update();
 }
 

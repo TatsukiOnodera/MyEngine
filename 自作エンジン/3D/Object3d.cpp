@@ -3,6 +3,7 @@
 #include <d3dx12.h>
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
+#include "BaseCollider.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -16,6 +17,14 @@ ComPtr<ID3D12RootSignature> Object3d::rootsignature;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
 Camera *Object3d::camera = nullptr;
 Light* Object3d::light = nullptr;
+
+Object3d::~Object3d()
+{
+	if (collider)
+	{
+		delete collider;
+	}
+}
 
 bool Object3d::StaticInitialize(ID3D12Device* device, Camera* camera, int window_width, int window_height)
 {
@@ -224,6 +233,8 @@ void Object3d::Initialize()
 		nullptr,
 		IID_PPV_ARGS(&constBuff));
 
+	name = typeid(*this).name();
+
 	model->Initialize();
 }
 
@@ -271,6 +282,11 @@ void Object3d::Update()
 	constBuff->Unmap(0, nullptr);
 
 	model->Update(model->GetMaterial());
+
+	if (collider)
+	{
+		collider->Update();
+	}
 }
 
 void Object3d::Draw()
@@ -306,4 +322,11 @@ void Object3d::SetScale(XMFLOAT3 scale)
 void Object3d::SetColor(XMFLOAT4 color)
 {
 	this->color = color;
+}
+
+void Object3d::SetCollider(BaseCollider* collider)
+{
+	collider->SetObject(this);
+
+	this->collider = collider;
 }

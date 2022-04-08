@@ -126,6 +126,9 @@
     <ClCompile Include="Light\LightGroup.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
     </ClCompile>
+    <ClCompile Include="SphereCollider.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -202,6 +205,18 @@
     </ClInclude>
     <ClInclude Include="Light\LightGroup.h">
       <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\BaseCollider.h">
+      <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\CollisionType.h">
+      <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\CollisionInfo.h">
+      <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollider.h">
+      <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
