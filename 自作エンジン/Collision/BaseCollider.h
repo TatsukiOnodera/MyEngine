@@ -38,10 +38,8 @@ public: //メンバ関数
 	/// <returns>形状タイプ</returns>
 	inline CollisionShapeType GetShapeType() { return shapeType; }
 
-	inline void OnCollision(const CollisionInfo& info)
-	{
-		object3d->OnCollision(info);
-	}
+
+	inline void OnCollision(const CollisionInfo& info) { object3d->OnCollision(info); }
 
 protected: //メンバ変数
 	//オブジェクト格納先
