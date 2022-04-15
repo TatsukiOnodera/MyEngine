@@ -79,12 +79,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\</IncludePath>
-    <LibraryPath>$(ProjectDir)Lib\DirectXTex\lib\Debug\;$(ProjectDir)Lib\FBX_SDK\lib\Debug\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)Lib\FBX_SDK\lib\;$(ProjectDir)Lib\DirectXTex\lib\Debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\</IncludePath>
-    <LibraryPath>$(ProjectDir)Lib\DirectXTex\lib\Release\;$(ProjectDir)Lib\FBX_SDK\lib\Release\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)Lib\FBX_SDK\lib\;$(ProjectDir)Lib\DirectXTex\lib\Release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
