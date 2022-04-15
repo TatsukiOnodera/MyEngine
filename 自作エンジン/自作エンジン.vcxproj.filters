@@ -126,8 +126,8 @@
     <ClCompile Include="Light\LightGroup.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
     </ClCompile>
-    <ClCompile Include="SphereCollider.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
+    <ClCompile Include="3D\FbxLoader.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,8 +215,8 @@
     <ClInclude Include="Collision\CollisionInfo.h">
       <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="SphereCollider.h">
-      <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
+    <ClInclude Include="3D\FbxLoader.h">
+      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

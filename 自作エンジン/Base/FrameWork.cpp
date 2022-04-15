@@ -71,11 +71,18 @@ void FrameWork::Initialize()
 	{
 		assert(0);
 	}
+
+	//FBXローダー
+	if (!FbxLoader::GetInstance()->Initialize(dx_cmd->GetDev()))
+	{
+		assert(0);
+	}
 }
 
 void FrameWork::Finalize()
 {
 	//シーンファクトリー開放
+	FbxLoader::GetInstance()->Finalize();
 	safe_delete(scene_factory);
 
 	// ウィンドウクラスを登録解除

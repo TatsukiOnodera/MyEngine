@@ -12,6 +12,7 @@
 #include "DirectXCommon.h"
 #include "BaseScene.h"
 #include "Light.h"
+#include "FbxLoader.h"
 #include <memory>
 
 class GamePlayScene : public BaseScene
@@ -31,6 +32,8 @@ private: //定数
 private: //メモリ置き場
 	//DIrectXCommon
 	DirectXCommon* dx_cmd = nullptr;
+	//FBXローダー
+	FbxLoader* fbxLoader = nullptr;
 	//インプット
 	Input* input = nullptr;
 	//オーディオ

@@ -6,6 +6,7 @@
 #include <cassert>
 #include <sstream>
 #include <iomanip>
+#include <fbxsdk.h>
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -18,6 +19,7 @@ GamePlayScene::~GamePlayScene()
 void GamePlayScene::Initialize()
 {
 	dx_cmd = DirectXCommon::GetInstance();
+	fbxLoader = FbxLoader::GetInstance();
 	input = Input::GetInstance();
 	audio = Audio::GetInstance();
 	camera = Camera::GetInstance();
@@ -25,6 +27,9 @@ void GamePlayScene::Initialize()
 	//スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/background.png");
+
+	//FBXの読み込み
+	fbxLoader->LoadModelFromFile("cube");
 
 	//前景スプライト
 	debugText.Initialize(fontNumber);
