@@ -1,4 +1,6 @@
 #pragma once
+#include "FbxModel.h"
+
 #include <fbxsdk.h>
 #include <cassert>
 #include <string.h>
@@ -47,4 +49,11 @@ public: //メンバ関数
 	/// </summary>
 	/// <param name="modelName">モデル名</param>
 	void LoadModelFromFile(const string& modelName);
+
+	/// <summary>
+	/// 再帰的にノード構成を解析
+	/// </summary>
+	/// <param name="fbxModel"></param>
+	/// <param name="fbxNode"></param>
+	void ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode, Node* parent = nullptr);
 };

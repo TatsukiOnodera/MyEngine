@@ -129,6 +129,9 @@
     <ClCompile Include="3D\FbxLoader.cpp">
       <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
     </ClCompile>
+    <ClCompile Include="3D\FbxModel.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -216,6 +219,9 @@
       <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxLoader.h">
+      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FbxModel.h">
       <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
     </ClInclude>
   </ItemGroup>

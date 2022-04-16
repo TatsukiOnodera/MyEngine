@@ -1,6 +1,4 @@
 #pragma once
-#include <Windows.h>
-#include <DirectXMath.h>
 #include "Input.h"
 #include "Object3d.h"
 #include "Sprite.h"
@@ -13,6 +11,9 @@
 #include "BaseScene.h"
 #include "Light.h"
 #include "FbxLoader.h"
+
+#include <Windows.h>
+#include <DirectXMath.h>
 #include <memory>
 
 class GamePlayScene : public BaseScene
