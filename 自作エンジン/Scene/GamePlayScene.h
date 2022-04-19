@@ -59,6 +59,9 @@ private: //オブジェクトのメモリ
 	std::unique_ptr<Object3d> bullet = nullptr;
 
 private: //メンバ変数
+	bool isGravity;
+	bool isBullet;
+
 	float gravityTime;
 	float bulletTimeX;
 	float bulletTimeY;

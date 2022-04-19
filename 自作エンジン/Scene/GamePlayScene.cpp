@@ -58,15 +58,16 @@ void GamePlayScene::ResetVariable()
 {
 	light->SetLightDir({-10, -10, 0, 1});
 
+	isGravity = false;
 	gravityTime = 0;
-	bulletTimeX= 0;
-	bulletTimeY = 0;
-
 	gravityAcc = 0;
-	bulletAcc = {2, 1, 0};
+	isBullet = false;
+	bulletTimeX = 0;
+	bulletTimeY = 0;
+	bulletAcc = { 2, 1, 0 };
 
 	camera->SetEye({ 0, 0, -50 });
-	camera->MoveCamera({20, 0, 0});
+	camera->MoveCamera({0, 0, 0});
 
 	gravity->SetPosition({ -15, 25, 0 });
 	gravity->Update();
@@ -77,49 +78,75 @@ void GamePlayScene::ResetVariable()
 
 void GamePlayScene::Update()
 {
+	//座標取得
 	XMFLOAT3 gravityPos = gravity->GetPosition();
 	XMFLOAT3 bulletPos = bullet->GetPosition();
 
-	//自由落下
-	if (gravityPos.y == -25)
+	//スイッチ
+	if (input->TriggerKey(DIK_R) && isGravity == false && isBullet == false)
 	{
-		gravityPos.y = -gravityPos.y;
+		isGravity = true;
+		gravityPos.y = 25;
 		gravityTime = 0;
 		gravityAcc = 0;
-	}
-	gravityPos.y += gravityAcc;
-	gravityAcc = -0.5f * 9.8f * powf(gravityTime / 60.0f, 2);
-	if (gravityPos.y < -25)
-	{
-		gravityPos.y = -25;
-	}
-	gravityTime += 1.0f;
-	gravity->SetPosition(gravityPos);
-	
-	//砲弾
-	if (bulletPos.y == 0)
-	{
+		isBullet = true;
 		bulletPos.x = 0;
 		bulletPos.y = 0;
 		bulletTimeX = 0;
 		bulletTimeY = 0;
 		bulletAcc = { 2, 1, 0 };
 	}
-	bulletPos.x += bulletAcc.x;
-	bulletPos.y += bulletAcc.y;
-	bulletAcc.x = bulletAcc.x - 0.5f * 1.0f * powf(bulletTimeX / 60.0f, 2);
-	if (bulletAcc.x < 0)
+
+	//自由落下
+	if (isGravity == true)
 	{
-		bulletAcc.x = 0;
+		//加算
+		gravityPos.y += gravityAcc;
+		//加速度
+		gravityAcc = -0.5f * 9.8f * powf(gravityTime / 60.0f, 2);
+
+		//座標をセット
+		if (gravityPos.y < -25)
+		{
+			gravityPos.y = -25;
+			isGravity = false;
+		}
+		gravity->SetPosition(gravityPos);
+
+		//時間
+		gravityTime += 1.0f;
 	}
-	bulletAcc.y =  bulletAcc.y - 0.5f * 9.8f * powf(bulletTimeY / 60.0f, 2);
-	if (bulletPos.y < 0)
+	
+	//砲弾
+	if (isBullet == true)
 	{
-		bulletPos.y = 0;
+		//加算
+		bulletPos.x += bulletAcc.x;
+		bulletPos.y += bulletAcc.y;
+		//加速度
+		bulletAcc.x = bulletAcc.x - 0.5f * 1.0f * powf(bulletTimeX / 60.0f, 2);
+
+		//座標をセット
+		if (bulletAcc.x < 0)
+		{
+			bulletAcc.x = 0;
+		}
+		bulletAcc.y = bulletAcc.y - 0.5f * 9.8f * powf(bulletTimeY / 60.0f, 2);
+		if (bulletPos.y < 0)
+		{
+			bulletPos.y = 0;
+			isBullet = false;
+		}
+		bullet->SetPosition(bulletPos);
+
+		//時間
+		bulletTimeX += 1.0f;
+		bulletTimeY += 1.0f;
 	}
-	bulletTimeX += 1.0f;
-	bulletTimeY += 1.0f;
-	bullet->SetPosition(bulletPos);
+
+	debugText.Print("R : Start / ReStart", 10, 10, 2);
+	debugText.Print("Gravity", 250, 200, 2);
+	debugText.Print("Bullet", 600, 200, 2);
 }
 
 void GamePlayScene::Draw()
