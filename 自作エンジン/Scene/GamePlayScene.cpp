@@ -81,23 +81,23 @@ void GamePlayScene::Update()
 	XMFLOAT3 bulletPos = bullet->GetPosition();
 
 	//Ž©—R—Ž‰º
-	if (gravityPos.y == -25.0f)
+	if (gravityPos.y == -25)
 	{
 		gravityPos.y = -gravityPos.y;
 		gravityTime = 0;
 		gravityAcc = 0;
 	}
-	gravityAcc = 0.5f * 9.8f * powf(gravityTime / 60.0f, 2);
-	gravityPos.y -= gravityAcc;
-	if (gravityPos.y < -25.0f)
+	gravityPos.y += gravityAcc;
+	gravityAcc = -0.5f * 9.8f * powf(gravityTime / 60.0f, 2);
+	if (gravityPos.y < -25)
 	{
-		gravityPos.y = -25.0f;
+		gravityPos.y = -25;
 	}
 	gravityTime += 1.0f;
 	gravity->SetPosition(gravityPos);
 	
 	//–C’e
-	if (bulletPos.y < 0.0f)
+	if (bulletPos.y == 0)
 	{
 		bulletPos.x = 0;
 		bulletPos.y = 0;
@@ -107,12 +107,16 @@ void GamePlayScene::Update()
 	}
 	bulletPos.x += bulletAcc.x;
 	bulletPos.y += bulletAcc.y;
-	bulletAcc.x = bulletAcc.x - 0.5f * 2.45f * powf(bulletTimeX / 60.0f, 2);
+	bulletAcc.x = bulletAcc.x - 0.5f * 1.0f * powf(bulletTimeX / 60.0f, 2);
 	if (bulletAcc.x < 0)
 	{
 		bulletAcc.x = 0;
 	}
-	bulletAcc.y =  bulletAcc.y -0.5f * 9.8f * powf(bulletTimeY / 60.0f, 2);
+	bulletAcc.y =  bulletAcc.y - 0.5f * 9.8f * powf(bulletTimeY / 60.0f, 2);
+	if (bulletPos.y < 0)
+	{
+		bulletPos.y = 0;
+	}
 	bulletTimeX += 1.0f;
 	bulletTimeY += 1.0f;
 	bullet->SetPosition(bulletPos);
