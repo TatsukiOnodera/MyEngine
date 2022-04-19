@@ -44,8 +44,8 @@ void GamePlayScene::Initialize()
 	demo_back.reset(Sprite::CreateSprite(1));
 
 	//オブジェクト
-	chr.reset(Object3d::Create("chr_sword"));
-	obj.reset(Object3d::Create("Bullet", true));
+	gravity.reset(Object3d::Create("Bullet", true));
+	bullet.reset(Object3d::Create("Bullet", true));
 
 	//パラメーター
 	ResetVariable();
@@ -56,72 +56,64 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetVariable()
 {
-	chr->SetScale({5.0f, 5.0f, 5.0f});
-	chr->Update();
+	light->SetLightDir({-10, -10, 0, 1});
 
-	obj->SetPosition({10.0f, 0.0f, 0.0f});
-	obj->SetScale({ 5.0f, 5.0f, 5.0f });
-	obj->Update();
+	gravityTime = 0;
+	bulletTimeX= 0;
+	bulletTimeY = 0;
+
+	gravityAcc = 0;
+	bulletAcc = {2, 1, 0};
+
+	camera->SetEye({ 0, 0, -50 });
+	camera->MoveCamera({20, 0, 0});
+
+	gravity->SetPosition({ -15, 25, 0 });
+	gravity->Update();
+
+	bullet->SetPosition({ 0, 0, 0 });
+	bullet->Update();
 }
 
 void GamePlayScene::Update()
 {
-	XMFLOAT3 pos = { 0, 0, 0 };
-	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+	XMFLOAT3 gravityPos = gravity->GetPosition();
+	XMFLOAT3 bulletPos = bullet->GetPosition();
+
+	if (gravityPos.y == -25.0f)
 	{
-		pos.x = (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 0.5f;
+		gravityPos.y = -gravityPos.y;
+		gravityTime = 0;
+		gravityAcc = 0;
 	}
-	else if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
+	gravityAcc = 0.5f * 9.8f * powf(gravityTime / 60.0f, 2);
+	gravityPos.y -= gravityAcc;
+	if (gravityPos.y < -25.0f)
 	{
-		pos.y = (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 0.5f;
+		gravityPos.y = -25.0f;
 	}
-	camera->MoveCamera(pos);
-
-	XMFLOAT3 rot = obj->GetRotation();
-	rot.y += 1.0f;
-	chr->SetRotation(rot);
-	obj->SetRotation(rot);
-
-	//光線方向
-	static XMVECTOR lightDir = { 0, 1, 5, 0 };
-
-	if (input->PushKey(DIK_W))
+	gravityTime += 1.0f;
+	gravity->SetPosition(gravityPos);
+	
+	if (bulletPos.y < 0.0f)
 	{
-		lightDir.m128_f32[1] += 1.0f;
-	} 
-	else if (input->PushKey(DIK_S))
-	{
-		lightDir.m128_f32[1] -= 1.0f;
+		bulletPos.x = 0;
+		bulletPos.y = 0;
+		bulletTimeX = 0;
+		bulletTimeY = 0;
+		bulletAcc = { 2, 1, 0 };
 	}
-	if (input->PushKey(DIK_D))
+	bulletPos.x += bulletAcc.x;
+	bulletPos.y += bulletAcc.y;
+	bulletAcc.x = bulletAcc.x - 0.5f * 2.45f * powf(bulletTimeX / 60.0f, 2);
+	if (bulletAcc.x < 0)
 	{
-		lightDir.m128_f32[0] += 1.0f;
-	} 
-	else if (input->PushKey(DIK_A))
-	{
-		lightDir.m128_f32[0] -= 1.0f;
+		bulletAcc.x = 0;
 	}
-
-	light->SetLightDir(lightDir);
-
-	std::ostringstream debugstr;
-	debugstr << "lightDirFactor("
-		<< std::fixed << std::setprecision(2)
-		<< lightDir.m128_f32[0] << ","
-		<< lightDir.m128_f32[1] << ","
-		<< lightDir.m128_f32[2] << ")",
-		debugText.Print(debugstr.str(), 50, 50, 1.0f);
-
-	debugstr.str("");
-	debugstr.clear();
-
-	const XMFLOAT3& cameraPos = camera->GetEye();
-	debugstr << "cameraPos("
-		<< std::fixed << std::setprecision(2)
-		<< cameraPos.x << ","
-		<< cameraPos.y << ","
-		<< cameraPos.z << ")",
-		debugText.Print(debugstr.str(), 50, 70, 1.0f);
+	bulletAcc.y =  bulletAcc.y -0.5f * 9.8f * powf(bulletTimeY / 60.0f, 2);
+	bulletTimeX += 1.0f;
+	bulletTimeY += 1.0f;
+	bullet->SetPosition(bulletPos);
 }
 
 void GamePlayScene::Draw()
@@ -156,8 +148,8 @@ void GamePlayScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
 	//オブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	chr->Draw();
-	obj->Draw();
+	gravity->Draw();
+	bullet->Draw();
 
 	Object3d::PostDraw();
 

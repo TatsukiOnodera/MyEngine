@@ -44,7 +44,7 @@ private: //メモリ置き場
 	//デバッグテキスト
 	DebugText debugText;
 
-private: //メンバ変数
+private: //オブジェクトのメモリ
 	//ライト
 	Light* light = nullptr;
 
@@ -55,8 +55,16 @@ private: //メンバ変数
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
 	//オブジェクト
-	std::unique_ptr<Object3d> chr = nullptr;
-	std::unique_ptr<Object3d> obj = nullptr;
+	std::unique_ptr<Object3d> gravity = nullptr;
+	std::unique_ptr<Object3d> bullet = nullptr;
+
+private: //メンバ変数
+	float gravityTime;
+	float bulletTimeX;
+	float bulletTimeY;
+
+	float gravityAcc;
+	XMFLOAT3 bulletAcc;
 
 public: //メンバ関数
 	~GamePlayScene();
