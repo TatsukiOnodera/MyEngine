@@ -80,6 +80,7 @@ void GamePlayScene::Update()
 	XMFLOAT3 gravityPos = gravity->GetPosition();
 	XMFLOAT3 bulletPos = bullet->GetPosition();
 
+	//Ž©—R—Ž‰º
 	if (gravityPos.y == -25.0f)
 	{
 		gravityPos.y = -gravityPos.y;
@@ -95,6 +96,7 @@ void GamePlayScene::Update()
 	gravityTime += 1.0f;
 	gravity->SetPosition(gravityPos);
 	
+	//–C’e
 	if (bulletPos.y < 0.0f)
 	{
 		bulletPos.x = 0;
