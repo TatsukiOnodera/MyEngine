@@ -20,7 +20,7 @@ public: //定数
 	static const string defaultTextureFileName;
 
 private: //メンバ変数
-//デバイス
+	//デバイス
 	ID3D12Device* dev = nullptr;
 	//FBXマネージャ
 	FbxManager* fbxManager = nullptr;

@@ -280,6 +280,9 @@ void FbxLoader::LoadModelFromFile(const string& modelName)
 
     //FBXシーン開放
     fbxScene->Destroy();
+
+    //バッファ生成
+    fbxModel->CreateBuffers(dev);
 }
 
 void FbxLoader::ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode, Node* parent)
