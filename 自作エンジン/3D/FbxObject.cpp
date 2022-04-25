@@ -1,10 +1,5 @@
-#include "Object3d.h"
-#include "BaseCollider.h"
-
-#include <cassert>
-#include <d3dx12.h>
+#include "FbxObject.h"
 #include <d3dcompiler.h>
-#include <DirectXTex.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -12,39 +7,33 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 
 // 静的メンバ変数の実体
-ID3D12Device* Object3d::dev = nullptr;
-ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
-ComPtr<ID3D12RootSignature> Object3d::rootsignature;
-ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
-Camera *Object3d::camera = nullptr;
-Light* Object3d::light = nullptr;
+ID3D12Device* FbxObject::dev = nullptr;
+Camera* FbxObject::camera = nullptr;
+ComPtr<ID3D12RootSignature> FbxObject::rootsignature;
+ComPtr<ID3D12PipelineState> FbxObject::pipelinestate;
 
-Object3d::~Object3d()
+FbxObject* FbxObject::GetInstance()
 {
-	if (collider)
-	{
-		delete collider;
-	}
+	static FbxObject fbxObject;
+
+	return &fbxObject;
 }
 
-bool Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
+bool FbxObject::StaticInitialize(ID3D12Device* dev)
 {
-	if (device == nullptr || camera == nullptr)
+	if (dev == nullptr || camera == nullptr)
 	{
 		return false;
 	}
-
-	Object3d::dev = device;
-	Object3d::camera = Camera::GetInstance();
-
-	Model::StaticInitialize(device);
+	FbxObject::dev = dev;
+	FbxObject::camera = Camera::GetInstance();
 
 	CreateGraphicsPipeline();
 
 	return true;
 }
 
-void Object3d::CreateGraphicsPipeline()
+void FbxObject::CreateGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
 
@@ -54,7 +43,7 @@ void Object3d::CreateGraphicsPipeline()
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/OBJVertexShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/FBXVertexShader.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -77,7 +66,7 @@ void Object3d::CreateGraphicsPipeline()
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/OBJPixelShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/FBXPixelShader.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -151,17 +140,17 @@ void Object3d::CreateGraphicsPipeline()
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[4];
+	CD3DX12_ROOT_PARAMETER rootparams[2];
+	//定数バッファビュー
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparams[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparams[2].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
-	rootparams[3].InitAsConstantBufferView(2, 0, D3D12_SHADER_VISIBILITY_ALL);
+	//シェーダリソースビュー
+	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
 
 	//ルートシグネチャの設定
-	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc{};
+	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
 	rootSignatureDesc.Init_1_0(_countof(rootparams), rootparams, 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 	ComPtr<ID3DBlob> rootSigBlob;
 
@@ -173,8 +162,8 @@ void Object3d::CreateGraphicsPipeline()
 	}
 
 	//ルートシグネチャの生成
-	result = dev->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
-	if (FAILED(result)) 
+	result = dev->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(rootsignature.ReleaseAndGetAddressOf()));
+	if (FAILED(result))
 	{
 		assert(0);
 	}
@@ -183,159 +172,96 @@ void Object3d::CreateGraphicsPipeline()
 	gpipeline.pRootSignature = rootsignature.Get();
 
 	//パイプラインステートの生成
-	result = dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
+	result = dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(pipelinestate.ReleaseAndGetAddressOf()));
 	if (FAILED(result))
 	{
 		assert(0);
 	}
 }
 
-void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
+FbxModel* FbxObject::CreateFBXModel(const string& modelName)
 {
-	Object3d::cmdList = cmdList;
+	/*FbxObject* object = new FbxObject;
 
-	//パイプラインとルートシグネチャの設定
-	cmdList->SetPipelineState(pipelinestate.Get());
-	cmdList->SetGraphicsRootSignature(rootsignature.Get());
-	//プリミティブ形状を設定
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
+	FbxModel* model;
 
-void Object3d::PostDraw()
-{
-	cmdList = nullptr;
-}
-
-Object3d* Object3d::Create(const std::string& modelName, bool smooting)
-{
-	Object3d* object = new Object3d;
-
-	Model* model = Model::CreateModel(modelName, smooting);
-
-	object->SetModel(model);
+	object->SetFBXModel(model);
 
 	object->Initialize();
 
-	object->Update();
+	object->Update();*/
 
-	return object;
+	return nullptr;
 }
 
-void Object3d::Initialize()
+void FbxObject::Initialize()
 {
 	HRESULT result;
 
-	// 定数バッファB0の生成
+	// 定数バッファの生成
 	result = dev->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), // アップロード可能
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff),
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataTransform) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&constBuff));
-
-	name = typeid(*this).name();
-
-	model->Initialize();
+		IID_PPV_ARGS(&constBufferTransform));
 }
 
-void Object3d::Update()
+void FbxObject::Update()
 {
-	//ワールド行列の更新
-	if (isBillboard == true)
-	{
-		//ビルボード行列の更新
-		matWorld = XMMatrixIdentity(); //単位行列
-		//拡大行列
-		matWorld *= XMMatrixScaling(scale.x, scale.y, scale.z);
-		//回転行列
-		matWorld *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-		matWorld *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-		matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-		//ビルボード行列
-		matWorld *= camera->GetMatBillboard();
-		//平行移動行列
-		matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
-	}
-	else
-	{
-		matWorld = XMMatrixIdentity(); //単位行列
-		//拡大行列
-		matWorld *= XMMatrixScaling(scale.x, scale.y, scale.z);
-		//回転行列
-		matWorld *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-		matWorld *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-		matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-		//平行移動行列
-		matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
-	}
+	HRESULT result;
+	XMMATRIX matScale, matRot, matTrans;
 
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+	//ワールド行列の合成
+	matWorld = XMMatrixIdentity(); //変形リセット
+	matWorld *= matScale; //スケーリング
+	matWorld *= matRot; //回転
+	matWorld *= matTrans; //平行移動
+
+	//ビュー行列
 	const XMMATRIX& matView = camera->GetMatView();
+	//プロジェクション行列
 	const XMMATRIX& matProjection = camera->GetMatProject();
+	//FBXモデルのメッシュトランスフォーム
+	const XMMATRIX& modelTransform = model->GetModelTransform();
+	//カメラ座標
+	const XMFLOAT3& cameraPos = camera->GetEye();
 
-	///定数バッファ転送
-	ConstBufferData* constMap = nullptr;
-	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
+	//定数バッファへ転送
+	ConstBufferDataTransform* constMap = nullptr;
+	result = constBufferTransform->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result))
 	{
 		constMap->viewproj = matView * matProjection;
-		constMap->world = matWorld;
-		constMap->cameraPos = camera->GetEye();
-		constMap->color = color;
-		constBuff->Unmap(0, nullptr);
-	}
-
-	model->Update(model->GetMaterial());
-
-	if (collider)
-	{
-		collider->Update();
+		constMap->world = modelTransform * matWorld;
+		constMap->cameraPos = cameraPos;
+		constBufferTransform->Unmap(0, nullptr);
 	}
 }
 
-void Object3d::Draw()
+void FbxObject::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	if (model == nullptr)
 	{
 		return;
 	}
 
-	//更新
-	Update();
-	
+	//パイプラインとルートシグネチャの設定
+	cmdList->SetPipelineState(pipelinestate.Get());
+	cmdList->SetGraphicsRootSignature(rootsignature.Get());
+	//プリミティブ形状を設定
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//定数バッファをセット
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(0, constBufferTransform->GetGPUVirtualAddress());
 
-	//ライトの描画
-	light->Draw(cmdList, 3);
-
-	//モデル描画
+	//FBXモデル描画
 	model->Draw(cmdList);
-}
-
-void Object3d::SetPosition(XMFLOAT3 position)
-{
-	this->position = position;
-}
-
-void Object3d::SetRotation(XMFLOAT3 rotation)
-{
-	this->rotation = rotation;
-}
-
-void Object3d::SetScale(XMFLOAT3 scale)
-{
-	this->scale = scale;
-}
-
-void Object3d::SetColor(XMFLOAT4 color)
-{
-	this->color = color;
-}
-
-void Object3d::SetCollider(BaseCollider* collider)
-{
-	collider->SetObject(this);
-
-	this->collider = collider;
 }

@@ -123,3 +123,21 @@ void FbxModel::CreateBuffers(ID3D12Device* dev)
 		&srvDesc, //テクスチャ設定情報
 		descHeapSRV->GetCPUDescriptorHandleForHeapStart()); //ヒープの先頭アドレス
 }
+
+void FbxModel::Draw(ID3D12GraphicsCommandList* cmdList)
+{
+	// 頂点バッファの設定
+	cmdList->IASetVertexBuffers(0, 1, &vbView);
+	// インデックスバッファの設定
+	cmdList->IASetIndexBuffer(&ibView);
+
+	// デスクリプタヒープの配列
+	ID3D12DescriptorHeap* ppHeaps[] = { descHeapSRV.Get() };
+	//デストラクタヒープをセット
+	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+	// シェーダリソースビューをセット
+	cmdList->SetGraphicsRootDescriptorTable(1, descHeapSRV->GetGPUDescriptorHandleForHeapStart());
+
+	// 描画コマンド
+	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+}

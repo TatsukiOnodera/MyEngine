@@ -20,7 +20,6 @@ GamePlayScene::~GamePlayScene()
 void GamePlayScene::Initialize()
 {
 	dx_cmd = DirectXCommon::GetInstance();
-	fbxLoader = FbxLoader::GetInstance();
 	input = Input::GetInstance();
 	audio = Audio::GetInstance();
 	camera = Camera::GetInstance();
@@ -30,7 +29,7 @@ void GamePlayScene::Initialize()
 	Sprite::LoadTexture(1, L"Resources/background.png");
 
 	//FBXの読み込み
-	fbxLoader->LoadModelFromFile("cube");
+	FbxLoader::GetInstance()->LoadModelFromFile("cube");
 
 	//前景スプライト
 	debugText.Initialize(fontNumber);

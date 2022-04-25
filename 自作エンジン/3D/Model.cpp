@@ -57,11 +57,14 @@ void Model::Update(Material material)
 	// 定数バッファへデータ転送
 	ConstBufferData* constMap = nullptr;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->ambient = materials.ambient;
-	constMap->diffuse = materials.diffuse;
-	constMap->specular = materials.specular;
-	constMap->alpha = materials.alpha;
-	constBuff->Unmap(0, nullptr);
+	if (SUCCEEDED(result))
+	{
+		constMap->ambient = materials.ambient;
+		constMap->diffuse = materials.diffuse;
+		constMap->specular = materials.specular;
+		constMap->alpha = materials.alpha;
+		constBuff->Unmap(0, nullptr);
+	}
 }
 
 void Model::Draw(ID3D12GraphicsCommandList* cmdList)
@@ -73,11 +76,13 @@ void Model::Draw(ID3D12GraphicsCommandList* cmdList)
 
 	// デスクリプタヒープの配列
 	ID3D12DescriptorHeap* ppHeaps[] = { descHeap.Get() };
+	//デストラクタヒープをセット
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-
+	//定数バッファビューをセット
 	cmdList->SetGraphicsRootConstantBufferView(1, constBuff->GetGPUVirtualAddress());
 	// シェーダリソースビューをセット
 	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandleSRV);
+
 	// 描画コマンド
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
 }

@@ -11,6 +11,7 @@
 #include "BaseScene.h"
 #include "Light.h"
 #include "FbxLoader.h"
+#include "FbxObject.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -54,9 +55,13 @@ private: //メンバ変数
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
-	//オブジェクト
+	//OBJオブジェクト
 	std::unique_ptr<Object3d> chr = nullptr;
 	std::unique_ptr<Object3d> obj = nullptr;
+
+	//FBXオブジェクト
+	FbxModel* fbxModel;
+	FbxObject* fbxObject;
 
 public: //メンバ関数
 	~GamePlayScene();
