@@ -55,7 +55,6 @@ private: //オブジェクトのメモリ
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
-<<<<<<< HEAD
 	//オブジェクト
 	std::unique_ptr<Object3d> gravity = nullptr;
 	std::unique_ptr<Object3d> bullet = nullptr;
