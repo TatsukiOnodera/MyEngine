@@ -55,28 +55,36 @@ private: //オブジェクトのメモリ
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
-	//オブジェクト
-	std::unique_ptr<Object3d> gravity = nullptr;
-	std::unique_ptr<Object3d> bullet = nullptr;
-
-private: //メンバ変数
-	bool isGravity;
-	bool isBullet;
-
-	float gravityTime;
-	float bulletTimeX;
-	float bulletTimeY;
-
-	float gravityAcc;
-	XMFLOAT3 bulletAcc;
-
 	//OBJオブジェクト
-	std::unique_ptr<Object3d> chr = nullptr;
-	std::unique_ptr<Object3d> obj = nullptr;
+	std::unique_ptr<Object3d> airResistance = nullptr;
+	std::unique_ptr<Object3d> friction = nullptr;
 
 	//FBXオブジェクト
-	FbxModel* fbxModel;
-	FbxObject* fbxObject;
+
+private: //メンバ変数
+	//スイッチ
+	bool is_airResistance;
+	bool is_friction;
+
+	//加速度
+	XMFLOAT2 airAcc;
+	float friAcc;
+
+	//抵抗力
+	float kv;
+
+	//速度
+	XMFLOAT2 airV;
+	float friV;
+
+	//重力加速度
+	const float gravity = 9.8;
+
+	//重さ
+	const float weight = 1;
+
+	//タイマー
+	int timer;
 
 public: //メンバ関数
 	~GamePlayScene();

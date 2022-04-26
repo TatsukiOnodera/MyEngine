@@ -29,7 +29,7 @@ Object3d::~Object3d()
 
 bool Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
 {
-	if (device == nullptr || camera == nullptr)
+	if (device == nullptr)
 	{
 		return false;
 	}
