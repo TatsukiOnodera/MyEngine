@@ -39,7 +39,7 @@ public: //静的関数
 	/// <summary>
 	/// 静的初期化
 	/// </summary>
-	static bool StaticInitialize(ID3D12Device* device, Camera* camera, int window_width, int window_height);
+	static bool StaticInitialize(ID3D12Device* device, int window_width, int window_height);
 
 	/// <summary>
 	/// グラフィックパイプライン生成

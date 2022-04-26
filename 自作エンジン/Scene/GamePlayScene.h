@@ -11,6 +11,7 @@
 #include "BaseScene.h"
 #include "Light.h"
 #include "FbxLoader.h"
+#include "FbxObject.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -54,6 +55,7 @@ private: //オブジェクトのメモリ
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
+<<<<<<< HEAD
 	//オブジェクト
 	std::unique_ptr<Object3d> gravity = nullptr;
 	std::unique_ptr<Object3d> bullet = nullptr;
@@ -68,6 +70,14 @@ private: //メンバ変数
 
 	float gravityAcc;
 	XMFLOAT3 bulletAcc;
+
+	//OBJオブジェクト
+	std::unique_ptr<Object3d> chr = nullptr;
+	std::unique_ptr<Object3d> obj = nullptr;
+
+	//FBXオブジェクト
+	FbxModel* fbxModel;
+	FbxObject* fbxObject;
 
 public: //メンバ関数
 	~GamePlayScene();

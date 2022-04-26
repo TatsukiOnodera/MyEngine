@@ -49,9 +49,6 @@
     <Filter Include="ソース&amp;ヘッダーファイル\DebugText">
       <UniqueIdentifier>{8d007385-c15a-43b1-90de-7ffcff132ba3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\Game">
-      <UniqueIdentifier>{3423bda9-0ddb-4362-a86a-c06a9aaa5af3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Lib">
       <UniqueIdentifier>{80b97804-e736-4f15-b6ee-0042955fec08}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,15 @@
     </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Light">
       <UniqueIdentifier>{d20748ce-68fc-4f9e-9778-76dc5ae71b49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\3D\OBJ">
+      <UniqueIdentifier>{dc5bfe6d-2406-4daf-a4bb-ebd681a04ec0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\3D\FBX">
+      <UniqueIdentifier>{7c0a94dd-08b9-444e-950a-53dd9a98b931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\FBXShader">
+      <UniqueIdentifier>{4168c2e1-bc70-4e9d-8ff8-63a9c5a934b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +90,6 @@
     <ClCompile Include="Input\Input.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
     </ClCompile>
-    <ClCompile Include="3D\Object3d.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
-    </ClCompile>
     <ClCompile Include="Particle\ParticleManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClCompile>
@@ -99,26 +102,11 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\SceneManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\GamePlayScene.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\TitleScene.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\Model.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
-    </ClCompile>
     <ClCompile Include="Base\OnoGame.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
     </ClCompile>
     <ClCompile Include="Base\FrameWork.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneFactory.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Light\Light.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
@@ -126,19 +114,37 @@
     <ClCompile Include="Light\LightGroup.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
     </ClCompile>
+    <ClCompile Include="3D\Model.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\Object3d.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+    </ClCompile>
     <ClCompile Include="3D\FbxLoader.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClCompile>
     <ClCompile Include="3D\FbxModel.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\FbxObject.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneFactory.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\GamePlayScene.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\TitleScene.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
       <Filter>ソース&amp;ヘッダーファイル\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\Object3d.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
     </ClInclude>
     <ClInclude Include="Collision\CollisionPrimitive.h">
       <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
@@ -164,38 +170,17 @@
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\BaseScene.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Input\InputList.h">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\GamePlayScene.h">
-      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\TitleScene.h">
-      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClInclude>
     <ClInclude Include="Audio\Audio.h">
       <Filter>ソース&amp;ヘッダーファイル\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="3D\Model.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
-    </ClInclude>
     <ClInclude Include="Base\OnoGame.h">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\AbstractSceneFactory.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Base\FrameWork.h">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneFactory.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="lib\SafeDelete.h">
       <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
@@ -218,11 +203,38 @@
     <ClInclude Include="Collision\CollisionInfo.h">
       <Filter>ソース&amp;ヘッダーファイル\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="3D\Model.h">
+      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\Object3d.h">
+      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+    </ClInclude>
     <ClInclude Include="3D\FbxLoader.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxModel.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\AbstractSceneFactory.h">
+      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\BaseScene.h">
+      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneFactory.h">
+      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\GamePlayScene.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\TitleScene.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FbxObject.h">
+      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +259,12 @@
     <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
       <Filter>シェーダーファイル\ParticleShader</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\FBXPixelShader.hlsl">
+      <Filter>シェーダーファイル\FBXShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\FBXVertexShader.hlsl">
+      <Filter>シェーダーファイル\FBXShader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\OBJShaderHeader.hlsli">
@@ -257,6 +275,9 @@
     </None>
     <None Include="Resources\Shaders\Particle.hlsli">
       <Filter>シェーダーファイル\ParticleShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\FBXShaderHeader.hlsli">
+      <Filter>シェーダーファイル\FBXShader</Filter>
     </None>
   </ItemGroup>
 </Project>

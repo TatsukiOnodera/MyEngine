@@ -27,7 +27,7 @@ Object3d::~Object3d()
 	}
 }
 
-bool Object3d::StaticInitialize(ID3D12Device* device, Camera* camera, int window_width, int window_height)
+bool Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
 {
 	if (device == nullptr || camera == nullptr)
 	{
@@ -35,7 +35,7 @@ bool Object3d::StaticInitialize(ID3D12Device* device, Camera* camera, int window
 	}
 
 	Object3d::dev = device;
-	Object3d::camera = camera;
+	Object3d::camera = Camera::GetInstance();
 
 	Model::StaticInitialize(device);
 
@@ -270,17 +270,20 @@ void Object3d::Update()
 		matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
 	}
 
-	XMMATRIX matView = camera->GetMatView();
-	XMMATRIX matProjection = camera->GetMatProject();
+	const XMMATRIX& matView = camera->GetMatView();
+	const XMMATRIX& matProjection = camera->GetMatProject();
 
 	///定数バッファ転送
 	ConstBufferData* constMap = nullptr;
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->viewproj = matView * matProjection;
-	constMap->world = matWorld;
-	constMap->cameraPos = camera->GetEye();
-	constMap->color = color;
-	constBuff->Unmap(0, nullptr);
+	if (SUCCEEDED(result))
+	{
+		constMap->viewproj = matView * matProjection;
+		constMap->world = matWorld;
+		constMap->cameraPos = camera->GetEye();
+		constMap->color = color;
+		constBuff->Unmap(0, nullptr);
+	}
 
 	model->Update(model->GetMaterial());
 
@@ -292,6 +295,11 @@ void Object3d::Update()
 
 void Object3d::Draw()
 {
+	if (model == nullptr)
+	{
+		return;
+	}
+
 	//更新
 	Update();
 	
