@@ -80,9 +80,6 @@ private: //メンバ変数
 	//重力加速度
 	const float gravity = 9.8;
 
-	//重さ
-	const float weight = 1;
-
 	//タイマー
 	int timer;
 

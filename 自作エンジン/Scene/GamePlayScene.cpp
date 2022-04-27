@@ -69,7 +69,7 @@ void GamePlayScene::ResetVariable()
 	kv = 0;
 
 	airV = { 20, 8 };
-	friV = 0;
+	friV = 20;
 
 	airResistance->SetPosition({-400, 0, 0});
 	friction->SetPosition({ -400, -250, 0 });
@@ -98,7 +98,7 @@ void GamePlayScene::Update()
 	{
 		//重力
 		airAcc.y = -0.5f * gravity * powf(static_cast<float>(timer) / 60, 2);
-		airV.y = airV.y + airAcc.y;
+		airV.y += airAcc.y;
 		airPos.y += airV.y;
 		if (airPos.y < 0)
 		{
@@ -108,7 +108,7 @@ void GamePlayScene::Update()
 
 		//横に飛ぶ（空気抵抗）
 		kv = 2.5f * airV.x;
-		airAcc.x = kv / weight;
+		airAcc.x = kv / 1;
 		if (airV.x < 0)
 		{
 			airV.x = 0;
@@ -119,7 +119,15 @@ void GamePlayScene::Update()
 	}
 	if (is_friction == true)
 	{
-		is_friction = false;
+		//摩擦
+		friAcc = 0.8f * (9.8f * 0.05f);
+		friV -= friAcc;
+		if (friV < 0)
+		{
+			friV = 0;
+			is_friction = false;
+		}
+		friPos.x += friV;
 
 		friction->SetPosition(friPos);
 	}
