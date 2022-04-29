@@ -14,7 +14,7 @@ using namespace Microsoft::WRL;
 
 GamePlayScene::~GamePlayScene()
 {
-	safe_delete(light);
+
 }
 
 void GamePlayScene::Initialize()
@@ -32,17 +32,16 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	//ライト生成
-	light = Light::Create();
+	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
 	light->SetLightDir({0, 1, 5, 0});
-	Object3d::SetLight(light);
+	Object3d::SetLight(light.get());
 
 	//スプライト
 	demo_back.reset(Sprite::CreateSprite(1));
 
 	//OBJオブジェクト
-	chr.reset(Object3d::Create("chr_sword"));
-	obj.reset(Object3d::Create("Bullet", true));
+
 
 	//FBXオブェクト
 	fbxObject.reset(FbxObject3d::CreateFBXObject("cube"));
@@ -56,16 +55,12 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetVariable()
 {
-	chr->SetScale({5.0f, 5.0f, 5.0f});
-	chr->Update();
-
-	obj->SetPosition({10.0f, 0.0f, 0.0f});
-	obj->SetScale({ 5.0f, 5.0f, 5.0f });
-	obj->Update();
+	
 }
 
 void GamePlayScene::Update()
 {
+	//カメラ移動
 	XMFLOAT3 pos = { 0, 0, 0 };
 	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{

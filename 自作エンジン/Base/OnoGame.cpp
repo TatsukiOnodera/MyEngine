@@ -7,8 +7,8 @@ void OnoGame::Initialize()
 	FrameWork::Initialize();
 
 	//シーンの初期化
-	scene_factory = new SceneFactory;
-	SceneManager::GetInstance()->SetSceneFactory(scene_factory);
+	scene_factory.reset(new SceneFactory);
+	SceneManager::GetInstance()->SetSceneFactory(scene_factory.get());
 	//シーンセット
 	SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 }

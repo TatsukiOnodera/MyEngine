@@ -7,22 +7,21 @@
 #include "Object3d.h"
 #include "Sprite.h"
 #include "ParticleManager.h"
-#include <SafeDelete.h>
 #include "SceneManager.h"
 #include "AbstractSceneFactory.h"
 #include "Light.h"
 #include "FbxObject3d.h"
+
+#include <memory>
 
 class FrameWork
 {
 protected: //ポインタ置き場
 	WinApp* win = nullptr;
 	Input* input = nullptr;
-	Camera* camera = nullptr;
-	Audio* audio = nullptr;
 	DirectXCommon* dx_cmd = nullptr;
 	bool end_request = false;
-	AbstractSceneFactory* scene_factory = nullptr;
+	std::unique_ptr<AbstractSceneFactory> scene_factory = nullptr;
 
 public:
 	/// <summary>

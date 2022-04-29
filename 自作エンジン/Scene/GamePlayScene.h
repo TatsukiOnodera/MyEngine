@@ -45,9 +45,9 @@ private: //メモリ置き場
 	//デバッグテキスト
 	DebugText debugText;
 
-private: //メンバ変数
+private: //インスタンス
 	//ライト
-	Light* light = nullptr;
+	std::unique_ptr<Light> light = nullptr;
 
 	//パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
@@ -56,11 +56,13 @@ private: //メンバ変数
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
 	//OBJオブジェクト
-	std::unique_ptr<Object3d> chr = nullptr;
-	std::unique_ptr<Object3d> obj = nullptr;
+	
 
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
+
+private: //メンバ変数
+
 
 public: //メンバ関数
 	~GamePlayScene();
