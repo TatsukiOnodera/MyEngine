@@ -102,6 +102,8 @@ protected: //メンバ変数
 	const char* name = nullptr;
 	//コライダー
 	BaseCollider* collider = nullptr;
+	//ダーティーフラグ
+	bool dirty = true;
 
 public: //メンバ関数
 	/// <summary>

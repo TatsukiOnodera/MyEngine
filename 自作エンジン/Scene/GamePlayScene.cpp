@@ -28,23 +28,24 @@ void GamePlayScene::Initialize()
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/background.png");
 
-	//FBXの読み込み
-	FbxLoader::GetInstance()->LoadModelFromFile("cube");
-
 	//前景スプライト
 	debugText.Initialize(fontNumber);
 
 	//ライト生成
 	light = Light::Create();
 	light->SetLightColor({ 1, 1, 1 });
+	light->SetLightDir({0, 1, 5, 0});
 	Object3d::SetLight(light);
 
 	//スプライト
 	demo_back.reset(Sprite::CreateSprite(1));
 
-	//オブジェクト
+	//OBJオブジェクト
 	chr.reset(Object3d::Create("chr_sword"));
 	obj.reset(Object3d::Create("Bullet", true));
+
+	//FBXオブェクト
+	fbxObject.reset(FbxObject3d::CreateFBXObject("cube"));
 
 	//パラメーター
 	ResetVariable();
@@ -74,53 +75,13 @@ void GamePlayScene::Update()
 	{
 		pos.y = (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 0.5f;
 	}
+	else if (input->PushKey(DIK_END) || input->PushKey(DIK_RSHIFT))
+	{
+		pos.z = (input->PushKey(DIK_END) - input->PushKey(DIK_RSHIFT));
+	}
 	camera->MoveCamera(pos);
 
-	XMFLOAT3 rot = obj->GetRotation();
-	rot.y += 1.0f;
-	chr->SetRotation(rot);
-	obj->SetRotation(rot);
 
-	//光線方向
-	static XMVECTOR lightDir = { 0, 1, 5, 0 };
-
-	if (input->PushKey(DIK_W))
-	{
-		lightDir.m128_f32[1] += 1.0f;
-	} 
-	else if (input->PushKey(DIK_S))
-	{
-		lightDir.m128_f32[1] -= 1.0f;
-	}
-	if (input->PushKey(DIK_D))
-	{
-		lightDir.m128_f32[0] += 1.0f;
-	} 
-	else if (input->PushKey(DIK_A))
-	{
-		lightDir.m128_f32[0] -= 1.0f;
-	}
-
-	light->SetLightDir(lightDir);
-
-	std::ostringstream debugstr;
-	debugstr << "lightDirFactor("
-		<< std::fixed << std::setprecision(2)
-		<< lightDir.m128_f32[0] << ","
-		<< lightDir.m128_f32[1] << ","
-		<< lightDir.m128_f32[2] << ")",
-		debugText.Print(debugstr.str(), 50, 50, 1.0f);
-
-	debugstr.str("");
-	debugstr.clear();
-
-	const XMFLOAT3& cameraPos = camera->GetEye();
-	debugstr << "cameraPos("
-		<< std::fixed << std::setprecision(2)
-		<< cameraPos.x << ","
-		<< cameraPos.y << ","
-		<< cameraPos.z << ")",
-		debugText.Print(debugstr.str(), 50, 70, 1.0f);
 }
 
 void GamePlayScene::Draw()
@@ -129,11 +90,12 @@ void GamePlayScene::Draw()
 	light->Update();
 	camera->Update();
 
+	//コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//各描画
 	DrawBackSprite(cmdList);
-	DrawObject(cmdList);
+	AnyDraw(cmdList);
 	//DrawParticle(cmdList);
 	//DrawUI(cmdList);
 	DrawDebugText(cmdList);
@@ -150,18 +112,26 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
+void GamePlayScene::AnyDraw(ID3D12GraphicsCommandList* cmdList)
 {
-	//オブジェクト描画
+	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	chr->Draw();
-	obj->Draw();
+	
 
 	Object3d::PostDraw();
 
+	//FBXオブジェクト
+	FbxObject3d::PreDraw(cmdList);
+
+	fbxObject->Draw();
+
+	FbxObject3d::PostDraw();
+
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
+
+
 
 	Sprite::PostDraw();
 }

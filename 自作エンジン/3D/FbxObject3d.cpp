@@ -1,4 +1,5 @@
-#include "FbxObject.h"
+#include "FbxObject3d.h"
+#include "FbxLoader.h"
 #include <d3dcompiler.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -7,33 +8,40 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 
 // 静的メンバ変数の実体
-ID3D12Device* FbxObject::dev = nullptr;
-Camera* FbxObject::camera = nullptr;
-ComPtr<ID3D12RootSignature> FbxObject::rootsignature;
-ComPtr<ID3D12PipelineState> FbxObject::pipelinestate;
+ID3D12Device* FbxObject3d::dev = nullptr;
+ID3D12GraphicsCommandList* FbxObject3d::cmdList = nullptr;
+Camera* FbxObject3d::camera = nullptr;
+ComPtr<ID3D12RootSignature> FbxObject3d::rootsignature;
+ComPtr<ID3D12PipelineState> FbxObject3d::pipelinestate;
+FbxLoader* FbxObject3d::fbxLoader = nullptr;
 
-FbxObject* FbxObject::GetInstance()
+FbxObject3d* FbxObject3d::GetInstance()
 {
-	static FbxObject fbxObject;
+	static FbxObject3d fbxObject3d;
 
-	return &fbxObject;
+	return &fbxObject3d;
 }
 
-bool FbxObject::StaticInitialize(ID3D12Device* dev)
+bool FbxObject3d::StaticInitialize(ID3D12Device* dev)
 {
-	if (dev == nullptr || camera == nullptr)
+	if (dev == nullptr)
 	{
 		return false;
 	}
-	FbxObject::dev = dev;
-	FbxObject::camera = Camera::GetInstance();
+	FbxObject3d::dev = dev;
+	FbxObject3d::camera = Camera::GetInstance();
+	FbxObject3d::fbxLoader = FbxLoader::GetInstance();
+	if (fbxLoader->Initialize(dev) == false)
+	{
+		return false;
+	}
 
 	CreateGraphicsPipeline();
 
 	return true;
 }
 
-void FbxObject::CreateGraphicsPipeline()
+void FbxObject3d::CreateGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
 
@@ -179,22 +187,38 @@ void FbxObject::CreateGraphicsPipeline()
 	}
 }
 
-FbxModel* FbxObject::CreateFBXModel(const string& modelName)
+void FbxObject3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
-	/*FbxObject* object = new FbxObject;
+	FbxObject3d::cmdList = cmdList;
 
-	FbxModel* model;
+	//パイプラインとルートシグネチャの設定
+	cmdList->SetPipelineState(pipelinestate.Get());
+	cmdList->SetGraphicsRootSignature(rootsignature.Get());
+	//プリミティブ形状を設定
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void FbxObject3d::PostDraw()
+{
+	cmdList = nullptr;
+}
+
+FbxObject3d* FbxObject3d::CreateFBXObject(const string& modelName)
+{
+	FbxObject3d* object = new FbxObject3d;
+
+	FbxModel* model = fbxLoader->LoadModelFromFile(modelName);
 
 	object->SetFBXModel(model);
 
 	object->Initialize();
 
-	object->Update();*/
+	object->Update();
 
-	return nullptr;
+	return object;
 }
 
-void FbxObject::Initialize()
+void FbxObject3d::Initialize()
 {
 	HRESULT result;
 
@@ -208,7 +232,7 @@ void FbxObject::Initialize()
 		IID_PPV_ARGS(&constBufferTransform));
 }
 
-void FbxObject::Update()
+void FbxObject3d::Update()
 {
 	HRESULT result;
 	XMMATRIX matScale, matRot, matTrans;
@@ -247,18 +271,15 @@ void FbxObject::Update()
 	}
 }
 
-void FbxObject::Draw(ID3D12GraphicsCommandList* cmdList)
+void FbxObject3d::Draw()
 {
+	Update();
+
 	if (model == nullptr)
 	{
 		return;
 	}
 
-	//パイプラインとルートシグネチャの設定
-	cmdList->SetPipelineState(pipelinestate.Get());
-	cmdList->SetGraphicsRootSignature(rootsignature.Get());
-	//プリミティブ形状を設定
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//定数バッファをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBufferTransform->GetGPUVirtualAddress());
 

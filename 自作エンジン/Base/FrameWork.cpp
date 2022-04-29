@@ -72,17 +72,11 @@ void FrameWork::Initialize()
 		assert(0);
 	}
 
-	//FBXローダー静的初期化
-	if (!FbxLoader::GetInstance()->Initialize(dx_cmd->GetDev()))
+	//FBXオブジェクト静的初期化
+	if (!FbxObject3d::StaticInitialize(dx_cmd->GetDev()))
 	{
 		assert(0);
 	}
-
-	//FBXオブジェクト静的初期化
-	/*if (!FbxObject::GetInstance()->StaticInitialize(dx_cmd->GetDev()))
-	{
-		assert(0);
-	}*/
 }
 
 void FrameWork::Finalize()

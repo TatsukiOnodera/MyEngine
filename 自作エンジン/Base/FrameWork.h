@@ -11,8 +11,7 @@
 #include "SceneManager.h"
 #include "AbstractSceneFactory.h"
 #include "Light.h"
-#include "FbxLoader.h"
-#include "FbxObject.h"
+#include "FbxObject3d.h"
 
 class FrameWork
 {

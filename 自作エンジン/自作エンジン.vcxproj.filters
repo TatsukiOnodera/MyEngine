@@ -67,6 +67,12 @@
     <Filter Include="シェーダーファイル\FBXShader">
       <UniqueIdentifier>{4168c2e1-bc70-4e9d-8ff8-63a9c5a934b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Scene\Game">
+      <UniqueIdentifier>{c3b676f4-7276-4189-a73a-42b874b36bec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Scene\Manager">
+      <UniqueIdentifier>{257e7453-7025-46d4-a92f-30f7ec9236bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -126,20 +132,20 @@
     <ClCompile Include="3D\FbxModel.cpp">
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClCompile>
-    <ClCompile Include="3D\FbxObject.cpp">
+    <ClCompile Include="3D\FbxObject3d.cpp">
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\SceneFactory.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\GamePlayScene.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
     </ClCompile>
     <ClCompile Include="Scene\TitleScene.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneFactory.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,26 +221,26 @@
     <ClInclude Include="3D\FbxModel.h">
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\SceneManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\AbstractSceneFactory.h">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
     </ClInclude>
     <ClInclude Include="Scene\BaseScene.h">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\SceneFactory.h">
-      <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
+    <ClInclude Include="3D\FbxObject3d.h">
+      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="Scene\GamePlayScene.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
     </ClInclude>
     <ClInclude Include="Scene\TitleScene.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
     </ClInclude>
-    <ClInclude Include="3D\FbxObject.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+    <ClInclude Include="Scene\SceneFactory.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

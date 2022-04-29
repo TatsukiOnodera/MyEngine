@@ -11,7 +11,7 @@
 #include "BaseScene.h"
 #include "Light.h"
 #include "FbxLoader.h"
-#include "FbxObject.h"
+#include "FbxObject3d.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -60,8 +60,7 @@ private: //メンバ変数
 	std::unique_ptr<Object3d> obj = nullptr;
 
 	//FBXオブジェクト
-	FbxModel* fbxModel;
-	FbxObject* fbxObject;
+	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
 public: //メンバ関数
 	~GamePlayScene();
@@ -94,7 +93,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void DrawObject(ID3D12GraphicsCommandList* cmdList);
+	void AnyDraw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// パーティクル描画

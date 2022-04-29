@@ -6,7 +6,7 @@ ID3D12Device* Light::dev = nullptr;
 
 bool Light::StaticInitialize(ID3D12Device *dev)
 {
-	if (dev == nullptr || !(Light::dev == nullptr))
+	if (dev == nullptr)
 	{
 		return false;
 	}
@@ -21,6 +21,8 @@ Light* Light::Create()
 	Light* instance = new Light();
 
 	instance->Initialize();
+
+	instance->Update();
 
 	return instance;
 }
@@ -79,6 +81,11 @@ void Light::Update()
 	{
 		TransferConstBuffer();
 		dirty = false;
+		isDirty = true;
+	}
+	else
+	{
+		isDirty = false;
 	}
 }
 

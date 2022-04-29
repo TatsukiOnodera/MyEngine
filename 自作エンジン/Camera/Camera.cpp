@@ -16,7 +16,6 @@ Camera::Camera(XMFLOAT3 eye, XMFLOAT3 target, XMFLOAT3 up)
 
 	matBillboard = XMMatrixIdentity();
 	matBillboardY = XMMatrixIdentity();
-	dirty = true;
 }
 
 Camera::~Camera()
@@ -152,5 +151,10 @@ void Camera::Update()
 		matBillboardY.r[3] = XMVectorSet(0, 0, 0, 1);
 
 		dirty = false;
+		isDirty = true;
+	}
+	else
+	{
+		isDirty = false;
 	}
 }
