@@ -20,11 +20,11 @@ public: //静的メンバ関数
 
 private: //メンバ変数
 	//始点座標
-	XMFLOAT3 eye = { 0, 0, 0 };
+	XMFLOAT3 eye = { 0, 0, -25 };
 	//注意点座標
 	XMFLOAT3 target = { 0, 0, 0 };
 	//上方向ベクトル
-	XMFLOAT3 up = { 0, 0, 0 };
+	XMFLOAT3 up = { 0, 1, 0 };
 	//ビュー行列
 	XMMATRIX matView;
 	//射影行列
@@ -39,19 +39,6 @@ private: //メンバ変数
 	bool isDirty = false;
 
 public: //メンバ関数
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="eye">カメラ座標</param>
-	/// <param name="target">注視点</param>
-	/// <param name="up">上の向き</param>
-	Camera(XMFLOAT3 eye = { 0, 0, -25 }, XMFLOAT3 target = { 0, 0, 0 }, XMFLOAT3 up = { 0, 1, 0 });
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~Camera();
-
 	/// <summary>
 	/// 初期化
 	/// </summary>

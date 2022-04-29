@@ -8,56 +8,12 @@ Camera* Camera::GetInstance()
 	return &camera;
 }
 
-Camera::Camera(XMFLOAT3 eye, XMFLOAT3 target, XMFLOAT3 up)
-{
-	this->eye = eye;
-	this->target = target;
-	this->up = up;
-
-	matBillboard = XMMatrixIdentity();
-	matBillboardY = XMMatrixIdentity();
-}
-
-Camera::~Camera()
-{
-
-}
-
-void Camera::SetEye(XMFLOAT3 eye)
-{
-	this->eye = eye;
-
-	dirty = true;
-}
-
-void Camera::SetTarget(XMFLOAT3 target)
-{
-	this->target = target;
-
-	dirty = true;
-}
-
-void Camera::SetUp(XMFLOAT3 up)
-{
-	this->up = up;
-
-	dirty = true;
-}
-
-void Camera::MoveCamera(XMFLOAT3 move)
-{
-	this->eye.x += move.x;
-	this->eye.y += move.y;
-	this->eye.z += move.z;
-	this->target.x += move.x;
-	this->target.y += move.y;
-	this->target.z += move.z;
-
-	dirty = true;
-}
-
 void Camera::Initialize(int window_width, int window_height)
 {
+	//ビルボード行列初期化
+	matBillboard = XMMatrixIdentity();
+	matBillboardY = XMMatrixIdentity();
+
 	// ビュー行列の生成
 	Update();
 
@@ -157,4 +113,37 @@ void Camera::Update()
 	{
 		isDirty = false;
 	}
+}
+
+void Camera::SetEye(XMFLOAT3 eye)
+{
+	this->eye = eye;
+
+	dirty = true;
+}
+
+void Camera::SetTarget(XMFLOAT3 target)
+{
+	this->target = target;
+
+	dirty = true;
+}
+
+void Camera::SetUp(XMFLOAT3 up)
+{
+	this->up = up;
+
+	dirty = true;
+}
+
+void Camera::MoveCamera(XMFLOAT3 move)
+{
+	this->eye.x += move.x;
+	this->eye.y += move.y;
+	this->eye.z += move.z;
+	this->target.x += move.x;
+	this->target.y += move.y;
+	this->target.z += move.z;
+
+	dirty = true;
 }

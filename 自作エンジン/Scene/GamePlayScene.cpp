@@ -44,7 +44,7 @@ void GamePlayScene::Initialize()
 
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("cube"));
+	fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
 
 	//パラメーター
 	ResetVariable();
