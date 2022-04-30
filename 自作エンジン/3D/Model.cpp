@@ -332,6 +332,7 @@ void Model::LoadTexture(const std::string& directoryPath, const std::string& fil
 	}
 
 	const Image* img = scratchImg.GetImage(0, 0, 0); // 生データ抽出
+	assert(img);
 
 	// リソース設定
 	CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D(
