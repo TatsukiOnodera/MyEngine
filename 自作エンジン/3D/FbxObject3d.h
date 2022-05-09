@@ -91,7 +91,7 @@ public: //静的メンバ関数
 	/// <returns></returns>
 	static FbxObject3d* CreateFBXObject(const string& modelName);
 
-protected: //メンバ変数
+private: //メンバ変数
 	//定数バッファ
 	ComPtr<ID3D12Resource> constBufferTransform;
 	//定数バッファ（スキン）
@@ -106,6 +106,8 @@ protected: //メンバ変数
 	XMMATRIX matWorld;
 	//FBXモデル
 	FbxModel* model = nullptr;
+	//ダーティーフラグ
+	bool dirty = true;
 
 public: //メンバ関数
 	/// <summary>
@@ -125,11 +127,26 @@ public: //メンバ関数
 
 public: //アクセッサ
 	/// <summary>
+	/// 座標
+	/// </summary>
+	XMFLOAT3 GetPosition() { return position; }
+	void SetPosition(XMFLOAT3 position);
+
+	/// <summary>
+	/// 回転
+	/// </summary>
+	XMFLOAT3 GetRotation() { return rotation; }
+	void SetRotation(XMFLOAT3 rotation);
+
+	/// <summary>
+	/// スケール
+	/// </summary>
+	XMFLOAT3 GetScale() { return scale; }
+	void SetScale(XMFLOAT3 scale);
+
+	/// <summary>
 	/// FBXモデルのセット
 	/// </summary>
 	/// <param name="model">FBXモデル</param>
 	void SetFBXModel(FbxModel* model) { this->model = model; }
-
-	void SetDevice(ID3D12Device* dev) { this->dev = dev; }
-	void SetCamera(Camera* camera) { this->camera = camera; }
 };

@@ -246,73 +246,80 @@ void FbxObject3d::Initialize()
 
 void FbxObject3d::Update()
 {
-	HRESULT result;
-	XMMATRIX matScale, matRot, matTrans;
-
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-
-	//ワールド行列の合成
-	matWorld = XMMatrixIdentity(); //変形リセット
-	matWorld *= matScale; //スケーリング
-	matWorld *= matRot; //回転
-	matWorld *= matTrans; //平行移動
-
-	//ビュー行列
-	const XMMATRIX& matView = camera->GetMatView();
-	//プロジェクション行列
-	const XMMATRIX& matProjection = camera->GetMatProject();
-	//FBXモデルのメッシュトランスフォーム
-	const XMMATRIX& modelTransform = model->GetModelTransform();
-	//カメラ座標
-	const XMFLOAT3& cameraPos = camera->GetEye();
-
-	//定数バッファへ転送
-	ConstBufferDataTransform* constMap = nullptr;
-	result = constBufferTransform->Map(0, nullptr, (void**)&constMap);
-	if (SUCCEEDED(result))
+	if (dirty == true || camera->GetDirty() == true)
 	{
-		constMap->viewproj = matView * matProjection;
-		constMap->world = modelTransform * matWorld;
-		constMap->cameraPos = cameraPos;
-		constBufferTransform->Unmap(0, nullptr);
-	}
+		HRESULT result;
+		XMMATRIX matScale, matRot, matTrans;
 
-	//ボーン配列
-	std::vector<FbxModel::Bone>& bones = model->GetBones();
+		matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+		matRot = XMMatrixIdentity();
+		matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+		matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+		matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
-	//定数バッファへ転送
-	ConstBufferDataSkin* constMapSkin = nullptr;
-	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
-	if (SUCCEEDED(result))
-	{
-		for (int i = 0; i < bones.size(); i++)
+		//ワールド行列の合成
+		matWorld = XMMatrixIdentity(); //変形リセット
+		matWorld *= matScale; //スケーリング
+		matWorld *= matRot; //回転
+		matWorld *= matTrans; //平行移動
+
+		//ビュー行列
+		const XMMATRIX& matView = camera->GetMatView();
+		//プロジェクション行列
+		const XMMATRIX& matProjection = camera->GetMatProject();
+		//FBXモデルのメッシュトランスフォーム
+		const XMMATRIX& modelTransform = model->GetModelTransform();
+		//カメラ座標
+		const XMFLOAT3& cameraPos = camera->GetEye();
+
+		//定数バッファへ転送
+		ConstBufferDataTransform* constMap = nullptr;
+		result = constBufferTransform->Map(0, nullptr, (void**)&constMap);
+		if (SUCCEEDED(result))
 		{
-			//今の姿勢行列
-			XMMATRIX matCurrentPose;
-			//今の姿勢行列を取得
-			FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
-			//XMMATRIXに変換
-			FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
-			//合成してスキニング行列に
-			constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+			constMap->viewproj = matView * matProjection;
+			constMap->world = modelTransform * matWorld;
+			constMap->cameraPos = cameraPos;
+			constBufferTransform->Unmap(0, nullptr);
 		}
-		constBuffSkin->Unmap(0, nullptr);
+
+		//ボーン配列
+		std::vector<FbxModel::Bone>& bones = model->GetBones();
+
+		//定数バッファへ転送
+		ConstBufferDataSkin* constMapSkin = nullptr;
+		result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
+		if (SUCCEEDED(result))
+		{
+			for (int i = 0; i < bones.size(); i++)
+			{
+				//今の姿勢行列
+				XMMATRIX matCurrentPose;
+				//今の姿勢行列を取得
+				FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
+				//XMMATRIXに変換
+				FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+				//合成してスキニング行列に
+				constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+			}
+			constBuffSkin->Unmap(0, nullptr);
+		}
+
+		dirty = false;
 	}
 }
 
 void FbxObject3d::Draw()
 {
-	Update();
-
+	//モデルがないなら抜ける
 	if (model == nullptr)
 	{
 		return;
 	}
+
+	//更新
+	Update();
 
 	//定数バッファをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBufferTransform->GetGPUVirtualAddress());
@@ -320,4 +327,22 @@ void FbxObject3d::Draw()
 
 	//FBXモデル描画
 	model->Draw(cmdList);
+}
+
+void FbxObject3d::SetPosition(XMFLOAT3 position)
+{
+	this->position = position;
+	dirty = true;
+}
+
+void FbxObject3d::SetRotation(XMFLOAT3 rotation)
+{
+	this->rotation = rotation;
+	dirty = true;
+}
+
+void FbxObject3d::SetScale(XMFLOAT3 scale)
+{
+	this->scale = scale;
+	dirty = true;
 }
