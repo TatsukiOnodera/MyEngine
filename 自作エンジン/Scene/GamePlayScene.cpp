@@ -34,7 +34,7 @@ void GamePlayScene::Initialize()
 	//ライト生成
 	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
-	light->SetLightDir({-1, -1, 0, 0});
+	light->SetLightDir({-5, -5, 0, 0});
 	Object3d::SetLight(light.get());
 
 	//スプライト
