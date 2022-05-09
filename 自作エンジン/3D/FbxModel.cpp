@@ -87,14 +87,14 @@ void FbxModel::CreateBuffers(ID3D12Device* dev)
 		&texresDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ, // テクスチャ用指定
 		nullptr,
-		IID_PPV_ARGS(&texbuff));
+		IID_PPV_ARGS(&texBuff));
 	if (FAILED(result))
 	{
 		assert(0);
 	}
 
 	// テクスチャバッファにデータ転送
-	result = texbuff->WriteToSubresource(
+	result = texBuff->WriteToSubresource(
 		0,
 		nullptr, // 全領域へコピー
 		img->pixels,    // 元データアドレス
@@ -118,14 +118,14 @@ void FbxModel::CreateBuffers(ID3D12Device* dev)
 
 	// シェーダリソースビュー（SRV）作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
-	D3D12_RESOURCE_DESC resDesc = texbuff->GetDesc();
+	D3D12_RESOURCE_DESC resDesc = texBuff->GetDesc();
 
 	srvDesc.Format = resDesc.Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
 	srvDesc.Texture2D.MipLevels = 1;
 
-	dev->CreateShaderResourceView(texbuff.Get(), //ビューと関連付けるバッファ
+	dev->CreateShaderResourceView(texBuff.Get(), //ビューと関連付けるバッファ
 		&srvDesc, //テクスチャ設定情報
 		descHeapSRV->GetCPUDescriptorHandleForHeapStart()); //ヒープの先頭アドレス
 }

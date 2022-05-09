@@ -34,14 +34,16 @@ private: //定数
 private: //メモリ置き場
 	//DIrectXCommon
 	DirectXCommon* dx_cmd = nullptr;
-	//FBXローダー
-	FbxLoader* fbxLoader = nullptr;
-	//インプット
+
+	//操作系
 	Input* input = nullptr;
+
 	//オーディオ
 	Audio* audio = nullptr;
+
 	//カメラ
 	Camera* camera = nullptr;
+
 	//デバッグテキスト
 	DebugText debugText;
 
@@ -56,13 +58,15 @@ private: //インスタンス
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
 	//OBJオブジェクト
-	
+	std::unique_ptr<Object3d> chr = nullptr;
+	std::unique_ptr<Object3d> player = nullptr;
 
 	//FBXオブジェクト
-	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
+	//std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
 private: //メンバ変数
-
+	float angleY;
+	float angleX;
 
 public: //メンバ関数
 	~GamePlayScene();

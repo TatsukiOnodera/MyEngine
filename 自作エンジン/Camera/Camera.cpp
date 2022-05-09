@@ -147,3 +147,43 @@ void Camera::MoveCamera(XMFLOAT3 move)
 
 	dirty = true;
 }
+
+XMFLOAT3 Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float angleX, float angleY)
+{
+	//注視点セット
+	SetTarget(target);
+
+	//オフセットベクトル
+	XMVECTOR v0 = { eye.x, eye.y, eye.z, 0 };
+
+	//回転行列
+	XMMATRIX rotM = XMMatrixIdentity();
+	rotM *= XMMatrixRotationX(XMConvertToRadians(angleX));
+	rotM *= XMMatrixRotationY(XMConvertToRadians(angleY));
+
+	//注視点から始点へのベクトルを求める
+	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
+
+	//注視点に足して視点を求める
+	XMFLOAT3 eyePosition = { target.x + V.m128_f32[0], target.y + V.m128_f32[1], target.z + V.m128_f32[2] };
+
+	return eyePosition;
+}
+
+XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec, float angleY)
+{
+	//移動ベクトル
+	XMVECTOR v0 = { vec.x, vec.y, vec.z, 0 };
+
+	//回転行列
+	XMMATRIX rotM = XMMatrixIdentity();
+	rotM *= XMMatrixRotationY(XMConvertToRadians(angleY));
+
+	//正面をもとに移動したベクトルの向きを出す
+	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
+
+	//元の座標に移動したベクトルを足す
+	XMFLOAT3 position = { pos.x + V.m128_f32[0], pos.y + V.m128_f32[1], pos.z + V.m128_f32[2] };
+
+	return position;
+}

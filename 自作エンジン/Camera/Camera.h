@@ -19,10 +19,10 @@ public: //静的メンバ関数
 	static Camera* GetInstance();
 
 private: //メンバ変数
-	//始点座標
-	XMFLOAT3 eye = { 0, 0, -25 };
-	//注意点座標
+	//注視点座標
 	XMFLOAT3 target = { 0, 0, 0 };
+	//始点座標
+	XMFLOAT3 eye = { 0, 0, -50 };
 	//上方向ベクトル
 	XMFLOAT3 up = { 0, 1, 0 };
 	//ビュー行列
@@ -56,6 +56,25 @@ public: //メンバ関数
 	/// </summary>
 	/// <param name="move">移動量</param>
 	void MoveCamera(XMFLOAT3 move);
+
+	/// <summary>
+	/// 追従カメラ
+	/// </summary>
+	/// <param name="target">注視点</param>
+	/// <param name="eye">注視点から始点への成分</param>
+	/// <param name="angleX">X軸の角度</param>
+	/// <param name="angleY">Y軸の角度</param>
+	/// <returns>始点座標</returns>
+	XMFLOAT3 FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float angleX, float angleY);
+
+	/// <summary>
+	/// カメラを軸に座標を移動
+	/// </summary>
+	/// <param name="pos">初期位置</param>
+	/// <param name="vec">移動量</param>
+	/// <param name="angleY">Y軸の角度</param>
+	/// <returns>移動した後の座標</returns>
+	XMFLOAT3 ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec, float angleY);
 
 public: //アクセッサ
 	/// <summary>

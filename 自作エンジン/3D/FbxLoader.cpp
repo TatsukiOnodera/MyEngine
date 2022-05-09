@@ -163,7 +163,7 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
         //テクスチャがない場合
         if (textureLoaded == false)
         {
-            LoadTexture(fbxModel, baseDirectory + defaultTextureFileName);
+            LoadTexture(fbxModel, baseDirectory + "/default/" + defaultTextureFileName);
         }
     }
 }

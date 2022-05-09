@@ -34,17 +34,18 @@ void GamePlayScene::Initialize()
 	//ライト生成
 	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
-	light->SetLightDir({0, 1, 5, 0});
+	light->SetLightDir({-1, -1, 0, 0});
 	Object3d::SetLight(light.get());
 
 	//スプライト
 	demo_back.reset(Sprite::CreateSprite(1));
 
 	//OBJオブジェクト
-
+	chr.reset(Object3d::Create("chr_sword"));
+	player.reset(Object3d::Create("bullet", true));
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
+	//fbxObject.reset(FbxObject3d::CreateFBXObject("cube"));
 
 	//パラメーター
 	ResetVariable();
@@ -55,28 +56,53 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetVariable()
 {
-	
+	angleX = 0;
+	angleY = 0;
+
+	chr->SetPosition({ 0, 0, 10 });
+	chr->Update();
+
+	player->SetPosition({ 0, 0, 0 });
+	player->Update();
+
+	camera->SetTarget({ 0, 0, 0 });
+	camera->SetEye({ 0, 5, -10 });
+	camera->Update();
 }
 
 void GamePlayScene::Update()
 {
-	//カメラ移動
-	XMFLOAT3 pos = { 0, 0, 0 };
+	//自機移動
+	XMFLOAT3 pos = player->GetPosition();
+	XMFLOAT3 vec = { 0, 0, 0 };
+	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
+	{
+		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.25f;
+	}
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	{
+		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.25f;
+	}
+	pos = camera->ConvertWindowPos(pos, vec, angleY);
+	player->SetPosition(pos);
+
+	//カメラ回転
 	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
-		pos.x = (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 0.5f;
+		angleY += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 2;
 	}
-	else if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
 	{
-		pos.y = (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 0.5f;
+		angleX += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 2;
 	}
-	else if (input->PushKey(DIK_END) || input->PushKey(DIK_RSHIFT))
+	XMFLOAT3 eye = camera->FollowUpCamera(pos, { 0, 1, -10 }, angleX, angleY);
+	camera->SetEye(eye);
+
+	//リセット
+	if (input->TriggerKey(DIK_SPACE))
 	{
-		pos.z = (input->PushKey(DIK_END) - input->PushKey(DIK_RSHIFT));
+		ResetVariable();
 	}
-	camera->MoveCamera(pos);
-
-
 }
 
 void GamePlayScene::Draw()
@@ -112,14 +138,15 @@ void GamePlayScene::AnyDraw(ID3D12GraphicsCommandList* cmdList)
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	
+	chr->Draw();
+	player->Draw();
 
 	Object3d::PostDraw();
 
 	//FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);
 
-	fbxObject->Draw();
+	//fbxObject->Draw();
 
 	FbxObject3d::PostDraw();
 

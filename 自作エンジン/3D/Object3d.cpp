@@ -299,14 +299,14 @@ void Object3d::Update()
 
 void Object3d::Draw()
 {
-	//更新
-	Update();
-
 	//モデルがないなら抜ける
 	if (model == nullptr)
 	{
 		return;
 	}
+
+	//更新
+	Update();
 	
 	//定数バッファをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
