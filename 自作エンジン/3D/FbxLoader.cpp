@@ -5,7 +5,6 @@ using namespace DirectX;
 const std::string FbxLoader::baseDirectory = "Resources/";
 const std::string FbxLoader::defaultTextureFileName = "white1x1.png";
 
-//頂点座標読み取り
 void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
     auto& vertices = fbxModel->vertices;
@@ -14,7 +13,7 @@ void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
     const int controlPointsCount = fbxMesh->GetControlPointsCount();
 
     //頂点データの確保
-    FbxModel::VertexPosNormalUVSkin vert{};
+    FbxModel::VertexPosNormalUvSkin vert{};
     fbxModel->vertices.resize(controlPointsCount, vert);
 
     //FBXメッシュの頂点座標配列を取得
@@ -23,14 +22,13 @@ void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
     //FBXメッシュの全頂点座標をモデルの配列にコピー
     for (int i = 0; i < controlPointsCount; i++)
     {
-        FbxModel::VertexPosNormalUVSkin& vertex = vertices[i];
+        FbxModel::VertexPosNormalUvSkin& vertex = vertices[i];
         vertex.pos.x = (float)pCoord[i][0];
         vertex.pos.y = (float)pCoord[i][1];
         vertex.pos.z = (float)pCoord[i][2];
     }
 }
 
-//面情報読み取り
 void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
     auto& vertices = fbxModel->vertices;
@@ -64,7 +62,7 @@ void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
             assert(index >= 0);
 
             //頂点法線読み込み
-            FbxModel::VertexPosNormalUVSkin& vertex = vertices[index];
+            FbxModel::VertexPosNormalUvSkin& vertex = vertices[index];
             FbxVector4 normal;
             if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
             {
@@ -108,7 +106,6 @@ void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
     }
 }
 
-//マテリアル読み取り
 void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 {
     const int materialCount = fbxNode->GetMaterialCount();
@@ -133,7 +130,7 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
                 fbxModel->ambient.y = (float)ambient.Get()[1];
                 fbxModel->ambient.z = (float)ambient.Get()[2];
 
-                //環境光係数
+                //拡散反射光係数
                 FbxPropertyT<FbxDouble3> diffuse = lambert->Diffuse;
                 fbxModel->diffuse.x = (float)diffuse.Get()[0];
                 fbxModel->diffuse.y = (float)diffuse.Get()[1];
@@ -168,26 +165,24 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
     }
 }
 
-//テクスチャ読み取り
 void FbxLoader::LoadTexture(FbxModel* fbxModel, const std::string& fullpath)
 {
     HRESULT result = S_FALSE;
 
     //WICテクスチャのロード
-    TexMetadata& metadate = fbxModel->metadata;
+    TexMetadata& metadata = fbxModel->metadata;
     ScratchImage& scratchImg = fbxModel->scratchImg;
 
     //ユニコード文字列に変換
     wchar_t wfilepath[128];
     MultiByteToWideChar(CP_ACP, 0, fullpath.c_str(), -1, wfilepath, _countof(wfilepath));
-    result = LoadFromWICFile(wfilepath, WIC_FLAGS_NONE, &metadate, scratchImg);
-    if (FALSE(result))
+    result = LoadFromWICFile(wfilepath, WIC_FLAGS_NONE, &metadata, scratchImg);
+    if (FAILED(result))
     {
         assert(0);
     }
 }
 
-//ディレクトリを含んだファイルパスからファイル名を抽出
 std::string FbxLoader::ExtractFileName(const std::string& path)
 {
     size_t pos1;
@@ -207,7 +202,6 @@ std::string FbxLoader::ExtractFileName(const std::string& path)
     return path;
 }
 
-//スキニング情報の読み取り
 void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
     //スキニング情報
@@ -314,7 +308,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
             {
                 float weight = 0.0f;
                 //二週目以降のウェイトを計算
-                for (int j = 0; j < FbxModel::MAX_BONE_INDICES; j++)
+                for (int j = 1; j < FbxModel::MAX_BONE_INDICES; j++)
                 {
                     weight += vertices[i].boneWeight[j];
                 }

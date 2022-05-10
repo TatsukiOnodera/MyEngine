@@ -11,7 +11,7 @@ void FbxModel::CreateBuffers(ID3D12Device* dev)
 	HRESULT result = S_FALSE;
 
 	//頂点データ全体のサイズ
-	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUVSkin) * vertices.size());
+	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUvSkin) * vertices.size());
 
 	// 頂点バッファ生成
 	result = dev->CreateCommittedResource(
@@ -23,7 +23,7 @@ void FbxModel::CreateBuffers(ID3D12Device* dev)
 		IID_PPV_ARGS(&vertBuff));
 
 	// 頂点バッファへのデータ転送
-	VertexPosNormalUVSkin* vertMap = nullptr;
+	VertexPosNormalUvSkin* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result)) 
 	{

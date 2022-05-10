@@ -45,7 +45,7 @@ void GamePlayScene::Initialize()
 	player.reset(Object3d::Create("bullet", true));*/
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("cube"));
+	fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
 
 	//パラメーター
 	ResetVariable();
@@ -66,7 +66,7 @@ void GamePlayScene::ResetVariable()
 	player->Update();*/
 
 	fbxObject->SetPosition({ 0, 0, 0 });
-	fbxObject->SetScale({ 0, 0, 0 });
+	fbxObject->SetScale({ 1, 1, 1 });
 	fbxObject->Update();
 
 	camera->SetTarget({ 0, 0, 0 });

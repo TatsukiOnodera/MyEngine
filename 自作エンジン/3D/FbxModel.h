@@ -54,7 +54,7 @@ private: //定数
 
 public: //サブクラス
 	//頂点データ構造体
-	struct VertexPosNormalUVSkin
+	struct VertexPosNormalUvSkin
 	{
 		DirectX::XMFLOAT3 pos; //XYZ座標
 		DirectX::XMFLOAT3 normal; //法線ベクトル
@@ -87,7 +87,7 @@ private: //モデルデータ用変数
 	//メッシュを持つノード
 	Node* meshNode = nullptr;
 	//頂点データ配列
-	std::vector<VertexPosNormalUVSkin> vertices;
+	std::vector<VertexPosNormalUvSkin> vertices;
 	//頂点インデックス配列
 	std::vector<unsigned short> indices;
 	//アンビエント係数
