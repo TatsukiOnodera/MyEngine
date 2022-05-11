@@ -3,7 +3,7 @@
 using namespace DirectX;
 
 const std::string FbxLoader::baseDirectory = "Resources/";
-const std::string FbxLoader::defaultTextureFileName = "white1x1.png";
+const std::string FbxLoader::defaultTextureFileName = "default/white1x1.png";
 
 void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
@@ -160,7 +160,7 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
         //テクスチャがない場合
         if (textureLoaded == false)
         {
-            LoadTexture(fbxModel, baseDirectory + "/default/" + defaultTextureFileName);
+            LoadTexture(fbxModel, baseDirectory + defaultTextureFileName);
         }
     }
 }
@@ -208,6 +208,14 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
     FbxSkin* fbxSkin = static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
     if (fbxSkin == nullptr)
     {
+        //各頂点についての処理
+        for (int i = 0; i < fbxModel->vertices.size(); i++)
+        {
+            //最初のボーン（単位行列）の影響100%にする
+            fbxModel->vertices[i].boneIndex[0] = 0;
+            fbxModel->vertices[i].boneWeight[0] = 1.0f;
+        }
+
         return;
     }
 
@@ -344,7 +352,7 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& s
 bool FbxLoader::Initialize(ID3D12Device* device)
 {
     //再初期化チェック
-    if (device == nullptr || fbxManager)
+    if (device == nullptr)
     {
         return false;
     }

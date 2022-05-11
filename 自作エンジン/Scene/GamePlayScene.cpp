@@ -46,6 +46,7 @@ void GamePlayScene::Initialize()
 
 	//FBXオブェクト
 	fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
+	fbxObject->PlayAnimation(true);
 
 	//パラメーター
 	ResetVariable();
@@ -64,10 +65,6 @@ void GamePlayScene::ResetVariable()
 
 	player->SetPosition({ 0, 0, 0 });
 	player->Update();*/
-
-	fbxObject->SetPosition({ 0, 0, 0 });
-	fbxObject->SetScale({ 1, 1, 1 });
-	fbxObject->Update();
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 5, -10 });
@@ -121,6 +118,22 @@ void GamePlayScene::Update()
 		pos.y += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.25f;
 	}
 	fbxObject->SetPosition(pos);
+
+	//カメラ
+	XMFLOAT3 eye = {0, 0, 0};
+	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+	{
+		eye.x += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 0.25f;
+	}
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
+	{
+		eye.y += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 0.25f;
+	}
+	if (input->PushKey(DIK_RSHIFT) || input->PushKey(DIK_END))
+	{
+		eye.z += (input->PushKey(DIK_END) - input->PushKey(DIK_RSHIFT)) * 0.25f;
+	}
+	camera->MoveCamera(eye);
 }
 
 void GamePlayScene::Draw()
@@ -134,7 +147,7 @@ void GamePlayScene::Draw()
 
 	//各描画
 	DrawBackSprite(cmdList);
-	AnyDraw(cmdList);
+	Draw(cmdList);
 	//DrawParticle(cmdList);
 	//DrawUI(cmdList);
 	DrawDebugText(cmdList);
@@ -145,13 +158,13 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	demo_back->Draw();
+	//demo_back->Draw();
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::AnyDraw(ID3D12GraphicsCommandList* cmdList)
+void GamePlayScene::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);

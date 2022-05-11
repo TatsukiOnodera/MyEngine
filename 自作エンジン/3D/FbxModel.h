@@ -140,6 +140,12 @@ public: //メンバ関数
 	const XMMATRIX& GetModelTransform() { return meshNode->globalTransform; }
 
 	/// <summary>
+	/// モデルの変形逆行列取得
+	/// </summary>
+	/// <returns>モデルの逆変形行列</returns>
+	XMMATRIX& GetInverseTransform();
+
+	/// <summary>
 	/// ボーン配列の取得
 	/// </summary>
 	/// <returns>ボーン配列</returns>

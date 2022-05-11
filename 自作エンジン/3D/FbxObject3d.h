@@ -57,6 +57,11 @@ private: //静的メンバ変数
 
 public: //静的メンバ関数
 	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~FbxObject3d();
+
+	/// <summary>
 	/// インスタンス取得
 	/// </summary>
 	/// <returns>インスタンス</returns>
@@ -105,9 +110,19 @@ private: //メンバ変数
 	//ローカルワールド行列
 	XMMATRIX matWorld;
 	//FBXモデル
-	FbxModel* model = nullptr;
-	//ダーティーフラグ
-	bool dirty = true;
+	FbxModel* fbxModel = nullptr;
+	//1フレーム
+	FbxTime frameTime;
+	//アニメーション開始時間
+	FbxTime startTime;
+	//アニメーション終了時間
+	FbxTime endTime;
+	//現在時刻（アニメーション）
+	FbxTime currentTime;
+	//アニメーションフラグ
+	bool isPlay = false;
+	//アニメーションループフラグ
+	bool isLoop = false;
 
 public: //メンバ関数
 	/// <summary>
@@ -124,6 +139,12 @@ public: //メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// アニメーション開始
+	/// </summary>
+	/// <param name="loop">ループの成否</param>
+	void PlayAnimation(bool loop = false);
 
 public: //アクセッサ
 	/// <summary>
@@ -148,5 +169,5 @@ public: //アクセッサ
 	/// FBXモデルのセット
 	/// </summary>
 	/// <param name="model">FBXモデル</param>
-	void SetFBXModel(FbxModel* model) { this->model = model; }
+	void SetFBXModel(FbxModel* fbxModel) { this->fbxModel = fbxModel; }
 };

@@ -15,6 +15,11 @@ ComPtr<ID3D12RootSignature> FbxObject3d::rootsignature;
 ComPtr<ID3D12PipelineState> FbxObject3d::pipelinestate;
 FbxLoader* FbxObject3d::fbxLoader = nullptr;
 
+FbxObject3d::~FbxObject3d()
+{
+	fbxLoader->Finalize();
+}
+
 FbxObject3d* FbxObject3d::GetInstance()
 {
 	static FbxObject3d fbxObject3d;
@@ -243,78 +248,108 @@ void FbxObject3d::Initialize()
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&constBufferSkin));
+
+	//定数バッファへデータ転送
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBufferSkin->Map(0, nullptr, (void**)&constMapSkin);
+	for (int i = 0; i < MAX_BONES; i++)
+	{
+		constMapSkin->bones[i] = XMMatrixIdentity();
+	}
+	constBufferSkin->Unmap(0, nullptr);
+
+	//１フレーム文の時間を60FPSで設定
+	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 }
 
 void FbxObject3d::Update()
 {
-	if (dirty == true || camera->GetDirty() == true)
+	//アニメーション
+	if (isPlay == true)
 	{
-		HRESULT result;
-		XMMATRIX matScale, matRot, matTrans;
+		currentTime += frameTime;
 
-		matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-		matRot = XMMatrixIdentity();
-		matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-		matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-		matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-
-		//ワールド行列の合成
-		matWorld = XMMatrixIdentity(); //変形リセット
-		matWorld *= matScale; //スケーリング
-		matWorld *= matRot; //回転
-		matWorld *= matTrans; //平行移動
-
-		//ビュー行列
-		const XMMATRIX& matView = camera->GetMatView();
-		//プロジェクション行列
-		const XMMATRIX& matProjection = camera->GetMatProject();
-		//FBXモデルのメッシュトランスフォーム
-		const XMMATRIX& modelTransform = model->GetModelTransform();
-		//カメラ座標
-		const XMFLOAT3& cameraPos = camera->GetEye();
-
-		//定数バッファへ転送
-		ConstBufferDataTransform* constMap = nullptr;
-		result = constBufferTransform->Map(0, nullptr, (void**)&constMap);
-		if (SUCCEEDED(result))
+		//最後まで再生したら
+		if (currentTime >= endTime)
 		{
-			constMap->viewproj = matView * matProjection;
-			constMap->world = modelTransform * matWorld;
-			constMap->cameraPos = cameraPos;
-			constBufferTransform->Unmap(0, nullptr);
-		}
-
-		//ボーン配列
-		std::vector<FbxModel::Bone>& bones = model->GetBones();
-
-		//定数バッファへ転送
-		ConstBufferDataSkin* constMapSkin = nullptr;
-		result = constBufferSkin->Map(0, nullptr, (void**)&constMapSkin);
-		if (SUCCEEDED(result))
-		{
-			for (int i = 0; i < bones.size(); i++)
+			//ループしないなら
+			if (isLoop == false)
 			{
-				//今の姿勢行列
-				XMMATRIX matCurrentPose;
-				//今の姿勢行列を取得
-				FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
-				//XMMATRIXに変換
-				FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
-				//合成してスキニング行列に
-				constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+				currentTime = endTime;
+				isPlay = false;
 			}
-			constBufferSkin->Unmap(0, nullptr);
+			else
+			{
+				currentTime = startTime;
+			}
 		}
+	}
 
-		dirty = false;
+	HRESULT result;
+	XMMATRIX matScale, matRot, matTrans;
+
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+	//ワールド行列の合成
+	matWorld = XMMatrixIdentity(); //変形リセット
+	matWorld *= matScale; //スケーリング
+	matWorld *= matRot; //回転
+	matWorld *= matTrans; //平行移動
+
+	//ビュー行列
+	const XMMATRIX& matView = camera->GetMatView();
+	//プロジェクション行列
+	const XMMATRIX& matProjection = camera->GetMatProject();
+
+	//FBXモデルのメッシュトランスフォーム
+	const XMMATRIX& modelTransform = fbxModel->GetModelTransform();
+
+	//カメラ座標
+	const XMFLOAT3& cameraPos = camera->GetEye();
+
+	//ボーン配列
+	std::vector<FbxModel::Bone>& bones = fbxModel->GetBones();
+
+	//定数バッファへ転送
+	ConstBufferDataTransform* constMap = nullptr;
+	result = constBufferTransform->Map(0, nullptr, (void**)&constMap);
+	if (SUCCEEDED(result))
+	{
+		constMap->viewproj = matView * matProjection;
+		constMap->world = modelTransform * matWorld;
+		constMap->cameraPos = cameraPos;
+		constBufferTransform->Unmap(0, nullptr);
+	}
+
+	//定数バッファへ転送
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBufferSkin->Map(0, nullptr, (void**)&constMapSkin);
+	if (SUCCEEDED(result))
+	{
+		for (int i = 0; i < bones.size(); i++)
+		{
+			//今の姿勢行列
+			XMMATRIX matCurrentPose;
+			//今の姿勢行列を取得
+			FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+			//XMMATRIXに変換
+			FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+			//合成してスキニング行列に
+			constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+		}
+		constBufferSkin->Unmap(0, nullptr);
 	}
 }
 
 void FbxObject3d::Draw()
 {
 	//モデルがないなら抜ける
-	if (model == nullptr)
+	if (fbxModel == nullptr)
 	{
 		return;
 	}
@@ -327,23 +362,41 @@ void FbxObject3d::Draw()
 	cmdList->SetGraphicsRootConstantBufferView(2, constBufferSkin->GetGPUVirtualAddress());
 
 	//FBXモデル描画
-	model->Draw(cmdList);
+	fbxModel->Draw(cmdList);
+}
+
+void FbxObject3d::PlayAnimation(bool loop)
+{
+	FbxScene* fbxScene = fbxModel->GetFbxScene();
+	//0番目のアニメーション取得
+	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	//アニメーション名取得
+	const char* animstackname = animStack->GetName();
+
+	//アニメーション時間情報
+	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(animstackname);
+	//開始時間取得
+	startTime = takeInfo->mLocalTimeSpan.GetStart();
+	endTime = takeInfo->mLocalTimeSpan.GetStop();
+	//開始時間に合わせる
+	currentTime = startTime;
+	//再生中
+	isPlay = true;
+	//ループ
+	isLoop = loop;
 }
 
 void FbxObject3d::SetPosition(XMFLOAT3 position)
 {
 	this->position = position;
-	dirty = true;
 }
 
 void FbxObject3d::SetRotation(XMFLOAT3 rotation)
 {
 	this->rotation = rotation;
-	dirty = true;
 }
 
 void FbxObject3d::SetScale(XMFLOAT3 scale)
 {
 	this->scale = scale;
-	dirty = true;
 }

@@ -99,7 +99,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void AnyDraw(ID3D12GraphicsCommandList* cmdList);
+	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// パーティクル描画

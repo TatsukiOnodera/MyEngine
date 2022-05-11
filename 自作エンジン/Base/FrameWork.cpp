@@ -77,9 +77,6 @@ void FrameWork::Initialize()
 
 void FrameWork::Finalize()
 {
-	//シーンファクトリー開放
-	FbxLoader::GetInstance()->Finalize();
-
 	// ウィンドウクラスを登録解除
 	win->TerminateGameWindow();
 }

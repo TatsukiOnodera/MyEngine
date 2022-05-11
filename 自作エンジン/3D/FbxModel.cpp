@@ -1,5 +1,7 @@
 #include "FbxModel.h"
 
+using namespace DirectX;
+
 FbxModel::~FbxModel()
 {
 	//FBXシーンの開放
@@ -146,4 +148,9 @@ void FbxModel::Draw(ID3D12GraphicsCommandList* cmdList)
 
 	// 描画コマンド
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+}
+
+XMMATRIX& FbxModel::GetInverseTransform()
+{
+	return DirectX::XMMatrixInverse(nullptr, meshNode->globalTransform);
 }
