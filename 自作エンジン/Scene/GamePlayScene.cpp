@@ -69,7 +69,7 @@ void GamePlayScene::ResetVariable()
 	kv = 0;
 
 	airV = { 20, 8 };
-	friV = 20;
+	friV = 10;
 
 	airResistance->SetPosition({-400, 0, 0});
 	friction->SetPosition({ -400, -250, 0 });
@@ -107,8 +107,9 @@ void GamePlayScene::Update()
 		}
 
 		//â°Ç…îÚÇ‘ÅiãÛãCíÔçRÅj
-		kv = 2.5f * airV.x;
-		airAcc.x = kv / 1;
+		kv = 0.001f * airV.x;
+		airAcc.x = kv / 0.1f;
+		airV.x -= airAcc.x;
 		if (airV.x < 0)
 		{
 			airV.x = 0;
@@ -120,8 +121,11 @@ void GamePlayScene::Update()
 	if (is_friction == true)
 	{
 		//ñÄéC
-		friAcc = 0.8f * (9.8f * 0.05f);
-		friV -= friAcc;
+		float m = 20.0f;
+		float N = m * (gravity * powf(static_cast<float>(timer) / 60, 2));
+		float F = friV - (0.8 * N);
+		friAcc = F / m;
+		friV += friAcc;
 		if (friV < 0)
 		{
 			friV = 0;
