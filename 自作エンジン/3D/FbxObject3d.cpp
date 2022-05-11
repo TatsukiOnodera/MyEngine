@@ -155,6 +155,7 @@ void FbxObject3d::CreateGraphicsPipeline()
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	//シェーダリソースビュー
 	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	//定数バッファビュー（スキニング）
 	rootparams[2].InitAsConstantBufferView(3, 0, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
@@ -241,7 +242,7 @@ void FbxObject3d::Initialize()
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataSkin) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&constBuffSkin));
+		IID_PPV_ARGS(&constBufferSkin));
 }
 
 void FbxObject3d::Update()
@@ -289,7 +290,7 @@ void FbxObject3d::Update()
 
 		//定数バッファへ転送
 		ConstBufferDataSkin* constMapSkin = nullptr;
-		result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
+		result = constBufferSkin->Map(0, nullptr, (void**)&constMapSkin);
 		if (SUCCEEDED(result))
 		{
 			for (int i = 0; i < bones.size(); i++)
@@ -303,7 +304,7 @@ void FbxObject3d::Update()
 				//合成してスキニング行列に
 				constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
 			}
-			constBuffSkin->Unmap(0, nullptr);
+			constBufferSkin->Unmap(0, nullptr);
 		}
 
 		dirty = false;
@@ -321,9 +322,9 @@ void FbxObject3d::Draw()
 	//更新
 	Update();
 
-	//定数バッファをセット
+	//定数バッファビューをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBufferTransform->GetGPUVirtualAddress());
-	cmdList->SetGraphicsRootConstantBufferView(2, constBuffSkin->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(2, constBufferSkin->GetGPUVirtualAddress());
 
 	//FBXモデル描画
 	model->Draw(cmdList);

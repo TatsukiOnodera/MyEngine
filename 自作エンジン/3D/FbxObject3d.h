@@ -95,7 +95,7 @@ private: //メンバ変数
 	//定数バッファ
 	ComPtr<ID3D12Resource> constBufferTransform;
 	//定数バッファ（スキン）
-	ComPtr<ID3D12Resource> constBuffSkin;
+	ComPtr<ID3D12Resource> constBufferSkin;
 	//ローカルスケール
 	XMFLOAT3 scale = { 1, 1, 1 };
 	//ローカル回転角
