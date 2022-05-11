@@ -14,7 +14,7 @@ using namespace Microsoft::WRL;
 
 GamePlayScene::~GamePlayScene()
 {
-	safe_delete(light);
+
 }
 
 void GamePlayScene::Initialize()
@@ -28,18 +28,14 @@ void GamePlayScene::Initialize()
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/background.png");
 
-	//FBXの読み込み
-	FbxLoader::GetInstance()->LoadModelFromFile("cube");
-
 	//前景スプライト
 	debugText.Initialize(fontNumber);
 
 	//ライト生成
-	light = Light::Create();
+	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
-	Object3d::SetLight(light);
-
-	light->SetLightDir({ -10, -10, 0, 1 });
+	light->SetLightDir({-1, -1, 0, 0});
+	Object3d::SetLight(light.get());
 
 	//スプライト
 	demo_back.reset(Sprite::CreateSprite(1));
@@ -151,11 +147,12 @@ void GamePlayScene::Draw()
 	light->Update();
 	camera->Update();
 
+	//コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//各描画
 	DrawBackSprite(cmdList);
-	DrawObject(cmdList);
+	Draw(cmdList);
 	//DrawParticle(cmdList);
 	//DrawUI(cmdList);
 	DrawDebugText(cmdList);
@@ -166,15 +163,15 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	demo_back->Draw();
+	//demo_back->Draw();
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
+void GamePlayScene::Draw(ID3D12GraphicsCommandList* cmdList)
 {
-	//オブジェクト描画
+	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
 	airResistance->Draw();
@@ -184,6 +181,8 @@ void GamePlayScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
 
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
+
+
 
 	Sprite::PostDraw();
 }

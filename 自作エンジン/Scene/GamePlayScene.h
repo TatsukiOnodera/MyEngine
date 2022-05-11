@@ -11,7 +11,7 @@
 #include "BaseScene.h"
 #include "Light.h"
 #include "FbxLoader.h"
-#include "FbxObject.h"
+#include "FbxObject3d.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -34,20 +34,22 @@ private: //定数
 private: //メモリ置き場
 	//DIrectXCommon
 	DirectXCommon* dx_cmd = nullptr;
-	//FBXローダー
-	FbxLoader* fbxLoader = nullptr;
-	//インプット
+
+	//操作系
 	Input* input = nullptr;
+
 	//オーディオ
 	Audio* audio = nullptr;
+
 	//カメラ
 	Camera* camera = nullptr;
+
 	//デバッグテキスト
 	DebugText debugText;
 
 private: //オブジェクトのメモリ
 	//ライト
-	Light* light = nullptr;
+	std::unique_ptr<Light> light = nullptr;
 
 	//パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
@@ -114,7 +116,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void DrawObject(ID3D12GraphicsCommandList* cmdList);
+	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// パーティクル描画

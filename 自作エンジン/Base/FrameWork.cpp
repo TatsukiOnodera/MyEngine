@@ -27,7 +27,7 @@ void FrameWork::Run()
 void FrameWork::Initialize()
 {
 	//windowsアプリケーションの初期化
-	win = new WinApp;
+	win = WinApp::GetInstance();
 	win->CreateGameWindow();
 
 	//Input初期化
@@ -35,11 +35,7 @@ void FrameWork::Initialize()
 	input->Initialize(win);
 
 	//カメラ初期化
-	camera = Camera::GetInstance();
-	camera->Initialize(WinApp::window_width, WinApp::window_height);
-
-	//オーディオ初期化
-	audio = Audio::GetInstance();
+	Camera::GetInstance()->Initialize(WinApp::window_width, WinApp::window_height);
 
 	// DirectX初期化処理
 	dx_cmd = DirectXCommon::GetInstance();
@@ -72,28 +68,17 @@ void FrameWork::Initialize()
 		assert(0);
 	}
 
-	//FBXローダー静的初期化
-	if (!FbxLoader::GetInstance()->Initialize(dx_cmd->GetDev()))
+	//FBXオブジェクト静的初期化
+	if (!FbxObject3d::StaticInitialize(dx_cmd->GetDev()))
 	{
 		assert(0);
 	}
-
-	//FBXオブジェクト静的初期化
-	/*if (!FbxObject::GetInstance()->StaticInitialize(dx_cmd->GetDev()))
-	{
-		assert(0);
-	}*/
 }
 
 void FrameWork::Finalize()
 {
-	//シーンファクトリー開放
-	FbxLoader::GetInstance()->Finalize();
-	safe_delete(scene_factory);
-
 	// ウィンドウクラスを登録解除
 	win->TerminateGameWindow();
-	safe_delete(win);
 }
 
 void FrameWork::Update()

@@ -27,16 +27,47 @@ private: //メンバ変数
 	FbxImporter* fbxImporter = nullptr;
 
 private: //サブ関数
-	//頂点座標読み取り
+	/// <summary>
+	/// 頂点座標読み取り
+	/// </summary>
+	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
+	/// <param name="fbxMesh">解析対象のメッシュ</param>
 	void ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh);
-	//面情報読み取り
+
+	/// <summary>
+	/// 面情報読み取り
+	/// </summary>
+	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
+	/// <param name="fbxMesh">解析対象のメッシュ</param>
 	void ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh);
-	//マテリアル読み取り
+
+	/// <summary>
+	/// マテリアル読み取り
+	/// </summary>
+	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
+	/// <param name="fbxNode">解析対象のノード</param>
 	void ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode);
-	//テクスチャ読み取り
+
+	/// <summary>
+	/// テクスチャ読み取り
+	/// </summary>
+	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
+	/// <param name="fullpath">アドレス</param>
 	void LoadTexture(FbxModel* fbxModel, const std::string& fullpath);
-	//ディレクトリを含んだファイルパスからファイル名を抽出
+
+	/// <summary>
+	/// ディレクトリを含んだファイルパスからファイル名を抽出
+	/// </summary>
+	/// <param name="path">ファイルパス</param>
+	/// <returns>ファイル名</returns>
 	std::string ExtractFileName(const std::string& path);
+
+	/// <summary>
+	/// スキニング情報の読み取り
+	/// </summary>
+	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
+	/// <param name="fbxMesh">解析対象のメッシュ</param>
+	void ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh);
 
 public: //静的メンバ関数
 	/// <summary>
@@ -44,6 +75,13 @@ public: //静的メンバ関数
 	/// </summary>
 	/// <returns>インスタンス</returns>
 	static FbxLoader* GetInstance();
+
+	/// <summary>
+	/// FBX行列をXMMatrixに変換
+	/// </summary>
+	/// <param name="dst">書き込み先</param>
+	/// <param name="src">元になるFBX行列</param>
+	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
 
 public: //メンバ関数
 	/// <summary>
@@ -66,14 +104,14 @@ public: //メンバ関数
 	/// <summary>
 	/// 再帰的にノード構成を解析
 	/// </summary>
-	/// <param name="fbxModel"></param>
-	/// <param name="fbxNode"></param>
+	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
+	/// <param name="fbxNode">解析対象のノード</param>
 	void ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode, Node* parent = nullptr);
 
 	/// <summary>
 	/// メッシュ読み取り
 	/// </summary>
-	/// <param name="model">読み込み先モデルオブジェクト</param>
+	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxNode">解析対象のノード</param>
 	void ParseMesh(FbxModel* fbxModel, FbxNode* fbxNode);
 };

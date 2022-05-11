@@ -16,6 +16,12 @@ LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return DefWindowProc(hwnd, msg, wparam, lparam); // 標準の処理を行う
 }
 
+WinApp* WinApp::GetInstance()
+{
+	static WinApp winApp;
+	return &winApp;
+}
+
 //ゲームウィンドウ生成
 void WinApp::CreateGameWindow()
 {

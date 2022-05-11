@@ -13,6 +13,9 @@ private: //メンバ変数
 	HWND hwnd = nullptr; //ウィンドウオブジェクト
 	WNDCLASSEX w{}; //ウィンドウクラスの設定
 
+public: //静的メンバ関数
+	static WinApp* GetInstance();
+
 public: //メンバ関数
 	/// <summary>
 	/// ゲームウィンドウ生成

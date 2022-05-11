@@ -1,4 +1,5 @@
-#include "FbxObject.h"
+#include "FbxObject3d.h"
+#include "FbxLoader.h"
 #include <d3dcompiler.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -7,33 +8,45 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 
 // 静的メンバ変数の実体
-ID3D12Device* FbxObject::dev = nullptr;
-Camera* FbxObject::camera = nullptr;
-ComPtr<ID3D12RootSignature> FbxObject::rootsignature;
-ComPtr<ID3D12PipelineState> FbxObject::pipelinestate;
+ID3D12Device* FbxObject3d::dev = nullptr;
+ID3D12GraphicsCommandList* FbxObject3d::cmdList = nullptr;
+Camera* FbxObject3d::camera = nullptr;
+ComPtr<ID3D12RootSignature> FbxObject3d::rootsignature;
+ComPtr<ID3D12PipelineState> FbxObject3d::pipelinestate;
+FbxLoader* FbxObject3d::fbxLoader = nullptr;
 
-FbxObject* FbxObject::GetInstance()
+FbxObject3d::~FbxObject3d()
 {
-	static FbxObject fbxObject;
-
-	return &fbxObject;
+	fbxLoader->Finalize();
 }
 
-bool FbxObject::StaticInitialize(ID3D12Device* dev)
+FbxObject3d* FbxObject3d::GetInstance()
 {
-	if (dev == nullptr || camera == nullptr)
+	static FbxObject3d fbxObject3d;
+
+	return &fbxObject3d;
+}
+
+bool FbxObject3d::StaticInitialize(ID3D12Device* dev)
+{
+	if (dev == nullptr)
 	{
 		return false;
 	}
-	FbxObject::dev = dev;
-	FbxObject::camera = Camera::GetInstance();
+	FbxObject3d::dev = dev;
+	FbxObject3d::camera = Camera::GetInstance();
+	FbxObject3d::fbxLoader = FbxLoader::GetInstance();
+	if (fbxLoader->Initialize(dev) == false)
+	{
+		return false;
+	}
 
 	CreateGraphicsPipeline();
 
 	return true;
 }
 
-void FbxObject::CreateGraphicsPipeline()
+void FbxObject3d::CreateGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
 
@@ -91,7 +104,9 @@ void FbxObject::CreateGraphicsPipeline()
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BONEINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BONEWEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 
 	// グラフィックスパイプラインの流れを設定
@@ -140,11 +155,13 @@ void FbxObject::CreateGraphicsPipeline()
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[2];
+	CD3DX12_ROOT_PARAMETER rootparams[3];
 	//定数バッファビュー
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	//シェーダリソースビュー
 	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	//定数バッファビュー（スキニング）
+	rootparams[2].InitAsConstantBufferView(3, 0, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
@@ -179,22 +196,38 @@ void FbxObject::CreateGraphicsPipeline()
 	}
 }
 
-FbxModel* FbxObject::CreateFBXModel(const string& modelName)
+void FbxObject3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
-	/*FbxObject* object = new FbxObject;
+	FbxObject3d::cmdList = cmdList;
 
-	FbxModel* model;
+	//パイプラインとルートシグネチャの設定
+	cmdList->SetPipelineState(pipelinestate.Get());
+	cmdList->SetGraphicsRootSignature(rootsignature.Get());
+	//プリミティブ形状を設定
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void FbxObject3d::PostDraw()
+{
+	cmdList = nullptr;
+}
+
+FbxObject3d* FbxObject3d::CreateFBXObject(const string& modelName)
+{
+	FbxObject3d* object = new FbxObject3d;
+
+	FbxModel* model = fbxLoader->LoadModelFromFile(modelName);
 
 	object->SetFBXModel(model);
 
 	object->Initialize();
 
-	object->Update();*/
+	object->Update();
 
-	return nullptr;
+	return object;
 }
 
-void FbxObject::Initialize()
+void FbxObject3d::Initialize()
 {
 	HRESULT result;
 
@@ -206,10 +239,52 @@ void FbxObject::Initialize()
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&constBufferTransform));
+
+	// 定数バッファの生成
+	result = dev->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), // アップロード可能
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataSkin) + 0xff) & ~0xff),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&constBufferSkin));
+
+	//定数バッファへデータ転送
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBufferSkin->Map(0, nullptr, (void**)&constMapSkin);
+	for (int i = 0; i < MAX_BONES; i++)
+	{
+		constMapSkin->bones[i] = XMMatrixIdentity();
+	}
+	constBufferSkin->Unmap(0, nullptr);
+
+	//１フレーム文の時間を60FPSで設定
+	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 }
 
-void FbxObject::Update()
+void FbxObject3d::Update()
 {
+	//アニメーション
+	if (isPlay == true)
+	{
+		currentTime += frameTime;
+
+		//最後まで再生したら
+		if (currentTime >= endTime)
+		{
+			//ループしないなら
+			if (isLoop == false)
+			{
+				currentTime = endTime;
+				isPlay = false;
+			}
+			else
+			{
+				currentTime = startTime;
+			}
+		}
+	}
+
 	HRESULT result;
 	XMMATRIX matScale, matRot, matTrans;
 
@@ -230,10 +305,15 @@ void FbxObject::Update()
 	const XMMATRIX& matView = camera->GetMatView();
 	//プロジェクション行列
 	const XMMATRIX& matProjection = camera->GetMatProject();
+
 	//FBXモデルのメッシュトランスフォーム
-	const XMMATRIX& modelTransform = model->GetModelTransform();
+	const XMMATRIX& modelTransform = fbxModel->GetModelTransform();
+
 	//カメラ座標
 	const XMFLOAT3& cameraPos = camera->GetEye();
+
+	//ボーン配列
+	std::vector<FbxModel::Bone>& bones = fbxModel->GetBones();
 
 	//定数バッファへ転送
 	ConstBufferDataTransform* constMap = nullptr;
@@ -245,23 +325,78 @@ void FbxObject::Update()
 		constMap->cameraPos = cameraPos;
 		constBufferTransform->Unmap(0, nullptr);
 	}
+
+	//定数バッファへ転送
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBufferSkin->Map(0, nullptr, (void**)&constMapSkin);
+	if (SUCCEEDED(result))
+	{
+		for (int i = 0; i < bones.size(); i++)
+		{
+			//今の姿勢行列
+			XMMATRIX matCurrentPose;
+			//今の姿勢行列を取得
+			FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+			//XMMATRIXに変換
+			FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+			//合成してスキニング行列に
+			constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+		}
+		constBufferSkin->Unmap(0, nullptr);
+	}
 }
 
-void FbxObject::Draw(ID3D12GraphicsCommandList* cmdList)
+void FbxObject3d::Draw()
 {
-	if (model == nullptr)
+	//モデルがないなら抜ける
+	if (fbxModel == nullptr)
 	{
 		return;
 	}
 
-	//パイプラインとルートシグネチャの設定
-	cmdList->SetPipelineState(pipelinestate.Get());
-	cmdList->SetGraphicsRootSignature(rootsignature.Get());
-	//プリミティブ形状を設定
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//定数バッファをセット
+	//更新
+	Update();
+
+	//定数バッファビューをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBufferTransform->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(2, constBufferSkin->GetGPUVirtualAddress());
 
 	//FBXモデル描画
-	model->Draw(cmdList);
+	fbxModel->Draw(cmdList);
+}
+
+void FbxObject3d::PlayAnimation(bool loop)
+{
+	FbxScene* fbxScene = fbxModel->GetFbxScene();
+	//0番目のアニメーション取得
+	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	//アニメーション名取得
+	const char* animstackname = animStack->GetName();
+
+	//アニメーション時間情報
+	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(animstackname);
+	//開始時間取得
+	startTime = takeInfo->mLocalTimeSpan.GetStart();
+	endTime = takeInfo->mLocalTimeSpan.GetStop();
+	//開始時間に合わせる
+	currentTime = startTime;
+	//再生中
+	isPlay = true;
+	//ループ
+	isLoop = loop;
+}
+
+void FbxObject3d::SetPosition(XMFLOAT3 position)
+{
+	this->position = position;
+}
+
+void FbxObject3d::SetRotation(XMFLOAT3 rotation)
+{
+	this->rotation = rotation;
+}
+
+void FbxObject3d::SetScale(XMFLOAT3 scale)
+{
+	this->scale = scale;
 }

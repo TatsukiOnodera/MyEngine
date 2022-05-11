@@ -1,6 +1,8 @@
 #pragma once
 #include "FbxModel.h"
+#include "FbxLoader.h"
 #include "Camera.h"
+
 #include <Windows.h>
 #include <wrl.h>
 #include <d3d12.h>
@@ -8,7 +10,7 @@
 #include <DirectXMath.h>
 #include <string>
 
-class FbxObject
+class FbxObject3d
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -20,6 +22,10 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 	using string = std::string;
 
+public: //定数
+	//ボーンの最大数
+	static const int MAX_BONES = 32;
+
 public: //サブクラス
 	//定数バッファ構造体
 	struct ConstBufferDataTransform
@@ -29,22 +35,37 @@ public: //サブクラス
 		XMFLOAT3 cameraPos; //カメラ座標（ワールド座標）
 	};
 
+	//定数バッファ用データ構造体
+	struct ConstBufferDataSkin
+	{
+		XMMATRIX bones[MAX_BONES];
+	};
+
 private: //静的メンバ変数
 	//デバイス
 	static ID3D12Device* dev;
+	// コマンドリスト
+	static ID3D12GraphicsCommandList* cmdList;
 	//カメラ
 	static Camera* camera;
 	//パイプラインステートオブジェクト
 	static ComPtr<ID3D12PipelineState> pipelinestate;
 	//ルートシグネチャ
 	static ComPtr<ID3D12RootSignature> rootsignature;
+	//FBX読み込み
+	static FbxLoader* fbxLoader;
 
 public: //静的メンバ関数
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~FbxObject3d();
+
 	/// <summary>
 	/// インスタンス取得
 	/// </summary>
 	/// <returns>インスタンス</returns>
-	static FbxObject *GetInstance();
+	static FbxObject3d* GetInstance();
 
 	/// <summary>
 	/// 静的初期化
@@ -59,15 +80,27 @@ public: //静的メンバ関数
 	static void CreateGraphicsPipeline();
 
 	/// <summary>
+	/// 描画前処理
+	/// </summary>
+	static void PreDraw(ID3D12GraphicsCommandList* cmdList);
+
+	/// <summary>
+	/// 描画後処理
+	/// </summary>
+	static void PostDraw();
+
+	/// <summary>
 	/// FBX作成
 	/// </summary>
 	/// <param name="modelName">FBXモデル名</param>
 	/// <returns></returns>
-	static FbxModel* CreateFBXModel(const string& modelName);
+	static FbxObject3d* CreateFBXObject(const string& modelName);
 
-protected: //メンバ変数
+private: //メンバ変数
 	//定数バッファ
 	ComPtr<ID3D12Resource> constBufferTransform;
+	//定数バッファ（スキン）
+	ComPtr<ID3D12Resource> constBufferSkin;
 	//ローカルスケール
 	XMFLOAT3 scale = { 1, 1, 1 };
 	//ローカル回転角
@@ -77,9 +110,19 @@ protected: //メンバ変数
 	//ローカルワールド行列
 	XMMATRIX matWorld;
 	//FBXモデル
-	FbxModel* model = nullptr;
-	//FBXローダー
-	FbxLoader* loader = nullptr;
+	FbxModel* fbxModel = nullptr;
+	//1フレーム
+	FbxTime frameTime;
+	//アニメーション開始時間
+	FbxTime startTime;
+	//アニメーション終了時間
+	FbxTime endTime;
+	//現在時刻（アニメーション）
+	FbxTime currentTime;
+	//アニメーションフラグ
+	bool isPlay = false;
+	//アニメーションループフラグ
+	bool isLoop = false;
 
 public: //メンバ関数
 	/// <summary>
@@ -95,15 +138,36 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void Draw();
+
+	/// <summary>
+	/// アニメーション開始
+	/// </summary>
+	/// <param name="loop">ループの成否</param>
+	void PlayAnimation(bool loop = false);
 
 public: //アクセッサ
+	/// <summary>
+	/// 座標
+	/// </summary>
+	XMFLOAT3 GetPosition() { return position; }
+	void SetPosition(XMFLOAT3 position);
+
+	/// <summary>
+	/// 回転
+	/// </summary>
+	XMFLOAT3 GetRotation() { return rotation; }
+	void SetRotation(XMFLOAT3 rotation);
+
+	/// <summary>
+	/// スケール
+	/// </summary>
+	XMFLOAT3 GetScale() { return scale; }
+	void SetScale(XMFLOAT3 scale);
+
 	/// <summary>
 	/// FBXモデルのセット
 	/// </summary>
 	/// <param name="model">FBXモデル</param>
-	void SetFBXModel(FbxModel* model) { this->model = model; }
-
-	void SetDevice(ID3D12Device* dev) { this->dev = dev; }
-	void SetCamera(Camera* camera) { this->camera = camera; }
+	void SetFBXModel(FbxModel* fbxModel) { this->fbxModel = fbxModel; }
 };

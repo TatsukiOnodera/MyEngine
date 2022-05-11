@@ -33,7 +33,6 @@ bool Object3d::StaticInitialize(ID3D12Device* device, int window_width, int wind
 	{
 		return false;
 	}
-
 	Object3d::dev = device;
 	Object3d::camera = Camera::GetInstance();
 
@@ -241,60 +240,66 @@ void Object3d::Initialize()
 
 void Object3d::Update()
 {
-	//ワールド行列の更新
-	if (isBillboard == true)
+	if (dirty == true || camera->GetDirty() == true || light->GetDirty() == true)
 	{
-		//ビルボード行列の更新
-		matWorld = XMMatrixIdentity(); //単位行列
-		//拡大行列
-		matWorld *= XMMatrixScaling(scale.x, scale.y, scale.z);
-		//回転行列
-		matWorld *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-		matWorld *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-		matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-		//ビルボード行列
-		matWorld *= camera->GetMatBillboard();
-		//平行移動行列
-		matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
-	}
-	else
-	{
-		matWorld = XMMatrixIdentity(); //単位行列
-		//拡大行列
-		matWorld *= XMMatrixScaling(scale.x, scale.y, scale.z);
-		//回転行列
-		matWorld *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-		matWorld *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-		matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-		//平行移動行列
-		matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
-	}
+		//ワールド行列の更新
+		if (isBillboard == true)
+		{
+			//ビルボード行列の更新
+			matWorld = XMMatrixIdentity(); //単位行列
+			//拡大行列
+			matWorld *= XMMatrixScaling(scale.x, scale.y, scale.z);
+			//回転行列
+			matWorld *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+			matWorld *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+			matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+			//ビルボード行列
+			matWorld *= camera->GetMatBillboard();
+			//平行移動行列
+			matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
+		} 
+		else
+		{
+			matWorld = XMMatrixIdentity(); //単位行列
+			//拡大行列
+			matWorld *= XMMatrixScaling(scale.x, scale.y, scale.z);
+			//回転行列
+			matWorld *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+			matWorld *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+			matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+			//平行移動行列
+			matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
+		}
 
-	const XMMATRIX& matView = camera->GetMatView();
-	const XMMATRIX& matProjection = camera->GetMatProject();
+		const XMMATRIX& matView = camera->GetMatView();
+		const XMMATRIX& matProjection = camera->GetMatProject();
 
-	///定数バッファ転送
-	ConstBufferData* constMap = nullptr;
-	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
-	if (SUCCEEDED(result))
-	{
-		constMap->viewproj = matView * matProjection;
-		constMap->world = matWorld;
-		constMap->cameraPos = camera->GetEye();
-		constMap->color = color;
-		constBuff->Unmap(0, nullptr);
-	}
+		///定数バッファ転送
+		ConstBufferData* constMap = nullptr;
+		HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
+		if (SUCCEEDED(result))
+		{
+			constMap->viewproj = matView * matProjection;
+			constMap->world = matWorld;
+			constMap->cameraPos = camera->GetEye();
+			constMap->color = color;
+			constBuff->Unmap(0, nullptr);
+		}
 
-	model->Update(model->GetMaterial());
+		model->Update(model->GetMaterial());
 
-	if (collider)
-	{
-		collider->Update();
+		if (collider)
+		{
+			collider->Update();
+		}
+
+		dirty = false;
 	}
 }
 
 void Object3d::Draw()
 {
+	//モデルがないなら抜ける
 	if (model == nullptr)
 	{
 		return;
@@ -316,21 +321,25 @@ void Object3d::Draw()
 void Object3d::SetPosition(XMFLOAT3 position)
 {
 	this->position = position;
+	dirty = true;
 }
 
 void Object3d::SetRotation(XMFLOAT3 rotation)
 {
 	this->rotation = rotation;
+	dirty = true;
 }
 
 void Object3d::SetScale(XMFLOAT3 scale)
 {
 	this->scale = scale;
+	dirty = true;
 }
 
 void Object3d::SetColor(XMFLOAT4 color)
 {
 	this->color = color;
+	dirty = true;
 }
 
 void Object3d::SetCollider(BaseCollider* collider)

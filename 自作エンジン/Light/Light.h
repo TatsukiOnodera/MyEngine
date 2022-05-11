@@ -8,7 +8,7 @@
 class Light
 {
 private: // エイリアス
-// Microsoft::WRL::を省略
+	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
@@ -49,6 +49,8 @@ private: //メンバ変数
 	XMFLOAT3 lightColor = {1, 1, 1};
 	//ダーティーフラグ
 	bool dirty = false;
+	//ダーティーフラグが立ったか
+	bool isDirty = true;
 
 public: //メンバ関数
 	/// <summary>
@@ -80,4 +82,10 @@ public: //メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw(ID3D12GraphicsCommandList *cmdList, UINT rootParameterIndex);
+
+	/// <summary>
+	/// ライト更新の成否
+	/// </summary>
+	/// <returns>成否</returns>
+	bool GetDirty() { return isDirty; };
 };
