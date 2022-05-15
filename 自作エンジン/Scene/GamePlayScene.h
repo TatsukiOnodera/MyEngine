@@ -60,13 +60,34 @@ private: //インスタンス
 	//OBJオブジェクト
 	std::unique_ptr<Object3d> chr = nullptr;
 	std::unique_ptr<Object3d> player = nullptr;
+	std::unique_ptr<Object3d> wall[6];
+	std::vector<std::unique_ptr<Object3d>> bullet;
 
 	//FBXオブジェクト
 	//std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
 private: //メンバ変数
-	float angleY;
-	float angleX;
+	int frame = 0;
+
+	float gravity = 0;
+
+	float angleY = 0;
+	float angleX = 0;
+
+	enum WALLNUMBER
+	{
+		FRONT, BACK, RIGHT, LEFT, UP, DOWN, FIN,
+	};
+
+	struct BulletInfo
+	{
+		bool is_alive = false;
+
+		XMFLOAT3 vec = { 0, 0, 0 };
+
+		int deleteTimer = 0;
+	};
+	std::vector<std::unique_ptr<BulletInfo>> bulletInfo;
 
 public: //メンバ関数
 	~GamePlayScene();
@@ -115,4 +136,20 @@ public: //メンバ関数
 	/// デバッグテキスト描画
 	/// </summary>
 	void DrawDebugText(ID3D12GraphicsCommandList* cmdList);
+
+	/// <summary>
+	/// AからBへのベクトルの成分を求める
+	/// </summary>
+	/// <param name="objectA">オブジェクトA</param>
+	/// <param name="objectB">オブジェクトB</param>
+	/// <returns>ベクトルの成分</returns>
+	XMFLOAT3 GetVectorAtoB(XMFLOAT3 objectA, XMFLOAT3 objectB);
+
+	/// <summary>
+	/// AからBへの距離を求める
+	/// </summary>
+	/// <param name="objectA">オブジェクトA</param>
+	/// <param name="objectB">オブジェクトB</param>
+	/// <returns>距離</returns>
+	float GetLength(XMFLOAT3 objectA, XMFLOAT3 objectB);
 };
