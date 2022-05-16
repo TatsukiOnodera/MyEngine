@@ -141,28 +141,27 @@ void GamePlayScene::Update()
 	//自機移動
 	{
 		//移動
-		if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
+		if ((input->PushKey(DIK_D) || input->PushKey(DIK_A)) || (input->PushKey(DIK_W) || input->PushKey(DIK_S)))
 		{
 			pVec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.25f;
-		}
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
-		{
 			pVec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.25f;
+			player->SetRotation({ 0, angleY, 0 });
 		}
 
 		//ジャンプ
 		if (input->PushKey(DIK_SPACE))
 		{
 			pVec.y += 0.25f;
+			frame = 0;
 		} 
 		else
 		{
 			frame++;
-			pVec.y -= gravity * powf(static_cast<float>(frame) / 60, 2);
+			pVec.y -= gravity * powf(frame / 60, 2);
 
 			if (pPos.y + pVec.y < -100)
 			{
-				pVec.y = 0;
+				pVec.y = -100 - pPos.y;
 				frame = 0;
 			}
 		}
@@ -170,7 +169,6 @@ void GamePlayScene::Update()
 		//セット
 		pPos = camera->ConvertWindowPos(pPos, pVec, angleY);
 		player->SetPosition(pPos);
-		player->SetRotation({ 0, angleY, 0 });
 	}
 
 	//攻撃
@@ -238,7 +236,7 @@ void GamePlayScene::Update()
 		//上下に向く
 		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
 		{
-			angleX += (input->PushKey(DIK_DOWN) - input->PushKey(DIK_UP)) * 2;
+			angleX += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 2;
 
 			if (angleX > 360)
 			{

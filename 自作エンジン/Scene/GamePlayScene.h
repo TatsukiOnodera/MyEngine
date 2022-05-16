@@ -67,7 +67,7 @@ private: //インスタンス
 	//std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
 private: //メンバ変数
-	int frame = 0;
+	float frame = 0;
 
 	float gravity = 0;
 
