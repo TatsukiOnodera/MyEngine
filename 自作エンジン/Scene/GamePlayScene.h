@@ -55,29 +55,33 @@ private: //オブジェクトのメモリ
 	std::unique_ptr<ParticleManager> particle = nullptr;
 
 	//スプライト
-	std::unique_ptr<Sprite> demo_back = nullptr;
+	
 
 	//OBJオブジェクト
-	std::unique_ptr<Object3d> airResistance = nullptr;
-	std::unique_ptr<Object3d> friction = nullptr;
+	std::unique_ptr<Object3d> ballA = nullptr;
+	std::unique_ptr<Object3d> ballB = nullptr;
 
 	//FBXオブジェクト
 
 private: //メンバ変数
 	//スイッチ
-	bool is_airResistance;
-	bool is_friction;
+	bool isStart;
 
-	//加速度
-	XMFLOAT2 airAcc;
-	float friAcc;
+	//初速度
+	float v0A;
+	float v0B;
 
-	//抵抗力
-	float kv;
+	//速さ
+	float vA;
+	float vB;
 
-	//速度
-	XMFLOAT2 airV;
-	float friV;
+	//質量
+	float mA;
+	float mB;
+
+	//半径
+	float rA;
+	float rB;
 
 	//重力加速度
 	const float gravity = 9.8;

@@ -344,7 +344,7 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& s
         for (int j = 0; j < 4; j++)
         {
             //要素をコピー
-            dst->r->m128_f32[j] = (float)src.Get(i, j);
+            dst->r[i].m128_f32[j] = (float)src.Get(i, j);
         }
     }
 }

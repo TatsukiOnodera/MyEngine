@@ -38,11 +38,11 @@ void GamePlayScene::Initialize()
 	Object3d::SetLight(light.get());
 
 	//スプライト
-	demo_back.reset(Sprite::CreateSprite(1));
+	
 
 	//オブジェクト
-	airResistance.reset(Object3d::Create("Bullet", true));
-	friction.reset(Object3d::Create("Bullet", true));
+	ballA.reset(Object3d::Create("Bullet", true));
+	ballB.reset(Object3d::Create("chr_sword", true));
 
 	//パラメーター
 	camera->SetEye({ 0, 0, -500 });
@@ -56,89 +56,67 @@ void GamePlayScene::ResetVariable()
 {
 	timer = 0;
 
-	is_airResistance = false;
-	is_friction = false;
+	isStart = false;
 
-	airAcc = { 0, 0 };
-	friAcc = 0;
+	v0A = 10;
+	v0B = -10;
 
-	kv = 0;
+	vA = v0A;
+	vB = v0B;
 
-	airV = { 20, 8 };
-	friV = 10;
+	mA = 20;
+	mB = 10;
 
-	airResistance->SetPosition({-400, 0, 0});
-	friction->SetPosition({ -400, -250, 0 });
+	rA = 10;
+	rB = 10;
 
-	airResistance->SetScale({ 10, 10, 10 });
-	friction->SetScale({ 10, 10, 10 });
+	ballA->SetPosition({-400, -100, 0});
+	ballB->SetPosition({ 400, -100, 0 });
 
-	airResistance->Update();
-	friction->Update();
+	ballA->SetScale({ rA, rA, rA });
+	ballB->SetScale({ rB, rB, rB });
+
+	ballA->Update();
+	ballB->Update();
 }
 
 void GamePlayScene::Update()
 {
-	if (input->TriggerKey(DIK_R) && is_airResistance == false && is_friction == false)
+	if (input->TriggerKey(DIK_R))
 	{
 		ResetVariable();
-		is_airResistance = true;
-		is_friction = true;
+		isStart = true;
 	}
 
 	//座標取得
-	XMFLOAT3 airPos = airResistance->GetPosition();
-	XMFLOAT3 friPos = friction->GetPosition();
+	XMFLOAT3 posA = ballA->GetPosition();
+	XMFLOAT3 posB = ballB->GetPosition();
 
-	if (is_airResistance == true)
+	if (isStart == true)
 	{
-		//重力
-		airAcc.y = -0.5f * gravity * powf(static_cast<float>(timer) / 60, 2);
-		airV.y += airAcc.y;
-		airPos.y += airV.y;
-		if (airPos.y < 0)
-		{
-			airPos.y = 0;
-			is_airResistance = false;
-		}
+		posA.x += vA;
+		posB.x += vB;
 
-		//横に飛ぶ（空気抵抗）
-		kv = 0.001f * airV.x;
-		airAcc.x = kv / 0.1f;
-		airV.x -= airAcc.x;
-		if (airV.x < 0)
-		{
-			airV.x = 0;
-		}
-		airPos.x += airV.x;
-
-		airResistance->SetPosition(airPos);
+		ballA->SetPosition(posA);
+		ballB->SetPosition(posB);
 	}
-	if (is_friction == true)
+	if (powf(posA.x - posB.x, 2) <= powf(rA + rB, 2))
 	{
-		//摩擦
-		float m = 20.0f;
-		float N = m * (gravity * powf(static_cast<float>(timer) / 60, 2));
-		float F = friV - (0.8 * N);
-		friAcc = F / m;
-		friV += friAcc;
-		if (friV < 0)
-		{
-			friV = 0;
-			is_friction = false;
-		}
-		friPos.x += friV;
-
-		friction->SetPosition(friPos);
+		//左辺
+		float left = mA * vA + mB * vB;
+		vA = left / (mA * -1 + mA * 0);
+		vB = left / (mB * 0 + mB * 1);
 	}
-	if (is_airResistance == true || is_friction == true)
+	if (isStart == true)
 	{
 		timer++;
+		if (timer > 60)
+		{
+			isStart = false;
+		}
 	}
 
 	debugText.Print("R : Start / ReStart", 10, 10, 2);
-	debugText.Print("airResistance", 600, 50, 2);
-	debugText.Print("friction", 600, 400, 2);
 }
 
 void GamePlayScene::Draw()
@@ -151,7 +129,7 @@ void GamePlayScene::Draw()
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//各描画
-	DrawBackSprite(cmdList);
+	//DrawBackSprite(cmdList);
 	Draw(cmdList);
 	//DrawParticle(cmdList);
 	//DrawUI(cmdList);
@@ -163,7 +141,7 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	//demo_back->Draw();
+	
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
@@ -174,8 +152,8 @@ void GamePlayScene::Draw(ID3D12GraphicsCommandList* cmdList)
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	airResistance->Draw();
-	friction->Draw();
+	ballA->Draw();
+	ballB->Draw();
 
 	Object3d::PostDraw();
 
