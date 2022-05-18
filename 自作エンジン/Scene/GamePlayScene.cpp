@@ -42,7 +42,7 @@ void GamePlayScene::Initialize()
 
 	//オブジェクト
 	ballA.reset(Object3d::Create("Bullet", true));
-	ballB.reset(Object3d::Create("Bullet"));
+	ballB.reset(Object3d::Create("ball", true));
 
 	//パラメーター
 	camera->SetEye({ 0, 0, -300 });
