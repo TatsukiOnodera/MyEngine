@@ -65,7 +65,8 @@ private: //オブジェクトのメモリ
 
 private: //メンバ変数
 	//スイッチ
-	bool isStart;
+	bool isStartA;
+	bool isStartB;
 
 	//初速度
 	float v0A;

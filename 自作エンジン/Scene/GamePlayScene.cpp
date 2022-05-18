@@ -42,10 +42,10 @@ void GamePlayScene::Initialize()
 
 	//オブジェクト
 	ballA.reset(Object3d::Create("Bullet", true));
-	ballB.reset(Object3d::Create("chr_sword", true));
+	ballB.reset(Object3d::Create("Bullet"));
 
 	//パラメーター
-	camera->SetEye({ 0, 0, -500 });
+	camera->SetEye({ 0, 0, -300 });
 	ResetVariable();
 
 	//オーディオ
@@ -56,7 +56,8 @@ void GamePlayScene::ResetVariable()
 {
 	timer = 0;
 
-	isStart = false;
+	isStartA = false;
+	isStartB = false;
 
 	v0A = 10;
 	v0B = -10;
@@ -70,8 +71,8 @@ void GamePlayScene::ResetVariable()
 	rA = 10;
 	rB = 10;
 
-	ballA->SetPosition({-400, -100, 0});
-	ballB->SetPosition({ 400, -100, 0 });
+	ballA->SetPosition({-200, -100, 0});
+	ballB->SetPosition({ 200, -100, 0 });
 
 	ballA->SetScale({ rA, rA, rA });
 	ballB->SetScale({ rB, rB, rB });
@@ -85,20 +86,21 @@ void GamePlayScene::Update()
 	if (input->TriggerKey(DIK_R))
 	{
 		ResetVariable();
-		isStart = true;
+		isStartA = true;
+		isStartB = true;
 	}
 
 	//座標取得
 	XMFLOAT3 posA = ballA->GetPosition();
 	XMFLOAT3 posB = ballB->GetPosition();
 
-	if (isStart == true)
+	if (isStartA == true)
 	{
 		posA.x += vA;
+	}
+	if (isStartB == true)
+	{
 		posB.x += vB;
-
-		ballA->SetPosition(posA);
-		ballB->SetPosition(posB);
 	}
 	if (powf(posA.x - posB.x, 2) <= powf(rA + rB, 2))
 	{
@@ -107,13 +109,25 @@ void GamePlayScene::Update()
 		vA = left / (mA * -1 + mA * 0);
 		vB = left / (mB * 0 + mB * 1);
 	}
-	if (isStart == true)
+	if (isStartA == true)
 	{
-		timer++;
-		if (timer > 60)
+		if (posA.x < -200)
 		{
-			isStart = false;
+			posA.x = -200;
+			isStartA = false;
 		}
+
+		ballA->SetPosition(posA);
+	}
+	if (isStartB == true)
+	{
+		if (posB.x > 200)
+		{
+			posB.x = 200;
+			isStartB = false;
+		}
+
+		ballB->SetPosition(posB);
 	}
 
 	debugText.Print("R : Start / ReStart", 10, 10, 2);
