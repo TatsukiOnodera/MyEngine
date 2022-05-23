@@ -34,15 +34,17 @@ void GamePlayScene::Initialize()
 	//ライト生成
 	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
-	light->SetLightDir({-1, -1, 0, 0});
+	light->SetLightDir({-5, -5, 0, 0});
 	Object3d::SetLight(light.get());
 
 	//スプライト
 	demo_back.reset(Sprite::CreateSprite(1));
 
 	//OBJオブジェクト
-	chr.reset(Object3d::Create("chr_sword"));
-	player.reset(Object3d::Create("bullet", true));
+	for (int i = 0; i < wall.size(); i++)
+	{
+		wall[i].reset(Object3d::Create("Wall"));
+	}
 
 	//FBXオブェクト
 	fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
@@ -57,14 +59,50 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetVariable()
 {
-	angleX = 0;
-	angleY = 0;
+	fbxObject->SetPosition({ 0, 0, 0 });
+	fbxObject->Update();
 
-	chr->SetPosition({ 0, 0, 10 });
-	chr->Update();
-
-	player->SetPosition({ 0, 0, 0 });
-	player->Update();
+	for (int i = 0; i < FIN; i++)
+	{
+		float size = 100;
+		XMFLOAT3 pos = { 0, 0, 0 };
+		XMFLOAT3 rot = { 0, 0, 0 };
+		XMFLOAT3 scale = { size, size, size };
+		if (i == FRONT)
+		{
+			pos = { 0, 0, size };
+			rot = { 0, 180, 0 };
+		} 
+		else if (i == BACK)
+		{
+			pos = { 0, 0, -size };
+			rot = { 0, 0, 0 };
+		}
+		else if (i == RIGHT)
+		{
+			pos = { size, 0, 0 };
+			rot = { 0, -90, 0 };
+		}
+		else if (i == LEFT)
+		{
+			pos = { -size, 0, 0 };
+			rot = { 0, 90, 0 };
+		}
+		else if (i == UP)
+		{
+			pos = { 0, size, 0 };
+			rot = { 90, 0, 0 };
+		}
+		else if (i == DOWN)
+		{
+			pos = { 0, -size, 0 };
+			rot = { -90, 0, 0 };
+		}
+		wall[i]->SetPosition(pos);
+		wall[i]->SetRotation(rot);
+		wall[i]->SetScale(scale);
+		wall[i]->Update();
+	}
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 5, -10 });
@@ -73,40 +111,6 @@ void GamePlayScene::ResetVariable()
 
 void GamePlayScene::Update()
 {
-	{
-		//自機移動
-		XMFLOAT3 pos = player->GetPosition();
-		XMFLOAT3 vec = { 0, 0, 0 };
-		if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
-		{
-			vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.25f;
-		}
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
-		{
-			vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.25f;
-		}
-		pos = camera->ConvertWindowPos(pos, vec, angleY);
-		player->SetPosition(pos);
-	
-		//カメラ回転
-		if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
-		{
-			angleY += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 2;
-		}
-		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
-		{
-			angleX += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 2;
-		}
-		XMFLOAT3 eye = camera->FollowUpCamera(pos, { 0, 1, -10 }, angleX, angleY);
-		camera->SetEye(eye);
-	
-		//リセット
-		if (input->TriggerKey(DIK_SPACE))
-		{
-			ResetVariable();
-		}
-	}
-
 	//移動
 	XMFLOAT3 pos = fbxObject->GetPosition();
 	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
@@ -146,8 +150,8 @@ void GamePlayScene::Draw()
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//各描画
-	DrawBackSprite(cmdList);
-	Draw(cmdList);
+	//DrawBackSprite(cmdList);
+	DrawOthers(cmdList);
 	//DrawParticle(cmdList);
 	//DrawUI(cmdList);
 	DrawDebugText(cmdList);
@@ -164,13 +168,15 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::Draw(ID3D12GraphicsCommandList* cmdList)
+void GamePlayScene::DrawOthers(ID3D12GraphicsCommandList* cmdList)
 {
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	/*chr->Draw();
-	player->Draw();*/
+	for (int i = 0; i < FIN; i++)
+	{
+		wall[i]->Draw();
+	}
 
 	Object3d::PostDraw();
 

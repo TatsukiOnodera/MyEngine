@@ -16,6 +16,7 @@
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <memory>
+#include <array>
 
 class GamePlayScene : public BaseScene
 {
@@ -58,15 +59,16 @@ private: //インスタンス
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
 	//OBJオブジェクト
-	std::unique_ptr<Object3d> chr = nullptr;
-	std::unique_ptr<Object3d> player = nullptr;
+	std::array<std::unique_ptr<Object3d>, 6> wall;
 
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
 private: //メンバ変数
-	float angleY;
-	float angleX;
+	enum WALLNUMBER
+	{
+		FRONT, BACK, RIGHT, LEFT, UP, DOWN, FIN,
+	};
 
 public: //メンバ関数
 	~GamePlayScene();
@@ -99,7 +101,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void DrawOthers(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// パーティクル描画
