@@ -11,6 +11,7 @@
 #include "AbstractSceneFactory.h"
 #include "Light.h"
 #include "FbxObject3d.h"
+#include "PostEffect.h"
 
 #include <memory>
 

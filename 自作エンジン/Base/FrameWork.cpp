@@ -62,6 +62,12 @@ void FrameWork::Initialize()
 		assert(0);
 	}
 
+	//ポストエフェクト静的初期化
+	if (!PostEffect::StaticInitialize(dx_cmd->GetDev(), WinApp::window_width, WinApp::window_height))
+	{
+		assert(0);
+	}
+
 	//ライト静的初期化
 	if (!Light::StaticInitialize(dx_cmd->GetDev()))
 	{

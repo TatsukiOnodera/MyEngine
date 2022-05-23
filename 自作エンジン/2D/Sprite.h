@@ -15,7 +15,7 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private: //静的変数
+protected: //静的変数
 	//DirectXCommon->dev
 	static ID3D12Device* dev;
 
@@ -85,7 +85,7 @@ public: //サブクラス
 		XMFLOAT2 uv; //uv座標
 	};
 
-private: //メンバ変数
+protected: //メンバ変数
 	//頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 

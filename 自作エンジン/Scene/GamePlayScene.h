@@ -12,6 +12,7 @@
 #include "Light.h"
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
+#include "PostEffect.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -62,6 +63,9 @@ private: //インスタンス
 	//パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
 
+	//ポストエフェクト
+	std::unique_ptr<PostEffect> postEffect = nullptr;
+
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
@@ -109,9 +113,9 @@ public: //メンバ関数
 	void DrawOthers(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
-	/// パーティクル描画
+	/// エフェクト描画
 	/// </summary>
-	void DrawParticle(ID3D12GraphicsCommandList* cmdList);
+	void DrawEffect(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// UI描画

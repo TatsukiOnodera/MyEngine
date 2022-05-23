@@ -130,7 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Particle\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -152,7 +152,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Particle\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -183,11 +183,12 @@
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
+    <ClCompile Include="Effect\ParticleManager.cpp" />
+    <ClCompile Include="Effect\PostEffect.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
     <ClCompile Include="Scene\SceneFactory.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
@@ -212,13 +213,14 @@
     <ClInclude Include="Collision\CollisionType.h" />
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
+    <ClInclude Include="Effect\ParticleManager.h" />
+    <ClInclude Include="Effect\PostEffect.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Light\Light.h" />
     <ClInclude Include="Light\LightGroup.h" />
     <ClInclude Include="Light\PointLight.h" />
-    <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\GamePlayScene.h" />
