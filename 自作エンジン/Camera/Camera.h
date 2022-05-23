@@ -25,6 +25,8 @@ private: //メンバ変数
 	XMFLOAT3 eye = { 0, 0, -50 };
 	//上方向ベクトル
 	XMFLOAT3 up = { 0, 1, 0 };
+	//注視点から始点までの距離
+	XMFLOAT3 distance = { 0, 0, 0 };
 	//ビュー行列
 	XMMATRIX matView;
 	//射影行列
@@ -68,8 +70,7 @@ public: //メンバ関数
 	/// <param name="eye">注視点から始点への成分</param>
 	/// <param name="addAngleX">X軸の角度</param>
 	/// <param name="addAngleY">Y軸の角度</param>
-	/// <returns>始点座標</returns>
-	XMFLOAT3 FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY);
+void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY);
 
 	/// <summary>
 	/// カメラを軸に座標を移動
@@ -115,6 +116,17 @@ public: //アクセッサ
 	/// </summary>
 	/// <param name="up">上の向き</param>
 	void SetUp(XMFLOAT3 up);
+
+	/// <summary>
+	/// 注視点から始点までの距離取得
+	/// </summary>
+	/// <returns>注視点から始点までの距離</returns>
+	XMFLOAT3 GetDistance() { return distance; }
+
+	/// <summary>
+	/// 注視点から始点までの距離セット
+	/// </summary>
+	void SetDistance();
 
 	/// <summary>
 	/// ビュー行列の取得

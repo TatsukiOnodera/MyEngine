@@ -136,6 +136,13 @@ void Camera::SetUp(XMFLOAT3 up)
 	dirty = true;
 }
 
+void Camera::SetDistance()
+{
+	distance.x = eye.x - target.x;
+	distance.y = eye.y - target.y;
+	distance.z = eye.z - target.z;
+}
+
 void Camera::MoveCamera(XMFLOAT3 move)
 {
 	this->eye.x += move.x;
@@ -148,7 +155,7 @@ void Camera::MoveCamera(XMFLOAT3 move)
 	dirty = true;
 }
 
-XMFLOAT3 Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY)
+void Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY)
 {
 	//注視点セット
 	SetTarget(target);
@@ -171,7 +178,8 @@ XMFLOAT3 Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, 
 	//注視点に足して視点を求める
 	XMFLOAT3 eyePosition = { target.x + V.m128_f32[0], target.y + V.m128_f32[1], target.z + V.m128_f32[2] };
 
-	return eyePosition;
+	//始点をセット
+	SetEye(eyePosition);
 }
 
 XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec)

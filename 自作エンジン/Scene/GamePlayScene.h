@@ -30,7 +30,14 @@ public: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 private: //定数
+	//デバッグテキスト用テクスチャの番号
 	const int fontNumber = 0;
+
+	//壁の配置
+	enum WALLNUMBER
+	{
+		FRONT, BACK, RIGHT, LEFT, UP, DOWN, END
+	};
 
 private: //メモリ置き場
 	//DIrectXCommon
@@ -59,16 +66,14 @@ private: //インスタンス
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
 	//OBJオブジェクト
-	std::array<std::unique_ptr<Object3d>, 6> wall;
-
+	std::array<std::unique_ptr<Object3d>, END> defaultWall;
+	
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
 private: //メンバ変数
-	enum WALLNUMBER
-	{
-		FRONT, BACK, RIGHT, LEFT, UP, DOWN, FIN,
-	};
+	
+
 
 public: //メンバ関数
 	~GamePlayScene();

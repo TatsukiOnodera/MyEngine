@@ -41,9 +41,9 @@ void GamePlayScene::Initialize()
 	demo_back.reset(Sprite::CreateSprite(1));
 
 	//OBJオブジェクト
-	for (int i = 0; i < wall.size(); i++)
+	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		wall[i].reset(Object3d::Create("Wall"));
+		defaultWall[i].reset(Object3d::Create("Wall"));
 	}
 
 	//FBXオブェクト
@@ -60,13 +60,15 @@ void GamePlayScene::Initialize()
 void GamePlayScene::ResetVariable()
 {
 	fbxObject->SetPosition({ 0, 0, 0 });
+	fbxObject->SetRotation({ 0, 90, 0 });
+	fbxObject->SetScale({ 1, 1, 1 });
 	fbxObject->Update();
 
-	for (int i = 0; i < FIN; i++)
+	for (int i = 0; i < defaultWall.size(); i++)
 	{
 		float size = 100;
-		XMFLOAT3 pos = { 0, 0, 0 };
-		XMFLOAT3 rot = { 0, 0, 0 };
+		XMFLOAT3 pos;
+		XMFLOAT3 rot;
 		XMFLOAT3 scale = { size, size, size };
 		if (i == FRONT)
 		{
@@ -98,14 +100,15 @@ void GamePlayScene::ResetVariable()
 			pos = { 0, -size, 0 };
 			rot = { -90, 0, 0 };
 		}
-		wall[i]->SetPosition(pos);
-		wall[i]->SetRotation(rot);
-		wall[i]->SetScale(scale);
-		wall[i]->Update();
+		defaultWall[i]->SetPosition(pos);
+		defaultWall[i]->SetRotation(rot);
+		defaultWall[i]->SetScale(scale);
+		defaultWall[i]->Update();
 	}
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 5, -10 });
+	camera->SetDistance();
 	camera->Update();
 }
 
@@ -115,29 +118,25 @@ void GamePlayScene::Update()
 	XMFLOAT3 pos = fbxObject->GetPosition();
 	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
 	{
-		pos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.25f;
+		pos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
 	}
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
-		pos.y += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.25f;
+		pos.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
 	}
 	fbxObject->SetPosition(pos);
 
 	//カメラ
-	XMFLOAT3 eye = {0, 0, 0};
+	XMFLOAT2 angle = { 0, 0 };
 	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
-		eye.x += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 0.25f;
+		angle.y += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 1;
 	}
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
 	{
-		eye.y += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 0.25f;
+		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
 	}
-	if (input->PushKey(DIK_RSHIFT) || input->PushKey(DIK_END))
-	{
-		eye.z += (input->PushKey(DIK_END) - input->PushKey(DIK_RSHIFT)) * 0.25f;
-	}
-	camera->MoveCamera(eye);
+	camera->FollowUpCamera(pos, camera->GetDistance(), angle.x, angle.y);
 }
 
 void GamePlayScene::Draw()
@@ -173,9 +172,9 @@ void GamePlayScene::DrawOthers(ID3D12GraphicsCommandList* cmdList)
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	for (int i = 0; i < FIN; i++)
+	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		wall[i]->Draw();
+		defaultWall[i]->Draw();
 	}
 
 	Object3d::PostDraw();
