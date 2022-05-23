@@ -148,13 +148,17 @@ void Camera::MoveCamera(XMFLOAT3 move)
 	dirty = true;
 }
 
-XMFLOAT3 Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float angleX, float angleY)
+XMFLOAT3 Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY)
 {
 	//注視点セット
 	SetTarget(target);
 
 	//オフセットベクトル
 	XMVECTOR v0 = { eye.x, eye.y, eye.z, 0 };
+
+	//軸の角度に加算する
+	angleX += addAngleX;
+	angleY += addAngleY;
 
 	//回転行列
 	XMMATRIX rotM = XMMatrixIdentity();
@@ -170,7 +174,7 @@ XMFLOAT3 Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float angleX, flo
 	return eyePosition;
 }
 
-XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec, float angleY)
+XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec)
 {
 	//移動ベクトル
 	XMVECTOR v0 = { vec.x, vec.y, vec.z, 0 };

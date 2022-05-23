@@ -33,6 +33,10 @@ private: //メンバ変数
 	XMMATRIX matBillboard;
 	//Y軸ビルボード行列
 	XMMATRIX matBillboardY;
+	//X軸の角度
+	float angleX = 0.0f;
+	//Y軸の角度
+	float angleY = 0.0f;
 	//ダーティーフラグ
 	bool dirty = true;
 	//	更新したか
@@ -62,19 +66,18 @@ public: //メンバ関数
 	/// </summary>
 	/// <param name="target">注視点</param>
 	/// <param name="eye">注視点から始点への成分</param>
-	/// <param name="angleX">X軸の角度</param>
-	/// <param name="angleY">Y軸の角度</param>
+	/// <param name="addAngleX">X軸の角度</param>
+	/// <param name="addAngleY">Y軸の角度</param>
 	/// <returns>始点座標</returns>
-	XMFLOAT3 FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float angleX, float angleY);
+	XMFLOAT3 FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY);
 
 	/// <summary>
 	/// カメラを軸に座標を移動
 	/// </summary>
 	/// <param name="pos">初期位置</param>
 	/// <param name="vec">移動量</param>
-	/// <param name="angleY">Y軸の角度</param>
 	/// <returns>移動した後の座標</returns>
-	XMFLOAT3 ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec, float angleY);
+	XMFLOAT3 ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec);
 
 public: //アクセッサ
 	/// <summary>
