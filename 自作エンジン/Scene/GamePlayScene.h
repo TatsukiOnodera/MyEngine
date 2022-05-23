@@ -58,8 +58,8 @@ private: //インスタンス
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
 	//OBJオブジェクト
-	/*std::unique_ptr<Object3d> chr = nullptr;
-	std::unique_ptr<Object3d> player = nullptr;*/
+	std::unique_ptr<Object3d> chr = nullptr;
+	std::unique_ptr<Object3d> player = nullptr;
 
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;

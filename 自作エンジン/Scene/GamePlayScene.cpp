@@ -41,8 +41,8 @@ void GamePlayScene::Initialize()
 	demo_back.reset(Sprite::CreateSprite(1));
 
 	//OBJオブジェクト
-	/*chr.reset(Object3d::Create("chr_sword"));
-	player.reset(Object3d::Create("bullet", true));*/
+	chr.reset(Object3d::Create("chr_sword"));
+	player.reset(Object3d::Create("bullet", true));
 
 	//FBXオブェクト
 	fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
@@ -57,14 +57,14 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetVariable()
 {
-	/*angleX = 0;
+	angleX = 0;
 	angleY = 0;
 
 	chr->SetPosition({ 0, 0, 10 });
 	chr->Update();
 
 	player->SetPosition({ 0, 0, 0 });
-	player->Update();*/
+	player->Update();
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 5, -10 });
@@ -73,39 +73,39 @@ void GamePlayScene::ResetVariable()
 
 void GamePlayScene::Update()
 {
-	//{
-	//	//自機移動
-	//	XMFLOAT3 pos = player->GetPosition();
-	//	XMFLOAT3 vec = { 0, 0, 0 };
-	//	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
-	//	{
-	//		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.25f;
-	//	}
-	//	if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
-	//	{
-	//		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.25f;
-	//	}
-	//	pos = camera->ConvertWindowPos(pos, vec, angleY);
-	//	player->SetPosition(pos);
-	//
-	//	//カメラ回転
-	//	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
-	//	{
-	//		angleY += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 2;
-	//	}
-	//	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
-	//	{
-	//		angleX += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 2;
-	//	}
-	//	XMFLOAT3 eye = camera->FollowUpCamera(pos, { 0, 1, -10 }, angleX, angleY);
-	//	camera->SetEye(eye);
-	//
-	//	//リセット
-	//	if (input->TriggerKey(DIK_SPACE))
-	//	{
-	//		ResetVariable();
-	//	}
-	//}
+	{
+		//自機移動
+		XMFLOAT3 pos = player->GetPosition();
+		XMFLOAT3 vec = { 0, 0, 0 };
+		if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
+		{
+			vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.25f;
+		}
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
+		{
+			vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.25f;
+		}
+		pos = camera->ConvertWindowPos(pos, vec, angleY);
+		player->SetPosition(pos);
+	
+		//カメラ回転
+		if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+		{
+			angleY += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 2;
+		}
+		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
+		{
+			angleX += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 2;
+		}
+		XMFLOAT3 eye = camera->FollowUpCamera(pos, { 0, 1, -10 }, angleX, angleY);
+		camera->SetEye(eye);
+	
+		//リセット
+		if (input->TriggerKey(DIK_SPACE))
+		{
+			ResetVariable();
+		}
+	}
 
 	//移動
 	XMFLOAT3 pos = fbxObject->GetPosition();
