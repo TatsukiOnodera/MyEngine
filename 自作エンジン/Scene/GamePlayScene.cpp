@@ -123,15 +123,16 @@ void GamePlayScene::ResetVariable()
 void GamePlayScene::Update()
 {
 	//ˆÚ“®
-	XMFLOAT3 pos = fbxObject->GetPosition();
+	XMFLOAT3 vec = { 0, 0, 0 };
 	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
 	{
-		pos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
+		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
 	}
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
-		pos.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
+		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
 	}
+	XMFLOAT3 pos = camera->ConvertWindowPos(fbxObject->GetPosition(), vec);
 	fbxObject->SetPosition(pos);
 
 	//ƒJƒƒ‰
