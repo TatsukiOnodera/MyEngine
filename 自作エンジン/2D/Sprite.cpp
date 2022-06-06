@@ -185,12 +185,14 @@ void Sprite::CreateSpriteCommon(int window_width, int window_height)
 	matProjection = XMMatrixOrthographicOffCenterLH(
 		0.0f, (float)window_width, (float)window_height, 0.0f, 0.0f, 1.0f);
 
-	//デスクリプタヒープを生成
+	//デスクリプタヒープを設定
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc{};
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	descHeapDesc.NumDescriptors = spriteSRVCount;
+	//デスクリプタヒープを生成
 	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));
+	assert(SUCCEEDED(result));
 }
 
 void Sprite::LoadTexture(UINT texNumber, const wchar_t* filename)
@@ -240,8 +242,7 @@ void Sprite::LoadTexture(UINT texNumber, const wchar_t* filename)
 
 	//シェーダリソースビュー設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; //設定構造体
-	D3D12_RESOURCE_DESC resDesc = texBuff[texNumber]->GetDesc();
-	srvDesc.Format = metadate.format; //RGBA	srvDesc.Format = resDesc.Format;
+	srvDesc.Format = metadate.format; //RGBA
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; //２Dテクスチャ
 	srvDesc.Texture2D.MipLevels = 1;
