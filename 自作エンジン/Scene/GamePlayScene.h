@@ -110,7 +110,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void DrawOthers(ID3D12GraphicsCommandList* cmdList);
+	void DrawObjects(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// エフェクト描画

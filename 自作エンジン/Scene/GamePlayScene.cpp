@@ -158,10 +158,12 @@ void GamePlayScene::Draw()
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//各描画
-	//DrawBackSprite(cmdList);
-	//DrawOthers(cmdList);
+	postEffect->PreDrawScene(cmdList);
+	DrawBackSprite(cmdList);
+	DrawObjects(cmdList);
+	postEffect->PostDrawScene(cmdList);
 	DrawEffect(cmdList);
-	//DrawUI(cmdList);
+	DrawUI(cmdList);
 	DrawDebugText(cmdList);
 }
 
@@ -176,7 +178,7 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	dx_cmd->ClearDepth();
 }
 
-void GamePlayScene::DrawOthers(ID3D12GraphicsCommandList* cmdList)
+void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 {
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
