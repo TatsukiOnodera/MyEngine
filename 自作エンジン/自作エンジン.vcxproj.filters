@@ -96,9 +96,6 @@
     <ClCompile Include="Input\Input.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Particle\ParticleManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="2D\Sprite.cpp">
       <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
     </ClCompile>
@@ -147,6 +144,9 @@
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene\Others</Filter>
     </ClCompile>
+    <ClCompile Include="Effect\ParticleManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -166,9 +166,6 @@
     </ClInclude>
     <ClInclude Include="Input\Input.h">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Particle\ParticleManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClInclude>
     <ClInclude Include="2D\Sprite.h">
       <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
@@ -241,6 +238,9 @@
     </ClInclude>
     <ClInclude Include="Scene\BaseScene.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect\ParticleManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

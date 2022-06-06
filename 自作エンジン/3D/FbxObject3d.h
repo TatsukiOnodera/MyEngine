@@ -166,6 +166,12 @@ public: //アクセッサ
 	void SetScale(XMFLOAT3 scale);
 
 	/// <summary>
+	/// ループ
+	/// </summary>
+	bool GetLoop() { return isLoop; }
+	void SetLoop(bool loop);
+
+	/// <summary>
 	/// FBXモデルのセット
 	/// </summary>
 	/// <param name="model">FBXモデル</param>

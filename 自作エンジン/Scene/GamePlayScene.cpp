@@ -47,7 +47,7 @@ void GamePlayScene::Initialize()
 	}
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
+	fbxObject.reset(FbxObject3d::CreateFBXObject("Flying"));
 	fbxObject->PlayAnimation(true);
 
 	//パラメーター
@@ -115,15 +115,17 @@ void GamePlayScene::ResetVariable()
 void GamePlayScene::Update()
 {
 	//移動
-	XMFLOAT3 pos = fbxObject->GetPosition();
+	XMFLOAT3 vec = { 0, 0, 0 };
 	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
 	{
-		pos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
+		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
 	}
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
-		pos.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
+		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
 	}
+	XMFLOAT3 pos = fbxObject->GetPosition();
+	pos = camera->ConvertWindowPos(pos, vec);
 	fbxObject->SetPosition(pos);
 
 	//カメラ

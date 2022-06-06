@@ -397,3 +397,8 @@ void FbxObject3d::SetScale(XMFLOAT3 scale)
 {
 	this->scale = scale;
 }
+
+void FbxObject3d::SetLoop(bool loop)
+{
+	this->isLoop = loop;
+}
