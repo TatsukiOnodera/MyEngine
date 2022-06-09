@@ -73,6 +73,9 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Scene\Others">
       <UniqueIdentifier>{257e7453-7025-46d4-a92f-30f7ec9236bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\PostEffectShader">
+      <UniqueIdentifier>{7d524172-cf19-463c-b6b8-4b039d5e4151}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -277,6 +280,12 @@
     <FxCompile Include="Resources\Shaders\FBXVertexShader.hlsl">
       <Filter>シェーダーファイル\FBXShader</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectPS.hlsl">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectVS.hlsl">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\OBJShaderHeader.hlsli">
@@ -290,6 +299,9 @@
     </None>
     <None Include="Resources\Shaders\FBXShaderHeader.hlsli">
       <Filter>シェーダーファイル\FBXShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostEffect.hlsli">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
     </None>
   </ItemGroup>
 </Project>

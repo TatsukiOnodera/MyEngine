@@ -178,7 +178,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		defaultWall[i]->Draw();
+		//defaultWall[i]->Draw();
 	}
 
 	Object3d::PostDraw();

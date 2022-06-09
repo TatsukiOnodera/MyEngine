@@ -80,7 +80,7 @@ void FrameWork::Initialize()
 		assert(0);
 	}
 
-	Sprite::LoadTexture(100, L"Resources/Default/white1280x720.png");
+	//Sprite::LoadTexture(100, L"Resources/Default/white1x1.png");
 
 	postEffect.reset(new PostEffect);
 	postEffect->Initialize();

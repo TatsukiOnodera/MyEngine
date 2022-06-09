@@ -47,7 +47,7 @@ void Sprite::CreateGraphicsPipeline()
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/SpriteVS.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/SpriteVS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -66,12 +66,12 @@ void Sprite::CreateGraphicsPipeline()
 		errstr += "\n";
 		// エラー内容を出力ウィンドウに表示
 		OutputDebugStringA(errstr.c_str());
-		exit(1);
+		assert(0);
 	}
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/SpritePS.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/SpritePS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -89,7 +89,7 @@ void Sprite::CreateGraphicsPipeline()
 		errstr += "\n";
 		// エラー内容を出力ウィンドウに表示
 		OutputDebugStringA(errstr.c_str());
-		exit(1);
+		assert(0);
 	}
 
 	// 頂点レイアウト
