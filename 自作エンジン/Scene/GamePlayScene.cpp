@@ -26,7 +26,6 @@ void GamePlayScene::Initialize()
 	
 	//スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-	Sprite::LoadTexture(100, L"Resources/default/white1x1.png");
 	Sprite::LoadTexture(1, L"Resources/background.png");
 
 	//ライト生成
@@ -40,10 +39,6 @@ void GamePlayScene::Initialize()
 
 	//パーティクル
 	particle.reset(ParticleManager::Create());
-
-	//ポストエフェクト
-	postEffect.reset(new PostEffect);
-	postEffect->Initialize();
 
 	//スプライト
 	demo_back.reset(Sprite::CreateSprite(1));
@@ -158,10 +153,8 @@ void GamePlayScene::Draw()
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//各描画
-	postEffect->PreDrawScene(cmdList);
 	DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
-	postEffect->PostDrawScene(cmdList);
 	DrawEffect(cmdList);
 	DrawUI(cmdList);
 	DrawDebugText(cmdList);
@@ -219,9 +212,6 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 {
 	//パーティクル描画
 	//particle->Draw(cmdList);
-
-	//ポストエフェクト
-	postEffect->Draw(cmdList);
 }
 
 void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)

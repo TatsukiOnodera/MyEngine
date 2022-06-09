@@ -12,7 +12,6 @@
 #include "Light.h"
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
-#include "PostEffect.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -62,9 +61,6 @@ private: //インスタンス
 
 	//パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
-
-	//ポストエフェクト
-	std::unique_ptr<PostEffect> postEffect = nullptr;
 
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;

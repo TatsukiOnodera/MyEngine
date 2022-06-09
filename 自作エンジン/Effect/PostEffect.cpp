@@ -36,35 +36,34 @@ void PostEffect::Initialize()
 		&CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor),
 		IID_PPV_ARGS(&texBuff)
 	);
+	assert(SUCCEEDED(result));
 
 	//テクスチャを赤クリア
+	//画素数
+	const UINT pixelCount = WinApp::window_width * WinApp::window_height;
+	//画素数一行分のデータサイズ
+	const UINT rowPitch = sizeof(UINT) * WinApp::window_width;
+	//画像全体のデータサイズ
+	const UINT depthPitch = rowPitch * WinApp::window_height;
+	//画像イメージ
+	UINT* img = new UINT[pixelCount];
+	for (int i = 0; i < pixelCount; i++)
 	{
-		//画素数
-		const UINT pixelCount = WinApp::window_width * WinApp::window_height;
-		//画素数一行分のデータサイズ
-		const UINT rowPitch = sizeof(UINT) * WinApp::window_width;
-		//画像全体のデータサイズ
-		const UINT depthPitch = rowPitch * WinApp::window_height;
-		//画像イメージ
-		UINT* img = new UINT[pixelCount];
-		for (int i = 0; i < pixelCount; i++)
-		{
-			img[i] = 0xff0000ff;
-		}
-
-		//テクスチャバッファにデータ転送
-		result = texBuff->WriteToSubresource(0, nullptr, img, rowPitch, depthPitch);
-		assert(SUCCEEDED(result));
-		delete[] img;
+		img[i] = 0xff0000ff;
 	}
 
+	//テクスチャバッファにデータ転送
+	result = texBuff->WriteToSubresource(0, nullptr, img, rowPitch, depthPitch);
+	assert(SUCCEEDED(result));
+	delete[] img;
+
 	//(SRV)デスクリプタヒープを設定
-	D3D12_DESCRIPTOR_HEAP_DESC srcDescHeapDesc{};
-	srcDescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	srcDescHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	srcDescHeapDesc.NumDescriptors = 1;
+	D3D12_DESCRIPTOR_HEAP_DESC srvDescHeapDesc{};
+	srvDescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	srvDescHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	srvDescHeapDesc.NumDescriptors = 1;
 	//(SRV)デスクリプタヒープを生成
-	result = dev->CreateDescriptorHeap(&srcDescHeapDesc, IID_PPV_ARGS(&descHeapSRV));
+	result = dev->CreateDescriptorHeap(&srvDescHeapDesc, IID_PPV_ARGS(&descHeapSRV));
 	assert(SUCCEEDED(result));
 
 	//シェーダリソースビュー設定
@@ -89,7 +88,7 @@ void PostEffect::Initialize()
 	assert(SUCCEEDED(result));
 
 	//デスクリプタヒープにレンダーターゲットビュー作成
-	dev->CreateShaderResourceView(texBuff.Get(), //ビューと関連付けるバッファ
+	dev->CreateRenderTargetView(texBuff.Get(), //ビューと関連付けるバッファ
 		nullptr, //テクスチャ設定情報
 		descHeapRTV->GetCPUDescriptorHandleForHeapStart()
 	);
@@ -127,7 +126,7 @@ void PostEffect::Initialize()
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	//デスクリプタヒープにデプスステンシルビュー作成
-	dev->CreateShaderResourceView(depthBuff.Get(), //ビューと関連付けるバッファ
+	dev->CreateDepthStencilView(depthBuff.Get(), //ビューと関連付けるバッファ
 		nullptr, //テクスチャ設定情報
 		descHeapDSV->GetCPUDescriptorHandleForHeapStart()
 	);
