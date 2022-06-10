@@ -9,7 +9,7 @@ public: //静的メンバ関数
 
 protected: //メンバ変数
 	//テクスチャリソース（テクスチャバッファ）
-	ComPtr<ID3D12Resource> texBuff;
+	ComPtr<ID3D12Resource> texBuff[2];
 	//深度バッファ
 	ComPtr<ID3D12Resource> depthBuff;
 	//テクスチャ用デスクリプタヒープの生成
