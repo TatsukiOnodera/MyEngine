@@ -150,7 +150,7 @@ void FbxModel::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
 }
 
-XMMATRIX& FbxModel::GetInverseTransform()
+const XMMATRIX& FbxModel::GetInverseGlobalTransform()
 {
-	return DirectX::XMMatrixInverse(nullptr, meshNode->globalTransform);
+	return DirectX::XMMatrixInverse(nullptr, GetModelTransform());
 }

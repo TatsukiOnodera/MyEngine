@@ -47,7 +47,7 @@ void GamePlayScene::Initialize()
 	}
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("Flying"));
+	fbxObject.reset(FbxObject3d::CreateFBXObject("TEST"));
 	fbxObject->PlayAnimation(true);
 
 	//パラメーター
@@ -61,7 +61,7 @@ void GamePlayScene::ResetVariable()
 {
 	fbxObject->SetPosition({ 0, 0, 0 });
 	fbxObject->SetRotation({ 0, 90, 0 });
-	fbxObject->SetScale({ 1, 1, 1 });
+	fbxObject->SetScale({ 0.01, 0.01, 0.01 });
 	fbxObject->Update();
 
 	for (int i = 0; i < defaultWall.size(); i++)

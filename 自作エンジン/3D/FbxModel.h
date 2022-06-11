@@ -143,7 +143,7 @@ public: //メンバ関数
 	/// モデルの変形逆行列取得
 	/// </summary>
 	/// <returns>モデルの逆変形行列</returns>
-	XMMATRIX& GetInverseTransform();
+	const XMMATRIX& GetInverseGlobalTransform();
 
 	/// <summary>
 	/// ボーン配列の取得
