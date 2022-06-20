@@ -47,7 +47,7 @@ void GamePlayScene::Initialize()
 	}
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("TEST"));
+	fbxObject.reset(FbxObject3d::CreateFBXObject("TEST2"));
 	fbxObject->PlayAnimation(true);
 
 	//パラメーター

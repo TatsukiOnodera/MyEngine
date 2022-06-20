@@ -203,9 +203,9 @@ void Model::InitializeModel(const std::string& modelName, bool smooting)
 					indices.emplace_back(texVertex); //3
 				}
 				//頂点カウント
-				v_num += 1;
+				v_num++;
 				//次のテクスチャの頂点追加
-				texVertex += 1;
+				texVertex++;
 			}
 		}
 		if (key == "mtllib")

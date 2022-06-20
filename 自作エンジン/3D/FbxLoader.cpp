@@ -34,9 +34,6 @@ void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
     auto& vertices = fbxModel->vertices;
     auto& indices = fbxModel->indices;
 
-    //1ファイルに複数メッシュのモデルは非対応
-    assert(indices.size() == 0);
-
     //面の数
     const int polygonCount = fbxMesh->GetPolygonCount();
 
@@ -206,6 +203,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
     //スキニング情報
     FbxSkin* fbxSkin = static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
+    //情報がないなら
     if (fbxSkin == nullptr)
     {
         //各頂点についての処理

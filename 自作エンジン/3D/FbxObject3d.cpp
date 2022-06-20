@@ -198,11 +198,9 @@ void FbxObject3d::CreateGraphicsPipeline()
 
 void FbxObject3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
+	assert(cmdList || FbxObject3d::cmdList == nullptr);
 	FbxObject3d::cmdList = cmdList;
 
-	//パイプラインとルートシグネチャの設定
-	cmdList->SetPipelineState(pipelinestate.Get());
-	cmdList->SetGraphicsRootSignature(rootsignature.Get());
 	//プリミティブ形状を設定
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
@@ -353,6 +351,10 @@ void FbxObject3d::Draw()
 
 	//更新
 	Update();
+
+	//パイプラインとルートシグネチャの設定
+	cmdList->SetPipelineState(pipelinestate.Get());
+	cmdList->SetGraphicsRootSignature(rootsignature.Get());
 
 	//定数バッファビューをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBufferTransform->GetGPUVirtualAddress());
