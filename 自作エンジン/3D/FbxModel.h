@@ -8,6 +8,7 @@
 #include <d3d12.h>
 #include <d3dx12.h>
 #include <fbxsdk.h>
+#include <SafeDelete.h>
 
 //ノード構造体
 struct Node
@@ -88,12 +89,10 @@ public: //サブクラス
 	//メッシュ構造体
 	struct Mesh
 	{
-		//モデル名
-		std::string name;
 		// 頂点バッファ
-		ComPtr<ID3D12Resource> vertBuff;
+		ComPtr<ID3D12Resource> vertBuff = nullptr;
 		// インデックスバッファ
-		ComPtr<ID3D12Resource> indexBuff;
+		ComPtr<ID3D12Resource> indexBuff = nullptr;
 		// 頂点バッファビュー
 		D3D12_VERTEX_BUFFER_VIEW vbView = {};
 		// インデックスバッファビュー
@@ -104,6 +103,16 @@ public: //サブクラス
 		std::vector<unsigned short> indices;
 		////マテリアル
 		//Material* material = nullptr;
+		//初期化
+		void Delete()
+		{
+			vertBuff = nullptr;
+			indexBuff = nullptr;
+			vbView = {};
+			ibView = {};
+			vertices.clear();
+			indices.clear();
+		}
 	}; 
 
 private: //モデルデータ用変数
@@ -114,9 +123,9 @@ private: //モデルデータ用変数
 	//メッシュを持つノード
 	Node* meshNode = nullptr;
 	//頂点データ配列
-	std::vector<VertexPosNormalUvSkin> vertices;
+	//std::vector<VertexPosNormalUvSkin> vertices;
 	//頂点インデックス配列
-	std::vector<unsigned short> indices;
+	//std::vector<unsigned short> indices;
 	//アンビエント係数
 	DirectX::XMFLOAT3 ambient = { 1, 1, 1 };
 	//ディフューズ係数
@@ -129,18 +138,22 @@ private: //モデルデータ用変数
 	std::vector<Bone> bones;
 	//FBXシーン
 	FbxScene* fbxScene = nullptr;
+	//メッシュ配列
+	std::vector<Mesh>meshes;
+	//メッシュ情報
+	Mesh mesh;
 
 private: //メンバ変数
 	// 頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
+	//ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
-	ComPtr<ID3D12Resource> indexBuff;
+	//ComPtr<ID3D12Resource> indexBuff;
 	// テクスチャバッファ
 	ComPtr<ID3D12Resource> texBuff;
 	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView = {};
+	//D3D12_VERTEX_BUFFER_VIEW vbView = {};
 	// インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView = {};
+	//D3D12_INDEX_BUFFER_VIEW ibView = {};
 	// SRV用デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
 
@@ -183,4 +196,14 @@ public: //メンバ関数
 	/// </summary>
 	/// <returns>FBXシーン</returns>
 	FbxScene* GetFbxScene() { return fbxScene; }
+
+	/// <summary>
+	/// メッシュ情報の生成
+	/// </summary>
+	void CreateModelMesh();
+
+	/// <summary>
+	/// メッシュ配列にメッシュ情報をセット
+	/// </summary>
+	void SetModelMeshes();
 };
