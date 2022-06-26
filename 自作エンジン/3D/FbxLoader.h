@@ -18,6 +18,8 @@ public: //定数
 	//テクスチャがない場合の標準テクスチャファイル名
 	static const string defaultTextureFileName;
 
+	int a = 0;
+
 private: //メンバ変数
 	//デバイス
 	ID3D12Device* dev = nullptr;

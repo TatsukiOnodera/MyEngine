@@ -79,6 +79,33 @@ public: //サブクラス
 		}
 	};
 
+	//マテリアル構造体
+	struct Material
+	{
+
+	};
+
+	//メッシュ構造体
+	struct Mesh
+	{
+		//モデル名
+		std::string name;
+		// 頂点バッファ
+		ComPtr<ID3D12Resource> vertBuff;
+		// インデックスバッファ
+		ComPtr<ID3D12Resource> indexBuff;
+		// 頂点バッファビュー
+		D3D12_VERTEX_BUFFER_VIEW vbView = {};
+		// インデックスバッファビュー
+		D3D12_INDEX_BUFFER_VIEW ibView = {};
+		//頂点データ配列
+		std::vector<VertexPosNormalUvSkin> vertices;
+		//頂点インデックス配列
+		std::vector<unsigned short> indices;
+		////マテリアル
+		//Material* material = nullptr;
+	}; 
+
 private: //モデルデータ用変数
 	//モデル名
 	std::string name;

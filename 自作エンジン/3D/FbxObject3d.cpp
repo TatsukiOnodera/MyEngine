@@ -300,7 +300,6 @@ void FbxObject3d::Update()
 	const XMMATRIX& matView = camera->GetMatView();
 	//プロジェクション行列
 	const XMMATRIX& matProjection = camera->GetMatProject();
-
 	//FBXモデルのメッシュトランスフォーム
 	const XMMATRIX& modelTransform = fbxModel->GetModelTransform();
 
@@ -369,6 +368,11 @@ void FbxObject3d::PlayAnimation(bool loop)
 	FbxScene* fbxScene = fbxModel->GetFbxScene();
 	//0番目のアニメーション取得
 	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	//アニメーションがなかったら
+	if (animStack == nullptr)
+	{
+		return;
+	}
 	//アニメーション名取得
 	const char* animstackname = animStack->GetName();
 
