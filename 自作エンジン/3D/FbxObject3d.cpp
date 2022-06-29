@@ -270,12 +270,14 @@ void FbxObject3d::Update()
 		//最後まで再生したら
 		if (currentTime >= endTime)
 		{
-			currentTime = startTime;
-
 			//ループしないなら
 			if (isLoop == false)
 			{
 				isPlay = false;
+			}
+			else
+			{
+				currentTime = startTime;
 			}
 		}
 	}
@@ -387,6 +389,12 @@ void FbxObject3d::PlayAnimation(bool loop)
 	isPlay = true;
 	//ループ
 	isLoop = loop;
+}
+
+void FbxObject3d::ResetAnimation()
+{
+	isPlay = false;
+	currentTime = startTime;
 }
 
 void FbxObject3d::SetPosition(XMFLOAT3 position)

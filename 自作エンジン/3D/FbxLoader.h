@@ -25,6 +25,8 @@ private: //メンバ変数
 	FbxManager* fbxManager = nullptr;
 	//FBXインポータ
 	FbxImporter* fbxImporter = nullptr;
+	//メッシュ情報
+	FbxModelMesh* mesh = nullptr;
 
 private: //サブ関数
 	/// <summary>

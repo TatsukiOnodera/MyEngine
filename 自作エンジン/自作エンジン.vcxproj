@@ -184,6 +184,7 @@
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
     <ClCompile Include="Effect\ParticleManager.cpp" />
+    <ClCompile Include="FbxModelMesh.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
     <ClInclude Include="Effect\ParticleManager.h" />
+    <ClInclude Include="FbxModelMesh.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />

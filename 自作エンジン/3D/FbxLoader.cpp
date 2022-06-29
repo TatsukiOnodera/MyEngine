@@ -7,9 +7,9 @@ const std::string FbxLoader::defaultTextureFileName = "default/white1x1.png";
 
 void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
-    fbxModel->CreateModelMesh();
+    mesh = new FbxModelMesh;
 
-    auto& vertices = fbxModel->mesh.vertices;
+     auto& vertices = mesh->vertices;
 
     //頂点座標データの数
     const int controlPointsCount = fbxMesh->GetControlPointsCount();
@@ -18,7 +18,7 @@ void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
     FbxVector4* pCoord = fbxMesh->GetControlPoints();
 
     //FBXメッシュの全頂点座標をモデルの配列にコピー
-    FbxModel::VertexPosNormalUvSkin vertex;
+    FbxModelMesh::VertexPosNormalUvSkin vertex;
     for (int i = 0; i < controlPointsCount; i++)
     {
         vertex.pos.x = (float)pCoord[i][0];
@@ -30,8 +30,8 @@ void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 
 void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
-    auto& vertices = fbxModel->mesh.vertices;
-    auto& indices = fbxModel->mesh.indices;
+    auto& vertices = mesh->vertices;
+    auto& indices = mesh->indices;
 
     //面の数
     const int polygonCount = fbxMesh->GetPolygonCount();
@@ -58,7 +58,7 @@ void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
             assert(index >= 0);
 
             //頂点法線読み込み
-            FbxModel::VertexPosNormalUvSkin& vertex = vertices[index];
+            FbxModelMesh::VertexPosNormalUvSkin& vertex = vertices[index];
             FbxVector4 normal;
             if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
             {
@@ -206,11 +206,11 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
     if (fbxSkin == nullptr)
     {
         //各頂点についての処理
-        for (int i = 0; i < fbxModel->mesh.vertices.size(); i++)
+        for (int i = 0; i < mesh->vertices.size(); i++)
         {
             //最初のボーン（単位行列）の影響100%にする
-            fbxModel->mesh.vertices[i].boneIndex[0] = 0;
-            fbxModel->mesh.vertices[i].boneWeight[0] = 1.0f;
+            mesh->vertices[i].boneIndex[0] = 0;
+            mesh->vertices[i].boneWeight[0] = 1.0f;
         }
 
         return;
@@ -259,7 +259,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
     //二次元配列（ジャグ配列）
     //list：頂点が影響を受けるボーンのリスト
     //vecto：全頂点分:
-    std::vector<std::list<WeightSet>> weightLists(fbxModel->mesh.vertices.size());
+    std::vector<std::list<WeightSet>> weightLists(mesh->vertices.size());
 
     //すべてのボーンについて
     for (int i = 0; i < clusterCount; i++)
@@ -285,7 +285,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
     }
 
     //頂点書き換え用の参照
-    auto& vertices = fbxModel->mesh.vertices;
+    auto& vertices = mesh->vertices;
     //全頂点についての処置
     for (int i = 0; i < vertices.size(); i++)
     {
@@ -308,11 +308,11 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
             vertices[i].boneIndex[weightArrayIndex] = weightSet.index;
             vertices[i].boneWeight[weightArrayIndex] = weightSet.weight;
             //四つ達したら終了
-            if (++weightArrayIndex >= FbxModel::MAX_BONE_INDICES)
+            if (++weightArrayIndex >= FbxModelMesh::MAX_BONE_INDICES)
             {
                 float weight = 0.0f;
                 //二週目以降のウェイトを計算
-                for (int j = 1; j < FbxModel::MAX_BONE_INDICES; j++)
+                for (int j = 1; j < FbxModelMesh::MAX_BONE_INDICES; j++)
                 {
                     weight += vertices[i].boneWeight[j];
                 }
@@ -323,7 +323,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
         }
     }
 
-    fbxModel->SetModelMeshes();
+    fbxModel->AddModelMesh(mesh);
 }
 
 FbxLoader* FbxLoader::GetInstance()

@@ -47,8 +47,7 @@ void GamePlayScene::Initialize()
 	}
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("TEST2"));
-	fbxObject->PlayAnimation(true);
+	fbxObject.reset(FbxObject3d::CreateFBXObject("TEST5"));
 
 	//パラメーター
 	ResetVariable();
@@ -116,13 +115,19 @@ void GamePlayScene::Update()
 {
 	//移動
 	XMFLOAT3 vec = { 0, 0, 0 };
-	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
+	if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
 		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
-	}
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
-	{
 		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
+
+		if (fbxObject->GetPlayAnimation() == false)
+		{
+			fbxObject->PlayAnimation(false);
+		}
+	}
+	else
+	{
+		fbxObject->ResetAnimation();
 	}
 	XMFLOAT3 pos = fbxObject->GetPosition();
 	pos = camera->ConvertWindowPos(pos, vec);
