@@ -273,6 +273,7 @@ void FbxObject3d::Update()
 			//ÉãÅ[ÉvÇµÇ»Ç¢Ç»ÇÁ
 			if (isLoop == false)
 			{
+				currentTime = endTime;
 				isPlay = false;
 			}
 			else
@@ -393,7 +394,6 @@ void FbxObject3d::PlayAnimation(bool loop)
 
 void FbxObject3d::ResetAnimation()
 {
-	isPlay = false;
 	currentTime = startTime;
 }
 

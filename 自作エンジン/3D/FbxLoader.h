@@ -1,6 +1,8 @@
 #pragma once
 #include "FbxModel.h"
+#include "FbxModelMesh.h"
 #include <fbxsdk.h>
+#include <vector>
 #include <cassert>
 #include <string.h>
 #include <d3d12.h>
@@ -26,7 +28,7 @@ private: //メンバ変数
 	//FBXインポータ
 	FbxImporter* fbxImporter = nullptr;
 	//メッシュ情報
-	FbxModelMesh* mesh = nullptr;
+	std::vector<FbxModelMesh*> mesh;
 
 private: //サブ関数
 	/// <summary>

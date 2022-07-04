@@ -103,9 +103,8 @@ const XMMATRIX& FbxModel::GetInverseGlobalTransform()
 	return DirectX::XMMatrixInverse(nullptr, GetModelTransform());
 }
 
-void FbxModel::AddModelMesh(FbxModelMesh* mesh)
+void FbxModel::AddModelMesh(std::vector<FbxModelMesh*> mesh)
 {
-	meshes.emplace_back(mesh);
-
-	safe_delete(mesh);
+	meshes.clear();
+	std::copy(mesh.begin(), mesh.end(), back_inserter(meshes));
 }

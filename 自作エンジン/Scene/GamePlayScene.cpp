@@ -47,25 +47,28 @@ void GamePlayScene::Initialize()
 	}
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("TEST5"));
+	fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
 
 	//パラメーター
-	ResetVariable();
+	ResetParameter();
 
 	//オーディオ
 	audio->Initialize();
 }
 
-void GamePlayScene::ResetVariable()
+void GamePlayScene::ResetParameter()
 {
+	isDash = false;
+	add0 = 0;
+
 	fbxObject->SetPosition({ 0, 0, 0 });
-	fbxObject->SetRotation({ 0, 90, 0 });
-	fbxObject->SetScale({ 0.01, 0.01, 0.01 });
+	fbxObject->SetRotation({ -90, 0, 0 });
+	fbxObject->SetScale({ 0.25, 0.25, 0.25 });
 	fbxObject->Update();
 
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		float size = 100;
+		float size = 300;
 		XMFLOAT3 pos;
 		XMFLOAT3 rot;
 		XMFLOAT3 scale = { size, size, size };
@@ -117,21 +120,43 @@ void GamePlayScene::Update()
 	XMFLOAT3 vec = { 0, 0, 0 };
 	if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
+		//ダッシュ
+		if (input->TriggerKey(DIK_SPACE))
+		{
+			isDash = true;
+			add0 = 50;
+
+			//アニメーション
+			fbxObject->PlayAnimation(false);
+		}
+
+		//ベクトル
 		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
 		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
-
-		if (fbxObject->GetPlayAnimation() == false)
+		//加速するなら
+		if (isDash)
 		{
-			fbxObject->PlayAnimation(false);
+			vec.x *= add0;
+			vec.z *= add0;
+
+			add0 = add0 - 7.5;
+
+			//加速度が0になったら
+			if (add0 <= 0)
+			{
+				add0 = 0;
+				isDash = false;
+			}
 		}
 	}
 	else
 	{
+		//アニメーション
 		fbxObject->ResetAnimation();
 	}
+	//カメラを軸にした変換
 	XMFLOAT3 pos = fbxObject->GetPosition();
 	pos = camera->ConvertWindowPos(pos, vec);
-	fbxObject->SetPosition(pos);
 
 	//カメラ
 	XMFLOAT2 angle = { 0, 0 };
@@ -143,6 +168,10 @@ void GamePlayScene::Update()
 	{
 		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
 	}
+
+	//座標をセット
+	fbxObject->SetPosition(pos);
+	//追従カメラ
 	camera->FollowUpCamera(pos, camera->GetDistance(), angle.x, angle.y);
 }
 
@@ -179,9 +208,9 @@ void GamePlayScene::DrawOthers(ID3D12GraphicsCommandList* cmdList)
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	for (int i = 0; i < defaultWall.size(); i++)
+	for (const auto& m : defaultWall)
 	{
-		defaultWall[i]->Draw();
+		m->Draw();
 	}
 
 	Object3d::PostDraw();

@@ -72,8 +72,10 @@ private: //インスタンス
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
 private: //メンバ変数
-	
-
+	//加速する
+	bool isDash = false;
+	//初期加速値
+	float add0 = 0.0;
 
 public: //メンバ関数
 	~GamePlayScene();
@@ -96,7 +98,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 変数初期化
 	/// </summary>
-	void ResetVariable();
+	void ResetParameter();
 
 	/// <summary>
 	/// 背景スプライト描画
