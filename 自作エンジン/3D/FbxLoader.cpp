@@ -220,30 +220,33 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh, FbxModelMesh* mo
     int clusterCount = fbxSkin->GetClusterCount();
 
     //すべてのボーンについて
-    for (int i = 0; i < clusterCount; i++)
+    if (bones.empty())
     {
-        //FBXボーン情報
-        FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+        for (int i = 0; i < clusterCount; i++)
+        {
+            //FBXボーン情報
+            FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
 
-        //ボーン自体のノード名を取得
-        const char* boneName = fbxCluster->GetLink()->GetName();
+            //ボーン自体のノード名を取得
+            const char* boneName = fbxCluster->GetLink()->GetName();
 
-        //新しくボーンを追加し、追加したボーンの参照を得る
-        bones.emplace_back(FbxModel::Bone(boneName));
-        FbxModel::Bone& bone = bones.back();
-        //自作ボーンとFBXボーンを紐づける
-        bone.fbxCluster = fbxCluster;
+            //新しくボーンを追加し、追加したボーンの参照を得る
+            bones.emplace_back(FbxModel::Bone(boneName));
+            FbxModel::Bone& bone = bones.back();
+            //自作ボーンとFBXボーンを紐づける
+            bone.fbxCluster = fbxCluster;
 
-        //FBXから初期姿勢行列を取得する
-        FbxAMatrix fbxMat;
-        fbxCluster->GetTransformLinkMatrix(fbxMat);
+            //FBXから初期姿勢行列を取得する
+            FbxAMatrix fbxMat;
+            fbxCluster->GetTransformLinkMatrix(fbxMat);
 
-        //XMMatrix型に変換する
-        XMMATRIX initialPose;
-        ConvertMatrixFromFbx(&initialPose, fbxMat);
+            //XMMatrix型に変換する
+            XMMATRIX initialPose;
+            ConvertMatrixFromFbx(&initialPose, fbxMat);
 
-        //初期姿勢行列の逆行列を得る
-        bone.invInitialPose = XMMatrixInverse(nullptr, initialPose);
+            //初期姿勢行列の逆行列を得る
+            bone.invInitialPose = XMMatrixInverse(nullptr, initialPose);
+        }
     }
 
     //ボーン番号とスキンウェイトのペア

@@ -173,7 +173,7 @@ public: //アクセッサ
 	/// <summary>
 	/// アニメーション中
 	/// </summary>
-	bool GetPlayAnimation() { return isPlay; }
+	bool GetIsPlay() { return isPlay; }
 
 	/// <summary>
 	/// ループ

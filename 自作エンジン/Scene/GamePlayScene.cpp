@@ -48,6 +48,7 @@ void GamePlayScene::Initialize()
 
 	//FBXオブェクト
 	fbxObject.reset(FbxObject3d::CreateFBXObject("TestMultiMeshes"));
+	fbxObject->PlayAnimation(true);
 
 	//パーティクル
 	//particle.reset(ParticleManager::Create());
@@ -64,9 +65,10 @@ void GamePlayScene::ResetParameter()
 	isDash = false;
 	add0 = 0;
 
+	float fbxObjectSize = 0.5f;
 	fbxObject->SetPosition({ 0, 0, 0 });
 	fbxObject->SetRotation({ -90, 0, 0 });
-	fbxObject->SetScale({ 0.25, 0.25, 0.25 });
+	fbxObject->SetScale({ fbxObjectSize, fbxObjectSize, fbxObjectSize });
 	fbxObject->Update();
 
 	for (int i = 0; i < defaultWall.size(); i++)
@@ -158,7 +160,7 @@ void GamePlayScene::Update()
 	else
 	{
 		//アニメーション
-		fbxObject->ResetAnimation();
+		//fbxObject->ResetAnimation();
 	}
 	//カメラを軸にした変換
 	XMFLOAT3 pos = fbxObject->GetPosition();
