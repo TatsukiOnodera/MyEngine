@@ -88,6 +88,8 @@ public: //Ã“Iƒƒ“ƒoŠÖ”
 	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
 
 public: //ƒƒ“ƒoŠÖ”
+	~FbxLoader();
+
 	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>

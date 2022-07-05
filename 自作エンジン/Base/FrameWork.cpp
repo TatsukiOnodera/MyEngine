@@ -57,10 +57,10 @@ void FrameWork::Initialize()
 	}
 
 	//パーティクル静的初期化
-	if (!ParticleManager::StaticInitialize(dx_cmd->GetDev(), WinApp::window_width, WinApp::window_height))
+	/*if (!ParticleManager::StaticInitialize(dx_cmd->GetDev(), WinApp::window_width, WinApp::window_height))
 	{
 		assert(0);
-	}
+	}*/
 
 	//ライト静的初期化
 	if (!Light::StaticInitialize(dx_cmd->GetDev()))

@@ -49,6 +49,9 @@ void GamePlayScene::Initialize()
 	//FBXオブェクト
 	fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
 
+	//パーティクル
+	//particle.reset(ParticleManager::Create());
+
 	//パラメーター
 	ResetParameter();
 
@@ -128,6 +131,9 @@ void GamePlayScene::Update()
 
 			//アニメーション
 			fbxObject->PlayAnimation(false);
+
+			//パーティクル
+			//particle->Active(fbxObject->GetPosition());
 		}
 
 		//ベクトル
@@ -139,7 +145,7 @@ void GamePlayScene::Update()
 			vec.x *= add0;
 			vec.z *= add0;
 
-			add0 = add0 - 7.5;
+			add0 = add0 - 5;
 
 			//加速度が0になったら
 			if (add0 <= 0)
@@ -173,14 +179,17 @@ void GamePlayScene::Update()
 	fbxObject->SetPosition(pos);
 	//追従カメラ
 	camera->FollowUpCamera(pos, camera->GetDistance(), angle.x, angle.y);
+
+#pragma region カメラとライトの更新
+
+	light->Update();
+	camera->Update();
+
+#pragma endregion
 }
 
 void GamePlayScene::Draw()
 {
-	//カメラとライトの更新
-	light->Update();
-	camera->Update();
-
 	//コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
@@ -189,7 +198,7 @@ void GamePlayScene::Draw()
 	DrawOthers(cmdList);
 	//DrawParticle(cmdList);
 	//DrawUI(cmdList);
-	DrawDebugText(cmdList);
+	//DrawDebugText(cmdList);
 }
 
 void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
@@ -197,7 +206,7 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	//demo_back->Draw();
+	demo_back->Draw();
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();

@@ -347,6 +347,11 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& s
     }
 }
 
+FbxLoader::~FbxLoader()
+{
+    mesh.clear();
+}
+
 bool FbxLoader::Initialize(ID3D12Device* device)
 {
     //再初期化チェック

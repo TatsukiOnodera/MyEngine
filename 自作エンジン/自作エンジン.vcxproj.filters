@@ -147,7 +147,7 @@
     <ClCompile Include="Effect\ParticleManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="FbxModelMesh.cpp">
+    <ClCompile Include="3D\FbxModelMesh.cpp">
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClCompile>
   </ItemGroup>
@@ -245,7 +245,7 @@
     <ClInclude Include="Effect\ParticleManager.h">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="FbxModelMesh.h">
+    <ClInclude Include="3D\FbxModelMesh.h">
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClInclude>
   </ItemGroup>

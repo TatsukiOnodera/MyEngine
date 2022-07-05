@@ -174,6 +174,7 @@
     <ClCompile Include="2D\Sprite.cpp" />
     <ClCompile Include="3D\FbxLoader.cpp" />
     <ClCompile Include="3D\FbxModel.cpp" />
+    <ClCompile Include="3D\FbxModelMesh.cpp" />
     <ClCompile Include="3D\FbxObject3d.cpp" />
     <ClCompile Include="3D\Model.cpp" />
     <ClCompile Include="3D\Object3d.cpp" />
@@ -186,7 +187,6 @@
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
     <ClCompile Include="Effect\ParticleManager.cpp" />
-    <ClCompile Include="FbxModelMesh.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
@@ -201,6 +201,7 @@
     <ClInclude Include="2D\Sprite.h" />
     <ClInclude Include="3D\FbxLoader.h" />
     <ClInclude Include="3D\FbxModel.h" />
+    <ClInclude Include="3D\FbxModelMesh.h" />
     <ClInclude Include="3D\FbxObject3d.h" />
     <ClInclude Include="3D\Model.h" />
     <ClInclude Include="3D\Object3d.h" />
@@ -216,7 +217,6 @@
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
     <ClInclude Include="Effect\ParticleManager.h" />
-    <ClInclude Include="FbxModelMesh.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />
