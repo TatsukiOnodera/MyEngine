@@ -137,5 +137,5 @@ public: //ƒƒ“ƒoŠÖ”
 	/// <summary>
 	/// ƒƒbƒVƒ…’Ç‰Á
 	/// </summary>
-	void AddModelMesh(std::vector<FbxModelMesh*> mesh);
+	void AddModelMesh(FbxModelMesh* modelMesh);
 };

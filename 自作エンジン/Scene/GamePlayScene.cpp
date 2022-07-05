@@ -47,7 +47,7 @@ void GamePlayScene::Initialize()
 	}
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
+	fbxObject.reset(FbxObject3d::CreateFBXObject("TestMultiMeshes"));
 
 	//パーティクル
 	//particle.reset(ParticleManager::Create());

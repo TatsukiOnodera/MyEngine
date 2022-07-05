@@ -27,8 +27,6 @@ private: //メンバ変数
 	FbxManager* fbxManager = nullptr;
 	//FBXインポータ
 	FbxImporter* fbxImporter = nullptr;
-	//メッシュ情報
-	std::vector<FbxModelMesh*> mesh;
 
 private: //サブ関数
 	/// <summary>
@@ -36,14 +34,16 @@ private: //サブ関数
 	/// </summary>
 	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxMesh">解析対象のメッシュ</param>
-	void ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh);
+	/// <param name="modelMesh">メッシュデータ</param>
+	void ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh, FbxModelMesh* modelMesh);
 
 	/// <summary>
 	/// 面情報読み取り
 	/// </summary>
 	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxMesh">解析対象のメッシュ</param>
-	void ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh);
+	/// <param name="modelMesh">メッシュデータ</param>
+	void ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh, FbxModelMesh* modelMesh);
 
 	/// <summary>
 	/// マテリアル読み取り
@@ -71,7 +71,8 @@ private: //サブ関数
 	/// </summary>
 	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxMesh">解析対象のメッシュ</param>
-	void ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh);
+	/// <param name="modelMesh">メッシュデータ</param>
+	void ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh, FbxModelMesh* modelMesh);
 
 public: //静的メンバ関数
 	/// <summary>
@@ -88,8 +89,6 @@ public: //静的メンバ関数
 	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
 
 public: //メンバ関数
-	~FbxLoader();
-
 	/// <summary>
 	/// 初期化
 	/// </summary>
