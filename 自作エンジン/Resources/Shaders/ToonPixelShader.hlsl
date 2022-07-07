@@ -21,7 +21,7 @@ float4 main(VSOutput input) : SV_TARGET
 	//環境反射光
 	float3 ambient = m_ambient;
 	//smoothstep用変数
-	float a_scale = 0.4;
+	float a_scale = 0.45;
 	float b_scale = a_scale + 0.1;
 	//拡散反射光
 	float3 diffuse = m_diffuse * smoothstep(a_scale, b_scale, intensity);
