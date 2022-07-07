@@ -15,27 +15,34 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-protected: //定数
-	//テクスチャの最大枚数
-	static const int spriteSRVCount = 512;
-	//テクスチャの最大枚数
-	static const int vertNum = 4;
-
-protected: //静的変数
+private: //静的変数
 	//DirectXCommon->dev
 	static ID3D12Device* dev;
+
 	//DirectXCommon->cmdList
 	static ID3D12GraphicsCommandList* cmdList; 
+
 	// デスクリプタサイズ
 	static UINT descriptorHandleIncrementSize;
+
+	//テクスチャの最大枚数
+	static const int spriteSRVCount = 512; 
+
+	//テクスチャの最大枚数
+	static const int vertNum = 4; 
+
 	//射影行列
 	static XMMATRIX matProjection;
+
 	//テクスチャ用デスクリプタヒープの生成
 	static ComPtr<ID3D12DescriptorHeap> descHeap; 
+
 	//テクスチャリソース（テクスチャバッファ）の配列
 	static ComPtr<ID3D12Resource> texBuff[spriteSRVCount];
+
 	//パイプラインステートオブジェクト
 	static ComPtr<ID3D12PipelineState> pipelinestate;
+
 	//ルートシグネチャ
 	static ComPtr<ID3D12RootSignature> rootsignature; 
 
@@ -78,35 +85,49 @@ public: //サブクラス
 		XMFLOAT2 uv; //uv座標
 	};
 
-protected: //メンバ変数
+private: //メンバ変数
 	//頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
+
 	//頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vbView;
+
 	//定数バッファ
 	ComPtr<ID3D12Resource> constBuff;
+
 	//テクスチャ番号
 	UINT texNumber = 0;
+
 	//座標
 	XMFLOAT3 position = { 0, 0, 0 };
+
 	//色
 	XMFLOAT4 color = { 1, 1, 1, 1 };
+
 	//大きさ
 	XMFLOAT2 size = { 10, 10 };
+
 	//テクスチャの左上座標
 	XMFLOAT2 texLeftTop = { 0, 0 };
+
 	//テクスチャの切り出しサイズ
 	XMFLOAT2 texSize = { 100, 100 };
+
 	//アンカーポイント
 	XMFLOAT2 anchorpoint = { 0.0f, 0.0f };
+
 	//ワールド行列
 	XMMATRIX matWorld;
+
 	//Z軸回りの回転角
 	float rotation = 0.0f;
+
 	//左右反転
 	bool isFilpX = false;
+
 	//上下反転
 	bool isFilpY = false;
+
 	//非表示
 	bool isInvisible = false;
 
@@ -141,19 +162,9 @@ public: //メンバ関数
 	//コンストラクタ
 	Sprite(XMFLOAT2 size, UINT texNumber, XMFLOAT2 anchorpoint);
 
-	/// <summary>
-	/// 初期化
-	/// </summary>
+	//初期化・更新・描画
 	void Initialize();
-
-	/// <summary>
-	/// 更新
-	/// </summary>
 	void Update();
-
-	/// <summary>
-	/// 描画
-	/// </summary>
 	void Draw();
 
 	//頂点データ更新

@@ -449,7 +449,7 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 		//テクスチャファイル名読み込み
 		material.textureFilename = "white1x1.png";
 		//テクスチャ読み込み
-		LoadTexture("Resources/Default/", material.textureFilename);
+		LoadTexture("Resources/default/", material.textureFilename);
 	}
 
 	file.close();

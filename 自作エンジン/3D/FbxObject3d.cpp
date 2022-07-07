@@ -272,12 +272,15 @@ void FbxObject3d::Update()
 		//ÅŒã‚Ü‚ÅÄ¶‚µ‚½‚ç
 		if (currentTime >= endTime)
 		{
-			currentTime = startTime;
-
 			//ƒ‹[ƒv‚µ‚È‚¢‚È‚ç
 			if (isLoop == false)
 			{
+				currentTime = endTime;
 				isPlay = false;
+			}
+			else
+			{
+				currentTime = startTime;
 			}
 		}
 	}
