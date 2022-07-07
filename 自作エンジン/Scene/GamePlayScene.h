@@ -66,6 +66,7 @@ private: //インスタンス
 	std::unique_ptr<Sprite> demo_back = nullptr;
 
 	//OBJオブジェクト
+	std::unique_ptr<Object3d> obj = nullptr;
 	std::array<std::unique_ptr<Object3d>, END> defaultWall;
 	
 	//FBXオブジェクト

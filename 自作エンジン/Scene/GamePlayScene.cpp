@@ -44,14 +44,15 @@ void GamePlayScene::Initialize()
 	demo_back.reset(Sprite::CreateSprite(1));
 
 	//OBJオブジェクト
+	obj.reset(Object3d::Create("Bullet", true));
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
 		defaultWall[i].reset(Object3d::Create("Wall"));
 	}
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
-	fbxObject->PlayAnimation(true);
+	//fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
+	//fbxObject->PlayAnimation(true);
 
 	//パラメーター
 	ResetVariable();
@@ -62,10 +63,14 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetVariable()
 {
-	fbxObject->SetPosition({ 0, 0, 0 });
-	fbxObject->SetRotation({ 0, 90, 0 });
-	fbxObject->SetScale({ 1, 1, 1 });
-	fbxObject->Update();
+	//fbxObject->SetPosition({ 0, 0, 0 });
+	//fbxObject->SetRotation({ 0, 90, 0 });
+	//fbxObject->SetScale({ 1, 1, 1 });
+	//fbxObject->Update();
+
+	obj->SetPosition({ 0, 0, 0 });
+	obj->SetScale({ 1, 1, 1 });
+	obj->Update();
 
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
@@ -127,8 +132,16 @@ void GamePlayScene::Update()
 	{
 		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
 	}
-	XMFLOAT3 pos = camera->ConvertWindowPos(fbxObject->GetPosition(), vec);
-	fbxObject->SetPosition(pos);
+	if (input->PushKey(DIK_LSHIFT) || input->PushKey(DIK_C))
+	{
+		XMFLOAT4 a = obj->GetColor();
+		a.z += (input->PushKey(DIK_LSHIFT) - input->PushKey(DIK_C)) * 0.05f;
+		obj->SetColor(a);
+	}
+	//XMFLOAT3 pos = camera->ConvertWindowPos(fbxObject->GetPosition(), vec);
+	XMFLOAT3 pos = camera->ConvertWindowPos(obj->GetPosition(), vec);
+	//fbxObject->SetPosition(pos);
+	obj->SetPosition(pos);
 
 	//カメラ
 	XMFLOAT2 angle = { 0, 0 };
@@ -176,9 +189,10 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
+	obj->Draw();
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		//defaultWall[i]->Draw();
+		defaultWall[i]->Draw();
 	}
 
 	Object3d::PostDraw();
@@ -186,7 +200,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	//FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);
 
-	fbxObject->Draw();
+	//fbxObject->Draw();
 
 	FbxObject3d::PostDraw();
 
