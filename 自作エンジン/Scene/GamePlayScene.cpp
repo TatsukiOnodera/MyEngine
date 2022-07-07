@@ -54,10 +54,8 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetVariable()
 {
-	timer = 0;
-
-	isStartA = false;
-	isStartB = false;
+	isStart = false;
+	isCollision = false;
 
 	v0A = 10;
 	v0B = -10;
@@ -65,11 +63,13 @@ void GamePlayScene::ResetVariable()
 	vA = v0A;
 	vB = v0B;
 
-	mA = 20;
-	mB = 10;
+	mA = 7.5;
+	mB = 5;
 
 	rA = 10;
 	rB = 10;
+
+	bounce = 0.7;
 
 	ballA->SetPosition({-200, -100, 0});
 	ballB->SetPosition({ 200, -100, 0 });
@@ -83,52 +83,77 @@ void GamePlayScene::ResetVariable()
 
 void GamePlayScene::Update()
 {
-	if (input->TriggerKey(DIK_R))
+	if (input->TriggerKey(DIK_R) && isStart == false && isCollision == false)
 	{
 		ResetVariable();
-		isStartA = true;
-		isStartB = true;
+		isStart = true;
 	}
 
 	//À•WŽæ“¾
 	XMFLOAT3 posA = ballA->GetPosition();
 	XMFLOAT3 posB = ballB->GetPosition();
 
-	if (isStartA == true)
+	if (isStart == true)
 	{
 		posA.x += vA;
-	}
-	if (isStartB == true)
-	{
 		posB.x += vB;
+	}
+	else if (isCollision == true)
+	{
+		posA.x += vA;
+		posB.x += vB;
+
+		if (vA > 0)
+		{
+			vA -= 1;
+			if (vA <= 0)
+			{
+				vA = 0;
+			}
+		}
+		else
+		{
+			vA += 1;
+			if (vA >= 0)
+			{
+				vA = 0;
+			}
+		}
+		if (vB > 0)
+		{
+			vB -= 1;
+			if (vB <= 0)
+			{
+				vB = 0;
+			}
+		}
+		else
+		{
+			vB += 1;
+			if (vB >= 0)
+			{
+				vB = 0;
+			}
+		}
+
+		if (vA == 0 && vB == 0)
+		{
+			isCollision = false;
+		}
 	}
 	if (powf(posA.x - posB.x, 2) <= powf(rA + rB, 2))
 	{
-		//¶•Ó
-		float left = mA * vA + mB * vB;
-		vA = left / (mA * -1 + mA * 0);
-		vB = left / (mB * 0 + mB * 1);
+		float b = bounce * vA - vB;
+		float vf1 = (mA * vA + mB * vB - b * mB) / (mA + mB);
+		float vf2 = b + vf1;
+		vA = vf1;
+		vB = vf2;
+		isStart = false;
+		isCollision = true;
 	}
-	if (isStartA == true)
-	{
-		if (posA.x < -200)
-		{
-			posA.x = -200;
-			isStartA = false;
-		}
 
-		ballA->SetPosition(posA);
-	}
-	if (isStartB == true)
-	{
-		if (posB.x > 200)
-		{
-			posB.x = 200;
-			isStartB = false;
-		}
-
-		ballB->SetPosition(posB);
-	}
+	ballA->SetPosition(posA);
+	ballB->SetPosition(posB);
 
 	debugText.Print("R : Start / ReStart", 10, 10, 2);
 }

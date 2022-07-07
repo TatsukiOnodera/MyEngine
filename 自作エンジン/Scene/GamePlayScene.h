@@ -65,8 +65,8 @@ private: //オブジェクトのメモリ
 
 private: //メンバ変数
 	//スイッチ
-	bool isStartA;
-	bool isStartB;
+	bool isStart;
+	bool isCollision;
 
 	//初速度
 	float v0A;
@@ -84,11 +84,8 @@ private: //メンバ変数
 	float rA;
 	float rB;
 
-	//重力加速度
-	const float gravity = 9.8;
-
-	//タイマー
-	int timer;
+	//跳ね返り係数
+	float bounce;
 
 public: //メンバ関数
 	~GamePlayScene();
