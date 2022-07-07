@@ -16,6 +16,7 @@
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <memory>
+#include <array>
 
 class GamePlayScene : public BaseScene
 {
@@ -29,7 +30,14 @@ public: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 private: //定数
+	//デバッグテキスト用テクスチャの番号
 	const int fontNumber = 0;
+
+	//壁の配置
+	enum WALLNUMBER
+	{
+		FRONT, BACK, RIGHT, LEFT, UP, DOWN, END
+	};
 
 private: //メモリ置き場
 	//DIrectXCommon
@@ -47,7 +55,7 @@ private: //メモリ置き場
 	//デバッグテキスト
 	DebugText debugText;
 
-private: //オブジェクトのメモリ
+private: //インスタンス
 	//ライト
 	std::unique_ptr<Light> light = nullptr;
 
@@ -55,37 +63,18 @@ private: //オブジェクトのメモリ
 	std::unique_ptr<ParticleManager> particle = nullptr;
 
 	//スプライト
-	
+	std::unique_ptr<Sprite> demo_back = nullptr;
 
 	//OBJオブジェクト
-	std::unique_ptr<Object3d> ballA = nullptr;
-	std::unique_ptr<Object3d> ballB = nullptr;
-
+	std::unique_ptr<Object3d> obj = nullptr;
+	std::array<std::unique_ptr<Object3d>, END> defaultWall;
+	
 	//FBXオブジェクト
+	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
 private: //メンバ変数
-	//スイッチ
-	bool isStart;
-	bool isCollision;
+	
 
-	//初速度
-	float v0A;
-	float v0B;
-
-	//速さ
-	float vA;
-	float vB;
-
-	//質量
-	float mA;
-	float mB;
-
-	//半径
-	float rA;
-	float rB;
-
-	//跳ね返り係数
-	float bounce;
 
 public: //メンバ関数
 	~GamePlayScene();
@@ -118,12 +107,12 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void DrawObjects(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
-	/// パーティクル描画
+	/// エフェクト描画
 	/// </summary>
-	void DrawParticle(ID3D12GraphicsCommandList* cmdList);
+	void DrawEffect(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// UI描画

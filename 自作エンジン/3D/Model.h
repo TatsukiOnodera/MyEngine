@@ -144,7 +144,7 @@ public: //ƒƒ“ƒoŠÖ”
 	/// <summary>
 	/// XV
 	/// </summary>
-	void Update(Material material);
+	void Update(float alpha);
 
 	/// <summary>
 	/// •`‰æ

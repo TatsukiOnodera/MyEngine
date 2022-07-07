@@ -48,21 +48,21 @@ void Model::Initialize()
 		IID_PPV_ARGS(&this->constBuff));
 }
 
-void Model::Update(Material material)
+void Model::Update(float alpha)
 {
 	HRESULT result;
 
-	Material materials = material;
+	material.alpha = alpha;
 
 	// 定数バッファへデータ転送
 	ConstBufferData* constMap = nullptr;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result))
 	{
-		constMap->ambient = materials.ambient;
-		constMap->diffuse = materials.diffuse;
-		constMap->specular = materials.specular;
-		constMap->alpha = materials.alpha;
+		constMap->ambient = material.ambient;
+		constMap->diffuse = material.diffuse;
+		constMap->specular = material.specular;
+		constMap->alpha = material.alpha;
 		constBuff->Unmap(0, nullptr);
 	}
 }
@@ -449,7 +449,7 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 		//テクスチャファイル名読み込み
 		material.textureFilename = "white1x1.png";
 		//テクスチャ読み込み
-		LoadTexture("Resources/default/", material.textureFilename);
+		LoadTexture("Resources/Default/", material.textureFilename);
 	}
 
 	file.close();

@@ -3,7 +3,7 @@
 using namespace DirectX;
 
 const std::string FbxLoader::baseDirectory = "Resources/";
-const std::string FbxLoader::defaultTextureFileName = "default/white1x1.png";
+const std::string FbxLoader::defaultTextureFileName = "Default/white1x1.png";
 
 void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {

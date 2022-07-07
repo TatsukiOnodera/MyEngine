@@ -10,14 +10,14 @@ Camera* Camera::GetInstance()
 
 void Camera::Initialize(int window_width, int window_height)
 {
-	//ï¿½rï¿½ï¿½ï¿½{ï¿½[ï¿½hï¿½sï¿½ñ‰Šï¿½ï¿½ï¿½
+	//ƒrƒ‹ƒ{[ƒhs—ñ‰Šú‰»
 	matBillboard = XMMatrixIdentity();
 	matBillboardY = XMMatrixIdentity();
 
-	// ï¿½rï¿½ï¿½ï¿½[ï¿½sï¿½ï¿½Ìï¿½ï¿½ï¿½
+	// ƒrƒ…[s—ñ‚Ì¶¬
 	Update();
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½eï¿½É‚ï¿½ï¿½Ë‰eï¿½sï¿½ï¿½Ìï¿½ï¿½ï¿½
+	// “§‹“Š‰e‚É‚æ‚éË‰es—ñ‚Ì¶¬
 	matProjection = XMMatrixPerspectiveFovLH(
 		XMConvertToRadians(60.0f),
 		(float)window_width / window_height,
@@ -29,78 +29,78 @@ void Camera::Update()
 {
 	if (dirty == true)
 	{
-		//ï¿½ï¿½ï¿½_
+		//‹“_
 		XMVECTOR eyePosition = XMLoadFloat3(&eye);
-		//ï¿½ï¿½ï¿½ï¿½ï¿½_
+		//’‹“_
 		XMVECTOR targetPosition = XMLoadFloat3(&target);
-		//ï¿½ï¿½ï¿½ï¿½ï¿½
+		//ã•ûŒü
 		XMVECTOR upVector = XMLoadFloat3(&up);
 
-		//ï¿½Jï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½
+		//ƒJƒƒ‰Z²
 		XMVECTOR cameraAxisZ = XMVectorSubtract(targetPosition, eyePosition);
-		//ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ğ³‹Kï¿½ï¿½
+		//ƒxƒNƒgƒ‹‚ğ³‹K‰»
 		cameraAxisZ = XMVector3Normalize(cameraAxisZ);
 
-		//0ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ÆŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½È‚ï¿½ï¿½Ì‚Åï¿½ï¿½O
+		//0ƒxƒNƒgƒ‹‚¾‚ÆŒü‚«‚ª’è‚Ü‚ç‚È‚¢‚Ì‚ÅœŠO
 		assert(!XMVector3Equal(cameraAxisZ, XMVectorZero()));
 		assert(!XMVector3IsInfinite(cameraAxisZ));
 		assert(!XMVector3Equal(upVector, XMVectorZero()));
 		assert(!XMVector3IsInfinite(upVector));
 
-		//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½ï¿½
+		//ƒJƒƒ‰‚ÌX²
 		XMVECTOR cameraAxisX;
-		//Xï¿½ï¿½ï¿½Íï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ÌŠOï¿½Ï‚Å‹ï¿½ï¿½ß‚ï¿½
+		//X²‚Íã•ûŒü¨Z²‚ÌŠOÏ‚Å‹‚ß‚é
 		cameraAxisX = XMVector3Cross(upVector, cameraAxisZ);
-		//ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ğ³‹Kï¿½ï¿½
+		//ƒxƒNƒgƒ‹‚ğ³‹K‰»
 		cameraAxisX = XMVector3Normalize(cameraAxisX);
 
-		//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Yï¿½ï¿½
+		//ƒJƒƒ‰‚ÌY²
 		XMVECTOR cameraAxisY;
-		//Yï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ÌŠOï¿½Ï‚Å‹ï¿½ï¿½ß‚ï¿½
+		//Y²‚ÍZ²¨X²‚ÌŠOÏ‚Å‹‚ß‚é
 		cameraAxisY = XMVector3Cross(cameraAxisZ, cameraAxisX);
-		//ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ğ³‹Kï¿½ï¿½
+		//ƒxƒNƒgƒ‹‚ğ³‹K‰»
 		cameraAxisY = XMVector3Normalize(cameraAxisY);
 
-		//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]ï¿½sï¿½ï¿½
+		//ƒJƒƒ‰‰ñ“]s—ñ
 		XMMATRIX matCameraRot;
-		//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½nï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Wï¿½nï¿½Ì•ÏŠï¿½ï¿½sï¿½ï¿½
+		//ƒJƒƒ‰À•WŒn¨ƒ[ƒ‹ƒhÀ•WŒn‚Ì•ÏŠ·s—ñ
 		matCameraRot.r[0] = cameraAxisX;
 		matCameraRot.r[1] = cameraAxisY;
 		matCameraRot.r[2] = cameraAxisZ;
 		matCameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
 
-		//ï¿½]ï¿½uï¿½É‚ï¿½ï¿½tï¿½sï¿½ï¿½ï¿½ï¿½vï¿½Z
+		//“]’u‚É‚æ‚è‹ts—ñ‚ğŒvZ
 		matView = XMMatrixTranspose(matCameraRot);
 
-		//ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½ï¿½-1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½W
+		//‹“_À•W‚É-1‚ğ‚©‚¯‚½À•W
 		XMVECTOR reverseEyePosition = XMVectorNegate(eyePosition);
-		//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÌˆÊ’uï¿½ï¿½ï¿½çƒï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½_ï¿½Ö‚Ìƒxï¿½Nï¿½gï¿½ï¿½
+		//ƒJƒƒ‰‚ÌˆÊ’u‚©‚çƒ[ƒ‹ƒhŒ´“_‚Ö‚ÌƒxƒNƒgƒ‹
 		XMVECTOR tX = XMVector3Dot(matCameraRot.r[0], reverseEyePosition);
 		XMVECTOR tY = XMVector3Dot(matCameraRot.r[1], reverseEyePosition);
 		XMVECTOR tZ = XMVector3Dot(matCameraRot.r[2], reverseEyePosition);
-		//ï¿½ï¿½Â‚Ìƒxï¿½Nï¿½gï¿½ï¿½ï¿½É‚Ü‚Æ‚ß‚ï¿½
+		//ˆê‚Â‚ÌƒxƒNƒgƒ‹‚É‚Ü‚Æ‚ß‚é
 		XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
 
-		//ï¿½rï¿½ï¿½ï¿½[ï¿½sï¿½ï¿½É•ï¿½ï¿½sï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ’ï¿½
+		//ƒrƒ…[s—ñ‚É•½sˆÚ“®¬•ª‚ğİ’è
 		matView.r[3] = translation;
 
-		//ï¿½rï¿½ï¿½ï¿½{ï¿½[ï¿½hï¿½sï¿½ï¿½
+		//ƒrƒ‹ƒ{[ƒhs—ñ
 		matBillboard.r[0] = cameraAxisX;
 		matBillboard.r[1] = cameraAxisY;
 		matBillboard.r[2] = cameraAxisZ;
 		matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
 
-		//ï¿½Jï¿½ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½AYï¿½ï¿½ï¿½AZï¿½ï¿½
+		//ƒJƒƒ‰X²AY²AZ²
 		XMVECTOR ybillCameraAxisX, ybillCameraAxisY, ybillCameraAxisZ;
 
-		//Xï¿½ï¿½ï¿½Í‹ï¿½ï¿½ï¿½
+		//X²‚Í‹¤’Ê
 		ybillCameraAxisX = cameraAxisX;
-		//Yï¿½ï¿½ï¿½Íƒï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Wï¿½nï¿½ï¿½Yï¿½ï¿½
+		//Y²‚Íƒ[ƒ‹ƒhÀ•WŒn‚ÌY²
 		ybillCameraAxisY = XMVector3Normalize(upVector);
-		//Zï¿½ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½Yï¿½ï¿½ï¿½ÌŠOï¿½Ï‚Å‹ï¿½ï¿½ß‚ï¿½
+		//Z²‚ÍX²¨Y²‚ÌŠOÏ‚Å‹‚ß‚é
 		ybillCameraAxisZ = XMVector3Cross(ybillCameraAxisX, ybillCameraAxisY);
 
-		//Yï¿½ï¿½ï¿½ï¿½ï¿½rï¿½ï¿½ï¿½{ï¿½[ï¿½hï¿½sï¿½ï¿½
+		//Y²‰ñ‚èƒrƒ‹ƒ{[ƒhs—ñ
 		matBillboardY.r[0] = ybillCameraAxisX;
 		matBillboardY.r[1] = ybillCameraAxisY;
 		matBillboardY.r[2] = ybillCameraAxisZ;
@@ -136,6 +136,13 @@ void Camera::SetUp(XMFLOAT3 up)
 	dirty = true;
 }
 
+void Camera::SetDistance()
+{
+	distance.x = eye.x - target.x;
+	distance.y = eye.y - target.y;
+	distance.z = eye.z - target.z;
+}
+
 void Camera::MoveCamera(XMFLOAT3 move)
 {
 	this->eye.x += move.x;
@@ -148,41 +155,46 @@ void Camera::MoveCamera(XMFLOAT3 move)
 	dirty = true;
 }
 
-XMFLOAT3 Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float angleX, float angleY)
+void Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY)
 {
-	//ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½Zï¿½bï¿½g
+	//’‹“_ƒZƒbƒg
 	SetTarget(target);
 
-	//ï¿½Iï¿½tï¿½Zï¿½bï¿½gï¿½xï¿½Nï¿½gï¿½ï¿½
+	//ƒIƒtƒZƒbƒgƒxƒNƒgƒ‹
 	XMVECTOR v0 = { eye.x, eye.y, eye.z, 0 };
 
-	//ï¿½ï¿½]ï¿½sï¿½ï¿½
+	//²‚ÌŠp“x‚É‰ÁZ‚·‚é
+	angleX += addAngleX;
+	angleY += addAngleY;
+
+	//‰ñ“]s—ñ
 	XMMATRIX rotM = XMMatrixIdentity();
 	rotM *= XMMatrixRotationX(XMConvertToRadians(angleX));
 	rotM *= XMMatrixRotationY(XMConvertToRadians(angleY));
 
-	//ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½nï¿½_ï¿½Ö‚Ìƒxï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
+	//’‹“_‚©‚çn“_‚Ö‚ÌƒxƒNƒgƒ‹‚ğ‹‚ß‚é
 	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
 
-	//ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½É‘ï¿½ï¿½ï¿½ï¿½Äï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
+	//’‹“_‚É‘«‚µ‚Ä‹“_‚ğ‹‚ß‚é
 	XMFLOAT3 eyePosition = { target.x + V.m128_f32[0], target.y + V.m128_f32[1], target.z + V.m128_f32[2] };
 
-	return eyePosition;
+	//n“_‚ğƒZƒbƒg
+	SetEye(eyePosition);
 }
 
-XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec, float angleY)
+XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec)
 {
-	//ï¿½Ú“ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½
+	//ˆÚ“®ƒxƒNƒgƒ‹
 	XMVECTOR v0 = { vec.x, vec.y, vec.z, 0 };
 
-	//ï¿½ï¿½]ï¿½sï¿½ï¿½
+	//‰ñ“]s—ñ
 	XMMATRIX rotM = XMMatrixIdentity();
 	rotM *= XMMatrixRotationY(XMConvertToRadians(angleY));
 
-	//ï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ï¿½Æ‚ÉˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½ï¿½
+	//³–Ê‚ğ‚à‚Æ‚ÉˆÚ“®‚µ‚½ƒxƒNƒgƒ‹‚ÌŒü‚«‚ğo‚·
 	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
 
-	//ï¿½ï¿½ï¿½Ìï¿½ï¿½Wï¿½ÉˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ğ‘«‚ï¿½
+	//Œ³‚ÌÀ•W‚ÉˆÚ“®‚µ‚½ƒxƒNƒgƒ‹‚ğ‘«‚·
 	XMFLOAT3 position = { pos.x + V.m128_f32[0], pos.y + V.m128_f32[1], pos.z + V.m128_f32[2] };
 
 	return position;

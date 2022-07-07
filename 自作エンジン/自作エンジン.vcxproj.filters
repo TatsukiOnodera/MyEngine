@@ -73,6 +73,9 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Scene\Others">
       <UniqueIdentifier>{257e7453-7025-46d4-a92f-30f7ec9236bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\PostEffectShader">
+      <UniqueIdentifier>{7d524172-cf19-463c-b6b8-4b039d5e4151}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -95,9 +98,6 @@
     </ClCompile>
     <ClCompile Include="Input\Input.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Particle\ParticleManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClCompile>
     <ClCompile Include="2D\Sprite.cpp">
       <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
@@ -147,6 +147,12 @@
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene\Others</Filter>
     </ClCompile>
+    <ClCompile Include="Effect\ParticleManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect\PostEffect.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -166,9 +172,6 @@
     </ClInclude>
     <ClInclude Include="Input\Input.h">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Particle\ParticleManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClInclude>
     <ClInclude Include="2D\Sprite.h">
       <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
@@ -242,14 +245,14 @@
     <ClInclude Include="Scene\BaseScene.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene\Others</Filter>
     </ClInclude>
+    <ClInclude Include="Effect\ParticleManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect\PostEffect.h">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\OBJPixelShader.hlsl">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\OBJVertexShader.hlsl">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\Shaders\ParticleGS.hlsl">
       <Filter>シェーダーファイル\ParticleShader</Filter>
     </FxCompile>
@@ -271,11 +274,26 @@
     <FxCompile Include="Resources\Shaders\FBXVertexShader.hlsl">
       <Filter>シェーダーファイル\FBXShader</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectPS.hlsl">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectVS.hlsl">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ADSPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ADSVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ToonPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ToonVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\OBJShaderHeader.hlsli">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
-    </None>
     <None Include="Resources\Shaders\Sprite.hlsli">
       <Filter>シェーダーファイル\SpriteShader</Filter>
     </None>
@@ -284,6 +302,15 @@
     </None>
     <None Include="Resources\Shaders\FBXShaderHeader.hlsli">
       <Filter>シェーダーファイル\FBXShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostEffect.hlsli">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\ADSShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\ToonShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader</Filter>
     </None>
   </ItemGroup>
 </Project>

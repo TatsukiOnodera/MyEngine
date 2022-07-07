@@ -64,6 +64,12 @@ public: //メンバ関数
 	void TransferConstBuffer();
 
 	/// <summary>
+	/// ライトの方向を得る
+	/// </summary>
+	/// <returns></returns>
+	XMVECTOR GetLightDir() { return lightDir; };
+
+	/// <summary>
 	/// ライトの方向セット
 	/// </summary>
 	void SetLightDir(const XMVECTOR& lightDir);
