@@ -63,9 +63,7 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetVariable()
 {
-	//fbxObject->SetPosition({ 0, 0, 0 });
 	//fbxObject->SetRotation({ 0, 90, 0 });
-	//fbxObject->SetScale({ 1, 1, 1 });
 	//fbxObject->Update();
 
 	obj->SetPosition({ 0, 0, 0 });
