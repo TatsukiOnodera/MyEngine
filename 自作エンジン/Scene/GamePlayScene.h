@@ -67,6 +67,7 @@ private: //インスタンス
 
 	//OBJオブジェクト
 	std::array<std::unique_ptr<Object3d>, END> defaultWall;
+	std::unique_ptr<Object3d> enemy = nullptr;
 	
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;

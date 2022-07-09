@@ -45,10 +45,10 @@ void GamePlayScene::Initialize()
 	{
 		defaultWall[i].reset(Object3d::Create("Wall"));
 	}
+	enemy.reset(Object3d::Create("Enemy"));
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("TestMultiMeshes"));
-	fbxObject->PlayAnimation(true);
+	fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
 
 	//パーティクル
 	//particle.reset(ParticleManager::Create());
@@ -66,7 +66,7 @@ void GamePlayScene::ResetParameter()
 	add0 = 0;
 
 	float fbxObjectSize = 0.5f;
-	fbxObject->SetPosition({ 0, 0, 0 });
+	fbxObject->SetPosition({ 0, 0, -20 });
 	fbxObject->SetRotation({ -90, 0, 0 });
 	fbxObject->SetScale({ fbxObjectSize, fbxObjectSize, fbxObjectSize });
 	fbxObject->Update();
@@ -112,6 +112,9 @@ void GamePlayScene::ResetParameter()
 		defaultWall[i]->SetScale(scale);
 		defaultWall[i]->Update();
 	}
+
+	enemy->SetScale({1.5, 1.5, 1.5});
+	enemy->Update();
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 5, -10 });
@@ -160,7 +163,7 @@ void GamePlayScene::Update()
 	else
 	{
 		//アニメーション
-		//fbxObject->ResetAnimation();
+		fbxObject->ResetAnimation();
 	}
 	//カメラを軸にした変換
 	XMFLOAT3 pos = fbxObject->GetPosition();
@@ -223,6 +226,7 @@ void GamePlayScene::DrawOthers(ID3D12GraphicsCommandList* cmdList)
 	{
 		m->Draw();
 	}
+	enemy->Draw();
 
 	Object3d::PostDraw();
 
