@@ -67,6 +67,7 @@ private: //インスタンス
 
 	//OBJオブジェクト
 	std::array<std::unique_ptr<Object3d>, END> defaultWall;
+	std::vector<std::unique_ptr<Object3d>> bullet;
 	std::unique_ptr<Object3d> enemy = nullptr;
 	
 	//FBXオブジェクト
@@ -74,9 +75,16 @@ private: //インスタンス
 
 private: //メンバ変数
 	//加速する
-	bool isDash = false;
+	bool isDash;
 	//初期加速値
-	float add0 = 0.0;
+	float add0;
+
+	//Bulletの生死
+	std::vector<bool> bulletAlive;
+	//BUlletのベクトル
+	std::vector<XMFLOAT3> bulletVec;
+	//ショットの間隔
+	int bulletTime;
 
 public: //メンバ関数
 	~GamePlayScene();
