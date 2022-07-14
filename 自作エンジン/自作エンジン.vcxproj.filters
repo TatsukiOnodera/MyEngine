@@ -76,6 +76,15 @@
     <Filter Include="シェーダーファイル\PostEffectShader">
       <UniqueIdentifier>{7d524172-cf19-463c-b6b8-4b039d5e4151}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader\ADS">
+      <UniqueIdentifier>{cd2df1d7-2674-4748-8a0d-f02bf75c5cd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader\Toon">
+      <UniqueIdentifier>{1c274d9d-5001-4748-856a-e8b572a49523}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader\Monochromatic">
+      <UniqueIdentifier>{ad928979-92ed-4227-a3f4-98576e5cbac3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -282,17 +291,23 @@
     <FxCompile Include="Resources\Shaders\PostEffectVS.hlsl">
       <Filter>シェーダーファイル\PostEffectShader</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\ADSPixelShader.hlsl">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\Shaders\ADSVertexShader.hlsl">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
+      <Filter>シェーダーファイル\ObjectShader\ADS</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ADSPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\ADS</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\ToonPixelShader.hlsl">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
+      <Filter>シェーダーファイル\ObjectShader\Toon</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\ToonVertexShader.hlsl">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
+      <Filter>シェーダーファイル\ObjectShader\Toon</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\MonochromaticPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\Monochromatic</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\MonochromaticVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\Monochromatic</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -309,10 +324,13 @@
       <Filter>シェーダーファイル\PostEffectShader</Filter>
     </None>
     <None Include="Resources\Shaders\ADSShaderHeader.hlsli">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
+      <Filter>シェーダーファイル\ObjectShader\ADS</Filter>
     </None>
     <None Include="Resources\Shaders\ToonShaderHeader.hlsli">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
+      <Filter>シェーダーファイル\ObjectShader\Toon</Filter>
+    </None>
+    <None Include="Resources\Shaders\MonochromaticShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader\Monochromatic</Filter>
     </None>
   </ItemGroup>
 </Project>

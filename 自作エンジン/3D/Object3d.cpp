@@ -97,10 +97,10 @@ void Object3d::Initialize()
 
 void Object3d::Update()
 {
-	if (dirty == true || camera->GetDirty() == true || light->GetDirty() == true)
+	if (dirty || camera->GetDirty() || light->GetDirty())
 	{
 		//ワールド行列の更新
-		if (isBillboard == true)
+		if (isBillboard)
 		{
 			//ビルボード行列の更新
 			matWorld = XMMatrixIdentity(); //単位行列

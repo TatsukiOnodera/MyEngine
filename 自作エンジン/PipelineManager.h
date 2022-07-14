@@ -36,6 +36,12 @@ public: //メンバ関数
 	void CreateToonPipeline(ID3D12Device* dev);
 
 	/// <summary>
+	/// 単色シェーダー
+	/// </summary>
+	/// <param name="dev">デバイス</param>
+	void CreateMonochromaticPipeline(ID3D12Device* dev);
+
+	/// <summary>
 	/// パイプラインステートを取得
 	/// </summary>
 	ID3D12PipelineState *GetPipelineState() { return m_pipelineState.Get(); }

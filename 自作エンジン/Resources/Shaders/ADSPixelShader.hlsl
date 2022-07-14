@@ -29,5 +29,6 @@ float4 main(VSOutput input) : SV_TARGET
 	shadecolor.a = m_alpha;
 	texcolor.rgb *= lightcolor;
 
+	//出力
 	return shadecolor * texcolor;
 }

@@ -44,7 +44,7 @@ void GamePlayScene::Initialize()
 	demo_back.reset(Sprite::CreateSprite(1));
 
 	//OBJオブジェクト
-	obj.reset(Object3d::Create("Bullet", true));
+	obj.reset(Object3d::Create("Dragon", true));
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
 		defaultWall[i].reset(Object3d::Create("Wall"));
@@ -67,7 +67,8 @@ void GamePlayScene::ResetVariable()
 	//fbxObject->Update();
 
 	obj->SetPosition({ 0, 0, 0 });
-	obj->SetScale({ 1, 1, 1 });
+	obj->SetScale({ 3, 3, 3 });
+	obj->SetColor({1, 1, 0, 1});
 	obj->Update();
 
 	for (int i = 0; i < defaultWall.size(); i++)
@@ -182,7 +183,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	obj->Draw(cmdList);
 	for (auto& m : defaultWall)
 	{
-		m->Draw(cmdList);
+		//m->Draw(cmdList);
 	}
 
 	//FBXオブジェクト
