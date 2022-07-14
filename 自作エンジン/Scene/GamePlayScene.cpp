@@ -130,12 +130,6 @@ void GamePlayScene::Update()
 	{
 		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
 	}
-	if (input->PushKey(DIK_LSHIFT) || input->PushKey(DIK_C))
-	{
-		XMFLOAT4 a = obj->GetColor();
-		a.z += (input->PushKey(DIK_LSHIFT) - input->PushKey(DIK_C)) * 0.05f;
-		obj->SetColor(a);
-	}
 	//XMFLOAT3 pos = camera->ConvertWindowPos(fbxObject->GetPosition(), vec);
 	XMFLOAT3 pos = camera->ConvertWindowPos(obj->GetPosition(), vec);
 	//fbxObject->SetPosition(pos);
@@ -185,15 +179,11 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 {
 	//OBJオブジェクト描画
-	Object3d::PreDraw(cmdList);
-
-	obj->Draw();
-	for (int i = 0; i < defaultWall.size(); i++)
+	obj->Draw(cmdList);
+	for (auto& m : defaultWall)
 	{
-		defaultWall[i]->Draw();
+		m->Draw(cmdList);
 	}
-
-	Object3d::PostDraw();
 
 	//FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);

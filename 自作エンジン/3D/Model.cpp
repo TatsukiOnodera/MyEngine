@@ -48,11 +48,9 @@ void Model::Initialize()
 		IID_PPV_ARGS(&this->constBuff));
 }
 
-void Model::Update(float alpha)
+void Model::Update()
 {
 	HRESULT result;
-
-	material.alpha = alpha;
 
 	// 定数バッファへデータ転送
 	ConstBufferData* constMap = nullptr;

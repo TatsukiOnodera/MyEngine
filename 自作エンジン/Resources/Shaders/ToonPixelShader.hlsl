@@ -17,7 +17,7 @@ float4 main(VSOutput input) : SV_TARGET
 	//ハーフベクトル
 	float3 halfvec = normalize(lightv + eyedir);
 	//ライトに向かうベクトルと法線の内積
-	float intensity = saturate(dot(halfvec, input.normal));
+	float intensity = saturate(dot(normalize(input.normal), halfvec));
 	//環境反射光
 	float3 ambient = m_ambient;
 	//smoothstep用変数
@@ -30,13 +30,17 @@ float4 main(VSOutput input) : SV_TARGET
 	//すべて加算
 	float3 ads = (ambient + diffuse + specular) * texcolor.rgb;
 
+	//明るい部分の色
 	float4 l_color = (0, 0, 0, 0);
 	l_color.rgb = ads;
+	//暗い部分の色
 	float4 d_color = texcolor * 0.3;
 
+	//トゥーン化
 	shadecolor = smoothstep(a_scale, b_scale, intensity) * l_color + (1 - smoothstep(a_scale, b_scale, intensity)) * d_color;
 	shadecolor.rgb *= lightcolor;
 	shadecolor.a = m_alpha;
 
+	//出力
 	return shadecolor;
 }

@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "CollisionInfo.h"
+#include "PipelineManager.h"
 
 class BaseCollider;
 
@@ -26,10 +27,6 @@ private: //静的変数;
 	static ID3D12Device* dev;
 	// コマンドリスト
 	static ID3D12GraphicsCommandList* cmdList;
-	//パイプラインステートオブジェクト
-	static ComPtr<ID3D12PipelineState> pipelinestate; 
-	//ルートシグネチャ
-	static ComPtr<ID3D12RootSignature> rootsignature;
 	//カメラクラス
 	static Camera *camera;
 	//ライトクラス
@@ -40,21 +37,6 @@ public: //静的関数
 	/// 静的初期化
 	/// </summary>
 	static bool StaticInitialize(ID3D12Device* device, int window_width, int window_height);
-
-	/// <summary>
-	/// グラフィックパイプライン生成
-	/// </summary>
-	static void CreateGraphicsPipeline();
-
-	/// <summary>
-	/// 描画前処理
-	/// </summary>
-	static void PreDraw(ID3D12GraphicsCommandList* cmdList);
-
-	/// <summary>
-	/// 描画後処理
-	/// </summary>
-	static void PostDraw();
 
 	/// <summary>
 	/// オブジェクト生成
@@ -71,7 +53,7 @@ public: //静的関数
 	/// </summary>
 	static void SetLight(Light* light) { Object3d::light = light; }
 
-public: //サブクラス
+private: //サブクラス
 	//定数バッファ用データ構造体
 	struct ConstBufferData
 	{
@@ -81,7 +63,15 @@ public: //サブクラス
 		XMFLOAT4 color; //色(RGBA)
 	};
 
-protected: //メンバ変数
+	//シェーダーの種類
+	enum ShadersType
+	{
+		ADS, TOON,
+	};
+
+private: //メンバ変数
+	//グラフィックスパイプライン
+	std::unique_ptr<PipelineManager> graphicsPipeline = nullptr;
 	//定数バッファ
 	ComPtr<ID3D12Resource> constBuff;
 	//平行移動
@@ -129,7 +119,17 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	virtual void Draw();
+	virtual void Draw(ID3D12GraphicsCommandList *commandList);
+
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
+	void PreDraw(ID3D12GraphicsCommandList* commandList);
+
+	/// <summary>
+	/// 描画後処理
+	/// </summary>
+	void PostDraw();
 
 public: //アクセッサ
 	/// <summary>
@@ -177,6 +177,12 @@ public: //アクセッサ
 	/// </summary>
 	/// <param name="collider">コライダー</param>
 	void SetCollider(BaseCollider* collider);
+
+	/// <summary>
+	/// パイプラインセット
+	/// </summary>
+	/// <param name="shaderType">シェーダーの種類</param>
+	void SetGraphicsPipeline(const int shaderType);
 
 	/// <summary>
 	/// 衝突時コールバック関数
