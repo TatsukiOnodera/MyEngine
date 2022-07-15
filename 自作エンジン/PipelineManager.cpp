@@ -11,7 +11,7 @@ using namespace Microsoft::WRL;
 
 PipelineManager::PipelineManager(ID3D12Device* dev)
 {
-	CreateMonochromaticPipeline(dev);
+	CreateADSPipeline(dev);
 }
 
 void PipelineManager::CreateADSPipeline(ID3D12Device* dev)

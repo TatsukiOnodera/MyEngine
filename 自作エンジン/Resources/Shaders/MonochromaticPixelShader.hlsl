@@ -8,8 +8,6 @@ float4 main(VSOutput input) : SV_TARGET
 	//色
 	float4 shadecolor = color;
 
-	shadecolor.a = 1;
-
 	//出力
 	return shadecolor;
 }

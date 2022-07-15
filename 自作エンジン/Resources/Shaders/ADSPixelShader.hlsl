@@ -6,12 +6,12 @@ SamplerState smp : register(s0);      // 0番スロットに設定されたサ�
 float4 main(VSOutput input) : SV_TARGET
 {
 	//テクスチャマッピング
-	float4 texcolor = tex.Sample(smp, input.uv);
+	float4 texcolor = tex.Sample(smp, input.uv) * color;
 
 	//シェーディングによる色
 	float4 shadecolor;
 	//光沢度
-	const float shininess = 30.0f;
+	const float shininess = 100.0f;
 	//頂点から視点へのベクトル
 	float3 eyedir = normalize(cameraPos - input.worldpos.xyz);
 	//ハーフベクトル

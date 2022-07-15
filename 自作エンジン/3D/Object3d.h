@@ -24,13 +24,13 @@ public: // エイリアス
 
 private: //静的変数;
 	// デバイス
-	static ID3D12Device* dev;
+	static ID3D12Device* s_dev;
 	// コマンドリスト
-	static ID3D12GraphicsCommandList* cmdList;
+	static ID3D12GraphicsCommandList* s_cmdList;
 	//カメラクラス
-	static Camera *camera;
+	static Camera *s_camera;
 	//ライトクラス
-	static Light* light;
+	static Light* s_light;
 
 public: //静的関数
 	/// <summary>
@@ -46,12 +46,12 @@ public: //静的関数
 	/// <summary>
 	/// カメラセット
 	/// </summary>
-	static Camera* GetCamera() { return camera; };
+	static Camera* GetCamera() { return s_camera; };
 
 	/// <summary>
 	/// ライトセット
 	/// </summary>
-	static void SetLight(Light* light) { Object3d::light = light; }
+	static void SetLight(Light* light) { Object3d::s_light = light; }
 
 private: //サブクラス
 	//定数バッファ用データ構造体
@@ -60,6 +60,7 @@ private: //サブクラス
 		XMMATRIX viewproj; //ビュープロジェクション行列
 		XMMATRIX world; //ワールド行列
 		XMFLOAT3 cameraPos; //カメラ座標(ワールド座標)
+		float pad; //パディング
 		XMFLOAT4 color; //色(RGBA)
 	};
 
@@ -71,29 +72,29 @@ private: //サブクラス
 
 private: //メンバ変数
 	//グラフィックスパイプライン
-	std::unique_ptr<PipelineManager> graphicsPipeline = nullptr;
+	std::unique_ptr<PipelineManager> m_graphicsPipeline = nullptr;
 	//定数バッファ
-	ComPtr<ID3D12Resource> constBuff;
+	ComPtr<ID3D12Resource> m_constBuff;
 	//平行移動
-	XMFLOAT3 position = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 m_position = { 0.0f, 0.0f, 0.0f };
 	//スケール
-	XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
+	XMFLOAT3 m_scale = { 1.0f, 1.0f, 1.0f };
 	//回転
-	XMFLOAT3 rotation = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 m_rotation = { 0.0f, 0.0f, 0.0f };
 	//色(RGBA)
-	XMFLOAT4 color = { 1, 1, 1, 1 };
+	XMFLOAT4 m_color = { 1, 1, 1, 1 };
 	//ワールド行列
-	XMMATRIX matWorld;
+	XMMATRIX m_matWorld;
 	//モデルデータ
-	Model* model = nullptr;
+	Model* m_model = nullptr;
 	// ビルボード
-	bool isBillboard = false;
+	bool m_isBillboard = false;
 	//クラス名（デバッグ用）
-	const char* name = nullptr;
+	const char* m_name = nullptr;
 	//コライダー
-	BaseCollider* collider = nullptr;
+	std::unique_ptr<BaseCollider> m_collider = nullptr;
 	//ダーティーフラグ
-	bool dirty = true;
+	bool m_dirty = true;
 
 public: //メンバ関数
 	/// <summary>
@@ -119,12 +120,12 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	virtual void Draw(ID3D12GraphicsCommandList *commandList);
+	virtual void Draw(ID3D12GraphicsCommandList *cmdList);
 
 	/// <summary>
 	/// 描画前処理
 	/// </summary>
-	void PreDraw(ID3D12GraphicsCommandList* commandList);
+	void PreDraw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// 描画後処理
@@ -135,42 +136,42 @@ public: //アクセッサ
 	/// <summary>
 	/// 座標
 	/// </summary>
-	XMFLOAT3 GetPosition() { return position; }
+	XMFLOAT3 GetPosition() { return m_position; }
 	void SetPosition(XMFLOAT3 position);
 
 	/// <summary>
 	/// 回転
 	/// </summary>
-	XMFLOAT3 GetRotation() { return rotation; }
+	XMFLOAT3 GetRotation() { return m_rotation; }
 	void SetRotation(XMFLOAT3 rotation);
 
 	/// <summary>
 	/// スケール
 	/// </summary>
-	XMFLOAT3 GetScale() { return scale; }
+	XMFLOAT3 GetScale() { return m_scale; }
 	void SetScale(XMFLOAT3 scale);
 
 	/// <summary>
 	/// 色
 	/// </summary>
-	XMFLOAT4 GetColor() { return color; }
+	XMFLOAT4 GetColor() { return m_color; }
 	void SetColor(XMFLOAT4 color);
 
 	/// <summary>
 	/// モデルデータセット
 	/// </summary>
-	void SetModel(Model* model) { this->model = model; }
+	void SetModel(Model* model) { this->m_model = model; }
 
 	/// <summary>
 	/// ビルボードセット
 	/// </summary>
-	void SetBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
+	void SetBillboard(bool isBillboard) { this->m_isBillboard = isBillboard; }
 
 	/// <summary>
 	/// ワールド行列を取得
 	/// </summary>
 	/// <returns>ワールド行列</returns>
-	const XMMATRIX& GetMatWorld() { return matWorld; }
+	const XMMATRIX& GetMatWorld() { return m_matWorld; }
 
 	/// <summary>
 	/// コライダーのセット

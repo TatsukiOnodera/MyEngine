@@ -258,10 +258,10 @@
     <ClInclude Include="Effect\PostEffect.h">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="3D\Object3d.h">
       <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
     </ClInclude>
+    <ClInclude Include="PipelineManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\ParticleGS.hlsl">
