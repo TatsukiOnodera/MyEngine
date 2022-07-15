@@ -11,7 +11,7 @@ float4 main(VSOutput input) : SV_TARGET
 	//シェーディングによる色
 	float4 shadecolor;
 	//光沢度
-	const float shininess = 100.0;
+	const float shininess = 30.0;
 	//頂点から視点へのベクトル
 	float3 eyedir = normalize(cameraPos - input.worldpos.xyz);
 	//ハーフベクトル
