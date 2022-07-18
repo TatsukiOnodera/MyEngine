@@ -78,6 +78,7 @@ public: //サブクラス
 		XMMATRIX viewproj; //ビュープロジェクション行列
 		XMMATRIX world; //ワールド行列
 		XMFLOAT3 cameraPos; //カメラ座標(ワールド座標)
+		float pad; //パディング
 		XMFLOAT4 color; //色(RGBA)
 	};
 

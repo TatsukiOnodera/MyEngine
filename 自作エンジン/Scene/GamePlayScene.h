@@ -58,34 +58,26 @@ private: //オブジェクトのメモリ
 	
 
 	//OBJオブジェクト
-	std::unique_ptr<Object3d> ballA = nullptr;
-	std::unique_ptr<Object3d> ballB = nullptr;
+	std::unique_ptr<Object3d> p = nullptr;
+	std::unique_ptr<Object3d> ball = nullptr;
 
 	//FBXオブジェクト
 
 private: //メンバ変数
 	//スイッチ
 	bool isStart;
-	bool isCollision;
 
-	//初速度
-	float v0A;
-	float v0B;
-
-	//速さ
-	float vA;
-	float vB;
-
-	//質量
-	float mA;
-	float mB;
+	//重力
+	const float g = 9.8f;
 
 	//半径
-	float rA;
-	float rB;
+	float r;
 
-	//跳ね返り係数
-	float bounce;
+	//速さ
+	float vt;
+
+	//時間
+	int t;
 
 public: //メンバ関数
 	~GamePlayScene();

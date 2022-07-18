@@ -41,8 +41,8 @@ void GamePlayScene::Initialize()
 	
 
 	//オブジェクト
-	ballA.reset(Object3d::Create("Bullet", true));
-	ballB.reset(Object3d::Create("ball", true));
+	ball.reset(Object3d::Create("Bullet", true));
+	p.reset(Object3d::Create("ball", true));
 
 	//パラメーター
 	camera->SetEye({ 0, 0, -300 });
@@ -55,107 +55,52 @@ void GamePlayScene::Initialize()
 void GamePlayScene::ResetVariable()
 {
 	isStart = false;
-	isCollision = false;
 
-	v0A = 10;
-	v0B = -10;
+	r = 200;
 
-	vA = v0A;
-	vB = v0B;
+	vt = 0;
 
-	mA = 7.5;
-	mB = 5;
+	t = 0;
 
-	rA = 10;
-	rB = 10;
+	p->SetPosition({0, 0, 0});
+	ball->SetPosition({ r, 0, 0 });
 
-	bounce = 0.7;
+	p->SetScale({ 10, 10, 10 });
+	ball->SetScale({ 10, 10, 10 });
 
-	ballA->SetPosition({-200, -100, 0});
-	ballB->SetPosition({ 200, -100, 0 });
-
-	ballA->SetScale({ rA, rA, rA });
-	ballB->SetScale({ rB, rB, rB });
-
-	ballA->Update();
-	ballB->Update();
+	p->Update();
+	ball->Update();
 }
 
 void GamePlayScene::Update()
 {
-	if (input->TriggerKey(DIK_R) && isStart == false && isCollision == false)
+	if (input->TriggerKey(DIK_R) && isStart == false)
 	{
 		ResetVariable();
 		isStart = true;
 	}
+	if (input->PushKey(DIK_S) && isStart == true)
+	{
+		isStart = false;
+	}
 
 	//座標取得
-	XMFLOAT3 posA = ballA->GetPosition();
-	XMFLOAT3 posB = ballB->GetPosition();
-
-	if (isStart == true)
+	if (isStart)
 	{
-		posA.x += vA;
-		posB.x += vB;
-	}
-	else if (isCollision == true)
-	{
-		posA.x += vA;
-		posB.x += vB;
+		XMFLOAT3 posP = p->GetPosition();
+		XMFLOAT3 posBall = ball->GetPosition();
 
-		if (vA > 0)
-		{
-			vA -= 1;
-			if (vA <= 0)
-			{
-				vA = 0;
-			}
-		}
-		else
-		{
-			vA += 1;
-			if (vA >= 0)
-			{
-				vA = 0;
-			}
-		}
-		if (vB > 0)
-		{
-			vB -= 1;
-			if (vB <= 0)
-			{
-				vB = 0;
-			}
-		}
-		else
-		{
-			vB += 1;
-			if (vB >= 0)
-			{
-				vB = 0;
-			}
-		}
+		
 
-		if (vA == 0 && vB == 0)
-		{
-			isCollision = false;
-		}
-	}
-	if (powf(posA.x - posB.x, 2) <= powf(rA + rB, 2))
-	{
-		float b = bounce * vA - vB;
-		float vf1 = (mA * vA + mB * vB - b * mB) / (mA + mB);
-		float vf2 = b + vf1;
-		vA = vf1;
-		vB = vf2;
-		isStart = false;
-		isCollision = true;
-	}
 
-	ballA->SetPosition(posA);
-	ballB->SetPosition(posB);
+		p->SetPosition(posP);
+		ball->SetPosition(posBall);
+
+		t++;
+	}
 
 	debugText.Print("R : Start / ReStart", 10, 10, 2);
+	debugText.Print("S : Stop", 10, 50, 2);
 }
 
 void GamePlayScene::Draw()
@@ -191,8 +136,8 @@ void GamePlayScene::Draw(ID3D12GraphicsCommandList* cmdList)
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	ballA->Draw();
-	ballB->Draw();
+	p->Draw();
+	ball->Draw();
 
 	Object3d::PostDraw();
 
