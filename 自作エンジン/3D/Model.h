@@ -177,7 +177,7 @@ public: //アクセッサ
 	ID3D12RootSignature* GetRootSignature() { return m_graphicsPipeline->GetRootSignature(); }
 
 	/// <summary>
-	/// パイプラインセット
+	/// グラフィックスパイプラインセット
 	/// </summary>
 	/// <param name="shaderType">シェーダーの種類</param>
 	void SetGraphicsPipeline(const int shaderType);

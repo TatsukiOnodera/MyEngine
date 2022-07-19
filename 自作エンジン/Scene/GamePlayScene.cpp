@@ -68,7 +68,7 @@ void GamePlayScene::ResetVariable()
 
 	obj->SetPosition({ 0, 0, 0 });
 	obj->SetScale({ 3, 3, 3 });
-	obj->SetColor({ 1, 1, 1, 1 });
+	obj->SetColor({ 0, 0.8, 0.2, 1 });
 	obj->Update();
 
 	for (int i = 0; i < defaultWall.size(); i++)
@@ -121,6 +121,12 @@ void GamePlayScene::ResetVariable()
 
 void GamePlayScene::Update()
 {
+	if (/*input->PushKey(DIK_RETURN)*/true)
+	{
+		obj->SetShader(SPECULAR);
+		obj->SetMaskTexture("Resources/", "Scales.png");
+	}
+
 	//ˆÚ“®
 	XMFLOAT3 vec = { 0, 0, 0 };
 	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))

@@ -88,6 +88,9 @@
     <Filter Include="シェーダーファイル\ObjectShader\TextureBlend">
       <UniqueIdentifier>{f1524bfe-d97b-45fa-af19-d578a1fbea2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader\SpecularMap">
+      <UniqueIdentifier>{6cbe3faf-70b7-45e3-abd3-1cfbda7fceb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -318,6 +321,12 @@
     <FxCompile Include="Resources\Shaders\TextureBlendVertexShader.hlsl">
       <Filter>シェーダーファイル\ObjectShader\TextureBlend</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpecularMapPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\SpecularMap</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpecularMapVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\SpecularMap</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Sprite.hlsli">
@@ -343,6 +352,9 @@
     </None>
     <None Include="Resources\Shaders\TextureBlendShaderHeader.hlsli">
       <Filter>シェーダーファイル\ObjectShader\TextureBlend</Filter>
+    </None>
+    <None Include="Resources\Shaders\SpecularMapShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader\SpecularMap</Filter>
     </None>
   </ItemGroup>
 </Project>

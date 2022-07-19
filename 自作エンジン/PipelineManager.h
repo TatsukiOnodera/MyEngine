@@ -50,6 +50,12 @@ public: //メンバ関数
 	void CreateTextureBlendPipeline(ID3D12Device* dev);
 
 	/// <summary>
+	/// スペキュラーマッピング
+	/// </summary>
+	/// <param name="dev">デバイス</param>
+	void CreateSpecularMapPipeline(ID3D12Device* dev);
+
+	/// <summary>
 	/// パイプラインステートを取得
 	/// </summary>
 	/// <returns>パイプラインステート</returns>

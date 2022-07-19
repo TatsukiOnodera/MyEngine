@@ -205,7 +205,7 @@ void Object3d::SetCollider(BaseCollider* collider)
 	this->m_collider.reset(collider);
 }
 
-void Object3d::SetGraphicsPipeline(const int shaderType)
+void Object3d::SetShader(const int shaderType)
 {
 	m_model->SetGraphicsPipeline(shaderType);
 }

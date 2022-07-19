@@ -36,12 +36,17 @@ Model *Model::CreateModel(const std::string& modelName, bool smooting)
 	model->InitializeModel(modelName, smooting);
 
 	//テクスチャの数が1より多いなら
-	if (1 < model->m_graphicsPipeline->GetTexNum())
+	if (model->m_graphicsPipeline->GetTexNum() == 2)
+	{
+		//マスクテクスチャ名取得
+		model->LoadTextureName("Resources/Default/", "red1x1.png");
+	}
+	else if (model->m_graphicsPipeline->GetTexNum() == 3)
 	{
 		//サブテクスチャ名取得
-		model->LoadTextureName("Resources/", "white1x1.png");
+		model->LoadTextureName("Resources/Default/", "white1x1.png");
 		//マスクテクスチャ名取得
-		model->LoadTextureName("Resources/", "red1x1.png");
+		model->LoadTextureName("Resources/Default/", "red1x1.png");
 	}
 
 	//テクスチャの読み込み
@@ -128,15 +133,24 @@ void Model::SetGraphicsPipeline(const int shaderType)
 		m_graphicsPipeline->CreateTextureBlendPipeline(s_dev);
 		break;
 
+	case 4:
+		m_graphicsPipeline->CreateSpecularMapPipeline(s_dev);
+		break;
+
 	default:
 		assert(0);
 	}
 
 	//テクスチャの数が1より多いなら
-	if (1 < m_graphicsPipeline->GetTexNum())
+	if (m_graphicsPipeline->GetTexNum() == 2)
+	{
+		//マスクテクスチャ名取得
+		LoadTextureName("Resources/Default/", "red1x1.png");
+	}
+	else if (m_graphicsPipeline->GetTexNum() == 3)
 	{
 		//サブテクスチャ名取得
-		LoadTextureName("Resources/Default/", "red1x1.png");
+		LoadTextureName("Resources/Default/", "white1x1.png");
 		//マスクテクスチャ名取得
 		LoadTextureName("Resources/Default/", "red1x1.png");
 	}
@@ -151,12 +165,20 @@ void Model::SetGraphicsPipeline(const int shaderType)
 
 void Model::SetSubTexture(const std::string& directoryPath, const std::string& filename)
 {
-	if (m_graphicsPipeline->GetTexNum() == 1 || m_graphicsPipeline->GetTexNum() == 2)
+	if (!(m_graphicsPipeline->GetTexNum() == 3))
 	{
 		return;
 	}
-
-	textureName[1] = directoryPath + filename;
+	if (textureName.size() == 1)
+	{
+		//サブテクスチャ名取得
+		LoadTextureName(directoryPath, filename);
+	}
+	else
+	{
+		//サブテクスチャ名取得
+		textureName[1] = directoryPath + filename;
+	}
 
 	//テクスチャの読み込み
 	LoadTexture();
@@ -166,11 +188,31 @@ void Model::SetMaskTexture(const std::string& directoryPath, const std::string& 
 {
 	if (m_graphicsPipeline->GetTexNum() == 2)
 	{
-		textureName[1] = directoryPath + filename;
+		if (textureName.size() == 1)
+		{
+			//マスクテクスチャ名取得
+			LoadTextureName(directoryPath, filename);
+		}
+		else
+		{
+			//マスクテクスチャ名取得
+			textureName[1] = directoryPath + filename;
+		}
 	}
 	else if (m_graphicsPipeline->GetTexNum() == 3)
 	{
-		textureName[2] = directoryPath + filename;
+		if (textureName.size() == 1)
+		{
+			//サブテクスチャ名取得
+			LoadTextureName("Resources/Default/", "red1x1.png");
+			//マスクテクスチャ名取得
+			LoadTextureName(directoryPath, filename);
+		} 
+		else
+		{
+			//マスクテクスチャ名取得
+			textureName[2] = directoryPath + filename;
+		}
 	}
 	else
 	{

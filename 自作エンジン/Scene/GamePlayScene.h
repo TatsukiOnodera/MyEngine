@@ -35,7 +35,7 @@ private: //定数
 	//シェーダーの種類
 	enum ShadersType
 	{
-		ADS, TOON, MONO, BLEND,
+		ADS, TOON, MONO, BLEND, SPECULAR
 	};
 	//壁の配置
 	enum WALLNUMBER

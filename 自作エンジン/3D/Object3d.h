@@ -174,10 +174,10 @@ public: //アクセッサ
 	void SetCollider(BaseCollider* collider);
 
 	/// <summary>
-	/// パイプラインセット
+	/// シェーダーセット
 	/// </summary>
 	/// <param name="shaderType">シェーダーの種類</param>
-	void SetGraphicsPipeline(const int shaderType);
+	void SetShader(const int shaderType);
 
 	/// <summary>
 	/// サブテクスチャのセット
