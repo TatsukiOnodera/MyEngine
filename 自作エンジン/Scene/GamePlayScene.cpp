@@ -68,7 +68,7 @@ void GamePlayScene::ResetVariable()
 
 	obj->SetPosition({ 0, 0, 0 });
 	obj->SetScale({ 3, 3, 3 });
-	obj->SetColor({ 1, 1, 0, 1 });
+	obj->SetColor({ 1, 1, 1, 1 });
 	obj->Update();
 
 	for (int i = 0; i < defaultWall.size(); i++)
@@ -131,9 +131,7 @@ void GamePlayScene::Update()
 	{
 		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
 	}
-	//XMFLOAT3 pos = camera->ConvertWindowPos(fbxObject->GetPosition(), vec);
 	XMFLOAT3 pos = camera->ConvertWindowPos(obj->GetPosition(), vec);
-	//fbxObject->SetPosition(pos);
 	obj->SetPosition(pos);
 
 	//ƒJƒƒ‰

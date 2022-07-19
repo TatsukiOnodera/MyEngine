@@ -64,15 +64,7 @@ private: //サブクラス
 		XMFLOAT4 color; //色(RGBA)
 	};
 
-	//シェーダーの種類
-	enum ShadersType
-	{
-		ADS, TOON,
-	};
-
 private: //メンバ変数
-	//グラフィックスパイプライン
-	std::unique_ptr<PipelineManager> m_graphicsPipeline = nullptr;
 	//定数バッファ
 	ComPtr<ID3D12Resource> m_constBuff;
 	//平行移動
@@ -139,6 +131,8 @@ public: //アクセッサ
 	XMFLOAT3 GetPosition() { return m_position; }
 	void SetPosition(XMFLOAT3 position);
 
+	//void SetOffset(XMFLOAT2 offset);
+
 	/// <summary>
 	/// 回転
 	/// </summary>
@@ -184,6 +178,20 @@ public: //アクセッサ
 	/// </summary>
 	/// <param name="shaderType">シェーダーの種類</param>
 	void SetGraphicsPipeline(const int shaderType);
+
+	/// <summary>
+	/// サブテクスチャのセット
+	/// </summary>
+	/// <param name="directoryPath">ダイレクトパス</param>
+	/// <param name="filename">ファイル名</param>
+	void SetSubTexture(const std::string& directoryPath, const std::string& filename);
+
+	/// <summary>
+	/// マスクテクスチャのセット
+	/// </summary>
+	/// <param name="directoryPath">ダイレクトパス</param>
+	/// <param name="filename">ファイル名</param>
+	void SetMaskTexture(const std::string& directoryPath, const std::string& filename);
 
 	/// <summary>
 	/// 衝突時コールバック関数

@@ -15,6 +15,8 @@ private: //メンバ変数
 	ComPtr<ID3D12PipelineState> m_pipelineState;
 	//ルートシグネチャ
 	ComPtr<ID3D12RootSignature> m_rootSignature;
+	//テクスチャの数
+	int texNum = 1;
 
 public: //メンバ関数
 	/// <summary>
@@ -42,12 +44,26 @@ public: //メンバ関数
 	void CreateMonochromaticPipeline(ID3D12Device* dev);
 
 	/// <summary>
+	/// テクスチャブレンド
+	/// </summary>
+	/// <param name="dev">デバイス</param>
+	void CreateTextureBlendPipeline(ID3D12Device* dev);
+
+	/// <summary>
 	/// パイプラインステートを取得
 	/// </summary>
+	/// <returns>パイプラインステート</returns>
 	ID3D12PipelineState *GetPipelineState() { return m_pipelineState.Get(); }
 
 	/// <summary>
 	/// ルートシグネチャを取得
 	/// </summary>
+	/// <returns>ルートシグネチャ</returns>
 	ID3D12RootSignature *GetRootSignature() { return m_rootSignature.Get(); }
+
+	/// <summary>
+	/// テクスチャの数を取得
+	/// </summary>
+	/// <returns>テクスチャの数</returns>
+	int GetTexNum();
 };

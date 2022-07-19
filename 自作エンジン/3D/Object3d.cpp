@@ -43,8 +43,8 @@ void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
 	Object3d::s_cmdList = cmdList;
 
 	//パイプラインとルートシグネチャの設定
-	s_cmdList->SetPipelineState(m_graphicsPipeline->GetPipelineState());
-	s_cmdList->SetGraphicsRootSignature(m_graphicsPipeline->GetRootSignature());
+	s_cmdList->SetPipelineState(m_model->GetPipelineState());
+	s_cmdList->SetGraphicsRootSignature(m_model->GetRootSignature());
 	//プリミティブ形状を設定
 	s_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
@@ -72,11 +72,6 @@ Object3d* Object3d::Create(const std::string& modelName, bool smooting)
 void Object3d::Initialize()
 {
 	HRESULT result;
-
-	//パイプライン生成
-	m_graphicsPipeline.reset(new PipelineManager(s_dev));
-	assert(m_graphicsPipeline->GetPipelineState());
-	assert(m_graphicsPipeline->GetRootSignature());
 
 	// 定数バッファB0の生成
 	result = s_dev->CreateCommittedResource(
@@ -212,21 +207,15 @@ void Object3d::SetCollider(BaseCollider* collider)
 
 void Object3d::SetGraphicsPipeline(const int shaderType)
 {
-	//nullチェック
-	assert(m_graphicsPipeline);
+	m_model->SetGraphicsPipeline(shaderType);
+}
 
-	//指定のシェーダー生成
-	switch (shaderType)
-	{
-	case ADS:
-		m_graphicsPipeline->CreateADSPipeline(s_dev);
-		break;
+void Object3d::SetSubTexture(const std::string& directoryPath, const std::string& filename)
+{
+	m_model->SetSubTexture(directoryPath, filename);
+}
 
-	case TOON:
-		m_graphicsPipeline->CreateToonPipeline(s_dev);
-		break;
-
-	default:
-		assert(0);
-	}
+void Object3d::SetMaskTexture(const std::string& directoryPath, const std::string& filename)
+{
+	m_model->SetMaskTexture(directoryPath, filename);
 }
