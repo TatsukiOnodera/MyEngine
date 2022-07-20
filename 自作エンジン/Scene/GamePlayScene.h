@@ -58,26 +58,16 @@ private: //オブジェクトのメモリ
 	
 
 	//OBJオブジェクト
-	std::unique_ptr<Object3d> p = nullptr;
 	std::unique_ptr<Object3d> ball = nullptr;
+	std::unique_ptr<Object3d> line = nullptr;
 
 	//FBXオブジェクト
 
+
 private: //メンバ変数
-	//スイッチ
-	bool isStart;
-
-	//重力
-	const float g = 9.8f;
-
-	//半径
-	float r;
-
-	//速さ
-	float vt;
-
-	//時間
-	int t;
+	XMFLOAT3 start = {};
+	XMFLOAT3 end = {};
+	float r = 0;
 
 public: //メンバ関数
 	~GamePlayScene();
@@ -126,4 +116,10 @@ public: //メンバ関数
 	/// デバッグテキスト描画
 	/// </summary>
 	void DrawDebugText(ID3D12GraphicsCommandList* cmdList);
+
+	/// <summary>
+	/// ベクトルの長さ
+	/// </summary>
+	/// <param name="vec">ベクトル</param>
+	float CalculationVectorLength(XMFLOAT3 vec);
 };

@@ -34,18 +34,18 @@ void GamePlayScene::Initialize()
 	//ライト生成
 	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
-	light->SetLightDir({-1, -1, 0, 0});
+	light->SetLightDir({0, 0, 1, 0});
 	Object3d::SetLight(light.get());
 
 	//スプライト
 	
 
 	//オブジェクト
-	ball.reset(Object3d::Create("Bullet", true));
-	p.reset(Object3d::Create("ball", true));
+	ball.reset(Object3d::Create("Circle", true));
+	line.reset(Object3d::Create("line", true));
 
 	//パラメーター
-	camera->SetEye({ 0, 0, -300 });
+	camera->SetEye({ 0, 0, -200 });
 	ResetVariable();
 
 	//オーディオ
@@ -54,53 +54,63 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetVariable()
 {
-	isStart = false;
+	start = { 0, 0, 0 };
+	end = { 0, 0, 0 };
+	r = 10;
 
-	r = 200;
+	line->SetRotation({90, 0, -45});
+	ball->SetRotation({90, 0, 0});
 
-	vt = 0;
-
-	t = 0;
-
-	p->SetPosition({0, 0, 0});
-	ball->SetPosition({ r, 0, 0 });
-
-	p->SetScale({ 10, 10, 10 });
+	line->SetScale({ 2.5, 2.5, 2.5 });
 	ball->SetScale({ 10, 10, 10 });
 
-	p->Update();
+	line->Update();
 	ball->Update();
 }
 
 void GamePlayScene::Update()
 {
-	if (input->TriggerKey(DIK_R) && isStart == false)
+	XMFLOAT3 pos = line->GetPosition();
+
+	pos.x += input->PushKey(DIK_D) - input->PushKey(DIK_A) * 2;
+	pos.y += input->PushKey(DIK_W) - input->PushKey(DIK_S) * 2;
+
+	float len = static_cast<float>((2.5 * 10) / sqrt(2));
+
+	start = { pos.x - len, pos.y - len, 0 };
+	end = { pos.x + len, pos.y + len, 0 };
+
+	line->SetPosition(pos);
+
+	float distance = ((0 - start.x) * (end.y - start.y) - (end.x - start.x) * (0 - start.y)) / static_cast<float>(sqrt(pow(end.x - start.x, 2) + pow(end.y - start.y, 2)));
+
+	if (fabsf(distance) <= 10)
 	{
-		ResetVariable();
-		isStart = true;
+		float dotA = (0 - start.x) * (end.x - start.x) + (0 - start.y) * (end.y - start.y);
+		float dotB = (0 - end.x) * (end.x - start.x) + (0 - end.y) * (end.y - start.y);
+
+		if (dotA * dotB <= 0.0f)
+		{
+			ball->SetColor(XMFLOAT4(1, 0, 0, 1));
+		}
+		else if (CalculationVectorLength(XMFLOAT3(0 - start.x, 0 - start.y, 0)) < r || CalculationVectorLength(XMFLOAT3(0 - end.x, 0 - end.y, 0)) < r)
+		{
+			ball->SetColor(XMFLOAT4(1, 0, 0, 1));
+		}
+		else
+		{
+			ball->SetColor(XMFLOAT4(1, 1, 1, 1));
+		}
 	}
-	if (input->PushKey(DIK_S) && isStart == true)
+	else
 	{
-		isStart = false;
+		ball->SetColor(XMFLOAT4(1, 1, 1, 1));
 	}
 
-	//座標取得
-	if (isStart)
+	if (input->TriggerKey(DIK_SPACE))
 	{
-		XMFLOAT3 posP = p->GetPosition();
-		XMFLOAT3 posBall = ball->GetPosition();
-
-		
-
-
-		p->SetPosition(posP);
-		ball->SetPosition(posBall);
-
-		t++;
+		int c = 0;
 	}
-
-	debugText.Print("R : Start / ReStart", 10, 10, 2);
-	debugText.Print("S : Stop", 10, 50, 2);
 }
 
 void GamePlayScene::Draw()
@@ -136,8 +146,8 @@ void GamePlayScene::Draw(ID3D12GraphicsCommandList* cmdList)
 	//OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	p->Draw();
 	ball->Draw();
+	line->Draw();
 
 	Object3d::PostDraw();
 
@@ -169,4 +179,9 @@ void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 {
 	//デバッグテキスト描画
 	debugText.Draw(cmdList);
+}
+
+float GamePlayScene::CalculationVectorLength(XMFLOAT3 vec)
+{
+	return static_cast<float>(sqrt(pow(vec.x, 2) + pow(vec.y, 2) + pow(vec.z, 2)));
 }
