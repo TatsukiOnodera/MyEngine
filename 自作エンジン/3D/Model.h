@@ -100,7 +100,7 @@ private: //メンバ変数
 	ComPtr<ID3D12Resource> m_constBuff;
 	// シェーダリソースビューのハンドル(CPU)
 	CD3DX12_CPU_DESCRIPTOR_HANDLE m_cpuDescHandleSRV[maxTexNum];
-	// シェーダリソースビューのハンドル(CPU)
+	// シェーダリソースビューのハンドル(GPU)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE m_gpuDescHandleSRV[maxTexNum];
 	// デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> m_descHeap;

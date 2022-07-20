@@ -102,7 +102,7 @@ void Model::Draw(ID3D12GraphicsCommandList* cmdList)
 	// シェーダリソースビューをセット
 	for (int i = 0; i < m_graphicsPipeline->GetTexNum(); i++)
 	{
-		cmdList->SetGraphicsRootDescriptorTable(2 + i, m_gpuDescHandleSRV[i]);
+		cmdList->SetGraphicsRootDescriptorTable(3 + i, m_gpuDescHandleSRV[i]);
 	}
 
 	// 描画コマンド
@@ -141,6 +141,8 @@ void Model::SetGraphicsPipeline(const int shaderType)
 		assert(0);
 	}
 
+	textureName.resize(1);
+
 	//テクスチャの数が1より多いなら
 	if (m_graphicsPipeline->GetTexNum() == 2)
 	{
@@ -150,13 +152,9 @@ void Model::SetGraphicsPipeline(const int shaderType)
 	else if (m_graphicsPipeline->GetTexNum() == 3)
 	{
 		//サブテクスチャ名取得
-		LoadTextureName("Resources/Default/", "white1x1.png");
+		LoadTextureName("Resources/Default/", "black1x1.png");
 		//マスクテクスチャ名取得
 		LoadTextureName("Resources/Default/", "red1x1.png");
-	}
-	else
-	{
-		textureName.resize(1);
 	}
 
 	//テクスチャの読み込み
@@ -165,20 +163,13 @@ void Model::SetGraphicsPipeline(const int shaderType)
 
 void Model::SetSubTexture(const std::string& directoryPath, const std::string& filename)
 {
-	if (!(m_graphicsPipeline->GetTexNum() == 3))
+	if (!(m_graphicsPipeline->GetTexNum() == 3) || !(textureName.size() == 3))
 	{
 		return;
 	}
-	if (textureName.size() == 1)
-	{
-		//サブテクスチャ名取得
-		LoadTextureName(directoryPath, filename);
-	}
-	else
-	{
-		//サブテクスチャ名取得
-		textureName[1] = directoryPath + filename;
-	}
+
+	//サブテクスチャ名取得
+	textureName[1] = directoryPath + filename;
 
 	//テクスチャの読み込み
 	LoadTexture();
@@ -186,29 +177,14 @@ void Model::SetSubTexture(const std::string& directoryPath, const std::string& f
 
 void Model::SetMaskTexture(const std::string& directoryPath, const std::string& filename)
 {
-	if (m_graphicsPipeline->GetTexNum() == 2)
+	if (textureName.size() == 2 || textureName.size() == 3)
 	{
-		if (textureName.size() == 1)
-		{
-			//マスクテクスチャ名取得
-			LoadTextureName(directoryPath, filename);
-		}
-		else
+		if (m_graphicsPipeline->GetTexNum() == 2)
 		{
 			//マスクテクスチャ名取得
 			textureName[1] = directoryPath + filename;
-		}
-	}
-	else if (m_graphicsPipeline->GetTexNum() == 3)
-	{
-		if (textureName.size() == 1)
-		{
-			//サブテクスチャ名取得
-			LoadTextureName("Resources/Default/", "red1x1.png");
-			//マスクテクスチャ名取得
-			LoadTextureName(directoryPath, filename);
 		} 
-		else
+		else if (m_graphicsPipeline->GetTexNum() == 3)
 		{
 			//マスクテクスチャ名取得
 			textureName[2] = directoryPath + filename;

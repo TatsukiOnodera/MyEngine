@@ -165,7 +165,7 @@ void Object3d::Draw(ID3D12GraphicsCommandList* cmdList)
 	s_cmdList->SetGraphicsRootConstantBufferView(0, m_constBuff->GetGPUVirtualAddress());
 
 	//ƒ‰ƒCƒg‚Ì•`‰æ
-	s_light->Draw(s_cmdList, 3);
+	s_light->Draw(s_cmdList, 2);
 
 	//ƒ‚ƒfƒ‹•`‰æ
 	m_model->Draw(s_cmdList);

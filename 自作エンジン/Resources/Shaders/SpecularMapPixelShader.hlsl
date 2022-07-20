@@ -7,14 +7,14 @@ SamplerState smp : register(s0);      // 0番スロットに設定されたサ�
 float4 main(VSOutput input) : SV_TARGET
 {
 	//テクスチャマッピング
-	float4 maincolor = maintex.Sample(smp, input.uv * float2(10, 10)) * color;
-	float4 maskcolor = masktex.Sample(smp, input.uv * float2(10, 10));
+	float4 maincolor = maintex.Sample(smp, input.uv * float2(20, 20)) * color;
+	float4 maskcolor = masktex.Sample(smp, input.uv * float2(20, 20));
 
 	//シェーディングによる色
 	float4 shadecolor;
 
 	//光沢度
-	const float shininess = 30.0f;
+	const float shininess = 10.0f;
 	//頂点から視点へのベクトル
 	float3 eyedir = normalize(cameraPos - input.worldpos.xyz);
 	//ハーフベクトル
