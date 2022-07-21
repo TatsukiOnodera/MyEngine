@@ -32,7 +32,11 @@ public: // エイリアス
 private: //定数
 	//デバッグテキスト用テクスチャの番号
 	const int fontNumber = 0;
-
+	//シェーダーの種類
+	enum ShadersType
+	{
+		ADS, TOON, MONO, BLEND, SPECULAR
+	};
 	//壁の配置
 	enum WALLNUMBER
 	{
@@ -42,34 +46,27 @@ private: //定数
 private: //メモリ置き場
 	//DIrectXCommon
 	DirectXCommon* dx_cmd = nullptr;
-
 	//操作系
 	Input* input = nullptr;
-
 	//オーディオ
 	Audio* audio = nullptr;
-
 	//カメラ
 	Camera* camera = nullptr;
-
 	//デバッグテキスト
 	DebugText debugText;
 
 private: //インスタンス
 	//ライト
 	std::unique_ptr<Light> light = nullptr;
-
 	//パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
-
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;
-
 	//OBJオブジェクト
+	std::unique_ptr<Object3d> obj = nullptr;
 	std::array<std::unique_ptr<Object3d>, END> defaultWall;
 	std::vector<std::unique_ptr<Object3d>> bullet;
 	std::unique_ptr<Object3d> enemy = nullptr;
-	
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
@@ -117,12 +114,12 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void DrawOthers(ID3D12GraphicsCommandList* cmdList);
+	void DrawObjects(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
-	/// パーティクル描画
+	/// エフェクト描画
 	/// </summary>
-	void DrawParticle(ID3D12GraphicsCommandList* cmdList);
+	void DrawEffect(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// UI描画

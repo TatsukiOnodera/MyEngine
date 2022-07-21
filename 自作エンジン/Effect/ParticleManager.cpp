@@ -32,8 +32,8 @@ ParticleManager::VertexPos ParticleManager::vertices[vertexCount];
 XMMATRIX ParticleManager::matBillboard = XMMatrixIdentity();
 XMMATRIX ParticleManager::matBillboardY = XMMatrixIdentity();
 
-//演算子
-const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
+//XMFLOOAT3同士の加算処理
+const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs) 
 {
 	XMFLOAT3 result;
 	result.x = lhs.x + rhs.x;

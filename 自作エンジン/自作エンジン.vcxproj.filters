@@ -73,6 +73,24 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Scene\Others">
       <UniqueIdentifier>{257e7453-7025-46d4-a92f-30f7ec9236bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="シェーダーファイル\PostEffectShader">
+      <UniqueIdentifier>{7d524172-cf19-463c-b6b8-4b039d5e4151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader\ADS">
+      <UniqueIdentifier>{cd2df1d7-2674-4748-8a0d-f02bf75c5cd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader\Toon">
+      <UniqueIdentifier>{1c274d9d-5001-4748-856a-e8b572a49523}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader\Monochromatic">
+      <UniqueIdentifier>{ad928979-92ed-4227-a3f4-98576e5cbac3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader\TextureBlend">
+      <UniqueIdentifier>{f1524bfe-d97b-45fa-af19-d578a1fbea2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader\SpecularMap">
+      <UniqueIdentifier>{6cbe3faf-70b7-45e3-abd3-1cfbda7fceb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -147,6 +165,10 @@
     <ClCompile Include="Effect\ParticleManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Effect\PostEffect.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineManager.cpp" />
     <ClCompile Include="3D\FbxModelMesh.cpp">
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClCompile>
@@ -212,9 +234,6 @@
     <ClInclude Include="3D\Model.h">
       <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
     </ClInclude>
-    <ClInclude Include="3D\Object3d.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
-    </ClInclude>
     <ClInclude Include="3D\FbxLoader.h">
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClInclude>
@@ -245,17 +264,18 @@
     <ClInclude Include="Effect\ParticleManager.h">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="Effect\PostEffect.h">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\Object3d.h">
+      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="3D\FbxModelMesh.h">
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\OBJPixelShader.hlsl">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\OBJVertexShader.hlsl">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\Shaders\ParticleGS.hlsl">
       <Filter>シェーダーファイル\ParticleShader</Filter>
     </FxCompile>
@@ -277,11 +297,44 @@
     <FxCompile Include="Resources\Shaders\FBXVertexShader.hlsl">
       <Filter>シェーダーファイル\FBXShader</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectPS.hlsl">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectVS.hlsl">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ADSVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\ADS</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ADSPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\ADS</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ToonPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\Toon</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ToonVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\Toon</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\MonochromaticPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\Monochromatic</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\MonochromaticVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\Monochromatic</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\TextureBlendPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\TextureBlend</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\TextureBlendVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\TextureBlend</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpecularMapPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\SpecularMap</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpecularMapVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader\SpecularMap</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\OBJShaderHeader.hlsli">
-      <Filter>シェーダーファイル\ObjectShader</Filter>
-    </None>
     <None Include="Resources\Shaders\Sprite.hlsli">
       <Filter>シェーダーファイル\SpriteShader</Filter>
     </None>
@@ -290,6 +343,24 @@
     </None>
     <None Include="Resources\Shaders\FBXShaderHeader.hlsli">
       <Filter>シェーダーファイル\FBXShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostEffect.hlsli">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\ADSShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader\ADS</Filter>
+    </None>
+    <None Include="Resources\Shaders\ToonShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader\Toon</Filter>
+    </None>
+    <None Include="Resources\Shaders\MonochromaticShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader\Monochromatic</Filter>
+    </None>
+    <None Include="Resources\Shaders\TextureBlendShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader\TextureBlend</Filter>
+    </None>
+    <None Include="Resources\Shaders\SpecularMapShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader\SpecularMap</Filter>
     </None>
   </ItemGroup>
 </Project>

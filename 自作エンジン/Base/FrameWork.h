@@ -11,6 +11,7 @@
 #include "AbstractSceneFactory.h"
 #include "Light.h"
 #include "FbxObject3d.h"
+#include "PostEffect.h"
 
 #include <memory>
 
@@ -22,6 +23,7 @@ protected: //ポインタ置き場
 	DirectXCommon* dx_cmd = nullptr;
 	bool end_request = false;
 	std::unique_ptr<AbstractSceneFactory> scene_factory = nullptr;
+	std::unique_ptr<PostEffect> postEffect = nullptr;
 
 public:
 	/// <summary>

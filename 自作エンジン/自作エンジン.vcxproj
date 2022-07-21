@@ -187,10 +187,12 @@
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
     <ClCompile Include="Effect\ParticleManager.cpp" />
+    <ClCompile Include="Effect\PostEffect.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PipelineManager.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
     <ClCompile Include="Scene\SceneFactory.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
@@ -217,12 +219,14 @@
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
     <ClInclude Include="Effect\ParticleManager.h" />
+    <ClInclude Include="Effect\PostEffect.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Light\Light.h" />
     <ClInclude Include="Light\LightGroup.h" />
     <ClInclude Include="Light\PointLight.h" />
+    <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\GamePlayScene.h" />
@@ -232,6 +236,14 @@
     <ClInclude Include="Window\WinApp.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Resources\Shaders\ADSPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ADSVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\FBXPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -240,17 +252,13 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\OBJPixelShader.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    <FxCompile Include="Resources\Shaders\MonochromaticPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\OBJVertexShader.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    <FxCompile Include="Resources\Shaders\MonochromaticVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\ParticleGS.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
@@ -270,6 +278,22 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpecularMapPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpecularMapVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -282,12 +306,33 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\TextureBlendPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\TextureBlendVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ToonPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ToonVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Shaders\ADSShaderHeader.hlsli" />
     <None Include="Resources\Shaders\FBXShaderHeader.hlsli" />
-    <None Include="Resources\Shaders\OBJShaderHeader.hlsli" />
+    <None Include="Resources\Shaders\MonochromaticShaderHeader.hlsli" />
     <None Include="Resources\Shaders\Particle.hlsli" />
+    <None Include="Resources\Shaders\PostEffect.hlsli" />
+    <None Include="Resources\Shaders\SpecularMapShaderHeader.hlsli" />
     <None Include="Resources\Shaders\Sprite.hlsli" />
+    <None Include="Resources\Shaders\TextureBlendShaderHeader.hlsli" />
+    <None Include="Resources\Shaders\ToonShaderHeader.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
