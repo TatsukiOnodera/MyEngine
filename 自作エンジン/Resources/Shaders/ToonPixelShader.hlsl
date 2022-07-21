@@ -6,7 +6,7 @@ SamplerState smp : register(s0);      // 0番スロットに設定されたサ�
 float4 main(VSOutput input) : SV_TARGET
 {
 	//テクスチャマッピング
-	float4 texcolor = tex.Sample(smp, input.uv);
+	float4 texcolor = tex.Sample(smp, input.uv) * color;
 
 	//シェーディングによる色
 	float4 shadecolor;
@@ -17,7 +17,7 @@ float4 main(VSOutput input) : SV_TARGET
 	//ハーフベクトル
 	float3 halfvec = normalize(lightv + eyedir);
 	//ライトに向かうベクトルと法線の内積
-	float intensity = saturate(dot(halfvec, input.normal));
+	float intensity = saturate(dot(normalize(input.normal), halfvec));
 	//環境反射光
 	float3 ambient = m_ambient;
 	//smoothstep用変数
@@ -29,14 +29,14 @@ float4 main(VSOutput input) : SV_TARGET
 	float3 specular = m_specular * smoothstep(a_scale, b_scale, pow(intensity, shininess));
 	//すべて加算
 	float3 ads = (ambient + diffuse + specular) * texcolor.rgb;
-
-	float4 l_color = (0, 0, 0, 0);
-	l_color.rgb = ads;
-	float4 d_color = texcolor * 0.3;
-
-	shadecolor = smoothstep(a_scale, b_scale, intensity) * l_color + (1 - smoothstep(a_scale, b_scale, intensity)) * d_color;
-	shadecolor.rgb *= lightcolor;
+	//明るい部分の色
+	float3 l_color = ads;
+	//暗い部分の色
+	float3 d_color = texcolor.rgb * 0.3;
+	//トゥーン化
+	shadecolor.rgb = smoothstep(a_scale, b_scale, intensity) * l_color + (1 - smoothstep(a_scale, b_scale, intensity)) * d_color * lightcolor;
 	shadecolor.a = m_alpha;
 
+	//出力
 	return shadecolor;
 }

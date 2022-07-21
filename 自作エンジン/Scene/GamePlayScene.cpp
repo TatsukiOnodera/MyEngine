@@ -14,7 +14,8 @@ using namespace Microsoft::WRL;
 
 GamePlayScene::~GamePlayScene()
 {
-
+	m_bullet.clear();
+	m_bullet.shrink_to_fit();
 }
 
 void GamePlayScene::Initialize()
@@ -38,41 +39,53 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	//パーティクル
-	particle.reset(ParticleManager::Create());
+	//particle.reset(ParticleManager::Create());
 
 	//スプライト
 	demo_back.reset(Sprite::CreateSprite(1));
 
 	//OBJオブジェクト
-	obj.reset(Object3d::Create("Bullet", true));
-	for (int i = 0; i < defaultWall.size(); i++)
+	obj.reset(Object3d::Create("Dragon", true));
+	for (auto& m : defaultWall)
 	{
-		defaultWall[i].reset(Object3d::Create("Wall"));
+		m.reset(Object3d::Create("Wall"));
 	}
+	enemy.reset(Object3d::Create("Enemy"));
 
 	//FBXオブェクト
-	//fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
+	//fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
 	//fbxObject->PlayAnimation(true);
 
 	//パラメーター
-	ResetVariable();
+	ResetParameter();
 
 	//オーディオ
 	audio->Initialize();
 }
 
-void GamePlayScene::ResetVariable()
+void GamePlayScene::ResetParameter()
 {
-	//fbxObject->SetRotation({ 0, 90, 0 });
-	//fbxObject->Update();
+	isDash = false;
+	add0 = 0;
+
+	bulletTime = 0;
+
+	/*float fbxObjectSize = 0.5f;
+	fbxObject->SetPosition({ 0, 0, -100 });
+	fbxObject->SetRotation({ -90, 0, 0 });
+	fbxObject->SetScale({ fbxObjectSize, fbxObjectSize, fbxObjectSize });
+	fbxObject->Update()*/
 
 	obj->SetPosition({ 0, 0, 0 });
-	obj->SetScale({ 1, 1, 1 });
+	obj->SetScale({ 3, 3, 3 });
+	obj->SetColor({ 0, 0.6, 0.2, 1 });
+	obj->SetShader(SPECULAR);
+	obj->SetMaskTexture("Resources/", "Scales.png");
 	obj->Update();
 
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		float size = 100;
+		float size = 300;
 		XMFLOAT3 pos;
 		XMFLOAT3 rot;
 		XMFLOAT3 scale = { size, size, size };
@@ -112,6 +125,9 @@ void GamePlayScene::ResetVariable()
 		defaultWall[i]->Update();
 	}
 
+	enemy->SetScale({1.5, 1.5, 1.5});
+	enemy->Update();
+
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 5, -10 });
 	camera->SetDistance();
@@ -122,24 +138,84 @@ void GamePlayScene::Update()
 {
 	//移動
 	XMFLOAT3 vec = { 0, 0, 0 };
-	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
+	if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
 		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
-	}
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
-	{
 		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
 	}
-	if (input->PushKey(DIK_LSHIFT) || input->PushKey(DIK_C))
-	{
-		XMFLOAT4 a = obj->GetColor();
-		a.z += (input->PushKey(DIK_LSHIFT) - input->PushKey(DIK_C)) * 0.05f;
-		obj->SetColor(a);
-	}
-	//XMFLOAT3 pos = camera->ConvertWindowPos(fbxObject->GetPosition(), vec);
 	XMFLOAT3 pos = camera->ConvertWindowPos(obj->GetPosition(), vec);
-	//fbxObject->SetPosition(pos);
 	obj->SetPosition(pos);
+	//if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	//{
+	//	//ダッシュ
+	//	if (input->TriggerKey(DIK_SPACE))
+	//	{
+	//		isDash = true;
+	//		add0 = 25;
+
+	//		//アニメーション
+	//		fbxObject->PlayAnimation(false);
+
+	//		//パーティクル
+	//		//particle->Active(fbxObject->GetPosition());
+	//	}
+
+	//	//ベクトル
+	//	vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
+	//	vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
+	//	//加速するなら
+	//	if (isDash)
+	//	{
+	//		vec.x *= add0;
+	//		vec.z *= add0;
+
+	//		add0 = add0 - 10;
+
+	//		//加速度が0になったら
+	//		if (add0 <= 0)
+	//		{
+	//			add0 = 0;
+	//			isDash = false;
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	//アニメーション
+	//	fbxObject->ResetAnimation();
+	//}
+	//カメラを軸にした変換
+	/*XMFLOAT3 pos = fbxObject->GetPosition();
+	pos = camera->ConvertWindowPos(pos, vec);*/
+
+	//敵の攻撃
+	bulletTime++;
+	if (bulletTime > 30)
+	{
+		bulletTime = 0;
+		
+		bool active = false;
+		if (m_bullet.size() > 0)
+		{
+			for (auto& m : m_bullet)
+			{
+				if (m->GetAlive() == false)
+				{
+					m->activeBullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1));
+					active = true;
+					break;
+				}
+			}
+		}
+		if (active == false)
+		{
+			m_bullet.emplace_back(new Bullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1)));
+		}
+	}
+	for (auto& m : m_bullet)
+	{
+		m->Update();
+	}
 
 	//カメラ
 	XMFLOAT2 angle = { 0, 0 };
@@ -151,15 +227,22 @@ void GamePlayScene::Update()
 	{
 		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
 	}
+
+	//座標をセット
+	//fbxObject->SetPosition(pos);
+	//追従カメラ
 	camera->FollowUpCamera(pos, camera->GetDistance(), angle.x, angle.y);
+
+#pragma region カメラとライトの更新
+
+	light->Update();
+	camera->Update();
+
+#pragma endregion
 }
 
 void GamePlayScene::Draw()
 {
-	//カメラとライトの更新
-	light->Update();
-	camera->Update();
-
 	//コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
@@ -176,7 +259,7 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	//demo_back->Draw();
+	demo_back->Draw();
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
@@ -185,15 +268,16 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 {
 	//OBJオブジェクト描画
-	Object3d::PreDraw(cmdList);
-
-	obj->Draw();
-	for (int i = 0; i < defaultWall.size(); i++)
+	for (auto& m : defaultWall)
 	{
-		defaultWall[i]->Draw();
+		m->Draw(cmdList);
 	}
-
-	Object3d::PostDraw();
+	enemy->Draw(cmdList);
+	obj->Draw(cmdList);
+	for (auto& m : m_bullet)
+	{
+		m->Draw(cmdList);
+	}
 
 	//FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);

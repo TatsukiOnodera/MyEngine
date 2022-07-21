@@ -13,6 +13,8 @@
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
 
+#include "Bullet.h"
+
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <memory>
@@ -32,7 +34,11 @@ public: // エイリアス
 private: //定数
 	//デバッグテキスト用テクスチャの番号
 	const int fontNumber = 0;
-
+	//シェーダーの種類
+	enum ShadersType
+	{
+		ADS, TOON, MONO, BLEND, SPECULAR
+	};
 	//壁の配置
 	enum WALLNUMBER
 	{
@@ -42,39 +48,38 @@ private: //定数
 private: //メモリ置き場
 	//DIrectXCommon
 	DirectXCommon* dx_cmd = nullptr;
-
 	//操作系
 	Input* input = nullptr;
-
 	//オーディオ
 	Audio* audio = nullptr;
-
 	//カメラ
 	Camera* camera = nullptr;
-
 	//デバッグテキスト
 	DebugText debugText;
 
 private: //インスタンス
 	//ライト
 	std::unique_ptr<Light> light = nullptr;
-
 	//パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
-
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;
-
 	//OBJオブジェクト
 	std::unique_ptr<Object3d> obj = nullptr;
 	std::array<std::unique_ptr<Object3d>, END> defaultWall;
-	
+	std::vector<Bullet*> m_bullet;
+	std::unique_ptr<Object3d> enemy = nullptr;
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
 private: //メンバ変数
-	
+	//加速する
+	bool isDash;
+	//初期加速値
+	float add0;
 
+	//ショットの間隔
+	int bulletTime;
 
 public: //メンバ関数
 	~GamePlayScene();
@@ -97,7 +102,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 変数初期化
 	/// </summary>
-	void ResetVariable();
+	void ResetParameter();
 
 	/// <summary>
 	/// 背景スプライト描画

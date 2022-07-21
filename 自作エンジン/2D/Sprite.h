@@ -61,7 +61,7 @@ public: //静的関数
 	//スプライト作成
 	static Sprite* CreateSprite(UINT texNumber, XMFLOAT2 anchorpoint = {0.0f, 0.0f});
 
-public: //サブクラス
+protected: //サブクラス
 	//定数バッファ用データ構造体
 	struct ConstBufferData
 	{
@@ -111,31 +111,66 @@ protected: //メンバ変数
 	bool isInvisible = false;
 
 public: //アクセッサ
-	//座標
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
 	XMFLOAT3 GetPostion() { return position; }
+
+	/// <summary>
+	/// 座標をセット	
+	/// </summary>
+	/// <param name="position">座標</param>
 	void SetPosition(XMFLOAT3 position);
 
-	//色
+	/// <summary>
+	/// 色を取得
+	/// </summary>
+	/// <returns>色</returns>
 	XMFLOAT4 GetColor() { return color; }
+
+	/// <summary>
+	/// 色をセット
+	/// </summary>
+	/// <param name="color">色</param>
 	void SetColor(XMFLOAT4 color);
 
-	//サイズ
+	/// <summary>
+	/// サイズをセット
+	/// </summary>
+	/// <param name="size">画像サイズ</param>
 	void SetSize(XMFLOAT2 size);
 
-	//描画初めの座標
+	/// <summary>
+	/// 画像の左上の座標をセット
+	/// </summary>
+	/// <param name="LeftTop">左上の座標</param>
 	void SetLeftTop(XMFLOAT2 LeftTop);
 
-	//テクスチャのサイズ
+	/// <summary>
+	/// テクスチャのサイズをセット
+	/// </summary>
+	/// <param name="texSize">テクスチャのサイズ</param>
 	void SetTexSize(XMFLOAT2 texSize);
 
-	//回転
+	/// <summary>
+	/// 回転角をセット
+	/// </summary>
+	/// <param name="rotation">回転角</param>
 	void SetRotation(float rotation);
 
-	//反転
+	/// <summary>
+	/// 反転情報をセット
+	/// </summary>
+	/// <param name="isFilpX">X軸を反転</param>
+	/// <param name="isFilpY">Y軸を反転</param>
 	void SetFilp(bool isFilpX, bool isFilpY);
 
-	//非表示
-	void SetInvisible(bool isInvisible) { this->isInvisible = isInvisible; }
+	/// <summary>
+	/// 不可視情報をセット
+	/// </summary>
+	/// <param name="isInvisible">不可視情報</param>
+	void SetInvisible(bool isInvisible);
 
 public: //メンバ関数
 	//コンストラクタ

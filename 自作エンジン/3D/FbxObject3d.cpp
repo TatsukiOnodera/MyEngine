@@ -200,11 +200,9 @@ void FbxObject3d::CreateGraphicsPipeline()
 
 void FbxObject3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
+	assert(cmdList || FbxObject3d::cmdList == nullptr);
 	FbxObject3d::cmdList = cmdList;
 
-	//パイプラインとルートシグネチャの設定
-	cmdList->SetPipelineState(pipelinestate.Get());
-	cmdList->SetGraphicsRootSignature(rootsignature.Get());
 	//プリミティブ形状を設定
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
@@ -274,12 +272,15 @@ void FbxObject3d::Update()
 		//最後まで再生したら
 		if (currentTime >= endTime)
 		{
-			currentTime = startTime;
-
 			//ループしないなら
 			if (isLoop == false)
 			{
+				currentTime = endTime;
 				isPlay = false;
+			}
+			else
+			{
+				currentTime = startTime;
 			}
 		}
 	}
@@ -304,7 +305,6 @@ void FbxObject3d::Update()
 	const XMMATRIX& matView = camera->GetMatView();
 	//プロジェクション行列
 	const XMMATRIX& matProjection = camera->GetMatProject();
-
 	//FBXモデルのメッシュトランスフォーム
 	const XMMATRIX& modelTransform = fbxModel->GetModelTransform();
 
@@ -339,7 +339,7 @@ void FbxObject3d::Update()
 			//XMMATRIXに変換
 			FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 			//合成してスキニング行列に
-			constMapSkin->bones[i] = fbxModel->GetModelTransform() * bones[i].invInitialPose * matCurrentPose * fbxModel->GetInverseTransform();
+			constMapSkin->bones[i] = fbxModel->GetModelTransform() * bones[i].invInitialPose * matCurrentPose * fbxModel->GetInverseGlobalTransform();
 		}
 		constBufferSkin->Unmap(0, nullptr);
 	}
@@ -356,6 +356,10 @@ void FbxObject3d::Draw()
 	//更新
 	Update();
 
+	//パイプラインとルートシグネチャの設定
+	cmdList->SetPipelineState(pipelinestate.Get());
+	cmdList->SetGraphicsRootSignature(rootsignature.Get());
+
 	//定数バッファビューをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBufferTransform->GetGPUVirtualAddress());
 	cmdList->SetGraphicsRootConstantBufferView(2, constBufferSkin->GetGPUVirtualAddress());
@@ -369,6 +373,11 @@ void FbxObject3d::PlayAnimation(bool loop)
 	FbxScene* fbxScene = fbxModel->GetFbxScene();
 	//0番目のアニメーション取得
 	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	//アニメーションがなかったら
+	if (animStack == nullptr)
+	{
+		return;
+	}
 	//アニメーション名取得
 	const char* animstackname = animStack->GetName();
 
@@ -385,6 +394,11 @@ void FbxObject3d::PlayAnimation(bool loop)
 	isLoop = loop;
 }
 
+void FbxObject3d::ResetAnimation()
+{
+	currentTime = startTime;
+}
+
 void FbxObject3d::SetPosition(XMFLOAT3 position)
 {
 	this->position = position;
@@ -398,4 +412,9 @@ void FbxObject3d::SetRotation(XMFLOAT3 rotation)
 void FbxObject3d::SetScale(XMFLOAT3 scale)
 {
 	this->scale = scale;
+}
+
+void FbxObject3d::SetLoop(bool loop)
+{
+	this->isLoop = loop;
 }

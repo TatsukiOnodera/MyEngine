@@ -146,6 +146,11 @@ public: //メンバ関数
 	/// <param name="loop">ループの成否</param>
 	void PlayAnimation(bool loop = false);
 
+	/// <summary>
+	/// アニメーションをリセット
+	/// </summary>
+	void ResetAnimation();
+
 public: //アクセッサ
 	/// <summary>
 	/// 座標
@@ -164,6 +169,17 @@ public: //アクセッサ
 	/// </summary>
 	XMFLOAT3 GetScale() { return scale; }
 	void SetScale(XMFLOAT3 scale);
+
+	/// <summary>
+	/// アニメーション中
+	/// </summary>
+	bool GetIsPlay() { return isPlay; }
+
+	/// <summary>
+	/// ループ
+	/// </summary>
+	bool GetLoop() { return isLoop; }
+	void SetLoop(bool loop);
 
 	/// <summary>
 	/// FBXモデルのセット

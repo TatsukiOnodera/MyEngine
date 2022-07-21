@@ -294,6 +294,11 @@ Sprite *Sprite::CreateSprite(UINT texNumber, XMFLOAT2 anchorpoint)
 	return sprite;
 }
 
+void Sprite::SetInvisible(bool isInvisible)
+{
+	this->isInvisible = isInvisible;
+}
+
 Sprite::Sprite(XMFLOAT2 size, UINT texNumber, XMFLOAT2 anchorpoint)
 {
 	this->size = size;

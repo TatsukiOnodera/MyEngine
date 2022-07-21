@@ -6,6 +6,8 @@
 #include <d3dx12.h>
 #include <unordered_map>
 
+#include "PipelineManager.h"
+
 class Model
 {
 private: //エイリアス
@@ -17,6 +19,9 @@ private: //エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+private: //定数
+	static const int maxTexNum = 3;
+
 public: //サブクラス
 	//頂点データ構造体
 	struct VertexPosNormalUv
@@ -25,7 +30,6 @@ public: //サブクラス
 		XMFLOAT3 normal; // 法線ベクトル
 		XMFLOAT2 uv;  // uv座標
 	};
-
 	//定数バッファ用データ構造体
 	struct ConstBufferData
 	{
@@ -36,7 +40,6 @@ public: //サブクラス
 		XMFLOAT3 specular; //スペキュラー係数
 		float alpha; //アルファ
 	};
-
 	//マテリアル
 	struct Material
 	{
@@ -57,15 +60,15 @@ public: //サブクラス
 
 private: //静的メンバ変数
 	// デバイス
-	static ID3D12Device* device;
+	static ID3D12Device* s_dev;
 	// デスクリプタサイズ
-	static UINT descriptorHandleIncrementSize;
+	static UINT s_descriptorHandleIncrementSize;
 
 public: //静的メンバ関数
 	/// <summary>
 	/// 静的初期化
 	/// </summary>
-	static void StaticInitialize(ID3D12Device* device);
+	static void StaticInitialize(ID3D12Device* dev);
 
 	/// <summary>
 	/// モデル生成
@@ -73,48 +76,57 @@ public: //静的メンバ関数
 	static Model* CreateModel(const std::string& modelName, bool smooting);
 
 private: //メンバ変数
+	//グラフィックスパイプライン
+	std::unique_ptr<PipelineManager> m_graphicsPipeline = nullptr;
 	// 頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
+	ComPtr<ID3D12Resource> m_vertBuff;
 	// インデックスバッファ
-	ComPtr<ID3D12Resource> indexBuff;
+	ComPtr<ID3D12Resource> m_indexBuff;
 	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView = {};
+	D3D12_VERTEX_BUFFER_VIEW m_vbView = {};
 	// インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView = {};
-	// 頂点データ配列
-	std::vector<VertexPosNormalUv> vertices;
+	D3D12_INDEX_BUFFER_VIEW m_ibView = {};
+	// 頂点データ配列s
+	std::vector<VertexPosNormalUv> m_vertices;
 	// 頂点インデックス配列
-	std::vector<unsigned short> indices;
+	std::vector<unsigned short> m_indices;
 	//マテリアル
-	Material material;
+	Material m_material;
+	//テクスチャ名
+	std::vector<std::string> textureName;
 	// テクスチャバッファ
-	ComPtr<ID3D12Resource> texbuff;
+	ComPtr<ID3D12Resource> m_texbuff[maxTexNum];
 	//定数バッファ
-	ComPtr<ID3D12Resource> constBuff;
+	ComPtr<ID3D12Resource> m_constBuff;
 	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
-	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE m_cpuDescHandleSRV[maxTexNum];
+	// シェーダリソースビューのハンドル(GPU)
+	CD3DX12_GPU_DESCRIPTOR_HANDLE m_gpuDescHandleSRV[maxTexNum];
 	// デスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> descHeap;
+	ComPtr<ID3D12DescriptorHeap> m_descHeap;
 	//頂点法線スムージング用データ
-	std::unordered_map<unsigned short, std::vector<unsigned short>> smoothData;
+	std::unordered_map<unsigned short, std::vector<unsigned short>> m_smoothData;
 
 public: //メンバ関数
 	/// <summary>
 	/// マテリアルの取得
 	/// </summary>
-	Material GetMaterial() { return material; }
+	Material GetMaterial() { return m_material; }
 
 	/// <summary>
-	/// デスクリプタヒープの初期化
+	/// グラフィックパイプライン生成
 	/// </summary>
-	void InitializeDescriptorHeap();
+	void CreateGraphicsPipeline();
+
+	/// <summary>
+	/// テクスチャ名読み込み
+	/// </summary>
+	void LoadTextureName(const std::string& directoryPath, const std::string& filename);
 
 	/// <summary>
 	/// テクスチャ読み込み
 	/// </summary>
-	void LoadTexture(const std::string& directoryPath, const std::string& filename);
+	void LoadTexture();
 
 	/// <summary>
 	/// モデル作成
@@ -144,10 +156,43 @@ public: //メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update(float alpha);
+	void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
+
+public: //アクセッサ
+	/// <summary>
+	/// パイプラインステートを取得
+	/// </summary>
+	/// <returns>パイプラインステート</returns>
+	ID3D12PipelineState* GetPipelineState() { return m_graphicsPipeline->GetPipelineState(); }
+
+	/// <summary>
+	/// ルートシグネチャを取得
+	/// </summary>
+	/// <returns>ルートシグネチャ</returns>
+	ID3D12RootSignature* GetRootSignature() { return m_graphicsPipeline->GetRootSignature(); }
+
+	/// <summary>
+	/// グラフィックスパイプラインセット
+	/// </summary>
+	/// <param name="shaderType">シェーダーの種類</param>
+	void SetGraphicsPipeline(const int shaderType);
+
+	/// <summary>
+	/// サブテクスチャのセット
+	/// </summary>
+	/// <param name="directoryPath">ダイレクトパス</param>
+	/// <param name="filename">ファイル名</param>
+	void SetSubTexture(const std::string& directoryPath, const std::string& filename);
+
+	/// <summary>
+	/// マスクテクスチャのセット
+	/// </summary>
+	/// <param name="directoryPath">ダイレクトパス</param>
+	/// <param name="filename">ファイル名</param>
+	void SetMaskTexture(const std::string& directoryPath, const std::string& filename);
 };
