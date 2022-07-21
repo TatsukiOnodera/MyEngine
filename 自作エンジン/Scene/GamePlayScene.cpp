@@ -38,7 +38,7 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	//パーティクル
-	particle.reset(ParticleManager::Create());
+	//particle.reset(ParticleManager::Create());
 
 	//スプライト
 	demo_back.reset(Sprite::CreateSprite(1));
