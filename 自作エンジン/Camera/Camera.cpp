@@ -125,7 +125,6 @@ void Camera::SetEye(XMFLOAT3 eye)
 void Camera::SetTarget(XMFLOAT3 target)
 {
 	this->target = target;
-
 	dirty = true;
 }
 

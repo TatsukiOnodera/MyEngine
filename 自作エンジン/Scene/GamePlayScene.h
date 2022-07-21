@@ -13,6 +13,8 @@
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
 
+#include "Bullet.h"
+
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <memory>
@@ -65,7 +67,7 @@ private: //インスタンス
 	//OBJオブジェクト
 	std::unique_ptr<Object3d> obj = nullptr;
 	std::array<std::unique_ptr<Object3d>, END> defaultWall;
-	std::vector<std::unique_ptr<Object3d>> bullet;
+	std::vector<Bullet*> m_bullet;
 	std::unique_ptr<Object3d> enemy = nullptr;
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
@@ -76,10 +78,6 @@ private: //メンバ変数
 	//初期加速値
 	float add0;
 
-	//Bulletの生死
-	std::vector<bool> bulletAlive;
-	//BUlletのベクトル
-	std::vector<XMFLOAT3> bulletVec;
 	//ショットの間隔
 	int bulletTime;
 

@@ -14,7 +14,8 @@ using namespace Microsoft::WRL;
 
 GamePlayScene::~GamePlayScene()
 {
-
+	m_bullet.clear();
+	m_bullet.shrink_to_fit();
 }
 
 void GamePlayScene::Initialize()
@@ -50,14 +51,9 @@ void GamePlayScene::Initialize()
 		m.reset(Object3d::Create("Wall"));
 	}
 	enemy.reset(Object3d::Create("Enemy"));
-	bullet.emplace_back(Object3d::Create("Bullet"));
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
-
-	//パーティクル
-	//particle.reset(ParticleManager::Create());
-	//fbxObject.reset(FbxObject3d::CreateFBXObject("boneTest"));
+	//fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
 	//fbxObject->PlayAnimation(true);
 
 	//パラメーター
@@ -71,17 +67,14 @@ void GamePlayScene::ResetParameter()
 {
 	isDash = false;
 	add0 = 0;
-	bulletVec.emplace_back(XMFLOAT3(0, 0, 0));
-	bulletAlive.emplace_back(false);
+
 	bulletTime = 0;
 
 	/*float fbxObjectSize = 0.5f;
 	fbxObject->SetPosition({ 0, 0, -100 });
 	fbxObject->SetRotation({ -90, 0, 0 });
 	fbxObject->SetScale({ fbxObjectSize, fbxObjectSize, fbxObjectSize });
-	fbxObject->Update();*/
-	//fbxObject->SetRotation({ 0, 90, 0 });
-	//fbxObject->Update();
+	fbxObject->Update()*/
 
 	obj->SetPosition({ 0, 0, 0 });
 	obj->SetScale({ 3, 3, 3 });
@@ -135,13 +128,6 @@ void GamePlayScene::ResetParameter()
 	enemy->SetScale({1.5, 1.5, 1.5});
 	enemy->Update();
 
-	for (auto& m : bullet)
-	{
-		m->SetPosition(enemy->GetPosition());
-		m->SetScale({0.5, 0.5, 0.5});
-		m->Update();
-	}
-
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 5, -10 });
 	camera->SetDistance();
@@ -152,6 +138,13 @@ void GamePlayScene::Update()
 {
 	//移動
 	XMFLOAT3 vec = { 0, 0, 0 };
+	if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	{
+		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
+		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
+	}
+	XMFLOAT3 pos = camera->ConvertWindowPos(obj->GetPosition(), vec);
+	obj->SetPosition(pos);
 	//if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	//{
 	//	//ダッシュ
@@ -195,80 +188,34 @@ void GamePlayScene::Update()
 	/*XMFLOAT3 pos = fbxObject->GetPosition();
 	pos = camera->ConvertWindowPos(pos, vec);*/
 
-	////敵の攻撃
-	//bulletTime++;
-	//if (bulletTime > 30)
-	//{
-	//	bulletTime = 0;
-	//	bool hit = false;
-	//	for (int i = 0; i < bulletAlive.size(); i++)
-	//	{
-	//		if (bulletAlive[i] == false)
-	//		{
-	//			hit = true;
-	//			bulletAlive[i] = true;
-	//			if (bullet.size() <= i && bulletVec.size() <= i)
-	//			{
-	//				bullet.emplace_back(Object3d::Create("Bullet"));
-	//				bulletVec.emplace_back(XMFLOAT3(0, 0, 0));
-	//				assert(bullet.size() <= i && bulletVec.size() <= i);
-	//			}
-	//			XMFLOAT3 bVec;
-	//			bVec.x = (pos.x - enemy->GetPosition().x) / 25;
-	//			bVec.y = (pos.y - enemy->GetPosition().y) / 25;
-	//			bVec.z = (pos.z - enemy->GetPosition().z) / 25;
-	//			bulletVec[i] = bVec;
-	//		}
-	//	}
-	//	if (hit == false)
-	//	{
-	//		bulletAlive.emplace_back(true);
-	//		int i = bulletAlive.size() - 1;
-	//		if (bullet.size() <= i && bulletVec.size() <= i)
-	//		{
-	//			bullet.emplace_back(Object3d::Create("Bullet"));
-	//			bulletVec.emplace_back(XMFLOAT3(0, 0, 0));
-	//			assert(i < bullet.size()&& i < bulletVec.size());
-	//		}
-	//		XMFLOAT3 bVec;
-	//		bVec.x = (pos.x - enemy->GetPosition().x) / 25;
-	//		bVec.y = (pos.y - enemy->GetPosition().y) / 25;
-	//		bVec.z = (pos.z - enemy->GetPosition().z) / 25;
-	//		bulletVec[i] = bVec;
-	//	}
-	//
-	//for (int i = 0; i < bulletAlive.size(); i++)
-	//{
-	//	if (bulletAlive[i])
-	//	{
-	//		XMFLOAT3 bPos = bullet[i]->GetPosition();
-	//		bPos.x += bulletVec[i].x;
-	//		bPos.y += bulletVec[i].y;
-	//		bPos.z += bulletVec[i].z;
-	//		bullet[i]->SetPosition(bPos);
-	//		if (bPos.x < -300 || 300 < bPos.x)
-	//		{
-	//			bulletAlive[i] = false;
-	//			bulletVec[i] = { 0, 0, 0 };
-	//			bullet[i]->SetPosition({ 0, 0, 0 });
-	//		}
-	//		else if (bPos.z < -300 || 300 < bPos.z)
-	//		{
-	//			bulletAlive[i] = false;
-	//			bulletVec[i] = { 0, 0, 0 };
-	//			bullet[i]->SetPosition({ 0, 0, 0 });
-	//		}
-	//	}
-	//}
-	//	vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
-	//}
-
-	if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
+	//敵の攻撃
+	bulletTime++;
+	if (bulletTime > 30)
 	{
-		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
+		bulletTime = 0;
+		
+		bool active = false;
+		if (m_bullet.size() > 0)
+		{
+			for (auto& m : m_bullet)
+			{
+				if (m->GetAlive() == false)
+				{
+					m->activeBullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1));
+					active = true;
+					break;
+				}
+			}
+		}
+		if (active == false)
+		{
+			m_bullet.emplace_back(new Bullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1)));
+		}
 	}
-	XMFLOAT3 pos = camera->ConvertWindowPos(obj->GetPosition(), vec);
-	obj->SetPosition(pos);
+	for (auto& m : m_bullet)
+	{
+		m->Update();
+	}
 
 	//カメラ
 	XMFLOAT2 angle = { 0, 0 };
@@ -282,7 +229,7 @@ void GamePlayScene::Update()
 	}
 
 	//座標をセット
-	fbxObject->SetPosition(pos);
+	//fbxObject->SetPosition(pos);
 	//追従カメラ
 	camera->FollowUpCamera(pos, camera->GetDistance(), angle.x, angle.y);
 
@@ -321,20 +268,13 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 {
 	//OBJオブジェクト描画
-	for (const auto& m : defaultWall)
+	for (auto& m : defaultWall)
 	{
 		m->Draw(cmdList);
 	}
 	enemy->Draw(cmdList);
-	for (int i = 0; i < bulletAlive.size(); i++)
-	{
-		if (bulletAlive[i])
-		{
-			bullet[i]->Draw(cmdList);
-		}
-	}
 	obj->Draw(cmdList);
-	for (auto& m : defaultWall)
+	for (auto& m : m_bullet)
 	{
 		m->Draw(cmdList);
 	}
