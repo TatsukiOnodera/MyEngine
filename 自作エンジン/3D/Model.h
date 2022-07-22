@@ -114,11 +114,6 @@ public: //メンバ関数
 	Material GetMaterial() { return m_material; }
 
 	/// <summary>
-	/// グラフィックパイプライン生成
-	/// </summary>
-	void CreateGraphicsPipeline();
-
-	/// <summary>
 	/// テクスチャ名読み込み
 	/// </summary>
 	void LoadTextureName(const std::string& directoryPath, const std::string& filename);
@@ -185,14 +180,12 @@ public: //アクセッサ
 	/// <summary>
 	/// サブテクスチャのセット
 	/// </summary>
-	/// <param name="directoryPath">ダイレクトパス</param>
 	/// <param name="filename">ファイル名</param>
-	void SetSubTexture(const std::string& directoryPath, const std::string& filename);
+	void SetSubTexture(const std::string& filename);
 
 	/// <summary>
 	/// マスクテクスチャのセット
 	/// </summary>
-	/// <param name="directoryPath">ダイレクトパス</param>
 	/// <param name="filename">ファイル名</param>
-	void SetMaskTexture(const std::string& directoryPath, const std::string& filename);
+	void SetMaskTexture(const std::string& filename);
 };

@@ -65,10 +65,9 @@ private: //インスタンス
 	//スプライト
 	std::unique_ptr<Sprite> demo_back = nullptr;
 	//OBJオブジェクト
-	std::unique_ptr<Object3d> obj = nullptr;
-	std::array<std::unique_ptr<Object3d>, END> defaultWall;
-	std::vector<Bullet*> m_bullet;
 	std::unique_ptr<Object3d> enemy = nullptr;
+	std::array<std::unique_ptr<Object3d>, END> defaultWall;
+	std::vector<Bullet*> bullet;
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
 
@@ -79,7 +78,7 @@ private: //メンバ変数
 	float add0;
 
 	//ショットの間隔
-	int bulletTime;
+	int intervalTime;
 
 public: //メンバ関数
 	~GamePlayScene();

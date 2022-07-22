@@ -182,16 +182,14 @@ public: //アクセッサ
 	/// <summary>
 	/// サブテクスチャのセット
 	/// </summary>
-	/// <param name="directoryPath">ダイレクトパス</param>
 	/// <param name="filename">ファイル名</param>
-	void SetSubTexture(const std::string& directoryPath, const std::string& filename);
+	void SetSubTexture(const std::string& filename);
 
 	/// <summary>
 	/// マスクテクスチャのセット
 	/// </summary>
-	/// <param name="directoryPath">ダイレクトパス</param>
 	/// <param name="filename">ファイル名</param>
-	void SetMaskTexture(const std::string& directoryPath, const std::string& filename);
+	void SetMaskTexture(const std::string& filename);
 
 	/// <summary>
 	/// 衝突時コールバック関数

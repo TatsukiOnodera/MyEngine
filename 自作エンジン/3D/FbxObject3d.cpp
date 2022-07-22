@@ -397,6 +397,7 @@ void FbxObject3d::PlayAnimation(bool loop)
 void FbxObject3d::ResetAnimation()
 {
 	currentTime = startTime;
+	isPlay = false;
 }
 
 void FbxObject3d::SetPosition(XMFLOAT3 position)

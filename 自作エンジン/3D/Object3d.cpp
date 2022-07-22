@@ -210,12 +210,12 @@ void Object3d::SetShader(const int shaderType)
 	m_model->SetGraphicsPipeline(shaderType);
 }
 
-void Object3d::SetSubTexture(const std::string& directoryPath, const std::string& filename)
+void Object3d::SetSubTexture(const std::string& filename)
 {
-	m_model->SetSubTexture(directoryPath, filename);
+	m_model->SetSubTexture(filename);
 }
 
-void Object3d::SetMaskTexture(const std::string& directoryPath, const std::string& filename)
+void Object3d::SetMaskTexture(const std::string& filename)
 {
-	m_model->SetMaskTexture(directoryPath, filename);
+	m_model->SetMaskTexture(filename);
 }
