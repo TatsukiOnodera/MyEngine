@@ -45,7 +45,7 @@ private: //ƒƒ“ƒo•Ï”
 	
 
 public: //ƒƒ“ƒoŠÖ”
-	~TitleScene();
+	~TitleScene() override;
 
 	/// <summary>
 	/// ‰Šú‰»

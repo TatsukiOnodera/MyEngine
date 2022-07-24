@@ -181,7 +181,6 @@
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Base\FrameWork.cpp" />
     <ClCompile Include="Base\OnoGame.cpp" />
-    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Collision\Collision.cpp" />
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
@@ -212,7 +211,6 @@
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Base\FrameWork.h" />
     <ClInclude Include="Base\OnoGame.h" />
-    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Collision\BaseCollider.h" />
     <ClInclude Include="Collision\Collision.h" />

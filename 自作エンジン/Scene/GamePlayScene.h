@@ -13,8 +13,6 @@
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
 
-#include "Bullet.h"
-
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <memory>
@@ -23,8 +21,6 @@
 class GamePlayScene : public BaseScene
 {
 public: // エイリアス
-	// Microsoft::WRL::を省略
-	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
@@ -51,7 +47,7 @@ private: //メモリ置き場
 	//操作系
 	Input* input = nullptr;
 	//オーディオ
-	Audio* audio = nullptr;
+	//Audio* audio = nullptr;
 	//カメラ
 	Camera* camera = nullptr;
 	//デバッグテキスト
@@ -66,22 +62,36 @@ private: //インスタンス
 	
 	//OBJオブジェクト
 	std::unique_ptr<Object3d> enemy = nullptr;
-	std::array<std::unique_ptr<Object3d>, END> defaultWall;
-	std::vector<Bullet*> bullet;
+	std::array<std::unique_ptr<Object3d>, END> defaultWall = {};
+	struct BulletInfo
+	{
+		std::unique_ptr<Object3d> m_bullet = nullptr;
+		XMFLOAT3 m_bVec;
+		bool m_alive;
+		BulletInfo(Object3d* bullet) {
+			m_bullet.reset(bullet);
+			m_bVec = {0, 0, 0};
+			m_alive = false;
+		}
+	};
+	std::vector<BulletInfo*> bullet;
 	//FBXオブジェクト
-	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
+	std::unique_ptr<FbxObject3d> player = nullptr;
 
 private: //メンバ変数
+	//エネミーのベクトル
+	XMFLOAT3 eVec = {};
+
 	//加速する
-	bool isDash;
+	bool isDash = false;
 	//初期加速値
-	float add0;
+	float add0 = 0;
 
 	//ショットの間隔
-	int intervalTime;
+	int intervalTime = 0;
 
 public: //メンバ関数
-	~GamePlayScene();
+	~GamePlayScene() override;
 
 	/// <summary>
 	/// 初期化
@@ -101,7 +111,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 変数初期化
 	/// </summary>
-	void ResetParameter();
+	void InitializeVariable();
 
 	/// <summary>
 	/// 背景スプライト描画
@@ -127,4 +137,12 @@ public: //メンバ関数
 	/// デバッグテキスト描画
 	/// </summary>
 	void DrawDebugText(ID3D12GraphicsCommandList* cmdList);
+
+	/// <summary>
+	/// 始点から終点への距離
+	/// </summary>
+	/// <param name="pos1">終点</param>
+	/// <param name="pos2">始点</param>
+	/// <returns>二点間の距離</returns>
+	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2);
 };
