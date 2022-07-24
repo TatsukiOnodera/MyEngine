@@ -63,7 +63,7 @@ private: //インスタンス
 	//パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
 	//スプライト
-	std::unique_ptr<Sprite> demo_back = nullptr;
+	
 	//OBJオブジェクト
 	std::unique_ptr<Object3d> enemy = nullptr;
 	std::array<std::unique_ptr<Object3d>, END> defaultWall;

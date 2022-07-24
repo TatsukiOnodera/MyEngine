@@ -42,7 +42,7 @@ void GamePlayScene::Initialize()
 	//particle.reset(ParticleManager::Create());
 
 	//スプライト
-	demo_back.reset(Sprite::CreateSprite(1));
+	//demo_back.reset(Sprite::CreateSprite(1));
 
 	//OBJオブジェクト
 	enemy.reset(Object3d::Create("Dragon", true));
@@ -52,7 +52,7 @@ void GamePlayScene::Initialize()
 	}
 
 	//FBXオブェクト
-	fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
+	//fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
 	//fbxObject->PlayAnimation(true);
 
 	//パラメーター
@@ -64,7 +64,7 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::ResetParameter()
 {
-	isDash = false;
+	/*isDash = false;
 	add0 = 0;
 
 	intervalTime = 0;
@@ -73,13 +73,11 @@ void GamePlayScene::ResetParameter()
 	fbxObject->SetPosition({ 0, 0, -100 });
 	fbxObject->SetRotation({ -90, 0, 0 });
 	fbxObject->SetScale({ fbxObjectSize, fbxObjectSize, fbxObjectSize });
-	fbxObject->Update();
+	fbxObject->Update();*/
 
 	enemy->SetPosition({ 0, 0, 0 });
 	enemy->SetScale({ 3, 3, 3 });
-	enemy->SetColor({ 0, 0.2, 0.8, 1 });
-	enemy->SetShader(SPECULAR);
-	enemy->SetMaskTexture("Resources/Scales.png");
+	enemy->SetColor({ 0, 0.3, 0.9, 1 });
 	enemy->Update();
 
 	for (int i = 0; i < defaultWall.size(); i++)
@@ -125,7 +123,7 @@ void GamePlayScene::ResetParameter()
 	}
 
 	camera->SetTarget({ 0, 0, 0 });
-	camera->SetEye({ 0, 5, -10 });
+	camera->SetEye({ 0, 5, -7.5 });
 	camera->SetDistance();
 	camera->Update();
 }
@@ -133,76 +131,102 @@ void GamePlayScene::ResetParameter()
 void GamePlayScene::Update()
 {
 	//移動
-	XMFLOAT3 vec = { 0, 0, 0 };
-	if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	//XMFLOAT3 vec = { 0, 0, 0 };
+	//if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	//{
+	//	//ダッシュ
+	//	if (input->TriggerKey(DIK_SPACE))
+	//	{
+	//		isDash = true;
+	//		add0 = 25;
+
+	//		//アニメーション
+	//		fbxObject->PlayAnimation(false);
+	//	}
+
+	//	//ベクトル
+	//	vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
+	//	vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
+	//	//加速するなら
+	//	if (isDash)
+	//	{
+	//		vec.x *= add0;
+	//		vec.z *= add0;
+
+	//		add0 = add0 - 10;
+
+	//		//加速度が0になったら
+	//		if (add0 <= 0)
+	//		{
+	//			add0 = 0;
+	//			isDash = false;
+	//			fbxObject->ResetAnimation();
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	//アニメーション
+	//	fbxObject->ResetAnimation();
+	//}
+	////カメラを軸にした変換
+	//XMFLOAT3 pos = fbxObject->GetPosition();
+	//pos = camera->ConvertWindowPos(pos, vec);
+	//fbxObject->SetPosition(pos);
+
+	////敵の攻撃
+	//intervalTime++;
+	//if (intervalTime > 30)
+	//{
+	//	intervalTime = 0;
+	//	
+	//	bool active = false;
+	//	if (bullet.size() > 0)
+	//	{
+	//		for (auto& m : bullet)
+	//		{
+	//			if (m->GetAlive() == false)
+	//			{
+	//				m->activeBullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1));
+	//				active = true;
+	//				break;
+	//			}
+	//		}
+	//	}
+	//	if (active == false)
+	//	{
+	//		bullet.emplace_back(new Bullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1)));
+	//	}
+	//}
+	//for (auto& m : bullet)
+	//{
+	//	m->Update();
+	//}
+
+
+	if (input->PushKey(DIK_1))
 	{
-		//ダッシュ
-		if (input->TriggerKey(DIK_SPACE))
-		{
-			isDash = true;
-			add0 = 25;
-
-			//アニメーション
-			fbxObject->PlayAnimation(false);
-		}
-
-		//ベクトル
-		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
-		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
-		//加速するなら
-		if (isDash)
-		{
-			vec.x *= add0;
-			vec.z *= add0;
-
-			add0 = add0 - 10;
-
-			//加速度が0になったら
-			if (add0 <= 0)
-			{
-				add0 = 0;
-				isDash = false;
-				fbxObject->ResetAnimation();
-			}
-		}
+		enemy->SetShader(ADS);
 	}
-	else
+	else if (input->PushKey(DIK_2))
 	{
-		//アニメーション
-		fbxObject->ResetAnimation();
+		enemy->SetShader(TOON);
 	}
-	//カメラを軸にした変換
-	XMFLOAT3 pos = fbxObject->GetPosition();
-	pos = camera->ConvertWindowPos(pos, vec);
-	fbxObject->SetPosition(pos);
-
-	//敵の攻撃
-	intervalTime++;
-	if (intervalTime > 30)
+	else if (input->PushKey(DIK_3))
 	{
-		intervalTime = 0;
-		
-		bool active = false;
-		if (bullet.size() > 0)
-		{
-			for (auto& m : bullet)
-			{
-				if (m->GetAlive() == false)
-				{
-					m->activeBullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1));
-					active = true;
-					break;
-				}
-			}
-		}
-		if (active == false)
-		{
-			bullet.emplace_back(new Bullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1)));
-		}
+		enemy->SetShader(MONO);
 	}
-	for (auto& m : bullet)
+	else if (input->PushKey(DIK_4))
 	{
-		m->Update();
+		enemy->SetShader(BLEND);
+		enemy->SetSubTexture("Resources/Default/red1x1.png");
+		//enemy->SetMaskTexture("Resources/StainedGlass.png");
+		enemy->SetMaskTexture("Resources/Scales.png");
+	}
+	else if (input->PushKey(DIK_5))
+	{
+		enemy->SetShader(SPECULAR);
+		enemy->SetMaskTexture("Resources/Scales.png");
 	}
 
 	//カメラ
@@ -219,7 +243,11 @@ void GamePlayScene::Update()
 	//座標をセット
 	//fbxObject->SetPosition(pos);
 	//追従カメラ
+	XMFLOAT3 pos = enemy->GetPosition();
+	pos.y += 2;
 	camera->FollowUpCamera(pos, camera->GetDistance(), angle.x, angle.y);
+
+	debugText.Print("1:ADS 2:Toon 3:monochromatic 4:Blend 5:Specular", 5, 5, 2);
 
 #pragma region カメラとライトの更新
 
@@ -235,10 +263,10 @@ void GamePlayScene::Draw()
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	//各描画
-	DrawBackSprite(cmdList);
+	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
-	DrawEffect(cmdList);
-	DrawUI(cmdList);
+	//DrawEffect(cmdList);
+	//DrawUI(cmdList);
 	DrawDebugText(cmdList);
 }
 
@@ -247,7 +275,7 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	demo_back->Draw();
+	
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
@@ -261,15 +289,15 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 		m->Draw(cmdList);
 	}
 	enemy->Draw(cmdList);
-	for (auto& m : bullet)
+	/*for (auto& m : bullet)
 	{
 		m->Draw(cmdList);
-	}
+	}*/
 
 	//FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);
 
-	fbxObject->Draw();
+	//fbxObject->Draw();
 
 	FbxObject3d::PostDraw();
 
