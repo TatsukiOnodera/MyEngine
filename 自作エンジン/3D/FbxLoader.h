@@ -1,8 +1,6 @@
 #pragma once
 #include "FbxModel.h"
-#include "FbxModelMesh.h"
 #include <fbxsdk.h>
-#include <vector>
 #include <cassert>
 #include <string.h>
 #include <d3d12.h>
@@ -34,16 +32,14 @@ private: //サブ関数
 	/// </summary>
 	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxMesh">解析対象のメッシュ</param>
-	/// <param name="modelMesh">メッシュデータ</param>
-	void ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh, FbxModelMesh* modelMesh);
+	void ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// 面情報読み取り
 	/// </summary>
 	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxMesh">解析対象のメッシュ</param>
-	/// <param name="modelMesh">メッシュデータ</param>
-	void ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh, FbxModelMesh* modelMesh);
+	void ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// マテリアル読み取り
@@ -71,8 +67,7 @@ private: //サブ関数
 	/// </summary>
 	/// <param name="fbxModel">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxMesh">解析対象のメッシュ</param>
-	/// <param name="modelMesh">メッシュデータ</param>
-	void ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh, FbxModelMesh* modelMesh);
+	void ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh);
 
 public: //静的メンバ関数
 	/// <summary>
