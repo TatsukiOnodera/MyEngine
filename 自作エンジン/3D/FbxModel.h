@@ -8,6 +8,7 @@
 #include <d3d12.h>
 #include <d3dx12.h>
 #include <fbxsdk.h>
+#include "FbxModelMesh.h"
 
 //ノード構造体
 struct Node
@@ -48,21 +49,7 @@ public: //メモリ
 	//フレンドクラスを作る
 	friend class FbxLoader;
 
-private: //定数
-//ボーンインデックスの最大値
-	static const int MAX_BONE_INDICES = 4;
-
 public: //サブクラス
-	//頂点データ構造体
-	struct VertexPosNormalUvSkin
-	{
-		DirectX::XMFLOAT3 pos; //XYZ座標
-		DirectX::XMFLOAT3 normal; //法線ベクトル
-		DirectX::XMFLOAT2 uv; //UV座標
-		UINT boneIndex[MAX_BONE_INDICES]; //ボーン番号
-		float boneWeight[MAX_BONE_INDICES]; //ボーン重み
-	};
-
 	//ボーン構造体
 	struct Bone
 	{
@@ -86,10 +73,6 @@ private: //モデルデータ用変数
 	std::vector<Node>nodes;
 	//メッシュを持つノード
 	Node* meshNode = nullptr;
-	//頂点データ配列
-	std::vector<VertexPosNormalUvSkin> vertices;
-	//頂点インデックス配列
-	std::vector<unsigned short> indices;
 	//アンビエント係数
 	DirectX::XMFLOAT3 ambient = { 1, 1, 1 };
 	//ディフューズ係数
@@ -102,18 +85,12 @@ private: //モデルデータ用変数
 	std::vector<Bone> bones;
 	//FBXシーン
 	FbxScene* fbxScene = nullptr;
+	//メッシュ配列
+	std::vector<FbxModelMesh*> meshes;
 
 private: //メンバ変数
-	// 頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
-	// インデックスバッファ
-	ComPtr<ID3D12Resource> indexBuff;
 	// テクスチャバッファ
 	ComPtr<ID3D12Resource> texBuff;
-	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView = {};
-	// インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView = {};
 	// SRV用デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
 
@@ -124,7 +101,7 @@ public: //メンバ関数
 	~FbxModel();
 
 	/// <summary>
-	/// バッファ生成
+	/// テクスチャバッファ生成
 	/// </summary>
 	void CreateBuffers(ID3D12Device* dev);
 
@@ -143,7 +120,7 @@ public: //メンバ関数
 	/// モデルの変形逆行列取得
 	/// </summary>
 	/// <returns>モデルの逆変形行列</returns>
-	XMMATRIX& GetInverseTransform();
+	const XMMATRIX& GetInverseGlobalTransform();
 
 	/// <summary>
 	/// ボーン配列の取得
@@ -156,4 +133,9 @@ public: //メンバ関数
 	/// </summary>
 	/// <returns>FBXシーン</returns>
 	FbxScene* GetFbxScene() { return fbxScene; }
+
+	/// <summary>
+	/// メッシュ追加
+	/// </summary>
+	void AddModelMesh(FbxModelMesh* modelMesh);
 };
