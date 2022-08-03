@@ -372,7 +372,7 @@ void FbxObject3d::PlayAnimation(bool loop)
 {
 	FbxScene* fbxScene = fbxModel->GetFbxScene();
 	//0番目のアニメーション取得
-	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(1);
 	//アニメーションがなかったら
 	if (animStack == nullptr)
 	{

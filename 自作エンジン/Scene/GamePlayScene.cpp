@@ -48,7 +48,7 @@ void GamePlayScene::Initialize()
 	bullet.emplace_back(new BulletInfo(Object3d::Create("Bullet", true)));
 
 	//FBXオブェクト
-	player.reset(FbxObject3d::CreateFBXObject("Human"));
+	player.reset(FbxObject3d::CreateFBXObject("player"));
 
 	//オーディオ
 	//audio->Initialize();
