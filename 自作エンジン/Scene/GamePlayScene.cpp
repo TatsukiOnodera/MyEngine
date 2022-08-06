@@ -55,24 +55,26 @@ void GamePlayScene::Initialize()
 
 	//•Ï”‚Ì‰Šú‰»
 	InitializeVariable();
+
+	//—”‰Šú‰»
+	srand(NULL);
 }
 
 void GamePlayScene::InitializeVariable()
 {
-	eVec = { 0.25f, 0, 0.5f };
+	eVec = { static_cast<float>(rand() % 201 - 100) / 100, 0, static_cast<float>(rand() % 201 - 100) / 100 };
 
 	isDash = false;
 	add0 = 0;
 
 	intervalTime = 0;
 
-	float fbxObjectSize = 0.5f;
 	player->SetPosition({ 0, 0, -100 });
 	player->SetRotation({ -90, 0, 0 });
-	player->SetScale({ fbxObjectSize, fbxObjectSize, fbxObjectSize });
+	player->SetScale({ 0.25f, 0.25f, 0.25f });
 	player->Update();
 
-	enemy->SetPosition({ 0, 0, 0 });
+	enemy->SetPosition({ 0, 0, 100 });
 	enemy->SetScale({ 3, 3, 3 });
 	enemy->SetColor({ 0, 0.3, 0.9, 1 });
 	enemy->Update();
@@ -176,32 +178,40 @@ void GamePlayScene::Update()
 	XMFLOAT3 ePos = enemy->GetPosition();
 	ePos.x += eVec.x;
 	ePos.z += eVec.z;
-	if (Length(ePos, pPos) > 30)
+	if (30 > Length(ePos, pPos))
 	{
-		if (ePos.z - pPos.z > 0)
-		{
-			eVec.z = -abs(eVec.z);
-		}
-		else if (ePos.z - pPos.z < 0)
-		{
-			eVec.z = abs(eVec.z);
-		}
 		if (ePos.x - pPos.x > 0)
 		{
-			eVec.x = -abs(eVec.x);
-		}
+			eVec.x = fabs(static_cast<float>(rand() % 201 - 100) / 100);
+		} 
 		else if (ePos.x - pPos.x < 0)
 		{
-			eVec.x = abs(eVec.x);
+			eVec.x = -fabs(static_cast<float>(rand() % 201 - 100) / 100);
+		}
+		if (ePos.z - pPos.z > 0)
+		{
+			eVec.z = fabs(static_cast<float>(rand() % 201 - 100) / 100);
+		} 
+		else if (ePos.z - pPos.z < 0)
+		{
+			eVec.z = -fabs(static_cast<float>(rand() % 201 - 100) / 100);
 		}
 	}
-	if (ePos.z > 300 || ePos.z < -300)
+	if (ePos.x > 300)
 	{
-		eVec.z = -eVec.z;
+		eVec.x = -fabs(static_cast<float>(rand() % 201 - 100) / 100);
 	}
-	if (ePos.x > 300 || ePos.x < -300)
+	else if (ePos.x < -300)
 	{
-		eVec.x = -eVec.x;
+		eVec.x = fabs(static_cast<float>(rand() % 201 - 100) / 100);
+	}
+	if (ePos.z > 300)
+	{
+		eVec.z = -fabs(static_cast<float>(rand() % 201 - 100) / 100);
+	}
+	else if (ePos.z < -300)
+	{
+		eVec.z = fabs(static_cast<float>(rand() % 201 - 100) / 100);
 	}
 	enemy->SetPosition(ePos);
 
@@ -250,6 +260,10 @@ void GamePlayScene::Update()
 			bPos.y += m->m_bVec.y;
 			bPos.z += m->m_bVec.z;
 			m->m_bullet->SetPosition(bPos);
+			if (5 > Length(bPos, pPos))
+			{
+				m->m_alive = false;
+			}
 		}
 	}
 
