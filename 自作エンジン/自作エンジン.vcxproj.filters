@@ -141,6 +141,9 @@
     <ClCompile Include="DirectXCommon\PipelineManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\AbstractSceneFactory.h">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="DirectXCommon\PipelineManager.h">
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -368,6 +374,9 @@
     </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\WinApp">
       <UniqueIdentifier>{0e6d700b-159b-4ccd-ae16-30d1bc0aa065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Game">
+      <UniqueIdentifier>{656f5c88-606f-4bba-8ab1-b3f568c9a443}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

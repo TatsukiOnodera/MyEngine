@@ -12,6 +12,7 @@
 #include "Light.h"
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
+#include "Bullet.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -63,18 +64,8 @@ private: //インスタンス
 	//OBJオブジェクト
 	std::unique_ptr<Object3d> enemy = nullptr;
 	std::array<std::unique_ptr<Object3d>, END> defaultWall = {};
-	struct BulletInfo
-	{
-		std::unique_ptr<Object3d> m_bullet = nullptr;
-		XMFLOAT3 m_bVec;
-		bool m_alive;
-		BulletInfo(Object3d* bullet) {
-			m_bullet.reset(bullet);
-			m_bVec = {0, 0, 0};
-			m_alive = false;
-		}
-	};
-	std::vector<BulletInfo*> bullet;
+	std::vector<Bullet*> enemyBullet;
+	std::vector<Bullet*> playerBullet;
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> player = nullptr;
 

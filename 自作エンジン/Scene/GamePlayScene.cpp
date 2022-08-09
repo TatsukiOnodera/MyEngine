@@ -9,8 +9,10 @@ using namespace DirectX;
 
 GamePlayScene::~GamePlayScene()
 {
-	bullet.clear();
-	bullet.shrink_to_fit();
+	playerBullet.clear();
+	playerBullet.shrink_to_fit();
+	enemyBullet.clear();
+	enemyBullet.shrink_to_fit();
 }
 
 void GamePlayScene::Initialize()
@@ -45,7 +47,8 @@ void GamePlayScene::Initialize()
 		m.reset(Object3d::Create("Wall"));
 	}
 	enemy.reset(Object3d::Create("Dragon", true));
-	bullet.emplace_back(new BulletInfo(Object3d::Create("Bullet", true)));
+	enemyBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
+	playerBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
 
 	//FBXオブェクト
 	player.reset(FbxObject3d::CreateFBXObject("player"));
@@ -216,54 +219,86 @@ void GamePlayScene::Update()
 	enemy->SetPosition(ePos);
 
 	//弾
-	intervalTime++;
-	if (intervalTime >= 120)
+	//	プレイヤーの発射
+	if (input->TriggerKey(DIK_RETURN))
 	{
-		intervalTime = 0;
 		bool noHit = true;
-		for (int i = 0; i < bullet.size(); i++)
+		for (int i = 0; i < playerBullet.size(); i++)
 		{
-			if (bullet[i]->m_alive == false)
+			if (playerBullet[i]->GetAlive() == false)
 			{
-				bullet[i]->m_alive = true;
-				float s = atan2f(ePos.z - pPos.z, ePos.x - pPos.x);
-				bullet[i]->m_bVec = { -cosf(s), 0, -sinf(s) };
-				bullet[i]->m_bullet->SetPosition(ePos);
-				bullet[i]->m_bullet->Update();
+				playerBullet[i]->SetAlive(true);
+				float s = atan2f(camera->GetEye().z - pPos.z, camera->GetEye().x - pPos.x);
+				playerBullet[i]->SetVector({ -cosf(s) * 2.0f, 0, -sinf(s) * 2.0f });
+				playerBullet[i]->SetPosition(pPos);
 				noHit = false;
 				break;
 			}
 		}
 		if (noHit)
 		{
-			bullet.emplace_back(new BulletInfo(Object3d::Create("Bullet", true)));
-			for (int i = 0; i < bullet.size(); i++)
+			playerBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
+			for (int i = 0; i < playerBullet.size(); i++)
 			{
-				if (bullet[i]->m_alive == false)
+				if (playerBullet[i]->GetAlive() == false)
 				{
-					bullet[i]->m_alive = true;
-					float s = atan2f(ePos.z - pPos.z, ePos.x - pPos.x);
-					bullet[i]->m_bVec = { -cosf(s), 0, -sinf(s) };
-					bullet[i]->m_bullet->SetPosition(ePos);
-					bullet[i]->m_bullet->Update();
+					playerBullet[i]->SetAlive(true);
+					float s = atan2f(camera->GetEye().z - pPos.z, camera->GetEye().x - pPos.x);
+					playerBullet[i]->SetVector({ -cosf(s) * 2.0f, 0, -sinf(s) * 2.0f });
+					playerBullet[i]->SetPosition(pPos);
 					break;
 				}
 			}
 		}
 	}
-	for (auto& m : bullet)
+	//敵の発射
+	intervalTime++;
+	if (intervalTime >= 120)
 	{
-		if (m->m_alive)
+		intervalTime = 0;
+		bool noHit = true;
+		for (int i = 0; i < enemyBullet.size(); i++)
 		{
-			XMFLOAT3 bPos = m->m_bullet->GetPosition();
-			bPos.x += m->m_bVec.x;
-			bPos.y += m->m_bVec.y;
-			bPos.z += m->m_bVec.z;
-			m->m_bullet->SetPosition(bPos);
-			if (5 > Length(bPos, pPos))
+			if (enemyBullet[i]->GetAlive() == false)
 			{
-				m->m_alive = false;
+				enemyBullet[i]->SetAlive(true);
+				float s = atan2f(ePos.z - pPos.z, ePos.x - pPos.x);
+				enemyBullet[i]->SetVector({ -cosf(s), 0, -sinf(s) });
+				enemyBullet[i]->SetPosition(ePos);
+				noHit = false;
+				break;
 			}
+		}
+		if (noHit)
+		{
+			enemyBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
+			for (int i = 0; i < enemyBullet.size(); i++)
+			{
+				if (enemyBullet[i]->GetAlive() == false)
+				{
+					enemyBullet[i]->SetAlive(true);
+					float s = atan2f(ePos.z - pPos.z, ePos.x - pPos.x);
+					enemyBullet[i]->SetVector({ -cosf(s), 0, -sinf(s) });
+					enemyBullet[i]->SetPosition(ePos);
+					break;
+				}
+			}
+		}
+	}
+	for (auto& m : enemyBullet)
+	{
+		m->Update();
+		if (5 > Length(m->GetPosition(), pPos) && m->GetAlive())
+		{
+			m->SetAlive(false);
+		}
+	}
+	for (auto& m : playerBullet)
+	{
+		m->Update();
+		if (5 > Length(m->GetPosition(), ePos) && m->GetAlive())
+		{
+			m->SetAlive(false);
 		}
 	}
 
@@ -323,12 +358,13 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 		m->Draw(cmdList);
 	}
 	enemy->Draw(cmdList);
-	for (auto& m : bullet)
+	for (auto& m : enemyBullet)
 	{
-		if (m->m_alive)
-		{
-			m->m_bullet->Draw(cmdList);
-		}
+		m->Draw(cmdList);
+	}
+	for (auto& m : playerBullet)
+	{
+		m->Draw(cmdList);
 	}
 
 	//FBXオブジェクト
