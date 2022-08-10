@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include <Windows.h>
 #include <wrl.h>
 #include <d3d12.h>
@@ -175,7 +176,7 @@ private:// 静的メンバ関数
 	/// デスクリプタヒープの初期化
 	/// </summary>
 	/// <returns></returns>
-	static void InitializeDescriptorHeap();
+	static bool InitializeDescriptorHeap();
 
 	/// <summary>
 	/// カメラ初期化
@@ -188,13 +189,13 @@ private:// 静的メンバ関数
 	/// グラフィックパイプライン生成
 	/// </summary>
 	/// <returns>成否</returns>
-	static void InitializeGraphicsPipeline();
+	static bool InitializeGraphicsPipeline();
 
 	/// <summary>
 	/// テクスチャ読み込み
 	/// </summary>
 	/// <returns>成否</returns>
-	static void LoadTexture();
+	static bool LoadTexture();
 
 	/// <summary>
 	/// モデル作成
@@ -207,11 +208,7 @@ private:// 静的メンバ関数
 	static void UpdateViewMatrix();
 
 public: // メンバ関数
-	/// <summary>
-	/// 初期化
-	/// </summary>
 	bool Initialize();
-
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -220,17 +217,12 @@ public: // メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void Draw();
 
 	/// <summary>
 	/// パーティクルの追加
 	/// </summary>
 	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale);
-
-	/// <summary>
-	/// 開始
-	/// </summary>
-	void Active(XMFLOAT3 position);
 
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuff; // 定数バッファ

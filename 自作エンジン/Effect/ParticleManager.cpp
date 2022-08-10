@@ -32,8 +32,8 @@ ParticleManager::VertexPos ParticleManager::vertices[vertexCount];
 XMMATRIX ParticleManager::matBillboard = XMMatrixIdentity();
 XMMATRIX ParticleManager::matBillboardY = XMMatrixIdentity();
 
-//XMFLOOAT3同士の加算処理
-const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs) 
+//演算子
+const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
 {
 	XMFLOAT3 result;
 	result.x = lhs.x + rhs.x;
@@ -42,13 +42,13 @@ const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::X
 	return result;
 }
 
-bool ParticleManager::StaticInitialize(ID3D12Device * device, int window_width, int window_height)
+bool ParticleManager::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
 {
 	// nullptrチェック
 	assert(device);
 
 	ParticleManager::device = device;
-		
+
 	// デスクリプタヒープの初期化
 	InitializeDescriptorHeap();
 
@@ -67,7 +67,7 @@ bool ParticleManager::StaticInitialize(ID3D12Device * device, int window_width, 
 	return true;
 }
 
-void ParticleManager::PreDraw(ID3D12GraphicsCommandList * cmdList)
+void ParticleManager::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
 	assert(ParticleManager::cmdList == nullptr);
@@ -89,7 +89,7 @@ void ParticleManager::PostDraw()
 	ParticleManager::cmdList = nullptr;
 }
 
-ParticleManager * ParticleManager::Create()
+ParticleManager* ParticleManager::Create()
 {
 	// 3Dオブジェクトのインスタンスを生成
 	ParticleManager* particleManager = new ParticleManager();
@@ -149,30 +149,32 @@ void ParticleManager::CameraMoveEyeVector(XMFLOAT3 move)
 	SetEye(eye_moved);
 }
 
-void ParticleManager::InitializeDescriptorHeap()
+bool ParticleManager::InitializeDescriptorHeap()
 {
 	HRESULT result = S_FALSE;
-	
+
 	// デスクリプタヒープを生成	
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
 	descHeapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
 	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
-	if (FAILED(result)) 
-	{
+	if (FAILED(result)) {
 		assert(0);
+		return false;
 	}
 
 	// デスクリプタサイズを取得
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	return true;
 }
 
 void ParticleManager::InitializeCamera(int window_width, int window_height)
 {
 	// ビュー行列の生成
 	UpdateViewMatrix();
-	
+
 	// 透視投影による射影行列の生成
 	matProjection = XMMatrixPerspectiveFovLH(
 		XMConvertToRadians(60.0f),
@@ -181,7 +183,7 @@ void ParticleManager::InitializeCamera(int window_width, int window_height)
 	);
 }
 
-void ParticleManager::InitializeGraphicsPipeline()
+bool ParticleManager::InitializeGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
@@ -337,22 +339,23 @@ void ParticleManager::InitializeGraphicsPipeline()
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
-	if (FAILED(result))
-	{
-		assert(0);
+	if (FAILED(result)) {
+		return result;
 	}
 
 	gpipeline.pRootSignature = rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
-	if (FAILED(result))
-	{
-		assert(0);
+
+	if (FAILED(result)) {
+		return result;
 	}
+
+	return true;
 }
 
-void ParticleManager::LoadTexture()
+bool ParticleManager::LoadTexture()
 {
 	HRESULT result = S_FALSE;
 
@@ -363,9 +366,8 @@ void ParticleManager::LoadTexture()
 	result = LoadFromWICFile(
 		L"Resources/effect1.png", WIC_FLAGS_NONE,
 		&metadata, scratchImg);
-	if (FAILED(result))
-	{
-		assert(0);
+	if (FAILED(result)) {
+		return result;
 	}
 
 	const Image* img = scratchImg.GetImage(0, 0, 0); // 生データ抽出
@@ -387,9 +389,8 @@ void ParticleManager::LoadTexture()
 		D3D12_RESOURCE_STATE_GENERIC_READ, // テクスチャ用指定
 		nullptr,
 		IID_PPV_ARGS(&texbuff));
-	if (FAILED(result))
-	{
-		assert(0);
+	if (FAILED(result)) {
+		return result;
 	}
 
 	// テクスチャバッファにデータ転送
@@ -398,10 +399,10 @@ void ParticleManager::LoadTexture()
 		nullptr, // 全領域へコピー
 		img->pixels,    // 元データアドレス
 		(UINT)img->rowPitch,  // 1ラインサイズ
-		(UINT)img->slicePitch); // 1枚サイズ
-	if (FAILED(result))
-	{
-		assert(0);
+		(UINT)img->slicePitch // 1枚サイズ
+	);
+	if (FAILED(result)) {
+		return result;
 	}
 
 	// シェーダリソースビュー作成
@@ -420,6 +421,8 @@ void ParticleManager::LoadTexture()
 		&srvDesc, //テクスチャ設定情報
 		cpuDescHandleSRV
 	);
+
+	return true;
 }
 
 void ParticleManager::CreateModel()
@@ -544,7 +547,7 @@ bool ParticleManager::Initialize()
 	result = device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff)&~0xff),
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&constBuff));
@@ -606,10 +609,12 @@ void ParticleManager::Update()
 	constBuff->Unmap(0, nullptr);
 }
 
-void ParticleManager::Draw(ID3D12GraphicsCommandList* cmdList)
+void ParticleManager::Draw()
 {
-	PreDraw(cmdList);
-		
+	// nullptrチェック
+	assert(device);
+	assert(ParticleManager::cmdList);
+
 	// 頂点バッファの設定
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	// インデックスバッファの設定
@@ -625,8 +630,6 @@ void ParticleManager::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
 	// 描画コマンド
 	cmdList->DrawInstanced((UINT)std::distance(partices.begin(), partices.end()), 1, 0, 0);
-
-	PostDraw();
 }
 
 void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale)
@@ -642,28 +645,4 @@ void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOA
 	p.num_frame = life;
 	p.s_scale = start_scale;
 	p.e_scale = end_scale;
-}
-
-void ParticleManager::Active(XMFLOAT3 position)
-{
-	for (int i = 0; i < 20; i++)
-	{
-		const float rnd_pos = 0.0f;
-		XMFLOAT3 pos{};
-		pos.x = position.x;
-		pos.y = position.y;
-		pos.z = position.z;
-
-		const float rnd_vel = 5.0f;
-		XMFLOAT3 vel{};
-		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-		vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-		vel.z = 0.0f;
-
-		XMFLOAT3 acc{};
-		const float rnd_acc = 0.000f;
-		acc.y = -(float)rand() / RAND_MAX * rnd_acc;
-
-		Add(30, pos, vel, acc, 10.0f, 0.0f);
-	}
 }
