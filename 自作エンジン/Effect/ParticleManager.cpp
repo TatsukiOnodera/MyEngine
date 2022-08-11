@@ -1,4 +1,6 @@
 ﻿#include "ParticleManager.h"
+#include "Camera.h"
+
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 
@@ -48,6 +50,9 @@ bool ParticleManager::StaticInitialize(ID3D12Device* device, int window_width, i
 	assert(device);
 
 	ParticleManager::device = device;
+	ParticleManager::eye = Camera::GetInstance()->GetEye();
+	ParticleManager::target = Camera::GetInstance()->GetTarget();
+	ParticleManager::up = Camera::GetInstance()->GetUp();
 
 	// デスクリプタヒープの初期化
 	InitializeDescriptorHeap();
@@ -193,7 +198,7 @@ bool ParticleManager::InitializeGraphicsPipeline()
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/ParticleVS.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/ParticleVS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -216,7 +221,7 @@ bool ParticleManager::InitializeGraphicsPipeline()
 
 	// ジオメトリシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/ParticleGS.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/ParticleGS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "gs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -239,7 +244,7 @@ bool ParticleManager::InitializeGraphicsPipeline()
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/ParticlePS.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/ParticlePS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -364,7 +369,7 @@ bool ParticleManager::LoadTexture()
 	ScratchImage scratchImg{};
 
 	result = LoadFromWICFile(
-		L"Resources/effect1.png", WIC_FLAGS_NONE,
+		L"Resources/Default/effect1.png", WIC_FLAGS_NONE,
 		&metadata, scratchImg);
 	if (FAILED(result)) {
 		return result;
@@ -611,6 +616,9 @@ void ParticleManager::Update()
 
 void ParticleManager::Draw()
 {
+	//更新
+	Update();
+
 	// nullptrチェック
 	assert(device);
 	assert(ParticleManager::cmdList);

@@ -36,7 +36,7 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	//パーティクル
-	//particle.reset(ParticleManager::Create());
+	particle.reset(ParticleManager::Create());
 
 	//スプライト
 
@@ -133,6 +133,29 @@ void GamePlayScene::InitializeVariable()
 void GamePlayScene::Update()
 {
 #pragma region ゲームシステム
+
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		//パーティクル
+		for (int i = 0; i < 30; i++)
+		{
+			const float rnd_pos = 10.0f;
+			XMFLOAT3 pos = {};
+			pos.x = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+			pos.y = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+			pos.z = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+
+			const float rnd_vel = 1.0f;
+			XMFLOAT3 vel = {};
+			vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+			XMFLOAT3 acc = {};
+			//追加
+			particle->Add(120, pos, vel, acc, 5.0f, 0.0f);
+		}
+	}
 
 	//プレイヤー
 	XMFLOAT3 pVec = {};
@@ -334,7 +357,7 @@ void GamePlayScene::Draw()
 	//各描画
 	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
-	//DrawEffect(cmdList);
+	DrawEffect(cmdList);
 	//DrawUI(cmdList);
 	DrawDebugText(cmdList);
 }
@@ -370,7 +393,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	//FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);
 
-	player->Draw();
+	//player->Draw();
 
 	FbxObject3d::PostDraw();
 
@@ -395,7 +418,11 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 {
 	//パーティクル描画
-	//particle->Draw(cmdList);
+	ParticleManager::PreDraw(cmdList);
+
+	particle->Draw();
+
+	ParticleManager::PostDraw();
 }
 
 void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)

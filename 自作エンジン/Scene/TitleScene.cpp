@@ -25,6 +25,9 @@ void TitleScene::Initialize()
 	//前景スプライト
 	debugText.Initialize(fontNumber);
 
+	//パーティクル
+	particle.reset(ParticleManager::Create());
+
 	//スプライト
 
 	//オブジェクト
@@ -99,7 +102,11 @@ void TitleScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 void TitleScene::DrawParticles(ID3D12GraphicsCommandList* cmdList)
 {
 	//パーティクル描画
-	particle->Draw(cmdList);
+	ParticleManager::PreDraw(cmdList);
+
+	particle->Draw();
+
+	ParticleManager::PostDraw();
 }
 
 void TitleScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
