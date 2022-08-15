@@ -1,5 +1,4 @@
 ﻿#include "ParticleManager.h"
-#include "Camera.h"
 
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
@@ -12,29 +11,21 @@ using namespace Microsoft::WRL;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-const float ParticleManager::radius = 5.0f;				// 底面の半径
-const float ParticleManager::prizmHeight = 8.0f;			// 柱の高さ
+const float ParticleManager::s_radius = 5.0f;				// 底面の半径
+const float ParticleManager::s_prizmHeight = 8.0f;			// 柱の高さ
 ID3D12Device* ParticleManager::device = nullptr;
 UINT ParticleManager::descriptorHandleIncrementSize = 0;
 ID3D12GraphicsCommandList* ParticleManager::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> ParticleManager::rootsignature;
 ComPtr<ID3D12PipelineState> ParticleManager::pipelinestate;
-ComPtr<ID3D12DescriptorHeap> ParticleManager::descHeap;
 ComPtr<ID3D12Resource> ParticleManager::vertBuff;
-ComPtr<ID3D12Resource> ParticleManager::texbuff;
-CD3DX12_CPU_DESCRIPTOR_HANDLE ParticleManager::cpuDescHandleSRV;
-CD3DX12_GPU_DESCRIPTOR_HANDLE ParticleManager::gpuDescHandleSRV;
-XMMATRIX ParticleManager::matView{};
-XMMATRIX ParticleManager::matProjection{};
-XMFLOAT3 ParticleManager::eye = { 0, 0, -5 };
-XMFLOAT3 ParticleManager::target = { 0, 0, 0 };
-XMFLOAT3 ParticleManager::up = { 0, 1, 0 };
+XMMATRIX ParticleManager::matView;
+Camera *ParticleManager::s_camera = nullptr;
 D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
-ParticleManager::VertexPos ParticleManager::vertices[vertexCount];
+ParticleManager::VertexPos ParticleManager::vertices[s_vertexCount];
 XMMATRIX ParticleManager::matBillboard = XMMatrixIdentity();
 XMMATRIX ParticleManager::matBillboardY = XMMatrixIdentity();
 
-//演算子
 const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
 {
 	XMFLOAT3 result;
@@ -50,24 +41,19 @@ bool ParticleManager::StaticInitialize(ID3D12Device* device, int window_width, i
 	assert(device);
 
 	ParticleManager::device = device;
-	ParticleManager::eye = Camera::GetInstance()->GetEye();
-	ParticleManager::target = Camera::GetInstance()->GetTarget();
-	ParticleManager::up = Camera::GetInstance()->GetUp();
-
-	// デスクリプタヒープの初期化
-	InitializeDescriptorHeap();
-
-	// カメラ初期化
-	InitializeCamera(window_width, window_height);
+	ParticleManager::s_camera = Camera::GetInstance();
 
 	// パイプライン初期化
-	InitializeGraphicsPipeline();
+	if (!InitializeGraphicsPipeline())
+	{
+		assert(0);
+	}
 
-	// テクスチャ読み込み
-	LoadTexture();
-
-	// モデル生成
-	CreateModel();
+	//頂点バッファの転送
+	if (!CreateModel())
+	{
+		assert(0);
+	}
 
 	return true;
 }
@@ -94,98 +80,23 @@ void ParticleManager::PostDraw()
 	ParticleManager::cmdList = nullptr;
 }
 
-ParticleManager* ParticleManager::Create()
+ParticleManager* ParticleManager::Create(const std::string& textureName)
 {
 	// 3Dオブジェクトのインスタンスを生成
-	ParticleManager* particleManager = new ParticleManager();
-	if (particleManager == nullptr) {
-		return nullptr;
-	}
+	ParticleManager* particle = new ParticleManager();
 
 	// 初期化
-	if (!particleManager->Initialize()) {
-		delete particleManager;
+	if (!particle->Initialize())
+	{
 		assert(0);
 		return nullptr;
 	}
 
-	return particleManager;
-}
+	//テクスチャ読み込み
+	particle->LoadTexture(textureName);
 
-void ParticleManager::SetEye(XMFLOAT3 eye)
-{
-	ParticleManager::eye = eye;
-
-	UpdateViewMatrix();
-}
-
-void ParticleManager::SetTarget(XMFLOAT3 target)
-{
-	ParticleManager::target = target;
-
-	UpdateViewMatrix();
-}
-
-void ParticleManager::CameraMoveVector(XMFLOAT3 move)
-{
-	XMFLOAT3 eye_moved = GetEye();
-	XMFLOAT3 target_moved = GetTarget();
-
-	eye_moved.x += move.x;
-	eye_moved.y += move.y;
-	eye_moved.z += move.z;
-
-	target_moved.x += move.x;
-	target_moved.y += move.y;
-	target_moved.z += move.z;
-
-	SetEye(eye_moved);
-	SetTarget(target_moved);
-}
-
-void ParticleManager::CameraMoveEyeVector(XMFLOAT3 move)
-{
-	XMFLOAT3 eye_moved = GetEye();
-
-	eye_moved.x += move.x;
-	eye_moved.y += move.y;
-	eye_moved.z += move.z;
-
-	SetEye(eye_moved);
-}
-
-bool ParticleManager::InitializeDescriptorHeap()
-{
-	HRESULT result = S_FALSE;
-
-	// デスクリプタヒープを生成	
-	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
-	descHeapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
-	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
-	if (FAILED(result)) {
-		assert(0);
-		return false;
-	}
-
-	// デスクリプタサイズを取得
-	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
-	return true;
-}
-
-void ParticleManager::InitializeCamera(int window_width, int window_height)
-{
-	// ビュー行列の生成
-	UpdateViewMatrix();
-
-	// 透視投影による射影行列の生成
-	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
-		(float)window_width / window_height,
-		0.1f, 1000.0f
-	);
+	//戻り値
+	return particle;
 }
 
 bool ParticleManager::InitializeGraphicsPipeline()
@@ -360,19 +271,38 @@ bool ParticleManager::InitializeGraphicsPipeline()
 	return true;
 }
 
-bool ParticleManager::LoadTexture()
+bool ParticleManager::LoadTexture(const std::string& textureName)
 {
 	HRESULT result = S_FALSE;
+
+	// デスクリプタヒープを生成	
+	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
+	descHeapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
+	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// デスクリプタサイズを取得
+	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	// WICテクスチャのロード
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 
-	result = LoadFromWICFile(
-		L"Resources/Default/effect1.png", WIC_FLAGS_NONE,
-		&metadata, scratchImg);
-	if (FAILED(result)) {
-		return result;
+	std::string filePath = "Resources/" + textureName;
+
+	//ユニコード文字列に変換する
+	wchar_t wfilepath[128];
+	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, filePath.c_str(), -1, wfilepath, _countof(wfilepath));
+
+	result = LoadFromWICFile(wfilepath, WIC_FLAGS_NONE, &metadata, scratchImg);
+	if (FAILED(result))
+	{
+		return false;
 	}
 
 	const Image* img = scratchImg.GetImage(0, 0, 0); // 生データ抽出
@@ -394,8 +324,9 @@ bool ParticleManager::LoadTexture()
 		D3D12_RESOURCE_STATE_GENERIC_READ, // テクスチャ用指定
 		nullptr,
 		IID_PPV_ARGS(&texbuff));
-	if (FAILED(result)) {
-		return result;
+	if (FAILED(result))
+	{
+		return false;
 	}
 
 	// テクスチャバッファにデータ転送
@@ -406,8 +337,9 @@ bool ParticleManager::LoadTexture()
 		(UINT)img->rowPitch,  // 1ラインサイズ
 		(UINT)img->slicePitch // 1枚サイズ
 	);
-	if (FAILED(result)) {
-		return result;
+	if (FAILED(result))
+	{
+		return false;
 	}
 
 	// シェーダリソースビュー作成
@@ -430,7 +362,7 @@ bool ParticleManager::LoadTexture()
 	return true;
 }
 
-void ParticleManager::CreateModel()
+bool ParticleManager::CreateModel()
 {
 	HRESULT result = S_FALSE;
 
@@ -442,9 +374,9 @@ void ParticleManager::CreateModel()
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&vertBuff));
-	if (FAILED(result)) {
-		assert(0);
-		return;
+	if (FAILED(result))
+	{
+		return false;
 	}
 
 	// 頂点バッファへのデータ転送
@@ -459,16 +391,18 @@ void ParticleManager::CreateModel()
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = sizeof(vertices);
 	vbView.StrideInBytes = sizeof(vertices[0]);
+
+	return true;
 }
 
 void ParticleManager::UpdateViewMatrix()
 {
 	//視点
-	XMVECTOR eyePosition = XMLoadFloat3(&eye);
+	XMVECTOR eyePosition = XMLoadFloat3(&s_camera->GetEye());
 	//注視点
-	XMVECTOR targetPosition = XMLoadFloat3(&target);
+	XMVECTOR targetPosition = XMLoadFloat3(&s_camera->GetTarget());
 	//上方向
-	XMVECTOR upVector = XMLoadFloat3(&up);
+	XMVECTOR upVector = XMLoadFloat3(&s_camera->GetUp());
 
 	//カメラZ軸
 	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPosition, eyePosition);
@@ -555,7 +489,7 @@ bool ParticleManager::Initialize()
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&constBuff));
+		IID_PPV_ARGS(&m_constBuff));
 
 	return true;
 }
@@ -563,23 +497,18 @@ bool ParticleManager::Initialize()
 void ParticleManager::Update()
 {
 	HRESULT result;
-	XMMATRIX matScale, matRot, matTrans;
 
-	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
+	UpdateViewMatrix();
 
 	//寿命が尽きたパーティクルを全削除
-	partices.remove_if(
+	m_partices.remove_if(
 		[](Particle& x) {
 			return x.frame >= x.num_frame;
 		}
 	);
 
 	//全パーティクル更新
-	for (std::forward_list<Particle>::iterator it = partices.begin();
-		it != partices.end();
-		it++)
+	for (std::forward_list<Particle>::iterator it = m_partices.begin(); it != m_partices.end(); it++)
 	{
 		//経過フレーム数をカウント
 		it->frame++;
@@ -598,7 +527,7 @@ void ParticleManager::Update()
 	VertexPos* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result)) {
-		for (std::forward_list<Particle>::iterator it = partices.begin(); it != partices.end(); it++) {
+		for (std::forward_list<Particle>::iterator it = m_partices.begin(); it != m_partices.end(); it++) {
 			vertMap->pos = it->position;
 			vertMap->scale = it->scale;
 			vertMap++;
@@ -608,10 +537,10 @@ void ParticleManager::Update()
 
 	// 定数バッファへデータ転送
 	ConstBufferData* constMap = nullptr;
-	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = matView * matProjection;
+	result = m_constBuff->Map(0, nullptr, (void**)&constMap);
+	constMap->mat = matView * s_camera->GetMatProject();
 	constMap->matBillboard = matBillboard;
-	constBuff->Unmap(0, nullptr);
+	m_constBuff->Unmap(0, nullptr);
 }
 
 void ParticleManager::Draw()
@@ -619,33 +548,33 @@ void ParticleManager::Draw()
 	//更新
 	Update();
 
-	// nullptrチェック
-	assert(device);
-	assert(ParticleManager::cmdList);
+	if (!m_partices.empty())
+	{
+		// nullptrチェック
+		assert(ParticleManager::cmdList);
 
-	// 頂点バッファの設定
-	cmdList->IASetVertexBuffers(0, 1, &vbView);
-	// インデックスバッファの設定
-	//cmdList->IASetIndexBuffer(&ibView);
+		// 頂点バッファの設定
+		cmdList->IASetVertexBuffers(0, 1, &vbView);
 
-	// デスクリプタヒープの配列
-	ID3D12DescriptorHeap* ppHeaps[] = { descHeap.Get() };
-	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+		// デスクリプタヒープの配列
+		ID3D12DescriptorHeap* ppHeaps[] = { descHeap.Get() };
+		cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
-	// 定数バッファビューをセット
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
-	// シェーダリソースビューをセット
-	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
-	// 描画コマンド
-	cmdList->DrawInstanced((UINT)std::distance(partices.begin(), partices.end()), 1, 0, 0);
+		// 定数バッファビューをセット
+		cmdList->SetGraphicsRootConstantBufferView(0, m_constBuff->GetGPUVirtualAddress());
+		// シェーダリソースビューをセット
+		cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
+		// 描画コマンド
+		cmdList->DrawInstanced((UINT)std::distance(m_partices.begin(), m_partices.end()), 1, 0, 0);
+	}
 }
 
 void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale)
 {
 	//リストに要素を追加
-	partices.emplace_front();
+	m_partices.emplace_front();
 	//追加した要素の参照
-	Particle& p = partices.front();
+	Particle& p = m_partices.front();
 	//値のセット
 	p.position = position;
 	p.velocity = velocity;

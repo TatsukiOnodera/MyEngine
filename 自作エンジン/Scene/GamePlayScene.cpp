@@ -36,7 +36,7 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	//パーティクル
-	particle.reset(ParticleManager::Create());
+	particle.reset(ParticleManager::Create("Default/effect1.png"));
 
 	//スプライト
 

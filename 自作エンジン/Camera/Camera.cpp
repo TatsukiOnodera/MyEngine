@@ -15,6 +15,7 @@ void Camera::Initialize(int window_width, int window_height)
 	matBillboardY = XMMatrixIdentity();
 
 	// ビュー行列の生成
+	dirty = true;
 	Update();
 
 	// 透視投影による射影行列の生成

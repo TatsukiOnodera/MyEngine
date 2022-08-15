@@ -40,7 +40,7 @@ private: //メンバ変数
 	//Y軸の角度
 	float angleY = 0.0f;
 	//ダーティーフラグ
-	bool dirty = true;
+	bool dirty = false;
 	//	更新したか
 	bool isDirty = false;
 
