@@ -13,6 +13,7 @@
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
 #include "Bullet.h"
+#include "Enemy.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -62,17 +63,14 @@ private: //インスタンス
 	//スプライト
 	
 	//OBJオブジェクト
-	std::unique_ptr<Object3d> enemy = nullptr;
+	std::unique_ptr<Enemy> enemy = nullptr;
 	std::array<std::unique_ptr<Object3d>, END> defaultWall = {};
-	std::vector<Bullet*> enemyBullet;
-	std::vector<Bullet*> playerBullet;
+	std::vector< std::unique_ptr<Bullet>> enemyBullet;
+	std::vector<std::unique_ptr<Bullet>> playerBullet;
 	//FBXオブジェクト
 	std::unique_ptr<FbxObject3d> player = nullptr;
 
 private: //メンバ変数
-	//エネミーのベクトル
-	XMFLOAT3 eVec = {};
-
 	//加速する
 	bool isDash = false;
 	//初期加速値

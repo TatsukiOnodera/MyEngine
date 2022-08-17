@@ -9,10 +9,7 @@ using namespace DirectX;
 
 GamePlayScene::~GamePlayScene()
 {
-	playerBullet.clear();
-	playerBullet.shrink_to_fit();
-	enemyBullet.clear();
-	enemyBullet.shrink_to_fit();
+	
 }
 
 void GamePlayScene::Initialize()
@@ -46,7 +43,7 @@ void GamePlayScene::Initialize()
 	{
 		m.reset(Object3d::Create("Wall"));
 	}
-	enemy.reset(Object3d::Create("Dragon", true));
+	enemy.reset(new Enemy(Object3d::Create("Dragon", true)));
 	enemyBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
 	playerBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
 
@@ -65,8 +62,6 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
-	eVec = { static_cast<float>(rand() % 201 - 100) / 100, 0, static_cast<float>(rand() % 201 - 100) / 100 };
-
 	isDash = false;
 	add0 = 0;
 
@@ -77,14 +72,9 @@ void GamePlayScene::InitializeVariable()
 	player->SetScale({ 0.25f, 0.25f, 0.25f });
 	player->Update();
 
-	enemy->SetPosition({ 0, 0, 100 });
-	enemy->SetScale({ 3, 3, 3 });
-	enemy->SetColor({ 0, 0.3, 0.9, 1 });
-	enemy->Update();
-
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		float size = 300;
+		float size = 100;
 		XMFLOAT3 pos;
 		XMFLOAT3 rot;
 		XMFLOAT3 scale = { size, size, size };
@@ -132,31 +122,7 @@ void GamePlayScene::InitializeVariable()
 
 void GamePlayScene::Update()
 {
-#pragma region ゲームシステム
-
-	if (input->TriggerKey(DIK_SPACE))
-	{
-		//パーティクル
-		for (int i = 0; i < 30; i++)
-		{
-			const float rnd_pos = 10.0f;
-			XMFLOAT3 pos = {};
-			pos.x = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-			pos.y = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-			pos.z = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-
-			const float rnd_vel = 1.0f;
-			XMFLOAT3 vel = {};
-			vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-			vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-			vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-
-			XMFLOAT3 acc = {};
-			//追加
-			particle->Add(120, pos, vel, acc, 5.0f, 0.0f);
-		}
-	}
-
+#pragma region ゲームメインシステム
 	//プレイヤー
 	XMFLOAT3 pVec = {};
 	if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
@@ -201,47 +167,8 @@ void GamePlayScene::Update()
 	player->SetPosition(pPos);
 	
 	//エネミー
-	XMFLOAT3 ePos = enemy->GetPosition();
-	ePos.x += eVec.x;
-	ePos.z += eVec.z;
-	if (30 > Length(ePos, pPos))
-	{
-		if (ePos.x - pPos.x > 0)
-		{
-			eVec.x = fabs(static_cast<float>(rand() % 201 - 100) / 100);
-		} 
-		else if (ePos.x - pPos.x < 0)
-		{
-			eVec.x = -fabs(static_cast<float>(rand() % 201 - 100) / 100);
-		}
-		if (ePos.z - pPos.z > 0)
-		{
-			eVec.z = fabs(static_cast<float>(rand() % 201 - 100) / 100);
-		} 
-		else if (ePos.z - pPos.z < 0)
-		{
-			eVec.z = -fabs(static_cast<float>(rand() % 201 - 100) / 100);
-		}
-	}
-	if (ePos.x > 300)
-	{
-		eVec.x = -fabs(static_cast<float>(rand() % 201 - 100) / 100);
-	}
-	else if (ePos.x < -300)
-	{
-		eVec.x = fabs(static_cast<float>(rand() % 201 - 100) / 100);
-	}
-	if (ePos.z > 300)
-	{
-		eVec.z = -fabs(static_cast<float>(rand() % 201 - 100) / 100);
-	}
-	else if (ePos.z < -300)
-	{
-		eVec.z = fabs(static_cast<float>(rand() % 201 - 100) / 100);
-	}
-	enemy->SetPosition(ePos);
+	enemy->Update(pPos);
 
-	//弾
 	//	プレイヤーの発射
 	if (input->TriggerKey(DIK_RETURN))
 	{
@@ -274,7 +201,9 @@ void GamePlayScene::Update()
 			}
 		}
 	}
+
 	//敵の発射
+	XMFLOAT3 ePos = enemy->GetPosition();
 	intervalTime++;
 	if (intervalTime >= 120)
 	{
@@ -335,7 +264,6 @@ void GamePlayScene::Update()
 	{
 		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
 	}
-
 	//追従カメラ
 	camera->FollowUpCamera(pPos, camera->GetDistance(), angle.x, angle.y);
 
@@ -437,3 +365,22 @@ const float GamePlayScene::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 
 	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
 }
+
+//for (int i = 0; i < 30; i++)
+	//{
+	//	const float rnd_pos = 10.0f;
+	//	XMFLOAT3 pos = {};
+	//	pos.x = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+	//	pos.y = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+	//	pos.z = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+
+	//	const float rnd_vel = 1.0f;
+	//	XMFLOAT3 vel = {};
+	//	vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+	//	vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+	//	vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+	//	XMFLOAT3 acc = {};
+	//	//追加
+	//	particle->Add(120, pos, vel, acc, 5.0f, 0.0f);
+	//}

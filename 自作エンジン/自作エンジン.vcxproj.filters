@@ -144,6 +144,9 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\AbstractSceneFactory.h">
@@ -245,14 +248,17 @@
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
     </ClInclude>
-    <ClInclude Include="Alias.h">
-      <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
-    </ClInclude>
     <ClInclude Include="DirectXCommon\PipelineManager.h">
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Measurement.h">
+      <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

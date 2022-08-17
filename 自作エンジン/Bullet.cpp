@@ -5,8 +5,7 @@ using namespace DirectX;
 Bullet::Bullet(Object3d* bullet)
 {
 	m_object.reset(bullet);
-	m_vec = { 0, 0, 0 };
-	m_alive = false;
+	Initialize();
 }
 
 Bullet::~Bullet()
@@ -16,7 +15,8 @@ Bullet::~Bullet()
 
 void Bullet::Initialize()
 {
-
+	m_vec = { 0, 0, 0 };
+	m_alive = false;
 }
 
 void Bullet::Update()
