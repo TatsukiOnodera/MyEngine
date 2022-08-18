@@ -2,9 +2,11 @@
 #include <DirectXMath.h>
 #include <memory>
 
-#include "Object3d.h"
+#include "Input.h"
+#include "Camera.h"
+#include "FbxObject3d.h"
 
-class Enemy
+class Player
 {
 public: // エイリアス
 	// DirectX::を省略
@@ -13,24 +15,34 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+private: //静的メンバ変数
+	// 操作系
+	static Input* s_input;
+	// カメラ
+	static Camera* s_camera;
+
 private: // メンバ変数
 	// オブジェクト
-	std::unique_ptr<Object3d> m_object = nullptr;
-	// 移動ベクトル
-	XMFLOAT3 m_vec = { 0, 0, 0 };
+	std::unique_ptr<FbxObject3d> m_object = nullptr;
+	// 座標
+	XMFLOAT3 m_pos = {};
 	// 生存フラグ
 	bool m_alive = false;
+	// 加速する
+	bool m_isDash = false;
+	// 初期加速値
+	float m_add0 = 0;
 
 public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Enemy(Object3d* enemy);
+	Player(FbxObject3d* player);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~Enemy();
+	~Player();
 
 	/// <summary>
 	/// 初期化
@@ -40,7 +52,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update(XMFLOAT3 playerPosition);
+	void Update();
 
 	/// <summary>
 	/// 描画
@@ -48,16 +60,8 @@ public: // メンバ関数
 	void Draw();
 
 	/// <summary>
-	/// 始点から終点への距離
-	/// </summary>
-	/// <param name="pos1">終点</param>
-	/// <param name="pos2">始点</param>
-	/// <returns>二点間の距離</returns>
-	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2);
-
-	/// <summary>
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
-	XMFLOAT3 GetPosition() { return m_object->GetPosition(); }
+	XMFLOAT3 GetPosition() { return m_pos; }
 };

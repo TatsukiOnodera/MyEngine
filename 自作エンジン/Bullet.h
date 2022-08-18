@@ -45,8 +45,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	/// <param name="cmdList">コマンドリスト</param>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void Draw();
 
 	//座標を取得
 	XMFLOAT3 GetPosition() { return m_object->GetPosition(); }

@@ -33,6 +33,7 @@ void Enemy::Update(XMFLOAT3 playerPosition)
 		ePos.x += m_vec.x;
 		ePos.z += m_vec.z;
 		m_object->SetPosition(ePos);
+		m_object->Update();
 
 		//Ž©‹@‚Æ‚Ì‹——£
 		if (30 > Length(ePos, playerPosition))
@@ -75,11 +76,11 @@ void Enemy::Update(XMFLOAT3 playerPosition)
 	}
 }
 
-void Enemy::Draw(ID3D12GraphicsCommandList* cmdList)
+void Enemy::Draw()
 {
 	if (m_alive)
 	{
-		m_object->Draw(cmdList);
+		m_object->Draw();
 	}
 }
 

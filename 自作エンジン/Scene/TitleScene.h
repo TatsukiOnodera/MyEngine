@@ -3,6 +3,7 @@
 #include <DirectXMath.h>
 #include "Input.h"
 #include "Object3d.h"
+#include "FbxObject3d.h"
 #include "Sprite.h"
 #include "Audio.h"
 #include "DebugText.h"

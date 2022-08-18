@@ -41,12 +41,6 @@ void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
 	//nullチェック
 	assert(cmdList);
 	Object3d::s_cmdList = cmdList;
-
-	//パイプラインとルートシグネチャの設定
-	s_cmdList->SetPipelineState(m_model->GetPipelineState());
-	s_cmdList->SetGraphicsRootSignature(m_model->GetRootSignature());
-	//プリミティブ形状を設定
-	s_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void Object3d::PostDraw()
@@ -147,7 +141,7 @@ void Object3d::Update()
 	}
 }
 
-void Object3d::Draw(ID3D12GraphicsCommandList* cmdList)
+void Object3d::Draw()
 {
 	//モデルがないなら抜ける
 	if (m_model == nullptr)
@@ -158,8 +152,11 @@ void Object3d::Draw(ID3D12GraphicsCommandList* cmdList)
 	//更新
 	Update();
 
-	//描画前処理
-	PreDraw(cmdList);
+	//パイプラインとルートシグネチャの設定
+	s_cmdList->SetPipelineState(m_model->GetPipelineState());
+	s_cmdList->SetGraphicsRootSignature(m_model->GetRootSignature());
+	//プリミティブ形状を設定
+	s_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 	//定数バッファをセット
 	s_cmdList->SetGraphicsRootConstantBufferView(0, m_constBuff->GetGPUVirtualAddress());
@@ -169,9 +166,6 @@ void Object3d::Draw(ID3D12GraphicsCommandList* cmdList)
 
 	//モデル描画
 	m_model->Draw(s_cmdList);
-
-	//描画後処理
-	PostDraw();
 }
 
 void Object3d::SetPosition(XMFLOAT3 position)

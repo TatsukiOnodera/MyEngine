@@ -19,26 +19,26 @@ void GamePlayScene::Initialize()
 	//audio = Audio::GetInstance();
 	camera = Camera::GetInstance();
 	
-	//スプライトテクスチャ読み込み
+	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/background.png");
 
-	//ライト生成
+	// ライト生成
 	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
 	light->SetLightDir({-5, -5, 0, 0});
 	Object3d::SetLight(light.get());
 
-	//前景スプライト
+	// 前景スプライト
 	debugText.Initialize(fontNumber);
 
-	//パーティクル
+	// パーティクル
 	particle.reset(ParticleManager::Create("Default/effect1.png"));
 
-	//スプライト
+	// スプライト
 
 
-	//OBJオブジェクト
+	// OBJオブジェクト
 	for (auto& m : defaultWall)
 	{
 		m.reset(Object3d::Create("Wall"));
@@ -47,31 +47,21 @@ void GamePlayScene::Initialize()
 	enemyBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
 	playerBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
 
-	//FBXオブェクト
-	player.reset(FbxObject3d::CreateFBXObject("player"));
+	// FBXオブェクト
+	player.reset(new Player(FbxObject3d::CreateFBXObject("player")));
 
-	//オーディオ
+	// オーディオ
 	//audio->Initialize();
 
-	//変数の初期化
+	// 変数の初期化
 	InitializeVariable();
 
-	//乱数初期化
+	// 乱数初期化
 	srand(NULL);
 }
 
 void GamePlayScene::InitializeVariable()
 {
-	isDash = false;
-	add0 = 0;
-
-	intervalTime = 0;
-
-	player->SetPosition({ 0, 0, -100 });
-	player->SetRotation({ -90, 0, 0 });
-	player->SetScale({ 0.25f, 0.25f, 0.25f });
-	player->Update();
-
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
 		float size = 100;
@@ -123,53 +113,14 @@ void GamePlayScene::InitializeVariable()
 void GamePlayScene::Update()
 {
 #pragma region ゲームメインシステム
-	//プレイヤー
-	XMFLOAT3 pVec = {};
-	if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
-	{
-		//ダッシュ
-		if (input->TriggerKey(DIK_SPACE))
-		{
-			isDash = true;
-			add0 = 25;
-
-			//アニメーション
-			player->PlayAnimation(false);
-		}
-
-		//ベクトル
-		pVec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 1;
-		pVec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 1;
-		//加速するなら
-		if (isDash)
-		{
-			pVec.x *= add0;
-			pVec.z *= add0;
-
-			add0 = add0 - 10;
-
-			//加速度が0になったら
-			if (add0 <= 0)
-			{
-				add0 = 0;
-				isDash = false;
-			}
-		}
-	}
-	else
-	{
-		//アニメーション
-		player->ResetAnimation();
-	}
-	//カメラを軸にした変換
+	// プレイヤー
+	player->Update();
 	XMFLOAT3 pPos = player->GetPosition();
-	pPos = camera->ConvertWindowPos(pPos, pVec);
-	player->SetPosition(pPos);
 	
-	//エネミー
+	// エネミー
 	enemy->Update(pPos);
 
-	//	プレイヤーの発射
+	//	 プレイヤーの発射
 	if (input->TriggerKey(DIK_RETURN))
 	{
 		bool noHit = true;
@@ -202,7 +153,7 @@ void GamePlayScene::Update()
 		}
 	}
 
-	//敵の発射
+	// 敵の発射
 	XMFLOAT3 ePos = enemy->GetPosition();
 	intervalTime++;
 	if (intervalTime >= 120)
@@ -254,7 +205,7 @@ void GamePlayScene::Update()
 		}
 	}
 
-	//カメラ
+	// カメラ
 	XMFLOAT2 angle = { 0, 0 };
 	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
@@ -264,7 +215,7 @@ void GamePlayScene::Update()
 	{
 		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
 	}
-	//追従カメラ
+	// 追従カメラ
 	camera->FollowUpCamera(pPos, camera->GetDistance(), angle.x, angle.y);
 
 #pragma endregion
@@ -279,10 +230,10 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-	//コマンドリストの取得
+	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
-	//各描画
+	// 各描画
 	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
 	DrawEffect(cmdList);
@@ -292,7 +243,7 @@ void GamePlayScene::Draw()
 
 void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 {
-	//前景スプライト描画
+	// 前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
 	
@@ -303,29 +254,39 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 {
-	//OBJオブジェクト描画
+	// OBJオブジェクト描画
+	Object3d::PreDraw(cmdList);
+
+	// 壁
 	for (auto& m : defaultWall)
 	{
-		m->Draw(cmdList);
+		m->Draw();
 	}
-	enemy->Draw(cmdList);
+
+	// 敵
+	enemy->Draw();
+
+	// 弾
 	for (auto& m : enemyBullet)
 	{
-		m->Draw(cmdList);
+		m->Draw();
 	}
 	for (auto& m : playerBullet)
 	{
-		m->Draw(cmdList);
+		m->Draw();
 	}
 
-	//FBXオブジェクト
+	Object3d::PostDraw();
+
+	// FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);
 
-	//player->Draw();
+	// 自機
+	player->Draw();
 
 	FbxObject3d::PostDraw();
 
-	//スプライト描画
+	// スプライト描画
 	Sprite::PreDraw(cmdList);
 
 
@@ -335,7 +296,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 {
-	//UI描画
+	// UI描画
 	Sprite::PreDraw(cmdList);
 
 	
@@ -345,7 +306,7 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 {
-	//パーティクル描画
+	// パーティクル描画
 	ParticleManager::PreDraw(cmdList);
 
 	particle->Draw();
@@ -355,7 +316,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 {
-	//デバッグテキスト描画
+	// デバッグテキスト描画
 	debugText.Draw(cmdList);
 }
 

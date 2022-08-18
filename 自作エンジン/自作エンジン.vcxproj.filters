@@ -147,6 +147,9 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\AbstractSceneFactory.h">
@@ -259,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="Measurement.h">
       <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,8 @@
 #include "Light.h"
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
+
+#include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
 
@@ -68,14 +70,9 @@ private: //インスタンス
 	std::vector< std::unique_ptr<Bullet>> enemyBullet;
 	std::vector<std::unique_ptr<Bullet>> playerBullet;
 	//FBXオブジェクト
-	std::unique_ptr<FbxObject3d> player = nullptr;
+	std::unique_ptr<Player> player = nullptr;
 
 private: //メンバ変数
-	//加速する
-	bool isDash = false;
-	//初期加速値
-	float add0 = 0;
-
 	//ショットの間隔
 	int intervalTime = 0;
 

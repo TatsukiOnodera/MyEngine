@@ -42,11 +42,11 @@ void Bullet::Update()
 	}
 }
 
-void Bullet::Draw(ID3D12GraphicsCommandList* cmdList)
+void Bullet::Draw()
 {
 	if (m_alive)
 	{
-		m_object->Draw(cmdList);
+		m_object->Draw();
 	}
 }
 
