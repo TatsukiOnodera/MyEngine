@@ -14,7 +14,6 @@
 #include "FbxObject3d.h"
 
 #include "Player.h"
-#include "Bullet.h"
 #include "Enemy.h"
 
 #include <Windows.h>
@@ -31,52 +30,49 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private: //定数
-	//デバッグテキスト用テクスチャの番号
+private: // 定数
+	// デバッグテキスト用テクスチャの番号
 	const int fontNumber = 0;
-	//シェーダーの種類
+	// シェーダーの種類
 	enum ShadersType
 	{
 		ADS, TOON, MONO, BLEND, SPECULAR
 	};
-	//壁の配置
+	// 壁の配置
 	enum WALLNUMBER
 	{
 		FRONT, BACK, RIGHT, LEFT, UP, DOWN, END
 	};
 
-private: //メモリ置き場
-	//DIrectXCommon
+private: // メモリ置き場
+	// DIrectXCommon
 	DirectXCommon* dx_cmd = nullptr;
-	//操作系
+	// 操作系
 	Input* input = nullptr;
-	//オーディオ
+	// オーディオ
 	//Audio* audio = nullptr;
-	//カメラ
+	// カメラ
 	Camera* camera = nullptr;
-	//デバッグテキスト
+	// デバッグテキスト
 	DebugText debugText;
 
-private: //インスタンス
-	//ライト
+private: // インスタンス
+	// ライト
 	std::unique_ptr<Light> light = nullptr;
-	//パーティクル
+	// パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
-	//スプライト
+	// スプライト
 	
-	//OBJオブジェクト
-	std::unique_ptr<Enemy> enemy = nullptr;
+	// OBJオブジェクト
 	std::array<std::unique_ptr<Object3d>, END> defaultWall = {};
-	std::vector< std::unique_ptr<Bullet>> enemyBullet;
-	std::vector<std::unique_ptr<Bullet>> playerBullet;
-	//FBXオブジェクト
+	std::unique_ptr<Enemy> enemy = nullptr;
+	// FBXオブジェクト
 	std::unique_ptr<Player> player = nullptr;
 
-private: //メンバ変数
-	//ショットの間隔
-	int intervalTime = 0;
+private: // メンバ変数
 
-public: //メンバ関数
+
+public: // メンバ関数
 	~GamePlayScene() override;
 
 	/// <summary>

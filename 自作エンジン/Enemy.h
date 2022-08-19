@@ -3,6 +3,9 @@
 #include <memory>
 
 #include "Object3d.h"
+#include "Bullet.h"
+
+using namespace std;
 
 class Enemy
 {
@@ -13,19 +16,34 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+public: // 静的メンバ関数
+	/// <summary>
+	/// 生成
+	/// </summary>
+	/// <returns>Enemy</returns>
+	static Enemy* Create();
+
 private: // メンバ変数
+	//Enemy
 	// オブジェクト
-	std::unique_ptr<Object3d> m_object = nullptr;
+	unique_ptr<Object3d> m_object = nullptr;
+	// 座標
+	XMFLOAT3 m_pos = { 0, 0, 50 };
 	// 移動ベクトル
 	XMFLOAT3 m_vec = { 0, 0, 0 };
 	// 生存フラグ
 	bool m_alive = false;
+	//ショットの間隔
+	int intervalTime = 0;
+
+	//Bullet
+	vector<unique_ptr<Bullet>> bullet;
 
 public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Enemy(Object3d* enemy);
+	Enemy();
 
 	/// <summary>
 	/// デストラクタ
@@ -40,12 +58,19 @@ public: // メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
+	/// <param name="playerPosition">自機の座標</param>
 	void Update(XMFLOAT3 playerPosition);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// すべて弾を使っているか
+	/// </summary>
+	/// <returns>成否</returns>
+	bool UsingAllBullet();
 
 	/// <summary>
 	/// 始点から終点への距離
@@ -59,5 +84,5 @@ public: // メンバ関数
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
-	XMFLOAT3 GetPosition() { return m_object->GetPosition(); }
+	XMFLOAT3 GetPosition() { return m_pos; }
 };

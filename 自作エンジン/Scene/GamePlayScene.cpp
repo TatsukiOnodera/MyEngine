@@ -43,12 +43,10 @@ void GamePlayScene::Initialize()
 	{
 		m.reset(Object3d::Create("Wall"));
 	}
-	enemy.reset(new Enemy(Object3d::Create("Dragon", true)));
-	enemyBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
-	playerBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
+	enemy.reset(Enemy::Create());
 
 	// FBXオブェクト
-	player.reset(new Player(FbxObject3d::CreateFBXObject("player")));
+	player.reset(Player::Create());
 
 	// オーディオ
 	//audio->Initialize();
@@ -115,95 +113,9 @@ void GamePlayScene::Update()
 #pragma region ゲームメインシステム
 	// プレイヤー
 	player->Update();
-	XMFLOAT3 pPos = player->GetPosition();
 	
 	// エネミー
-	enemy->Update(pPos);
-
-	//	 プレイヤーの発射
-	if (input->TriggerKey(DIK_RETURN))
-	{
-		bool noHit = true;
-		for (int i = 0; i < playerBullet.size(); i++)
-		{
-			if (playerBullet[i]->GetAlive() == false)
-			{
-				playerBullet[i]->SetAlive(true);
-				float s = atan2f(camera->GetEye().z - pPos.z, camera->GetEye().x - pPos.x);
-				playerBullet[i]->SetVector({ -cosf(s) * 2.0f, 0, -sinf(s) * 2.0f });
-				playerBullet[i]->SetPosition(pPos);
-				noHit = false;
-				break;
-			}
-		}
-		if (noHit)
-		{
-			playerBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
-			for (int i = 0; i < playerBullet.size(); i++)
-			{
-				if (playerBullet[i]->GetAlive() == false)
-				{
-					playerBullet[i]->SetAlive(true);
-					float s = atan2f(camera->GetEye().z - pPos.z, camera->GetEye().x - pPos.x);
-					playerBullet[i]->SetVector({ -cosf(s) * 2.0f, 0, -sinf(s) * 2.0f });
-					playerBullet[i]->SetPosition(pPos);
-					break;
-				}
-			}
-		}
-	}
-
-	// 敵の発射
-	XMFLOAT3 ePos = enemy->GetPosition();
-	intervalTime++;
-	if (intervalTime >= 120)
-	{
-		intervalTime = 0;
-		bool noHit = true;
-		for (int i = 0; i < enemyBullet.size(); i++)
-		{
-			if (enemyBullet[i]->GetAlive() == false)
-			{
-				enemyBullet[i]->SetAlive(true);
-				float s = atan2f(ePos.z - pPos.z, ePos.x - pPos.x);
-				enemyBullet[i]->SetVector({ -cosf(s), 0, -sinf(s) });
-				enemyBullet[i]->SetPosition(ePos);
-				noHit = false;
-				break;
-			}
-		}
-		if (noHit)
-		{
-			enemyBullet.emplace_back(new Bullet(Object3d::Create("Bullet", true)));
-			for (int i = 0; i < enemyBullet.size(); i++)
-			{
-				if (enemyBullet[i]->GetAlive() == false)
-				{
-					enemyBullet[i]->SetAlive(true);
-					float s = atan2f(ePos.z - pPos.z, ePos.x - pPos.x);
-					enemyBullet[i]->SetVector({ -cosf(s), 0, -sinf(s) });
-					enemyBullet[i]->SetPosition(ePos);
-					break;
-				}
-			}
-		}
-	}
-	for (auto& m : enemyBullet)
-	{
-		m->Update();
-		if (5 > Length(m->GetPosition(), pPos) && m->GetAlive())
-		{
-			m->SetAlive(false);
-		}
-	}
-	for (auto& m : playerBullet)
-	{
-		m->Update();
-		if (5 > Length(m->GetPosition(), ePos) && m->GetAlive())
-		{
-			m->SetAlive(false);
-		}
-	}
+	enemy->Update(player->GetPosition());
 
 	// カメラ
 	XMFLOAT2 angle = { 0, 0 };
@@ -216,7 +128,7 @@ void GamePlayScene::Update()
 		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
 	}
 	// 追従カメラ
-	camera->FollowUpCamera(pPos, camera->GetDistance(), angle.x, angle.y);
+	camera->FollowUpCamera(player->GetPosition(), camera->GetDistance(), angle.x, angle.y);
 
 #pragma endregion
 
@@ -265,16 +177,6 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 
 	// 敵
 	enemy->Draw();
-
-	// 弾
-	for (auto& m : enemyBullet)
-	{
-		m->Draw();
-	}
-	for (auto& m : playerBullet)
-	{
-		m->Draw();
-	}
 
 	Object3d::PostDraw();
 

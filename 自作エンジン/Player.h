@@ -5,6 +5,9 @@
 #include "Input.h"
 #include "Camera.h"
 #include "FbxObject3d.h"
+#include "Bullet.h"
+
+using namespace std;
 
 class Player
 {
@@ -21,11 +24,19 @@ private: //静的メンバ変数
 	// カメラ
 	static Camera* s_camera;
 
+public: //静的メンバ関数
+	/// <summary>
+	/// 生成
+	/// </summary>
+	/// <returns>Player</returns>
+	static Player* Create();
+
 private: // メンバ変数
+	// Player
 	// オブジェクト
-	std::unique_ptr<FbxObject3d> m_object = nullptr;
+	unique_ptr<FbxObject3d> m_object = nullptr;
 	// 座標
-	XMFLOAT3 m_pos = {};
+	XMFLOAT3 m_pos = { 0, 0, -50 };
 	// 生存フラグ
 	bool m_alive = false;
 	// 加速する
@@ -33,11 +44,14 @@ private: // メンバ変数
 	// 初期加速値
 	float m_add0 = 0;
 
+	//Bullet
+	vector<unique_ptr<Bullet>> bullet;
+
 public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Player(FbxObject3d* player);
+	Player();
 
 	/// <summary>
 	/// デストラクタ
@@ -58,6 +72,12 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// すべて弾を使っているか
+	/// </summary>
+	/// <returns>成否</returns>
+	bool UsingAllBullet();
 
 	/// <summary>
 	/// 座標を取得

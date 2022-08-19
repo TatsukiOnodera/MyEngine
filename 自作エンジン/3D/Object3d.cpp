@@ -152,6 +152,8 @@ void Object3d::Draw()
 	//更新
 	Update();
 
+	assert(s_cmdList);
+
 	//パイプラインとルートシグネチャの設定
 	s_cmdList->SetPipelineState(m_model->GetPipelineState());
 	s_cmdList->SetGraphicsRootSignature(m_model->GetRootSignature());

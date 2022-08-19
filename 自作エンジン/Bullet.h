@@ -4,6 +4,8 @@
 
 #include "Object3d.h"
 
+using namespace std;
+
 class Bullet
 {
 public: // エイリアス
@@ -13,19 +15,31 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private: //メンバ変数
-	//オブジェクト
-	std::unique_ptr<Object3d> m_object = nullptr;
-	//移動ベクトル
+public: // 静的メンバ関数
+	/// <summary>
+	/// 生成
+	/// </summary>
+	/// <param name="pos">座標</param>
+	/// <param name="vec">ベクトル</param>
+	/// <param name="alive">生存フラグ</param>
+	/// <returns>Bullet</returns>
+	static Bullet* Create(XMFLOAT3 pos, XMFLOAT3 vec, bool alive);
+
+private: // メンバ変数
+	// オブジェクト
+	unique_ptr<Object3d> m_object = nullptr;
+	// 座標
+	XMFLOAT3 m_pos = { 0, 0, 0 };
+	// 移動ベクトル
 	XMFLOAT3 m_vec = { 0, 0, 0 };
-	//生存フラグ
+	// 生存フラグ
 	bool m_alive = false;
 
-public: //メンバ関数
+public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Bullet(Object3d* bullet);
+	Bullet();
 
 	/// <summary>
 	/// デストラクタ
@@ -35,10 +49,13 @@ public: //メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	/// <param name="pos">座標</param>
+	/// <param name="vec">ベクトル</param>
+	/// <param name="alive">生存フラグ</param>
+	void Initialize(XMFLOAT3 pos, XMFLOAT3 vec, bool alive);
 
 	/// <summary>
-	/// 更新
+	///  更新
 	/// </summary>
 	void Update();
 
@@ -47,21 +64,39 @@ public: //メンバ関数
 	/// </summary>
 	void Draw();
 
-	//座標を取得
-	XMFLOAT3 GetPosition() { return m_object->GetPosition(); }
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
+	XMFLOAT3 GetPosition() { return m_pos; }
 
-	//座標をセット
+	/// <summary>
+	/// 座標をセット
+	/// </summary>
+	/// <param name="pos">座標</param>
 	void SetPosition(XMFLOAT3 pos);
 
-	//移動ベクトルを取得
+	/// <summary>
+	/// 移動ベクトルを取得
+	/// </summary>
+	/// <returns>ベクトル</returns>
 	XMFLOAT3 GetVector() { return m_vec; }
 
-	//移動ベクトルをセット
+	/// <summary>
+	/// 移動ベクトルをセット
+	/// </summary>
+	/// <param name="vec">ベクトル</param>
 	void SetVector(XMFLOAT3 vec);
 
-	//生存フラグを取得
+	/// <summary>
+	/// 生存フラグを取得
+	/// </summary>
+	/// <returns>生存フラグ</returns>
 	bool GetAlive() { return m_alive; }
 
-	//生存フラグをセット
+	/// <summary>
+	/// 生存フラグをセット
+	/// </summary>
+	/// <param name="alive">生存フラグ</param>
 	void SetAlive(bool alive);
 };

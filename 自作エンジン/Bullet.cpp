@@ -2,10 +2,9 @@
 
 using namespace DirectX;
 
-Bullet::Bullet(Object3d* bullet)
+Bullet::Bullet()
 {
-	m_object.reset(bullet);
-	Initialize();
+
 }
 
 Bullet::~Bullet()
@@ -13,32 +12,51 @@ Bullet::~Bullet()
 
 }
 
-void Bullet::Initialize()
+Bullet* Bullet::Create(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)
 {
-	m_vec = { 0, 0, 0 };
-	m_alive = false;
+	Bullet* bullet = new Bullet;
+
+	bullet->Initialize(pos, vec, alive);
+
+	return bullet;
+}
+
+void Bullet::Initialize(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)
+{
+	if (m_object == nullptr)
+	{
+		m_object.reset(Object3d::Create("Bullet", true));
+	}
+
+	m_pos = pos;
+	m_vec = vec;
+	m_alive = alive;
+
+	assert(m_object);
+	m_object->SetPosition(m_pos);
+	m_object->Update();
 }
 
 void Bullet::Update()
 {
 	if (m_alive)
 	{
-		XMFLOAT3 bPos = m_object->GetPosition();
-		bPos.x += m_vec.x;
-		bPos.y += m_vec.y;
-		bPos.z += m_vec.z;
-		m_object->SetPosition(bPos);
+		//À•W‚ÌXV
+		m_pos = m_object->GetPosition();
+		m_pos.x += m_vec.x;
+		m_pos.y += m_vec.y;
+		m_pos.z += m_vec.z;
+		m_object->SetPosition(m_pos);
 
-		if (bPos.x < -300 || 300 < bPos.x)
+		//•Ç‚Ì“–‚½‚è”»’è
+		if (m_pos.x < -100 || 100 < m_pos.x)
 		{
 			m_alive = false;
 		}
-		else if (bPos.z < -300 || 300 < bPos.z)
+		else if (m_pos.z < -100 || 100 < m_pos.z)
 		{
 			m_alive = false;
 		}
-
-		m_object->Update();
 	}
 }
 
@@ -52,7 +70,7 @@ void Bullet::Draw()
 
 void Bullet::SetPosition(XMFLOAT3 pos)
 {
-	m_object->SetPosition(pos);
+	m_pos = pos;
 }
 
 void Bullet::SetVector(XMFLOAT3 vec)
