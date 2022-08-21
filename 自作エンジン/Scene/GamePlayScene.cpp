@@ -18,15 +18,16 @@ void GamePlayScene::Initialize()
 	input = Input::GetInstance();
 	//audio = Audio::GetInstance();
 	camera = Camera::GetInstance();
-	
+
 	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/background.png");
+	Sprite::LoadTexture(2, L"Resources/Reticle.png");
 
 	// ライト生成
 	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
-	light->SetLightDir({-5, -5, 0, 0});
+	light->SetLightDir({ -5, -5, 0, 0 });
 	Object3d::SetLight(light.get());
 
 	// 前景スプライト
@@ -36,7 +37,7 @@ void GamePlayScene::Initialize()
 	particle.reset(ParticleManager::Create("Default/effect1.png"));
 
 	// スプライト
-
+	sight.reset(Sprite::Create(2, { 0.0f, 0.0f }, { 0.5f, 0.5f }));
 
 	// OBJオブジェクト
 	for (auto& m : defaultWall)
@@ -112,10 +113,19 @@ void GamePlayScene::Update()
 {
 #pragma region ゲームメインシステム
 	// プレイヤー
-	player->Update();
+	if (player->Update(enemy->GetPosition()))
+	{
+		enemy->SetEffectTimer();
+	}
 	
 	// エネミー
-	enemy->Update(player->GetPosition());
+	if (enemy->Update(player->GetPosition()))
+	{
+		player->SetEffectTimer();
+	}
+
+	//サイト
+	sight->SetPosition(camera->Convert3Dto2D(enemy->GetPosition()));
 
 	// カメラ
 	XMFLOAT2 angle = { 0, 0 };
@@ -149,7 +159,7 @@ void GamePlayScene::Draw()
 	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
 	DrawEffect(cmdList);
-	//DrawUI(cmdList);
+	DrawUI(cmdList);
 	DrawDebugText(cmdList);
 }
 
@@ -201,7 +211,11 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 	// UI描画
 	Sprite::PreDraw(cmdList);
 
-	
+	//サイト
+	if (Length(enemy->GetPosition(), player->GetPosition()) < 90)
+	{
+		sight->Draw();
+	}
 
 	Sprite::PostDraw();
 }
@@ -224,7 +238,7 @@ void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 
 const float GamePlayScene::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 {
-	XMFLOAT3 len = {pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z};
+	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
 
 	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
 }

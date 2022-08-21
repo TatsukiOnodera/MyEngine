@@ -152,6 +152,7 @@ void Object3d::Draw()
 	//更新
 	Update();
 
+	//NULLチェック
 	assert(s_cmdList);
 
 	//パイプラインとルートシグネチャの設定

@@ -356,6 +356,9 @@ void FbxObject3d::Draw()
 	//更新
 	Update();
 
+	//NULLチェック
+	assert(cmdList);
+
 	//パイプラインとルートシグネチャの設定
 	cmdList->SetPipelineState(pipelinestate.Get());
 	cmdList->SetGraphicsRootSignature(rootsignature.Get());

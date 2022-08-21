@@ -59,7 +59,7 @@ public: //静的関数
 	static void PostDraw();
 
 	//スプライト作成
-	static Sprite* CreateSprite(UINT texNumber, XMFLOAT2 anchorpoint = {0.0f, 0.0f});
+	static Sprite* Create(UINT texNumber, XMFLOAT2 texLeftTop = { 0, 0 }, XMFLOAT2 anchorpoint = { 0.0f, 0.0f }, bool isFilpX = false, bool isFilpY = false, bool isInvisible = false);
 
 protected: //サブクラス
 	//定数バッファ用データ構造体
@@ -88,7 +88,7 @@ protected: //メンバ変数
 	//テクスチャ番号
 	UINT texNumber = 0;
 	//座標
-	XMFLOAT3 position = { 0, 0, 0 };
+	XMFLOAT2 position = { 0, 0 };
 	//色
 	XMFLOAT4 color = { 1, 1, 1, 1 };
 	//大きさ
@@ -115,13 +115,13 @@ public: //アクセッサ
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
-	XMFLOAT3 GetPostion() { return position; }
+	XMFLOAT2 GetPostion() { return position; }
 
 	/// <summary>
 	/// 座標をセット	
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(XMFLOAT3 position);
+	void SetPosition(XMFLOAT2 position);
 
 	/// <summary>
 	/// 色を取得
@@ -174,7 +174,7 @@ public: //アクセッサ
 
 public: //メンバ関数
 	//コンストラクタ
-	Sprite(XMFLOAT2 size, UINT texNumber, XMFLOAT2 anchorpoint);
+	Sprite(XMFLOAT2 size, UINT texNumber, XMFLOAT2 texLeftTop, XMFLOAT2 anchorpoint, bool isFilpX, bool isFilpY, bool isInvisible);
 
 	/// <summary>
 	/// 初期化

@@ -272,7 +272,7 @@ void Sprite::PostDraw()
 	cmdList = nullptr;
 }
 
-Sprite *Sprite::CreateSprite(UINT texNumber, XMFLOAT2 anchorpoint)
+Sprite *Sprite::Create(UINT texNumber, XMFLOAT2 texLeftTop, XMFLOAT2 anchorpoint, bool isFilpX, bool isFilpY, bool isInvisible)
 {
 	XMFLOAT2 size = {10, 10};
 
@@ -285,7 +285,7 @@ Sprite *Sprite::CreateSprite(UINT texNumber, XMFLOAT2 anchorpoint)
 	}
 
 	///新しいスプライトを作る
-	Sprite *sprite = new Sprite(size, texNumber, anchorpoint);
+	Sprite *sprite = new Sprite(size, texNumber, texLeftTop, anchorpoint, isFilpX, isFilpY, isInvisible);
 
 	sprite->Initialize();
 
@@ -299,11 +299,16 @@ void Sprite::SetInvisible(bool isInvisible)
 	this->isInvisible = isInvisible;
 }
 
-Sprite::Sprite(XMFLOAT2 size, UINT texNumber, XMFLOAT2 anchorpoint)
+Sprite::Sprite(XMFLOAT2 size, UINT texNumber, XMFLOAT2 texLeftTop, XMFLOAT2 anchorpoint, bool isFilpX, bool isFilpY, bool isInvisible)
 {
 	this->size = size;
 	this->texNumber = texNumber;
+	this->texLeftTop = texLeftTop;
+	this->anchorpoint = anchorpoint;
 	this->texSize = size;
+	this->isFilpX = isFilpX;
+	this->isFilpY = isFilpY;
+	this->isInvisible = isInvisible;
 	this->matWorld = XMMatrixIdentity();
 }
 
@@ -353,7 +358,7 @@ void Sprite::Update()
 	//Z軸回転
 	matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation));
 	//平行移動
-	matWorld *= XMMatrixTranslation(position.x, position.y, position.z);
+	matWorld *= XMMatrixTranslation(position.x, position.y, 0);
 
 	//定数バッファの転送
 	ConstBufferData* constMap = nullptr;
@@ -419,10 +424,10 @@ void Sprite::SpriteTransferVertexBuffer()
 	// 頂点データ
 	VertexPosUv vertices[vertNum];
 
-	vertices[LB].pos = { left,	bottom,	0.0f }; // 左下
-	vertices[LT].pos = { left,	top,	0.0f }; // 左上
-	vertices[RB].pos = { right,	bottom,	0.0f }; // 右下
-	vertices[RT].pos = { right,	top,	0.0f }; // 右上
+	vertices[LB].pos = { left, bottom, 0.0f }; // 左下
+	vertices[LT].pos = { left, top, 0.0f }; // 左上
+	vertices[RB].pos = { right, bottom, 0.0f }; // 右下
+	vertices[RT].pos = { right, top, 0.0f }; // 右上
 
 	// テクスチャ情報取得
 	if (texBuff[texNumber])
@@ -447,7 +452,7 @@ void Sprite::SpriteTransferVertexBuffer()
 	vertBuff->Unmap(0, nullptr);
 }
 
-void Sprite::SetPosition(XMFLOAT3 position)
+void Sprite::SetPosition(XMFLOAT2 position)
 {
 	this->position = position;
 

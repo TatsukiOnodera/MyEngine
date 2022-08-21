@@ -34,7 +34,7 @@ void Enemy::Initialize()
 	m_object->Update();
 }
 
-void Enemy::Update(XMFLOAT3 playerPosition)
+bool Enemy::Update(XMFLOAT3 playerPosition)
 {
 	if (m_alive)
 	{
@@ -45,7 +45,7 @@ void Enemy::Update(XMFLOAT3 playerPosition)
 		m_object->SetPosition(m_pos);
 
 		//Ž©‹@‚Æ‚Ì‹——£
-		if (60 > Length(m_pos, playerPosition))
+		if (30 > Length(m_pos, playerPosition))
 		{
 			if (m_pos.x - playerPosition.x > 0)
 			{
@@ -84,14 +84,29 @@ void Enemy::Update(XMFLOAT3 playerPosition)
 		}
 
 		//’e‚Ì”­ŽË
-		intervalTime++;
+		if (effectTimer == 0)
+		{
+			intervalTime++;
+		}
+		else
+		{
+			effectTimer++;
+		}
 		if (intervalTime > 120)
 		{
 			intervalTime = 0;
+			float bulletSpeed = 3;
 			//‚·‚×‚ÄŽg‚í‚ê‚Ä‚¢‚é‚©
 			if (UsingAllBullet())
 			{
-				bullet.emplace_back(Bullet::Create(m_pos, { 0, 0, -1 }, true));
+				XMFLOAT3 len = { playerPosition.x - m_pos.x, playerPosition.y - m_pos.y, playerPosition.z - m_pos.z };
+				len.x /= Length(playerPosition, m_pos);
+				len.y /= Length(playerPosition, m_pos);
+				len.z /= Length(playerPosition, m_pos);
+				len.x *= bulletSpeed;
+				len.y *= bulletSpeed;
+				len.z *= bulletSpeed;
+				bullet.emplace_back(Bullet::Create(m_pos, len, true));
 			} 
 			else
 			{
@@ -99,7 +114,14 @@ void Enemy::Update(XMFLOAT3 playerPosition)
 				{
 					if (m->GetAlive() == false)
 					{
-						m->Initialize(m_pos, { 0, 0, -1 }, true);
+						XMFLOAT3 len = { playerPosition.x - m_pos.x, playerPosition.y - m_pos.y, playerPosition.z - m_pos.z };
+						len.x /= Length(playerPosition, m_pos);
+						len.y /= Length(playerPosition, m_pos);
+						len.z /= Length(playerPosition, m_pos);
+						len.x *= bulletSpeed;
+						len.y *= bulletSpeed;
+						len.z *= bulletSpeed;
+						m->Initialize(m_pos, len, true);
 						break;
 					}
 				}
@@ -107,17 +129,31 @@ void Enemy::Update(XMFLOAT3 playerPosition)
 		}
 
 		//’e‚ÌXV
+		bool f = false;
 		for (auto& m : bullet)
 		{
-			m->Update();
+			if (m->Update(playerPosition))
+			{
+				f = true;
+			}
 		}
+
+		return f;
+	}
+	else
+	{
+		return false;
 	}
 }
 
 void Enemy::Draw()
 {
-	if (m_alive)
+	if (m_alive && effectTimer % 5 == 0)
 	{
+		if (effectTimer > 60)
+		{
+			effectTimer = 0;
+		}
 		m_object->Draw();
 	}
 	for (const auto& m : bullet)
@@ -144,4 +180,9 @@ const float Enemy::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
 
 	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
+}
+
+void Enemy::SetEffectTimer()
+{
+	effectTimer = 1;
 }

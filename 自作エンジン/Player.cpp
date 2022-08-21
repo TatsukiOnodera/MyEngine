@@ -38,7 +38,7 @@ void Player::Initialize()
 	m_object->Update();
 }
 
-void Player::Update()
+bool Player::Update(XMFLOAT3 enemyPos)
 {
 	if (m_alive)
 	{
@@ -86,12 +86,20 @@ void Player::Update()
 		m_object->SetPosition(m_pos);
 
 		//’e‚Ì”­ŽË
-		if (s_input->TriggerKey(DIK_RETURN))
+		if (s_input->TriggerKey(DIK_RETURN) && Length(enemyPos, m_pos) < 90 && effectTimer == 0)
 		{
+			float bulletSpeed = 6;
 			//‚·‚×‚ÄŽg‚í‚ê‚Ä‚¢‚é‚©
 			if (UsingAllBullet())
 			{
-				bullet.emplace_back(Bullet::Create(m_pos, { 0, 0, 1 }, true));
+				XMFLOAT3 len = { enemyPos.x - m_pos.x, enemyPos.y - m_pos.y, enemyPos.z - m_pos.z };
+				len.x /= Length(enemyPos, m_pos);
+				len.y /= Length(enemyPos, m_pos);
+				len.z /= Length(enemyPos, m_pos);
+				len.x *= bulletSpeed;
+				len.y *= bulletSpeed;
+				len.z *= bulletSpeed;
+				bullet.emplace_back(Bullet::Create(m_pos, len, true));
 			}
 			else
 			{
@@ -99,25 +107,56 @@ void Player::Update()
 				{
 					if (m->GetAlive() == false)
 					{
-						m->Initialize(m_pos, { 0, 0, 1 }, true);
+						XMFLOAT3 len = { enemyPos.x - m_pos.x, enemyPos.y - m_pos.y, enemyPos.z - m_pos.z };
+						len.x /= Length(enemyPos, m_pos);
+						len.y /= Length(enemyPos, m_pos);
+						len.z /= Length(enemyPos, m_pos);
+						len.x *= bulletSpeed;
+						len.y *= bulletSpeed;
+						len.z *= bulletSpeed;
+						m->Initialize(m_pos, len, true);
 						break;
 					}
 				}
 			}
 		}
+		else if (effectTimer > 0)
+		{
+			effectTimer++;
+		}
+
+		//Žp¨§Œä
+		XMFLOAT3 rot = {};
+		rot.x = -90;
+		rot.y += Camera::GetInstance()->GetAngle().y;
+		m_object->SetRotation(rot);
 
 		//’e‚ÌXV
+		bool f = false;
 		for (auto& m : bullet)
 		{
-			m->Update();
+			if (m->Update(enemyPos))
+			{
+				f = true;
+			}
 		}
+
+		return f;
+	}
+	else
+	{
+		return false;
 	}
 }
 
 void Player::Draw()
 {
-	if (m_alive)
+	if (m_alive && effectTimer % 5 == 0)
 	{
+		if (effectTimer > 60)
+		{
+			effectTimer = 0;
+		}
 		m_object->Draw();
 	}
 
@@ -142,4 +181,16 @@ bool Player::UsingAllBullet()
 	}
 
 	return true;
+}
+
+const float Player::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
+{
+	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
+
+	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
+}
+
+void Player::SetEffectTimer()
+{
+	effectTimer = 1;
 }

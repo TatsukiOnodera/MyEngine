@@ -1,41 +1,49 @@
 #include "Camera.h"
+#include "WinApp.h"
 
 using namespace DirectX;
 
 Camera* Camera::GetInstance()
 {
 	static Camera camera;
+
 	return &camera;
 }
 
-void Camera::Initialize(int window_width, int window_height)
+Camera::Camera()
+{
+
+}
+
+Camera::~Camera()
+{
+
+}
+
+void Camera::Initialize()
 {
 	//ビルボード行列初期化
-	matBillboard = XMMatrixIdentity();
-	matBillboardY = XMMatrixIdentity();
+	m_matBillboard = XMMatrixIdentity();
+	m_matBillboardY = XMMatrixIdentity();
 
 	// ビュー行列の生成
-	dirty = true;
+	m_dirty = true;
 	Update();
 
 	// 透視投影による射影行列の生成
-	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
-		(float)window_width / window_height,
-		0.1f, 1000.0f
-	);
+	UpdateMatProjection();
 }
 
 void Camera::Update()
 {
-	if (dirty == true)
+	if (m_dirty == true)
 	{
 		//視点
-		XMVECTOR eyePosition = XMLoadFloat3(&eye);
+		XMVECTOR eyePosition = XMLoadFloat3(&m_eye);
 		//注視点
-		XMVECTOR targetPosition = XMLoadFloat3(&target);
+		XMVECTOR targetPosition = XMLoadFloat3(&m_target);
 		//上方向
-		XMVECTOR upVector = XMLoadFloat3(&up);
+		XMVECTOR upVector = XMLoadFloat3(&m_up);
 
 		//カメラZ軸
 		XMVECTOR cameraAxisZ = XMVectorSubtract(targetPosition, eyePosition);
@@ -71,7 +79,7 @@ void Camera::Update()
 		matCameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
 
 		//転置により逆行列を計算
-		matView = XMMatrixTranspose(matCameraRot);
+		m_matView = XMMatrixTranspose(matCameraRot);
 
 		//視点座標に-1をかけた座標
 		XMVECTOR reverseEyePosition = XMVectorNegate(eyePosition);
@@ -83,13 +91,13 @@ void Camera::Update()
 		XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
 
 		//ビュー行列に平行移動成分を設定
-		matView.r[3] = translation;
+		m_matView.r[3] = translation;
 
 		//ビルボード行列
-		matBillboard.r[0] = cameraAxisX;
-		matBillboard.r[1] = cameraAxisY;
-		matBillboard.r[2] = cameraAxisZ;
-		matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
+		m_matBillboard.r[0] = cameraAxisX;
+		m_matBillboard.r[1] = cameraAxisY;
+		m_matBillboard.r[2] = cameraAxisZ;
+		m_matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
 
 		//カメラX軸、Y軸、Z軸
 		XMVECTOR ybillCameraAxisX, ybillCameraAxisY, ybillCameraAxisZ;
@@ -102,75 +110,97 @@ void Camera::Update()
 		ybillCameraAxisZ = XMVector3Cross(ybillCameraAxisX, ybillCameraAxisY);
 
 		//Y軸回りビルボード行列
-		matBillboardY.r[0] = ybillCameraAxisX;
-		matBillboardY.r[1] = ybillCameraAxisY;
-		matBillboardY.r[2] = ybillCameraAxisZ;
-		matBillboardY.r[3] = XMVectorSet(0, 0, 0, 1);
+		m_matBillboardY.r[0] = ybillCameraAxisX;
+		m_matBillboardY.r[1] = ybillCameraAxisY;
+		m_matBillboardY.r[2] = ybillCameraAxisZ;
+		m_matBillboardY.r[3] = XMVectorSet(0, 0, 0, 1);
 
-		dirty = false;
-		isDirty = true;
+		m_dirty = false;
+		m_isDirty = true;
 	}
 	else
 	{
-		isDirty = false;
+		m_isDirty = false;
 	}
+}
+
+void Camera::UpdateMatProjection()
+{
+	// 最近値より最遠値が小さければ止める
+	assert(m_nearZ < m_farZ);
+
+	// 透視投影による射影行列の更新
+	m_matProjection = XMMatrixPerspectiveFovLH(
+		XMConvertToRadians(60.0f),
+		(float)WinApp::window_width / WinApp::window_height,
+		m_nearZ, m_farZ);
 }
 
 void Camera::SetEye(XMFLOAT3 eye)
 {
-	this->eye = eye;
+	this->m_eye = eye;
 
-	dirty = true;
+	m_dirty = true;
 }
 
 void Camera::SetTarget(XMFLOAT3 target)
 {
-	this->target = target;
-	dirty = true;
+	this->m_target = target;
+	m_dirty = true;
 }
 
 void Camera::SetUp(XMFLOAT3 up)
 {
-	this->up = up;
+	this->m_up = up;
 
-	dirty = true;
+	m_dirty = true;
 }
 
 void Camera::SetDistance()
 {
-	distance.x = eye.x - target.x;
-	distance.y = eye.y - target.y;
-	distance.z = eye.z - target.z;
+	m_distance.x = m_eye.x - m_target.x;
+	m_distance.y = m_eye.y - m_target.y;
+	m_distance.z = m_eye.z - m_target.z;
+}
+
+void Camera::SetNearFarZ(float nearZ, float farZ)
+{
+	this->m_nearZ = nearZ;
+	this->m_farZ = farZ;
+
+	UpdateMatProjection();
+
+	m_dirty = true;
 }
 
 void Camera::MoveCamera(XMFLOAT3 move)
 {
-	this->eye.x += move.x;
-	this->eye.y += move.y;
-	this->eye.z += move.z;
-	this->target.x += move.x;
-	this->target.y += move.y;
-	this->target.z += move.z;
+	this->m_eye.x += move.x;
+	this->m_eye.y += move.y;
+	this->m_eye.z += move.z;
+	this->m_target.x += move.x;
+	this->m_target.y += move.y;
+	this->m_target.z += move.z;
 
-	dirty = true;
+	m_dirty = true;
 }
 
-void Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY)
+void Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, float addAngleY)
 {
 	//注視点セット
 	SetTarget(target);
 
 	//オフセットベクトル
-	XMVECTOR v0 = { eye.x, eye.y, eye.z, 0 };
+	XMVECTOR v0 = { eyeDistance.x, eyeDistance.y, eyeDistance.z, 0 };
 
 	//軸の角度に加算する
-	angleX += addAngleX;
-	angleY += addAngleY;
+	m_angleX += addAngleX;
+	m_angleY += addAngleY;
 
 	//回転行列
 	XMMATRIX rotM = XMMatrixIdentity();
-	rotM *= XMMatrixRotationX(XMConvertToRadians(angleX));
-	rotM *= XMMatrixRotationY(XMConvertToRadians(angleY));
+	rotM *= XMMatrixRotationX(XMConvertToRadians(m_angleX));
+	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angleY));
 
 	//注視点から始点へのベクトルを求める
 	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
@@ -189,13 +219,49 @@ XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec)
 
 	//回転行列
 	XMMATRIX rotM = XMMatrixIdentity();
-	rotM *= XMMatrixRotationY(XMConvertToRadians(angleY));
+	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angleY));
 
 	//正面をもとに移動したベクトルの向きを出す
 	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
 
 	//元の座標に移動したベクトルを足す
 	XMFLOAT3 position = { pos.x + V.m128_f32[0], pos.y + V.m128_f32[1], pos.z + V.m128_f32[2] };
+
+	return position;
+}
+
+XMFLOAT2 Camera::Convert3Dto2D(XMFLOAT3 pos)
+{
+	XMMATRIX view = m_matView;
+	XMMATRIX proj = m_matProjection;
+
+	// ビューポート行列（スクリーン行列）の作成
+	float w = (float)WinApp::window_width / 2.0f;
+	float h = (float)WinApp::window_height / 2.0f;
+
+	XMMATRIX viewport = {
+		w, 0, 0, 0,
+		0, -h, 0, 0,
+		0, 0, 1, 0,
+		w, h, 0, 1
+	};
+
+	XMVECTOR screenPos, tmp;
+	tmp.m128_f32[0] = pos.x;
+	tmp.m128_f32[1] = pos.y;
+	tmp.m128_f32[2] = pos.z;
+	tmp.m128_f32[3] = 1;
+
+	tmp = XMVector3Transform(tmp, view);
+	tmp = XMVector3Transform(tmp, proj);
+
+	tmp.m128_f32[0] /= tmp.m128_f32[2];
+	tmp.m128_f32[1] /= tmp.m128_f32[2];
+	tmp.m128_f32[2] /= tmp.m128_f32[2];
+
+	screenPos = XMVector3Transform(tmp, viewport);
+
+	XMFLOAT2 position = { screenPos.m128_f32[0], screenPos.m128_f32[1] };
 
 	return position;
 }

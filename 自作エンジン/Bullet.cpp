@@ -37,7 +37,7 @@ void Bullet::Initialize(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)
 	m_object->Update();
 }
 
-void Bullet::Update()
+bool Bullet::Update(XMFLOAT3 pos)
 {
 	if (m_alive)
 	{
@@ -57,7 +57,16 @@ void Bullet::Update()
 		{
 			m_alive = false;
 		}
+
+		if (Length(pos, m_pos) < 3)
+		{
+			m_alive = false;
+
+			return true;
+		}
 	}
+
+	return false;
 }
 
 void Bullet::Draw()
@@ -66,6 +75,13 @@ void Bullet::Draw()
 	{
 		m_object->Draw();
 	}
+}
+
+const float Bullet::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
+{
+	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
+
+	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
 }
 
 void Bullet::SetPosition(XMFLOAT3 pos)

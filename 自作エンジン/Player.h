@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "FbxObject3d.h"
 #include "Bullet.h"
+#include "Enemy.h"
 
 using namespace std;
 
@@ -17,6 +18,7 @@ public: // エイリアス
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
+	using XMVECTOR = DirectX::XMVECTOR;
 
 private: //静的メンバ変数
 	// 操作系
@@ -43,8 +45,11 @@ private: // メンバ変数
 	bool m_isDash = false;
 	// 初期加速値
 	float m_add0 = 0;
+	//エフェクトタイマー
+	int effectTimer = 0;
 
-	//Bullet
+	// Bullet
+	// オブジェクト
 	vector<unique_ptr<Bullet>> bullet;
 
 public: // メンバ関数
@@ -66,7 +71,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	bool Update(XMFLOAT3 enemyPos);
 
 	/// <summary>
 	/// 描画
@@ -80,8 +85,19 @@ public: // メンバ関数
 	bool UsingAllBullet();
 
 	/// <summary>
+	/// 始点から終点への距離
+	/// </summary>
+	/// <param name="pos1">終点</param>
+	/// <param name="pos2">始点</param>
+	/// <returns>二点間の距離</returns>
+	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2);
+
+public: // アクセッサ
+	/// <summary>
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
 	XMFLOAT3 GetPosition() { return m_pos; }
+
+	void SetEffectTimer();
 };

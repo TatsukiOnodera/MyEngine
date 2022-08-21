@@ -35,7 +35,7 @@ void FrameWork::Initialize()
 	input->Initialize(win);
 
 	//ƒJƒƒ‰‰Šú‰»
-	Camera::GetInstance()->Initialize(WinApp::window_width, WinApp::window_height);
+	Camera::GetInstance()->Initialize();
 
 	// DirectX‰Šú‰»ˆ—
 	dx_cmd = DirectXCommon::GetInstance();

@@ -3,9 +3,8 @@
 #include <memory>
 
 #include "Object3d.h"
+#include "Player.h"
 #include "Bullet.h"
-
-using namespace std;
 
 class Enemy
 {
@@ -26,7 +25,7 @@ public: // 静的メンバ関数
 private: // メンバ変数
 	//Enemy
 	// オブジェクト
-	unique_ptr<Object3d> m_object = nullptr;
+	std::unique_ptr<Object3d> m_object = nullptr;
 	// 座標
 	XMFLOAT3 m_pos = { 0, 0, 50 };
 	// 移動ベクトル
@@ -35,9 +34,11 @@ private: // メンバ変数
 	bool m_alive = false;
 	//ショットの間隔
 	int intervalTime = 0;
+	//エフェクトタイマー
+	int effectTimer = 0;
 
 	//Bullet
-	vector<unique_ptr<Bullet>> bullet;
+	vector<std::unique_ptr<Bullet>> bullet;
 
 public: // メンバ関数
 	/// <summary>
@@ -59,7 +60,7 @@ public: // メンバ関数
 	/// 更新
 	/// </summary>
 	/// <param name="playerPosition">自機の座標</param>
-	void Update(XMFLOAT3 playerPosition);
+	bool Update(XMFLOAT3 playerPosition);
 
 	/// <summary>
 	/// 描画
@@ -80,9 +81,12 @@ public: // メンバ関数
 	/// <returns>二点間の距離</returns>
 	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2);
 
+public: //アクセッサ
 	/// <summary>
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
 	XMFLOAT3 GetPosition() { return m_pos; }
+
+	void SetEffectTimer();
 };
