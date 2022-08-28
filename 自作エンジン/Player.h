@@ -71,12 +71,16 @@ public: // メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	bool Update(XMFLOAT3 enemyPos);
+	void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	bool bulletUpdate(XMFLOAT3 enemyPos);
+
+	void ShotBullet(XMFLOAT3 enemyPos);
 
 	/// <summary>
 	/// すべて弾を使っているか

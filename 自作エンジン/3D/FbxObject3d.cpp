@@ -17,7 +17,7 @@ FbxLoader* FbxObject3d::fbxLoader = nullptr;
 
 FbxObject3d::~FbxObject3d()
 {
-	fbxLoader->Finalize();
+
 }
 
 FbxObject3d* FbxObject3d::GetInstance()

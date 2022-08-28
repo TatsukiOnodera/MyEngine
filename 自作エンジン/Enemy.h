@@ -88,5 +88,7 @@ public: //アクセッサ
 	/// <returns>座標</returns>
 	XMFLOAT3 GetPosition() { return m_pos; }
 
+	bool GetAlive() { return m_alive; }
+
 	void SetEffectTimer();
 };

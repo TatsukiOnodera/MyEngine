@@ -230,11 +230,8 @@ XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec)
 	return position;
 }
 
-XMFLOAT2 Camera::Convert3Dto2D(XMFLOAT3 pos)
+XMFLOAT2 Camera::Convert3DPosTo2DPos(XMFLOAT3 pos)
 {
-	XMMATRIX view = m_matView;
-	XMMATRIX proj = m_matProjection;
-
 	// ビューポート行列（スクリーン行列）の作成
 	float w = (float)WinApp::window_width / 2.0f;
 	float h = (float)WinApp::window_height / 2.0f;
@@ -246,19 +243,20 @@ XMFLOAT2 Camera::Convert3Dto2D(XMFLOAT3 pos)
 		w, h, 0, 1
 	};
 
-	XMVECTOR screenPos, tmp;
+	XMVECTOR tmp;
 	tmp.m128_f32[0] = pos.x;
 	tmp.m128_f32[1] = pos.y;
 	tmp.m128_f32[2] = pos.z;
 	tmp.m128_f32[3] = 1;
 
-	tmp = XMVector3Transform(tmp, view);
-	tmp = XMVector3Transform(tmp, proj);
+	tmp = XMVector3Transform(tmp, m_matView);
+	tmp = XMVector3Transform(tmp, m_matProjection);
 
 	tmp.m128_f32[0] /= tmp.m128_f32[2];
 	tmp.m128_f32[1] /= tmp.m128_f32[2];
 	tmp.m128_f32[2] /= tmp.m128_f32[2];
 
+	XMVECTOR screenPos;
 	screenPos = XMVector3Transform(tmp, viewport);
 
 	XMFLOAT2 position = { screenPos.m128_f32[0], screenPos.m128_f32[1] };

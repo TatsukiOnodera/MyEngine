@@ -108,7 +108,7 @@ void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, floa
 	/// </summary>
 	/// <param name="pos">3D座標</param>
 	/// <returns>2D座標</returns>
-	XMFLOAT2 Convert3Dto2D(XMFLOAT3 pos);
+	XMFLOAT2 Convert3DPosTo2DPos(XMFLOAT3 pos);
 
 public: //アクセッサ
 	/// <summary>

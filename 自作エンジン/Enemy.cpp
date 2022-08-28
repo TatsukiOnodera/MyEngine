@@ -21,11 +21,15 @@ Enemy* Enemy::Create()
 
 void Enemy::Initialize()
 {
-	m_object.reset(Object3d::Create("Dragon", true));
+	if (m_object == nullptr)
+	{
+		m_object.reset(Object3d::Create("Dragon", true));
+	}
 
-	m_vec = { static_cast<float>(rand() % 101 - 50) / 100, 0, static_cast<float>(rand() % 101 - 50) / 100 };
-
+	m_vec = { static_cast<float>(rand() % 101 - 50) / 100, -0.98f, static_cast<float>(rand() % 101 - 50) / 100 };
 	m_alive = true;
+	intervalTime = (rand() % 4 + 1) * 30;
+	effectTimer = 0;
 
 	assert(m_object);
 	m_object->SetPosition(m_pos);
@@ -36,7 +40,7 @@ void Enemy::Initialize()
 
 bool Enemy::Update(XMFLOAT3 playerPosition)
 {
-	if (m_alive)
+	if (m_alive && m_pos.y == -100)
 	{
 		//ベクトルの加算
 		m_pos = m_object->GetPosition();
@@ -95,7 +99,7 @@ bool Enemy::Update(XMFLOAT3 playerPosition)
 		if (intervalTime > 120)
 		{
 			intervalTime = 0;
-			float bulletSpeed = 3;
+			float bulletSpeed = 2;
 			//すべて使われているか
 			if (UsingAllBullet())
 			{
@@ -140,6 +144,18 @@ bool Enemy::Update(XMFLOAT3 playerPosition)
 
 		return f;
 	}
+	else if (m_pos.y > -100)
+	{
+		m_pos = m_object->GetPosition();
+		m_pos.y += m_vec.y;
+		if (m_pos.y < -100)
+		{
+			m_pos.y = -100;
+		}
+		m_object->SetPosition(m_pos);
+
+		return false;
+	}
 	else
 	{
 		return false;
@@ -152,7 +168,8 @@ void Enemy::Draw()
 	{
 		if (effectTimer > 60)
 		{
-			effectTimer = 0;
+			Initialize();
+			m_alive = false;
 		}
 		m_object->Draw();
 	}

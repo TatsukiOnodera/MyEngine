@@ -65,12 +65,17 @@ private: // インスタンス
 	std::unique_ptr<Sprite> sight = nullptr;
 	// OBJオブジェクト
 	std::array<std::unique_ptr<Object3d>, END> defaultWall = {};
-	std::unique_ptr<Enemy> enemy = nullptr;
+	std::vector<std::unique_ptr<Enemy>> enemy;
 	// FBXオブジェクト
 	std::unique_ptr<Player> player = nullptr;
 
 private: // メンバ変数
-
+	//標的番号
+	int targetNum;
+	//標的リスト
+	std::vector<int> targetList;
+	//リスト番号
+	int listNum;
 
 public: // メンバ関数
 	~GamePlayScene() override;

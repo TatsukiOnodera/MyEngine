@@ -44,7 +44,10 @@ void GamePlayScene::Initialize()
 	{
 		m.reset(Object3d::Create("Wall"));
 	}
-	enemy.reset(Enemy::Create());
+	for (int i = 0; i < 6; i++)
+	{
+		enemy.emplace_back(Enemy::Create());
+	}
 
 	// FBXオブェクト
 	player.reset(Player::Create());
@@ -107,25 +110,70 @@ void GamePlayScene::InitializeVariable()
 	camera->SetEye({ 0, 1, -5 });
 	camera->SetDistance();
 	camera->Update();
+
+	targetNum = 0;
+	listNum = 0;
 }
 
 void GamePlayScene::Update()
 {
 #pragma region ゲームメインシステム
 	// プレイヤー
-	if (player->Update(enemy->GetPosition()))
+	player->Update();
+	targetList.clear();
+	for (int i = 0; i < enemy.size(); i++)
 	{
-		enemy->SetEffectTimer();
+		if (Length(enemy[i]->GetPosition(), player->GetPosition()) < 90 && enemy[i]->GetAlive())
+		{
+			targetList.emplace_back(i);
+		}
+	}
+	if (input->TriggerKey(DIK_P) || input->TriggerKey(DIK_O))
+	{
+		listNum += input->TriggerKey(DIK_P) - input->TriggerKey(DIK_O);
+	}
+	if (listNum >= targetList.size())
+	{
+		listNum = 0;
+	}
+	if (targetList.size() > 0)
+	{
+		targetNum = targetList[listNum];
+	}
+	player->ShotBullet(enemy[targetNum]->GetPosition());
+	for (auto& m : enemy)
+	{
+		if (player->bulletUpdate(m->GetPosition()))
+		{
+			m->SetEffectTimer();
+		}
 	}
 	
 	// エネミー
-	if (enemy->Update(player->GetPosition()))
+	for (auto& m : enemy)
 	{
-		player->SetEffectTimer();
+		if (m->Update(player->GetPosition()))
+		{
+			player->SetEffectTimer();
+		}
+	}
+
+	bool isEnd = true;
+	for (auto& m : enemy)
+	{
+		if (m->GetAlive())
+		{
+			isEnd = false;
+		}
+	}
+	if (isEnd)
+	{
+		//シーン切り替え
+		SceneManager::GetInstance()->ChangeScene("END");
 	}
 
 	//サイト
-	sight->SetPosition(camera->Convert3Dto2D(enemy->GetPosition()));
+	sight->SetPosition(camera->Convert3DPosTo2DPos(enemy[targetNum]->GetPosition()));
 
 	// カメラ
 	XMFLOAT2 angle = { 0, 0 };
@@ -186,7 +234,10 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	}
 
 	// 敵
-	enemy->Draw();
+	for (auto& m : enemy)
+	{
+		m->Draw();
+	}
 
 	Object3d::PostDraw();
 
@@ -212,7 +263,7 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 	Sprite::PreDraw(cmdList);
 
 	//サイト
-	if (Length(enemy->GetPosition(), player->GetPosition()) < 90)
+	if (Length(enemy[targetNum]->GetPosition(), player->GetPosition()) < 90 && enemy[targetNum]->GetAlive())
 	{
 		sight->Draw();
 	}
