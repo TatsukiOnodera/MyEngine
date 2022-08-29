@@ -14,7 +14,7 @@
 #include "BaseScene.h"
 #include <memory>
 
-class TitleScene : public BaseScene
+class EndScene : public BaseScene
 {
 public: // エイリアス
 	// Microsoft::WRL::を省略
@@ -40,13 +40,13 @@ private: //メンバ変数
 	std::unique_ptr<ParticleManager> particle = nullptr;
 
 	//スプライト
-	
+
 
 	//オブジェクト
-	
+
 
 public: //メンバ関数
-	~TitleScene() override;
+	~EndScene() override;
 
 	/// <summary>
 	/// 初期化

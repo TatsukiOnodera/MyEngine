@@ -138,11 +138,20 @@
     <ClCompile Include="Window\WinApp.cpp">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Game\Bullet</Filter>
-    </ClCompile>
     <ClCompile Include="DirectXCommon\PipelineManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="EndScene.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,14 +254,23 @@
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>ソース&amp;ヘッダーファイル\Game\Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="Alias.h">
-      <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
-    </ClInclude>
     <ClInclude Include="DirectXCommon\PipelineManager.h">
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Measurement.h">
+      <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="EndScene.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -376,10 +394,7 @@
       <UniqueIdentifier>{0e6d700b-159b-4ccd-ae16-30d1bc0aa065}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Game">
-      <UniqueIdentifier>{92a8ed94-f6d2-417c-b23e-f6d1f322ba7e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\Game\Bullet">
-      <UniqueIdentifier>{3aecd9ab-0761-4e53-a94e-94fb8848562e}</UniqueIdentifier>
+      <UniqueIdentifier>{656f5c88-606f-4bba-8ab1-b3f568c9a443}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

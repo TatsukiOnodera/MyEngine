@@ -4,7 +4,7 @@
 //ゲーム用のシーン工場
 class SceneFactory : public AbstractSceneFactory
 {
-public:
+public: // メンバ関数
 	/// <summary>
 	/// シーン生成
 	/// </summary>

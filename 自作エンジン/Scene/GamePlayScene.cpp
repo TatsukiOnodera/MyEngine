@@ -1,91 +1,72 @@
 #include "GamePlayScene.h"
 #include "SceneManager.h"
 
-#include <time.h>
-#include <stdlib.h>
 #include <SafeDelete.h>
 #include <cassert>
-#include <sstream>
-#include <iomanip>
 #include <fbxsdk.h>
 
 using namespace DirectX;
-using namespace Microsoft::WRL;
 
 GamePlayScene::~GamePlayScene()
 {
-	m_bullet.clear();
-	m_bullet.shrink_to_fit();
+	
 }
 
 void GamePlayScene::Initialize()
 {
 	dx_cmd = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
-	audio = Audio::GetInstance();
+	//audio = Audio::GetInstance();
 	camera = Camera::GetInstance();
-	
-	//スプライトテクスチャ読み込み
+
+	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/background.png");
+	Sprite::LoadTexture(2, L"Resources/Reticle.png");
 
-	//ライト生成
+	// ライト生成
 	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
-	light->SetLightDir({-5, -5, 0, 0});
+	light->SetLightDir({ -5, -5, 0, 0 });
 	Object3d::SetLight(light.get());
 
-	//前景スプライト
+	// 前景スプライト
 	debugText.Initialize(fontNumber);
 
-	//パーティクル
-	//particle.reset(ParticleManager::Create());
+	// パーティクル
+	particle.reset(ParticleManager::Create("Default/effect1.png"));
 
-	//スプライト
-	demo_back.reset(Sprite::CreateSprite(1));
+	// スプライト
+	sight.reset(Sprite::Create(2, { 0.0f, 0.0f }, { 0.5f, 0.5f }));
 
-	//OBJオブジェクト
-	obj.reset(Object3d::Create("Dragon", true));
+	// OBJオブジェクト
 	for (auto& m : defaultWall)
 	{
 		m.reset(Object3d::Create("Wall"));
 	}
-	enemy.reset(Object3d::Create("Enemy"));
+	for (int i = 0; i < 6; i++)
+	{
+		enemy.emplace_back(Enemy::Create());
+	}
 
-	//FBXオブェクト
-	//fbxObject.reset(FbxObject3d::CreateFBXObject("Human"));
-	//fbxObject->PlayAnimation(true);
+	// FBXオブェクト
+	player.reset(Player::Create());
 
-	//パラメーター
-	ResetParameter();
+	// オーディオ
+	//audio->Initialize();
 
-	//オーディオ
-	audio->Initialize();
+	// 変数の初期化
+	InitializeVariable();
+
+	// 乱数初期化
+	srand(NULL);
 }
 
-void GamePlayScene::ResetParameter()
+void GamePlayScene::InitializeVariable()
 {
-	isDash = false;
-	add0 = 0;
-
-	bulletTime = 0;
-
-	/*float fbxObjectSize = 0.5f;
-	fbxObject->SetPosition({ 0, 0, -100 });
-	fbxObject->SetRotation({ -90, 0, 0 });
-	fbxObject->SetScale({ fbxObjectSize, fbxObjectSize, fbxObjectSize });
-	fbxObject->Update()*/
-
-	obj->SetPosition({ 0, 0, 0 });
-	obj->SetScale({ 3, 3, 3 });
-	obj->SetColor({ 0, 0.6, 0.2, 1 });
-	obj->SetShader(SPECULAR);
-	obj->SetMaskTexture("Resources/", "Scales.png");
-	obj->Update();
-
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		float size = 300;
+		float size = 100;
 		XMFLOAT3 pos;
 		XMFLOAT3 rot;
 		XMFLOAT3 scale = { size, size, size };
@@ -125,99 +106,76 @@ void GamePlayScene::ResetParameter()
 		defaultWall[i]->Update();
 	}
 
-	enemy->SetScale({1.5, 1.5, 1.5});
-	enemy->Update();
-
 	camera->SetTarget({ 0, 0, 0 });
-	camera->SetEye({ 0, 5, -10 });
+	camera->SetEye({ 0, 1, -5 });
 	camera->SetDistance();
 	camera->Update();
+
+	targetNum = 0;
+	listNum = 0;
 }
 
 void GamePlayScene::Update()
 {
-	//移動
-	XMFLOAT3 vec = { 0, 0, 0 };
-	if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
+#pragma region ゲームメインシステム
+	// プレイヤー
+	player->Update();
+	targetList.clear();
+	for (int i = 0; i < enemy.size(); i++)
 	{
-		vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
-		vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
-	}
-	XMFLOAT3 pos = camera->ConvertWindowPos(obj->GetPosition(), vec);
-	obj->SetPosition(pos);
-	//if (input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
-	//{
-	//	//ダッシュ
-	//	if (input->TriggerKey(DIK_SPACE))
-	//	{
-	//		isDash = true;
-	//		add0 = 25;
-
-	//		//アニメーション
-	//		fbxObject->PlayAnimation(false);
-
-	//		//パーティクル
-	//		//particle->Active(fbxObject->GetPosition());
-	//	}
-
-	//	//ベクトル
-	//	vec.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
-	//	vec.z += (input->PushKey(DIK_W) - input->PushKey(DIK_S)) * 0.5f;
-	//	//加速するなら
-	//	if (isDash)
-	//	{
-	//		vec.x *= add0;
-	//		vec.z *= add0;
-
-	//		add0 = add0 - 10;
-
-	//		//加速度が0になったら
-	//		if (add0 <= 0)
-	//		{
-	//			add0 = 0;
-	//			isDash = false;
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	//アニメーション
-	//	fbxObject->ResetAnimation();
-	//}
-	//カメラを軸にした変換
-	/*XMFLOAT3 pos = fbxObject->GetPosition();
-	pos = camera->ConvertWindowPos(pos, vec);*/
-
-	//敵の攻撃
-	bulletTime++;
-	if (bulletTime > 30)
-	{
-		bulletTime = 0;
-		
-		bool active = false;
-		if (m_bullet.size() > 0)
+		if (Length(enemy[i]->GetPosition(), player->GetPosition()) < 90 && enemy[i]->GetAlive())
 		{
-			for (auto& m : m_bullet)
-			{
-				if (m->GetAlive() == false)
-				{
-					m->activeBullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1));
-					active = true;
-					break;
-				}
-			}
-		}
-		if (active == false)
-		{
-			m_bullet.emplace_back(new Bullet(enemy->GetPosition(), XMFLOAT3(0, 0, -1)));
+			targetList.emplace_back(i);
 		}
 	}
-	for (auto& m : m_bullet)
+	if (input->TriggerKey(DIK_P) || input->TriggerKey(DIK_O))
 	{
-		m->Update();
+		listNum += input->TriggerKey(DIK_P) - input->TriggerKey(DIK_O);
+	}
+	if (listNum >= targetList.size())
+	{
+		listNum = 0;
+	}
+	if (targetList.size() > 0)
+	{
+		targetNum = targetList[listNum];
+	}
+	player->ShotBullet(enemy[targetNum]->GetPosition());
+	for (auto& m : enemy)
+	{
+		if (player->bulletUpdate(m->GetPosition()))
+		{
+			m->SetEffectTimer();
+		}
+	}
+	
+	// エネミー
+	for (auto& m : enemy)
+	{
+		if (m->Update(player->GetPosition()))
+		{
+			player->SetEffectTimer();
+		}
 	}
 
-	//カメラ
+	bool isEnd = true;
+	for (auto& m : enemy)
+	{
+		if (m->GetAlive())
+		{
+			isEnd = false;
+		}
+	}
+	if (isEnd)
+	{
+		//シーン切り替え
+		SceneManager::GetInstance()->ChangeScene("END");
+	}
+
+	//サイト
+	sight->SetPosition(camera->Convert3DPosTo2DPos(enemy[targetNum]->GetPosition()));
+
+	// カメラ
 	XMFLOAT2 angle = { 0, 0 };
 	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
@@ -227,11 +185,10 @@ void GamePlayScene::Update()
 	{
 		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
 	}
+	// 追従カメラ
+	camera->FollowUpCamera(player->GetPosition(), camera->GetDistance(), angle.x, angle.y);
 
-	//座標をセット
-	//fbxObject->SetPosition(pos);
-	//追従カメラ
-	camera->FollowUpCamera(pos, camera->GetDistance(), angle.x, angle.y);
+#pragma endregion
 
 #pragma region カメラとライトの更新
 
@@ -243,11 +200,11 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-	//コマンドリストの取得
+	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
-	//各描画
-	DrawBackSprite(cmdList);
+	// 各描画
+	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
 	DrawEffect(cmdList);
 	DrawUI(cmdList);
@@ -256,10 +213,10 @@ void GamePlayScene::Draw()
 
 void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 {
-	//前景スプライト描画
+	// 前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	demo_back->Draw();
+	
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
@@ -267,26 +224,32 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 {
-	//OBJオブジェクト描画
+	// OBJオブジェクト描画
+	Object3d::PreDraw(cmdList);
+
+	// 壁
 	for (auto& m : defaultWall)
 	{
-		m->Draw(cmdList);
-	}
-	enemy->Draw(cmdList);
-	obj->Draw(cmdList);
-	for (auto& m : m_bullet)
-	{
-		m->Draw(cmdList);
+		m->Draw();
 	}
 
-	//FBXオブジェクト
+	// 敵
+	for (auto& m : enemy)
+	{
+		m->Draw();
+	}
+
+	Object3d::PostDraw();
+
+	// FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);
 
-	//fbxObject->Draw();
+	// 自機
+	player->Draw();
 
 	FbxObject3d::PostDraw();
 
-	//スプライト描画
+	// スプライト描画
 	Sprite::PreDraw(cmdList);
 
 
@@ -296,22 +259,56 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 {
-	//UI描画
+	// UI描画
 	Sprite::PreDraw(cmdList);
 
-	
+	//サイト
+	if (Length(enemy[targetNum]->GetPosition(), player->GetPosition()) < 90 && enemy[targetNum]->GetAlive())
+	{
+		sight->Draw();
+	}
 
 	Sprite::PostDraw();
 }
 
 void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 {
-	//パーティクル描画
-	//particle->Draw(cmdList);
+	// パーティクル描画
+	ParticleManager::PreDraw(cmdList);
+
+	particle->Draw();
+
+	ParticleManager::PostDraw();
 }
 
 void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 {
-	//デバッグテキスト描画
+	// デバッグテキスト描画
 	debugText.Draw(cmdList);
 }
+
+const float GamePlayScene::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
+{
+	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
+
+	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
+}
+
+//for (int i = 0; i < 30; i++)
+	//{
+	//	const float rnd_pos = 10.0f;
+	//	XMFLOAT3 pos = {};
+	//	pos.x = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+	//	pos.y = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+	//	pos.z = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+
+	//	const float rnd_vel = 1.0f;
+	//	XMFLOAT3 vel = {};
+	//	vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+	//	vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+	//	vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+	//	XMFLOAT3 acc = {};
+	//	//追加
+	//	particle->Add(120, pos, vel, acc, 5.0f, 0.0f);
+	//}

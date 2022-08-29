@@ -10,7 +10,7 @@ void OnoGame::Initialize()
 	scene_factory.reset(new SceneFactory);
 	SceneManager::GetInstance()->SetSceneFactory(scene_factory.get());
 	//シーンセット
-	SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+	SceneManager::GetInstance()->ChangeScene("TITLE");
 }
 
 void OnoGame::Finalize()

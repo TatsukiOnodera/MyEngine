@@ -8,12 +8,12 @@ SamplerState smp : register(s0);      // 0番スロットに設定されたサ�
 float4 main(VSOutput input) : SV_TARGET
 {
 	//テクスチャマッピング
-	float4 maincolor = maintex.Sample(smp, input.uv) * color;
-	float4 subcolor = subtex.Sample(smp, input.uv) * color;
-	float4 maskcolor = masktex.Sample(smp, input.uv);
+	float4 maincolor = maintex.Sample(smp, input.uv * float2(20, 20)) * color;
+	float4 subcolor = subtex.Sample(smp, input.uv * float2(20, 20)) * color;
+	float4 maskcolor = masktex.Sample(smp, input.uv * float2(20, 20));
 
 	//シェーディングによる色
-	float4 shadecolor = maskcolor.r * subcolor + (1 - maskcolor.r) * maincolor;
+	float4 shadecolor = maskcolor.r * maincolor + (1 - maskcolor.r) * subcolor;
 
 	//出力
 	return shadecolor;

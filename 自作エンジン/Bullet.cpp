@@ -2,11 +2,9 @@
 
 using namespace DirectX;
 
-Bullet::Bullet(XMFLOAT3 pos, XMFLOAT3 vec)
+Bullet::Bullet()
 {
-	m_bullet.reset(Object3d::Create("Bullet", true));
-	m_bullet->SetScale({ 0.5, 0.5, 0.5 });
-	Initialize(pos, vec);
+
 }
 
 Bullet::~Bullet()
@@ -14,41 +12,89 @@ Bullet::~Bullet()
 
 }
 
-void Bullet::Initialize(XMFLOAT3 pos, XMFLOAT3 vec)
+Bullet* Bullet::Create(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)
 {
-	m_pos = pos;
-	m_vec = vec;
-	m_alive = true;
+	Bullet* bullet = new Bullet;
+
+	bullet->Initialize(pos, vec, alive);
+
+	return bullet;
 }
 
-void Bullet::Update()
+void Bullet::Initialize(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)
+{
+	if (m_object == nullptr)
+	{
+		m_object.reset(Object3d::Create("Bullet", true));
+	}
+
+	m_pos = pos;
+	m_vec = vec;
+	m_alive = alive;
+
+	assert(m_object);
+	m_object->SetPosition(m_pos);
+	m_object->Update();
+}
+
+bool Bullet::Update(XMFLOAT3 pos)
 {
 	if (m_alive)
 	{
-		m_pos = m_bullet->GetPosition();
-
+		//À•W‚ÌXV
+		m_pos = m_object->GetPosition();
 		m_pos.x += m_vec.x;
 		m_pos.y += m_vec.y;
 		m_pos.z += m_vec.z;
+		m_object->SetPosition(m_pos);
 
-		m_bullet->SetPosition(m_pos);
-
-		if ((m_pos.x < -250 || 250 < m_pos.x) || (m_pos.z < -250 || 250 < m_pos.z))
+		//•Ç‚Ì“–‚½‚è”»’è
+		if (m_pos.x < -100 || 100 < m_pos.x)
 		{
 			m_alive = false;
 		}
+		else if (m_pos.z < -100 || 100 < m_pos.z)
+		{
+			m_alive = false;
+		}
+
+		if (Length(pos, m_pos) < 3)
+		{
+			m_alive = false;
+
+			return true;
+		}
 	}
+
+	return false;
 }
 
-void Bullet::Draw(ID3D12GraphicsCommandList* cmdList)
+void Bullet::Draw()
 {
 	if (m_alive)
 	{
-		m_bullet->Draw(cmdList);
+		m_object->Draw();
 	}
 }
 
-void Bullet::activeBullet(XMFLOAT3 pos, XMFLOAT3 vec)
+const float Bullet::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 {
-	Initialize(pos, vec);
+	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
+
+	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
+}
+
+void Bullet::SetPosition(XMFLOAT3 pos)
+{
+	m_pos = pos;
+}
+
+void Bullet::SetVector(XMFLOAT3 vec)
+{
+	m_vec = vec;
+}
+
+void Bullet::SetAlive(bool alive)
+{
+	m_alive = alive;
 }

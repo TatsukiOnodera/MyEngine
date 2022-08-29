@@ -53,6 +53,16 @@ public: //静的関数
 	/// </summary>
 	static void SetLight(Light* light) { Object3d::s_light = light; }
 
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
+	static void PreDraw(ID3D12GraphicsCommandList* cmdList);
+
+	/// <summary>
+	/// 描画後処理
+	/// </summary>
+	static void PostDraw();
+
 private: //サブクラス
 	//定数バッファ用データ構造体
 	struct ConstBufferData
@@ -112,17 +122,7 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	virtual void Draw(ID3D12GraphicsCommandList *cmdList);
-
-	/// <summary>
-	/// 描画前処理
-	/// </summary>
-	void PreDraw(ID3D12GraphicsCommandList* cmdList);
-
-	/// <summary>
-	/// 描画後処理
-	/// </summary>
-	void PostDraw();
+	virtual void Draw();
 
 public: //アクセッサ
 	/// <summary>
@@ -182,16 +182,14 @@ public: //アクセッサ
 	/// <summary>
 	/// サブテクスチャのセット
 	/// </summary>
-	/// <param name="directoryPath">ダイレクトパス</param>
 	/// <param name="filename">ファイル名</param>
-	void SetSubTexture(const std::string& directoryPath, const std::string& filename);
+	void SetSubTexture(const std::string& filename);
 
 	/// <summary>
 	/// マスクテクスチャのセット
 	/// </summary>
-	/// <param name="directoryPath">ダイレクトパス</param>
 	/// <param name="filename">ファイル名</param>
-	void SetMaskTexture(const std::string& directoryPath, const std::string& filename);
+	void SetMaskTexture(const std::string& filename);
 
 	/// <summary>
 	/// 衝突時コールバック関数

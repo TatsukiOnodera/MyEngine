@@ -1,4 +1,4 @@
-#include "TitleScene.h"
+#include "EndScene.h"
 #include "SceneManager.h"
 #include <time.h>
 #include <stdlib.h>
@@ -7,12 +7,12 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-TitleScene::~TitleScene()
+EndScene::~EndScene()
 {
 
 }
 
-void TitleScene::Initialize()
+void EndScene::Initialize()
 {
 	dx_cmd = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
@@ -39,21 +39,21 @@ void TitleScene::Initialize()
 	audio->Initialize();
 }
 
-void TitleScene::ResetVariable()
+void EndScene::ResetVariable()
 {
-	
+
 }
 
-void TitleScene::Update()
+void EndScene::Update()
 {
 	if (input->TriggerKey(DIK_RETURN))
 	{
 		//シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 }
 
-void TitleScene::Draw()
+void EndScene::Draw()
 {
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
@@ -65,18 +65,18 @@ void TitleScene::Draw()
 	//DrawDebugText(cmdList);
 }
 
-void TitleScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
+void EndScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 {
 	//前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	
+
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
 }
 
-void TitleScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
+void EndScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
 {
 	//オブジェクト描画
 	Object3d::PreDraw(cmdList);
@@ -88,29 +88,29 @@ void TitleScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	
+
 
 	Sprite::PostDraw();
 
 	//FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);
 
-	
+
 
 	FbxObject3d::PostDraw();
 }
 
-void TitleScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
+void EndScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 {
 	//UI描画
 	Sprite::PreDraw(cmdList);
 
-	
+
 
 	Sprite::PostDraw();
 }
 
-void TitleScene::DrawParticles(ID3D12GraphicsCommandList* cmdList)
+void EndScene::DrawParticles(ID3D12GraphicsCommandList* cmdList)
 {
 	//パーティクル描画
 	ParticleManager::PreDraw(cmdList);
@@ -120,7 +120,7 @@ void TitleScene::DrawParticles(ID3D12GraphicsCommandList* cmdList)
 	ParticleManager::PostDraw();
 }
 
-void TitleScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
+void EndScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 {
 	//デバッグテキスト描画
 	debugText.Draw(cmdList);

@@ -17,7 +17,7 @@ FbxLoader* FbxObject3d::fbxLoader = nullptr;
 
 FbxObject3d::~FbxObject3d()
 {
-	fbxLoader->Finalize();
+
 }
 
 FbxObject3d* FbxObject3d::GetInstance()
@@ -356,6 +356,9 @@ void FbxObject3d::Draw()
 	//更新
 	Update();
 
+	//NULLチェック
+	assert(cmdList);
+
 	//パイプラインとルートシグネチャの設定
 	cmdList->SetPipelineState(pipelinestate.Get());
 	cmdList->SetGraphicsRootSignature(rootsignature.Get());
@@ -372,7 +375,7 @@ void FbxObject3d::PlayAnimation(bool loop)
 {
 	FbxScene* fbxScene = fbxModel->GetFbxScene();
 	//0番目のアニメーション取得
-	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(1);
 	//アニメーションがなかったら
 	if (animStack == nullptr)
 	{
@@ -397,6 +400,7 @@ void FbxObject3d::PlayAnimation(bool loop)
 void FbxObject3d::ResetAnimation()
 {
 	currentTime = startTime;
+	isPlay = false;
 }
 
 void FbxObject3d::SetPosition(XMFLOAT3 position)

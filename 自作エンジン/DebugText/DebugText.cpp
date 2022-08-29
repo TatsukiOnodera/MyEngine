@@ -4,7 +4,7 @@ void DebugText::Initialize(UINT texnumber)
 {
 	for (int i = 0; i < _countof(sprites); i++)
 	{
-		sprites[i] = Sprite::CreateSprite(texnumber);
+		sprites[i] = Sprite::Create(texnumber);
 	}
 }
 
@@ -28,7 +28,7 @@ void DebugText::Print(const std::string& text, float x, float y, float scale)
 		int fontIndexY = fontIndex / fontLineCount;
 		int fontIndexX = fontIndex % fontLineCount;
 
-		sprites[spriteIndex]->SetPosition({ x + fontWidth * scale * i, y, 0});
+		sprites[spriteIndex]->SetPosition({ x + fontWidth * scale * i, y});
 		sprites[spriteIndex]->SetLeftTop({ (float)fontIndexX * fontWidth, (float)fontIndexY * fontHeight });
 		sprites[spriteIndex]->SetTexSize({ fontWidth, fontHeight });
 		sprites[spriteIndex]->SetSize({ fontWidth * scale, fontHeight * scale });

@@ -11,7 +11,7 @@ using namespace DirectX;
 
 const float PostEffect::clearColor[4] = { 0.25f, 0.7f, 0.1f, 0.0f };
 
-PostEffect::PostEffect() : Sprite({ 500.0f, 500.0f }, 100, { 0.0f, 0.0f })
+PostEffect::PostEffect() : Sprite({ 500.0f, 500.0f }, 100, { 0.0f, 0.0f }, { 0.0f, 0.0f }, false, false, false)
 {
 
 }

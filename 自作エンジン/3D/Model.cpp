@@ -30,7 +30,7 @@ Model *Model::CreateModel(const std::string& modelName, bool smooting)
 	Model* model = new Model;
 
 	//グラフィックスパイプライン生成
-	model->CreateGraphicsPipeline();
+	model->m_graphicsPipeline.reset(new PipelineManager(s_dev));
 
 	//モデルデータ読み込み
 	model->InitializeModel(modelName, smooting);
@@ -161,7 +161,7 @@ void Model::SetGraphicsPipeline(const int shaderType)
 	LoadTexture();
 }
 
-void Model::SetSubTexture(const std::string& directoryPath, const std::string& filename)
+void Model::SetSubTexture(const std::string& filename)
 {
 	if (!(m_graphicsPipeline->GetTexNum() == 3) || !(textureName.size() == 3))
 	{
@@ -169,25 +169,25 @@ void Model::SetSubTexture(const std::string& directoryPath, const std::string& f
 	}
 
 	//サブテクスチャ名取得
-	textureName[1] = directoryPath + filename;
+	textureName[1] = filename;
 
 	//テクスチャの読み込み
 	LoadTexture();
 }
 
-void Model::SetMaskTexture(const std::string& directoryPath, const std::string& filename)
+void Model::SetMaskTexture(const std::string& filename)
 {
 	if (textureName.size() == 2 || textureName.size() == 3)
 	{
 		if (m_graphicsPipeline->GetTexNum() == 2)
 		{
 			//マスクテクスチャ名取得
-			textureName[1] = directoryPath + filename;
+			textureName[1] = filename;
 		} 
 		else if (m_graphicsPipeline->GetTexNum() == 3)
 		{
 			//マスクテクスチャ名取得
-			textureName[2] = directoryPath + filename;
+			textureName[2] = filename;
 		}
 	}
 	else
@@ -565,12 +565,6 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 	}
 
 	file.close();
-}
-
-void Model::CreateGraphicsPipeline()
-{
-	//パイプライン生成
-	m_graphicsPipeline.reset(new PipelineManager(s_dev));
 }
 
 void Model::LoadTextureName(const std::string& directoryPath, const std::string& filename)
