@@ -91,16 +91,16 @@
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClCompile>
     <ClCompile Include="3D\FbxLoader.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClCompile>
     <ClCompile Include="3D\FbxModel.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClCompile>
     <ClCompile Include="3D\FbxModelMesh.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClCompile>
     <ClCompile Include="3D\FbxObject3d.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClCompile>
     <ClCompile Include="Base\FrameWork.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
@@ -118,10 +118,10 @@
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
     </ClCompile>
     <ClCompile Include="3D\Model.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClCompile>
     <ClCompile Include="3D\Object3d.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClCompile>
     <ClCompile Include="Base\OnoGame.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
@@ -133,13 +133,10 @@
       <Filter>ソース&amp;ヘッダーファイル\Effect\Particle</Filter>
     </ClCompile>
     <ClCompile Include="2D\Sprite.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\2D</Filter>
     </ClCompile>
     <ClCompile Include="Window\WinApp.cpp">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectXCommon\PipelineManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
@@ -152,6 +149,9 @@
     </ClCompile>
     <ClCompile Include="EndScene.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXCommon\PipelineManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -201,16 +201,16 @@
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxLoader.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxModel.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxModelMesh.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxObject3d.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="Base\FrameWork.h">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
@@ -228,10 +228,10 @@
       <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
     </ClInclude>
     <ClInclude Include="3D\Object3d.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClInclude>
     <ClInclude Include="3D\Model.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClInclude>
     <ClInclude Include="Base\OnoGame.h">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
@@ -249,13 +249,10 @@
       <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
     </ClInclude>
     <ClInclude Include="2D\Sprite.h">
-      <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\2D</Filter>
     </ClInclude>
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectXCommon\PipelineManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
@@ -271,6 +268,9 @@
     </ClInclude>
     <ClInclude Include="EndScene.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXCommon\PipelineManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -360,15 +360,6 @@
     <Filter Include="ソース&amp;ヘッダーファイル\DirectXCommon">
       <UniqueIdentifier>{7a54bba2-1bd2-4646-8b35-81e5378f41e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\3D">
-      <UniqueIdentifier>{53786ecc-95f2-492c-9e68-16b61f50f015}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\3D\OBJ">
-      <UniqueIdentifier>{8970d6d9-fe86-4c19-babe-3ebb5afb9e5b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\3D\FBX">
-      <UniqueIdentifier>{84c8e693-c27c-40c0-8c5b-92cecd1fbb0b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Input">
       <UniqueIdentifier>{bb8eaeec-da6d-47d3-b58e-c97897d04760}</UniqueIdentifier>
     </Filter>
@@ -387,14 +378,26 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Lib">
       <UniqueIdentifier>{b3e31a27-6383-45e8-8171-c8581c8a4b6a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\2D">
-      <UniqueIdentifier>{d2980944-2f52-4fc0-b2a7-f7f78eb8261e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\WinApp">
       <UniqueIdentifier>{0e6d700b-159b-4ccd-ae16-30d1bc0aa065}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Game">
       <UniqueIdentifier>{656f5c88-606f-4bba-8ab1-b3f568c9a443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Object">
+      <UniqueIdentifier>{97cdb08c-fafd-4861-b74d-b4eb1691d332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Object\2D">
+      <UniqueIdentifier>{d2980944-2f52-4fc0-b2a7-f7f78eb8261e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Object\3D">
+      <UniqueIdentifier>{53786ecc-95f2-492c-9e68-16b61f50f015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Object\3D\OBJ">
+      <UniqueIdentifier>{8970d6d9-fe86-4c19-babe-3ebb5afb9e5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Object\3D\FBX">
+      <UniqueIdentifier>{84c8e693-c27c-40c0-8c5b-92cecd1fbb0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

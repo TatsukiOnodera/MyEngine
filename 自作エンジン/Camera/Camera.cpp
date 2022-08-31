@@ -263,3 +263,10 @@ XMFLOAT2 Camera::Convert3DPosTo2DPos(XMFLOAT3 pos)
 
 	return position;
 }
+
+void Camera::InitializeAngle()
+{
+	m_angleX = 0.0f;
+	m_angleY = 0.0f;
+	m_angleZ = 0.0f;
+}

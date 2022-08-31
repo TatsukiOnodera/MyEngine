@@ -46,11 +46,11 @@ void GamePlayScene::Initialize()
 	}
 	for (int i = 0; i < 6; i++)
 	{
-		enemy.emplace_back(Enemy::Create());
+		enemy.emplace_back(new Enemy);
 	}
 
 	// FBXオブェクト
-	player.reset(Player::Create());
+	player.reset(new Player);
 
 	// オーディオ
 	//audio->Initialize();
@@ -109,6 +109,7 @@ void GamePlayScene::InitializeVariable()
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 1, -5 });
 	camera->SetDistance();
+	camera->InitializeAngle();
 	camera->Update();
 
 	targetNum = 0;

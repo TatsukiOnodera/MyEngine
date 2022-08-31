@@ -2,21 +2,12 @@
 
 Enemy::Enemy()
 {
-	
+	Initialize();
 }
 
 Enemy::~Enemy()
 {
 
-}
-
-Enemy* Enemy::Create()
-{
-	Enemy* enemy = new Enemy;
-
-	enemy->Initialize();
-
-	return enemy;
 }
 
 void Enemy::Initialize()
@@ -110,7 +101,7 @@ bool Enemy::Update(XMFLOAT3 playerPosition)
 				len.x *= bulletSpeed;
 				len.y *= bulletSpeed;
 				len.z *= bulletSpeed;
-				bullet.emplace_back(Bullet::Create(m_pos, len, true));
+				bullet.emplace_back(new Bullet(m_pos, len, true));
 			} 
 			else
 			{

@@ -110,6 +110,11 @@ void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, floa
 	/// <returns>2D座標</returns>
 	XMFLOAT2 Convert3DPosTo2DPos(XMFLOAT3 pos);
 
+	/// <summary>
+	/// m_angleのリセット
+	/// </summary>
+	void InitializeAngle();
+
 public: //アクセッサ
 	/// <summary>
 	/// カメラ座標取得
