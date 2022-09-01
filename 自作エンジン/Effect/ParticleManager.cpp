@@ -26,7 +26,12 @@ ParticleManager::VertexPos ParticleManager::vertices[s_vertexCount];
 XMMATRIX ParticleManager::matBillboard = XMMatrixIdentity();
 XMMATRIX ParticleManager::matBillboardY = XMMatrixIdentity();
 
+<<<<<<< HEAD:自作エンジン/Effect/ParticleManager.cpp
 const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
+=======
+//XMFLOOAT3同士の加算処理
+const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs) 
+>>>>>>> parent of 00f20c5... no message:自作エンジン/Effect/ParticleManager.cpp
 {
 	XMFLOAT3 result;
 	result.x = lhs.x + rhs.x;

@@ -22,6 +22,7 @@ public: // 静的メンバ関数
 	/// <returns>インスタンス</returns>
 	static Camera* GetInstance();
 
+<<<<<<< HEAD
 private: // メンバ変数
 	// 注視点座標
 	XMFLOAT3 m_target = { 0, 0, 0 };
@@ -65,6 +66,35 @@ public: // メンバ関数
 	/// </summary>
 	~Camera();
 
+=======
+private: //メンバ変数
+	//注視点座標
+	XMFLOAT3 target = { 0, 0, 0 };
+	//始点座標
+	XMFLOAT3 eye = { 0, 0, -50 };
+	//上方向ベクトル
+	XMFLOAT3 up = { 0, 1, 0 };
+	//注視点から始点までの距離
+	XMFLOAT3 distance = { 0, 0, 0 };
+	//ビュー行列
+	XMMATRIX matView;
+	//射影行列
+	XMMATRIX matProjection;
+	//ビルボード行列
+	XMMATRIX matBillboard;
+	//Y軸ビルボード行列
+	XMMATRIX matBillboardY;
+	//X軸の角度
+	float angleX = 0.0f;
+	//Y軸の角度
+	float angleY = 0.0f;
+	//ダーティーフラグ
+	bool dirty = true;
+	//	更新したか
+	bool isDirty = false;
+
+public: //メンバ関数
+>>>>>>> parent of 00f20c5... no message
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -90,10 +120,17 @@ public: // メンバ関数
 	/// 追従カメラ
 	/// </summary>
 	/// <param name="target">注視点</param>
+<<<<<<< HEAD
 	/// <param name="eyeDistance">注視点から始点への距離</param>
 	/// <param name="addAngleX">X軸の角度</param>
 	/// <param name="addAngleY">Y軸の角度</param>
 void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, float addAngleY);
+=======
+	/// <param name="eye">注視点から始点への成分</param>
+	/// <param name="addAngleX">X軸の角度</param>
+	/// <param name="addAngleY">Y軸の角度</param>
+void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY);
+>>>>>>> parent of 00f20c5... no message
 
 	/// <summary>
 	/// カメラを軸に座標を移動
@@ -102,6 +139,7 @@ void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, floa
 	/// <param name="vec">移動量</param>
 	/// <returns>移動した後の座標</returns>
 	XMFLOAT3 ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec);
+<<<<<<< HEAD
 
 	/// <summary>
 	/// 3D座標を2D座標に変換
@@ -109,6 +147,8 @@ void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, floa
 	/// <param name="pos">3D座標</param>
 	/// <returns>2D座標</returns>
 	XMFLOAT2 Convert3DPosTo2DPos(XMFLOAT3 pos);
+=======
+>>>>>>> parent of 00f20c5... no message
 
 public: //アクセッサ
 	/// <summary>
@@ -151,7 +191,11 @@ public: //アクセッサ
 	/// 注視点から始点までの距離取得
 	/// </summary>
 	/// <returns>注視点から始点までの距離</returns>
+<<<<<<< HEAD
 	XMFLOAT3 GetDistance() { return m_distance; }
+=======
+	XMFLOAT3 GetDistance() { return distance; }
+>>>>>>> parent of 00f20c5... no message
 
 	/// <summary>
 	/// 注視点から始点までの距離セット
@@ -159,6 +203,7 @@ public: //アクセッサ
 	void SetDistance();
 
 	/// <summary>
+<<<<<<< HEAD
 	/// カメラの回転角を取得
 	/// </summary>
 	/// <returns>三方向のカメラの回転角</returns>
@@ -178,6 +223,8 @@ public: //アクセッサ
 	void SetNearFarZ(float nearZ, float farZ);
 
 	/// <summary>
+=======
+>>>>>>> parent of 00f20c5... no message
 	/// ビュー行列の取得
 	/// </summary>
 	/// <returns>ビュー行列</returns>

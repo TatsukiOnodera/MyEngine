@@ -561,7 +561,11 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 		//テクスチャファイル名読み込み
 		m_material.textureFilename = "white1x1.png";
 		//テクスチャ読み込み
+<<<<<<< HEAD
 		LoadTextureName("Resources/Default/", m_material.textureFilename);
+=======
+		LoadTexture("Resources/Default/", material.textureFilename);
+>>>>>>> parent of 00f20c5... no message
 	}
 
 	file.close();
