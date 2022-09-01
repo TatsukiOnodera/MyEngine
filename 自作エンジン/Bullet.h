@@ -15,16 +15,6 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-public: // 静的メンバ関数
-	/// <summary>
-	/// 生成
-	/// </summary>
-	/// <param name="pos">座標</param>
-	/// <param name="vec">ベクトル</param>
-	/// <param name="alive">生存フラグ</param>
-	/// <returns>Bullet</returns>
-	static Bullet* Create(XMFLOAT3 pos, XMFLOAT3 vec, bool alive);
-
 private: // メンバ変数
 	// オブジェクト
 	unique_ptr<Object3d> m_object = nullptr;
@@ -39,7 +29,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Bullet();
+	Bullet(XMFLOAT3 pos, XMFLOAT3 vec, bool alive);
 
 	/// <summary>
 	/// デストラクタ

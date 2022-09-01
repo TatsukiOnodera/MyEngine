@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+<<<<<<< HEAD
     <FxCompile Include="Resources\Shaders\ADSPixelShader.hlsl">
       <Filter>シェーダーファイル\OBJ\ADS</Filter>
     </FxCompile>
@@ -58,6 +59,83 @@
     <FxCompile Include="Resources\Shaders\ToonPixelShader.hlsl">
       <Filter>シェーダーファイル\OBJ\Toon</Filter>
     </FxCompile>
+=======
+    <Filter Include="シェーダーファイル">
+      <UniqueIdentifier>{bc1e42f0-122d-46b1-a338-714348fc5dd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\ObjectShader">
+      <UniqueIdentifier>{78ccf803-7177-4cab-a087-938d06a0ac6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\ParticleShader">
+      <UniqueIdentifier>{bda91ee7-7701-4d5f-959e-1daede1b3947}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\SpriteShader">
+      <UniqueIdentifier>{5a593820-27eb-4b01-901a-177b843d937c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル">
+      <UniqueIdentifier>{3667c94b-0bee-4699-b6d3-862f2b6794f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\WinApp">
+      <UniqueIdentifier>{8c5ccaaa-6912-432e-a301-4e9a3f032beb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\2D">
+      <UniqueIdentifier>{64959e26-10b5-4238-b6de-4cb4f632c621}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\3D">
+      <UniqueIdentifier>{5b1fc15c-b2c4-4ed4-8aa9-bb1c48138d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Base">
+      <UniqueIdentifier>{c23b63d0-8c9c-4ca2-a89d-5314117daddc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Camera">
+      <UniqueIdentifier>{6524ad39-69e6-4db8-9525-dca7ce069669}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Collision">
+      <UniqueIdentifier>{d9091e8c-4bbb-40ec-859a-a8ad07591e98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\DirectXCommon">
+      <UniqueIdentifier>{08b49d2f-9537-4a23-baa2-bed04c0261fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Input">
+      <UniqueIdentifier>{c54a6cf0-3f99-47bb-b3c9-56f853f9f8d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Scene">
+      <UniqueIdentifier>{f566e345-a1ca-4949-bac1-c7de535404ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Audio">
+      <UniqueIdentifier>{ad7143b8-9804-47d9-b9d6-5a4915d6a27c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\DebugText">
+      <UniqueIdentifier>{8d007385-c15a-43b1-90de-7ffcff132ba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Lib">
+      <UniqueIdentifier>{80b97804-e736-4f15-b6ee-0042955fec08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Effect">
+      <UniqueIdentifier>{6d060861-cb8e-4e49-933a-ef3b6fe04466}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Light">
+      <UniqueIdentifier>{d20748ce-68fc-4f9e-9778-76dc5ae71b49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\3D\OBJ">
+      <UniqueIdentifier>{dc5bfe6d-2406-4daf-a4bb-ebd681a04ec0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\3D\FBX">
+      <UniqueIdentifier>{7c0a94dd-08b9-444e-950a-53dd9a98b931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\FBXShader">
+      <UniqueIdentifier>{4168c2e1-bc70-4e9d-8ff8-63a9c5a934b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Scene\Game">
+      <UniqueIdentifier>{c3b676f4-7276-4189-a73a-42b874b36bec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Scene\Others">
+      <UniqueIdentifier>{257e7453-7025-46d4-a92f-30f7ec9236bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\PostEffectShader">
+      <UniqueIdentifier>{7d524172-cf19-463c-b6b8-4b039d5e4151}</UniqueIdentifier>
+    </Filter>
+>>>>>>> parent of 00f20c5... no message
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene\GamePlayScene.cpp">
@@ -90,17 +168,29 @@
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp">
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="3D\FbxLoader.cpp">
+<<<<<<< HEAD
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+=======
+    <ClCompile Include="Input\Input.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="2D\Sprite.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
+>>>>>>> parent of 00f20c5... no message
+=======
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+>>>>>>> master2
     </ClCompile>
     <ClCompile Include="3D\FbxModel.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClCompile>
     <ClCompile Include="3D\FbxModelMesh.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClCompile>
     <ClCompile Include="3D\FbxObject3d.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClCompile>
     <ClCompile Include="Base\FrameWork.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
@@ -118,10 +208,10 @@
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
     </ClCompile>
     <ClCompile Include="3D\Model.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClCompile>
     <ClCompile Include="3D\Object3d.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClCompile>
     <ClCompile Include="Base\OnoGame.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
@@ -133,13 +223,10 @@
       <Filter>ソース&amp;ヘッダーファイル\Effect\Particle</Filter>
     </ClCompile>
     <ClCompile Include="2D\Sprite.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\2D</Filter>
     </ClCompile>
     <ClCompile Include="Window\WinApp.cpp">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectXCommon\PipelineManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
@@ -152,6 +239,17 @@
     </ClCompile>
     <ClCompile Include="EndScene.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
+    </ClCompile>
+<<<<<<< HEAD
+    <ClCompile Include="Effect\ParticleManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect\PostEffect.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+=======
+    <ClCompile Include="DirectXCommon\PipelineManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Object</Filter>
+>>>>>>> master2
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -200,17 +298,32 @@
     <ClInclude Include="DirectXCommon\DirectXCommon.h">
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="3D\FbxLoader.h">
+<<<<<<< HEAD
       <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+=======
+    <ClInclude Include="Input\Input.h">
+      <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="2D\Sprite.h">
+      <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\WinApp.h">
+      <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
+>>>>>>> parent of 00f20c5... no message
+=======
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+>>>>>>> master2
     </ClInclude>
     <ClInclude Include="3D\FbxModel.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxModelMesh.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxObject3d.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="Base\FrameWork.h">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
@@ -228,10 +341,10 @@
       <Filter>ソース&amp;ヘッダーファイル\Light</Filter>
     </ClInclude>
     <ClInclude Include="3D\Object3d.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClInclude>
     <ClInclude Include="3D\Model.h">
-      <Filter>ソース&amp;ヘッダーファイル\3D\OBJ</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClInclude>
     <ClInclude Include="Base\OnoGame.h">
       <Filter>ソース&amp;ヘッダーファイル\Base</Filter>
@@ -249,13 +362,10 @@
       <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
     </ClInclude>
     <ClInclude Include="2D\Sprite.h">
-      <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\2D</Filter>
     </ClInclude>
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectXCommon\PipelineManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
@@ -272,10 +382,64 @@
     <ClInclude Include="EndScene.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="Effect\ParticleManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect\PostEffect.h">
+      <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+=======
+    <ClInclude Include="DirectXCommon\PipelineManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\Object</Filter>
+>>>>>>> master2
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <None Include="Resources\Shaders\ADSShaderHeader.hlsli">
       <Filter>シェーダーファイル\OBJ\ADS</Filter>
+=======
+    <FxCompile Include="Resources\Shaders\OBJPixelShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\OBJVertexShader.hlsl">
+      <Filter>シェーダーファイル\ObjectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleGS.hlsl">
+      <Filter>シェーダーファイル\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
+      <Filter>シェーダーファイル\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
+      <Filter>シェーダーファイル\SpriteShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpriteVS.hlsl">
+      <Filter>シェーダーファイル\SpriteShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
+      <Filter>シェーダーファイル\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\FBXPixelShader.hlsl">
+      <Filter>シェーダーファイル\FBXShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\FBXVertexShader.hlsl">
+      <Filter>シェーダーファイル\FBXShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectPS.hlsl">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffectVS.hlsl">
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\OBJShaderHeader.hlsli">
+      <Filter>シェーダーファイル\ObjectShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Sprite.hlsli">
+      <Filter>シェーダーファイル\SpriteShader</Filter>
+>>>>>>> parent of 00f20c5... no message
     </None>
     <None Include="Resources\Shaders\Particle.hlsli">
       <Filter>シェーダーファイル\Particle</Filter>
@@ -293,6 +457,7 @@
       <Filter>シェーダーファイル\FBX</Filter>
     </None>
     <None Include="Resources\Shaders\PostEffect.hlsli">
+<<<<<<< HEAD
       <Filter>シェーダーファイル\PostEffect</Filter>
     </None>
     <None Include="Resources\Shaders\Sprite.hlsli">
@@ -360,15 +525,6 @@
     <Filter Include="ソース&amp;ヘッダーファイル\DirectXCommon">
       <UniqueIdentifier>{7a54bba2-1bd2-4646-8b35-81e5378f41e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\3D">
-      <UniqueIdentifier>{53786ecc-95f2-492c-9e68-16b61f50f015}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\3D\OBJ">
-      <UniqueIdentifier>{8970d6d9-fe86-4c19-babe-3ebb5afb9e5b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\3D\FBX">
-      <UniqueIdentifier>{84c8e693-c27c-40c0-8c5b-92cecd1fbb0b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Input">
       <UniqueIdentifier>{bb8eaeec-da6d-47d3-b58e-c97897d04760}</UniqueIdentifier>
     </Filter>
@@ -387,14 +543,33 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Lib">
       <UniqueIdentifier>{b3e31a27-6383-45e8-8171-c8581c8a4b6a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\2D">
-      <UniqueIdentifier>{d2980944-2f52-4fc0-b2a7-f7f78eb8261e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\WinApp">
       <UniqueIdentifier>{0e6d700b-159b-4ccd-ae16-30d1bc0aa065}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Game">
       <UniqueIdentifier>{656f5c88-606f-4bba-8ab1-b3f568c9a443}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
+=======
+      <Filter>シェーダーファイル\PostEffectShader</Filter>
+    </None>
+>>>>>>> parent of 00f20c5... no message
+=======
+    <Filter Include="ソース&amp;ヘッダーファイル\Object">
+      <UniqueIdentifier>{97cdb08c-fafd-4861-b74d-b4eb1691d332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Object\2D">
+      <UniqueIdentifier>{d2980944-2f52-4fc0-b2a7-f7f78eb8261e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Object\3D">
+      <UniqueIdentifier>{53786ecc-95f2-492c-9e68-16b61f50f015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Object\3D\OBJ">
+      <UniqueIdentifier>{8970d6d9-fe86-4c19-babe-3ebb5afb9e5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Object\3D\FBX">
+      <UniqueIdentifier>{84c8e693-c27c-40c0-8c5b-92cecd1fbb0b}</UniqueIdentifier>
+    </Filter>
+>>>>>>> master2
   </ItemGroup>
 </Project>

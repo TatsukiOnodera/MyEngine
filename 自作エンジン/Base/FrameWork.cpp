@@ -80,8 +80,15 @@ void FrameWork::Initialize()
 		assert(0);
 	}
 
+<<<<<<< HEAD
 	/*postEffect.reset(new PostEffect);
 	postEffect->Initialize();*/
+=======
+	//Sprite::LoadTexture(100, L"Resources/Default/white1x1.png");
+
+	postEffect.reset(new PostEffect);
+	postEffect->Initialize();
+>>>>>>> parent of 00f20c5... no message
 }
 
 void FrameWork::Finalize()
@@ -108,6 +115,7 @@ void FrameWork::Update()
 void FrameWork::Draw()
 {
 	//レンダーテクスチャへの描画
+<<<<<<< HEAD
 	//postEffect->PreDrawScene(dx_cmd->GetCmdList());
 
 	//SceneManager::GetInstance()->Draw();
@@ -116,9 +124,19 @@ void FrameWork::Draw()
 
 	//描画開始
 	dx_cmd->PreDraw();
+=======
+	postEffect->PreDrawScene(dx_cmd->GetCmdList());
+>>>>>>> parent of 00f20c5... no message
 
 	//postEffect->Draw(dx_cmd->GetCmdList());
 	SceneManager::GetInstance()->Draw();
+
+	postEffect->PostDrawScene(dx_cmd->GetCmdList());
+
+	//描画開始
+	dx_cmd->PreDraw();
+
+	postEffect->Draw(dx_cmd->GetCmdList());
 
 	dx_cmd->PostDraw();
 }
