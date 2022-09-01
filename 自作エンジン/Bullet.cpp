@@ -2,23 +2,14 @@
 
 using namespace DirectX;
 
-Bullet::Bullet()
+Bullet::Bullet(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)
 {
-
+	Initialize(pos, vec, alive);
 }
 
 Bullet::~Bullet()
 {
 
-}
-
-Bullet* Bullet::Create(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)
-{
-	Bullet* bullet = new Bullet;
-
-	bullet->Initialize(pos, vec, alive);
-
-	return bullet;
 }
 
 void Bullet::Initialize(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)

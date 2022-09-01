@@ -15,13 +15,6 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-public: // 静的メンバ関数
-	/// <summary>
-	/// 生成
-	/// </summary>
-	/// <returns>Enemy</returns>
-	static Enemy* Create();
-
 private: // メンバ変数
 	//Enemy
 	// オブジェクト

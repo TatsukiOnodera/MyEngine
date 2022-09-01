@@ -26,13 +26,6 @@ private: //静的メンバ変数
 	// カメラ
 	static Camera* s_camera;
 
-public: //静的メンバ関数
-	/// <summary>
-	/// 生成
-	/// </summary>
-	/// <returns>Player</returns>
-	static Player* Create();
-
 private: // メンバ変数
 	// Player
 	// オブジェクト

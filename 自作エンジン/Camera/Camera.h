@@ -150,6 +150,11 @@ void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAng
 =======
 >>>>>>> parent of 00f20c5... no message
 
+	/// <summary>
+	/// m_angleのリセット
+	/// </summary>
+	void InitializeAngle();
+
 public: //アクセッサ
 	/// <summary>
 	/// カメラ座標取得
