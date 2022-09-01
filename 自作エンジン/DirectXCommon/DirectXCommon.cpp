@@ -14,7 +14,13 @@ DirectXCommon::DirectXCommon()
 
 DirectXCommon::~DirectXCommon()
 {
-
+	//ŠJ•ú˜R‚ê‚ÌŠm”F
+	ID3D12DebugDevice* debugInterface;
+	if (SUCCEEDED(dev.Get()->QueryInterface(&debugInterface)))
+	{
+		debugInterface->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
+		debugInterface->Release();
+	}
 }
 
 bool DirectXCommon::Initialize(WinApp* app)
