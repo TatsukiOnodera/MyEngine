@@ -17,6 +17,7 @@ Camera::Camera()
 
 Camera::~Camera()
 {
+<<<<<<< HEAD
 
 }
 
@@ -32,6 +33,21 @@ void Camera::Initialize()
 
 	// 透視投影による射影行列の生成
 	UpdateMatProjection();
+=======
+	//ビルボード行列初期化
+	matBillboard = XMMatrixIdentity();
+	matBillboardY = XMMatrixIdentity();
+
+	// ビュー行列の生成
+	Update();
+
+	// 透視投影による射影行列の生成
+	matProjection = XMMatrixPerspectiveFovLH(
+		XMConvertToRadians(60.0f),
+		(float)window_width / window_height,
+		0.1f, 1000.0f
+	);
+>>>>>>> parent of 00f20c5... no message
 }
 
 void Camera::Update()
@@ -39,11 +55,19 @@ void Camera::Update()
 	if (m_dirty == true)
 	{
 		//視点
+<<<<<<< HEAD
 		XMVECTOR eyePosition = XMLoadFloat3(&m_eye);
 		//注視点
 		XMVECTOR targetPosition = XMLoadFloat3(&m_target);
 		//上方向
 		XMVECTOR upVector = XMLoadFloat3(&m_up);
+=======
+		XMVECTOR eyePosition = XMLoadFloat3(&eye);
+		//注視点
+		XMVECTOR targetPosition = XMLoadFloat3(&target);
+		//上方向
+		XMVECTOR upVector = XMLoadFloat3(&up);
+>>>>>>> parent of 00f20c5... no message
 
 		//カメラZ軸
 		XMVECTOR cameraAxisZ = XMVectorSubtract(targetPosition, eyePosition);
@@ -79,7 +103,11 @@ void Camera::Update()
 		matCameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
 
 		//転置により逆行列を計算
+<<<<<<< HEAD
 		m_matView = XMMatrixTranspose(matCameraRot);
+=======
+		matView = XMMatrixTranspose(matCameraRot);
+>>>>>>> parent of 00f20c5... no message
 
 		//視点座標に-1をかけた座標
 		XMVECTOR reverseEyePosition = XMVectorNegate(eyePosition);
@@ -91,6 +119,7 @@ void Camera::Update()
 		XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
 
 		//ビュー行列に平行移動成分を設定
+<<<<<<< HEAD
 		m_matView.r[3] = translation;
 
 		//ビルボード行列
@@ -98,6 +127,15 @@ void Camera::Update()
 		m_matBillboard.r[1] = cameraAxisY;
 		m_matBillboard.r[2] = cameraAxisZ;
 		m_matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
+=======
+		matView.r[3] = translation;
+
+		//ビルボード行列
+		matBillboard.r[0] = cameraAxisX;
+		matBillboard.r[1] = cameraAxisY;
+		matBillboard.r[2] = cameraAxisZ;
+		matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
+>>>>>>> parent of 00f20c5... no message
 
 		//カメラX軸、Y軸、Z軸
 		XMVECTOR ybillCameraAxisX, ybillCameraAxisY, ybillCameraAxisZ;
@@ -110,10 +148,17 @@ void Camera::Update()
 		ybillCameraAxisZ = XMVector3Cross(ybillCameraAxisX, ybillCameraAxisY);
 
 		//Y軸回りビルボード行列
+<<<<<<< HEAD
 		m_matBillboardY.r[0] = ybillCameraAxisX;
 		m_matBillboardY.r[1] = ybillCameraAxisY;
 		m_matBillboardY.r[2] = ybillCameraAxisZ;
 		m_matBillboardY.r[3] = XMVectorSet(0, 0, 0, 1);
+=======
+		matBillboardY.r[0] = ybillCameraAxisX;
+		matBillboardY.r[1] = ybillCameraAxisY;
+		matBillboardY.r[2] = ybillCameraAxisZ;
+		matBillboardY.r[3] = XMVectorSet(0, 0, 0, 1);
+>>>>>>> parent of 00f20c5... no message
 
 		m_dirty = false;
 		m_isDirty = true;
@@ -173,6 +218,13 @@ void Camera::SetNearFarZ(float nearZ, float farZ)
 	m_dirty = true;
 }
 
+void Camera::SetDistance()
+{
+	distance.x = eye.x - target.x;
+	distance.y = eye.y - target.y;
+	distance.z = eye.z - target.z;
+}
+
 void Camera::MoveCamera(XMFLOAT3 move)
 {
 	this->m_eye.x += move.x;
@@ -185,18 +237,31 @@ void Camera::MoveCamera(XMFLOAT3 move)
 	m_dirty = true;
 }
 
+<<<<<<< HEAD
 void Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, float addAngleY)
+=======
+void Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eye, float addAngleX, float addAngleY)
+>>>>>>> parent of 00f20c5... no message
 {
 	//注視点セット
 	SetTarget(target);
 
 	//オフセットベクトル
+<<<<<<< HEAD
 	XMVECTOR v0 = { eyeDistance.x, eyeDistance.y, eyeDistance.z, 0 };
 
 	//軸の角度に加算する
 	m_angleX += addAngleX;
 	m_angleY += addAngleY;
 
+=======
+	XMVECTOR v0 = { eye.x, eye.y, eye.z, 0 };
+
+	//軸の角度に加算する
+	angleX += addAngleX;
+	angleY += addAngleY;
+
+>>>>>>> parent of 00f20c5... no message
 	//回転行列
 	XMMATRIX rotM = XMMatrixIdentity();
 	rotM *= XMMatrixRotationX(XMConvertToRadians(m_angleX));
@@ -262,4 +327,11 @@ XMFLOAT2 Camera::Convert3DPosTo2DPos(XMFLOAT3 pos)
 	XMFLOAT2 position = { screenPos.m128_f32[0], screenPos.m128_f32[1] };
 
 	return position;
+}
+
+void Camera::InitializeAngle()
+{
+	m_angleX = 0.0f;
+	m_angleY = 0.0f;
+	m_angleZ = 0.0f;
 }

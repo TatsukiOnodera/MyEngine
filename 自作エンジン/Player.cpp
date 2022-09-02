@@ -6,21 +6,12 @@ Camera* Player::s_camera = Camera::GetInstance();
 
 Player::Player()
 {
-	
+	Initialize();
 }
 
 Player::~Player()
 {
-
-}
-
-Player* Player::Create()
-{
-	Player* player = new Player;
-
-	player->Initialize();
-
-	return player;
+	
 }
 
 void Player::Initialize()
@@ -43,7 +34,7 @@ void Player::Update()
 	if (m_alive)
 	{
 		XMFLOAT3 pVec = {};
-		if ((s_input->PushKey(DIK_D) || s_input->PushKey(DIK_A) || s_input->PushKey(DIK_W) || s_input->PushKey(DIK_S)) && m_pos.y == -100 + 4.0f)
+		if (s_input->PushKey(DIK_D) || s_input->PushKey(DIK_A) || s_input->PushKey(DIK_W) || s_input->PushKey(DIK_S))
 		{
 			//ダッシュ
 			if (s_input->TriggerKey(DIK_SPACE))
@@ -83,7 +74,7 @@ void Player::Update()
 		}
 
 		// 重力
-		if (s_input->PushKey(DIK_RSHIFT) && m_pos.y >= -100 + 4.0f)
+		if (s_input->PushKey(DIK_RSHIFT))
 		{
 			pVec.y += 1.5;
 		}
@@ -192,7 +183,7 @@ void Player::ShotBullet(XMFLOAT3 enemyPos)
 			len.x *= bulletSpeed;
 			len.y *= bulletSpeed;
 			len.z *= bulletSpeed;
-			bullet.emplace_back(Bullet::Create(m_pos, len, true));
+			bullet.emplace_back(new Bullet(m_pos, len, true));
 		}
 		else
 		{
