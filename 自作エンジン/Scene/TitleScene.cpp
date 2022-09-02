@@ -21,6 +21,7 @@ void TitleScene::Initialize()
 
 	//スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
+	Sprite::LoadTexture(1, L"Resources/startScreen.png");
 
 	//前景スプライト
 	debugText.Initialize(fontNumber);
@@ -29,6 +30,7 @@ void TitleScene::Initialize()
 	//particle.reset(ParticleManager::Create());
 
 	//スプライト
+	startScreen.reset(Sprite::Create(1));
 
 	//オブジェクト
 
@@ -36,7 +38,7 @@ void TitleScene::Initialize()
 	ResetVariable();
 
 	//オーディオ
-	audio->Initialize();
+	//audio->Initialize();
 }
 
 void TitleScene::ResetVariable()
@@ -46,7 +48,7 @@ void TitleScene::ResetVariable()
 
 void TitleScene::Update()
 {
-	if (input->TriggerKey(DIK_RETURN))
+	if (input->TriggerKey(DIK_SPACE))
 	{
 		//シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
@@ -59,7 +61,7 @@ void TitleScene::Draw()
 
 	//各描画
 	//DrawBackSprite(cmdList);
-	//DrawObject(cmdList);
+	DrawObject(cmdList);
 	//DrawParticles(cmdList);
 	//DrawUI(cmdList);
 	//DrawDebugText(cmdList);
@@ -88,7 +90,7 @@ void TitleScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	
+	startScreen->Draw();
 
 	Sprite::PostDraw();
 

@@ -40,7 +40,7 @@ private: //メンバ変数
 	std::unique_ptr<ParticleManager> particle = nullptr;
 
 	//スプライト
-	
+	std::unique_ptr<Sprite> startScreen = nullptr;
 
 	//オブジェクト
 	
