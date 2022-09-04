@@ -23,6 +23,10 @@ void GamePlayScene::Initialize()
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/background.png");
 	Sprite::LoadTexture(2, L"Resources/Reticle.png");
+	Sprite::LoadTexture(3, L"Resources/isAliveEnemys.png");
+	Sprite::LoadTexture(4, L"Resources/Damage.png");
+	Sprite::LoadTexture(5, L"Resources/Tutorial1.png");
+	Sprite::LoadTexture(6, L"Resources/Tutorial2.png");
 
 	// ライト生成
 	light.reset(Light::Create());
@@ -38,6 +42,10 @@ void GamePlayScene::Initialize()
 
 	// スプライト
 	sight.reset(Sprite::Create(2, { 0.0f, 0.0f }, { 0.5f, 0.5f }));
+	isAliveEnemys.reset(Sprite::Create(3, { 0.0f, 0.0f }, { 0.0f, 0.0f }));
+	damage.reset(Sprite::Create(4, { 0.0f, 0.0f }, { 0.5f, 0.0f }));
+	tutorial1.reset(Sprite::Create(5, { 0.0f, 0.0f }, { 0.0f, 1.0f }));
+	tutorial2.reset(Sprite::Create(6, { 0.0f, 0.0f }, { 1.0f, 1.0f }));
 
 	// OBJオブジェクト
 	for (auto& m : defaultWall)
@@ -64,6 +72,10 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
+	targetNum = 0;
+	listNum = 0;
+	effectTimer = 0;
+
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
 		float size = 100;
@@ -112,8 +124,15 @@ void GamePlayScene::InitializeVariable()
 	camera->InitializeAngle();
 	camera->Update();
 
-	targetNum = 0;
-	listNum = 0;
+	damage->SetPosition({ WinApp::window_width / 2, 0 });
+
+	isAliveEnemys->SetSize({ 384, 72 });
+	isAliveEnemys->SetTexSize({ 384, 72 });
+
+	tutorial1->SetPosition({ 35, WinApp::window_height - 7 });
+	tutorial1->SetSize({384, 108});
+	tutorial2->SetPosition({ WinApp::window_width - 35, WinApp::window_height - 7 });
+	tutorial2->SetSize({ 384, 216 });
 }
 
 void GamePlayScene::Update()
@@ -156,6 +175,26 @@ void GamePlayScene::Update()
 		if (m->Update(player->GetPosition()))
 		{
 			player->SetEffectTimer();
+			effectTimer = 1;
+		}
+	}
+
+	int enemyNumbers = 0;
+	for (auto& m : enemy)
+	{
+		if (m->GetAlive())
+		{
+			enemyNumbers++;
+		}
+	}
+	isAliveEnemys->SetLeftTop({ 384.0f * enemyNumbers, 0 });
+
+	if (effectTimer > 0)
+	{
+		effectTimer++;
+		if (effectTimer > 60)
+		{
+			effectTimer = 0;
 		}
 	}
 
@@ -268,6 +307,18 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 	{
 		sight->Draw();
 	}
+
+	//Enemyの数
+	isAliveEnemys->Draw();
+
+	//Damageの文字
+	if (effectTimer != 0)
+	{
+		damage->Draw();
+	}
+
+	tutorial1->Draw();
+	tutorial2->Draw();
 
 	Sprite::PostDraw();
 }

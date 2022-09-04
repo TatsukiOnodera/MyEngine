@@ -63,6 +63,10 @@ private: // インスタンス
 	std::unique_ptr<ParticleManager> particle = nullptr;
 	// スプライト
 	std::unique_ptr<Sprite> sight = nullptr;
+	std::unique_ptr<Sprite> damage = nullptr;
+	std::unique_ptr<Sprite> isAliveEnemys = nullptr;
+	std::unique_ptr<Sprite> tutorial1 = nullptr;
+	std::unique_ptr<Sprite> tutorial2 = nullptr;
 	// OBJオブジェクト
 	std::array<std::unique_ptr<Object3d>, END> defaultWall = {};
 	std::vector<std::unique_ptr<Enemy>> enemy;
@@ -76,6 +80,8 @@ private: // メンバ変数
 	std::vector<int> targetList;
 	//リスト番号
 	int listNum;
+	//エフェクトタイマー
+	int effectTimer;
 
 public: // メンバ関数
 	~GamePlayScene() override;
