@@ -187,24 +187,16 @@
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="DirectXCommon\PipelineManager.cpp" />
     <ClCompile Include="Effect\ParticleManager.cpp" />
     <ClCompile Include="Effect\PostEffect.cpp" />
     <ClCompile Include="EndScene.cpp" />
     <ClCompile Include="Enemy.cpp" />
-=======
-    <ClCompile Include="Effect\ParticleManager.cpp" />
-    <ClCompile Include="Effect\PostEffect.cpp" />
->>>>>>> parent of 00f20c5... no message
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Player.cpp" />
-=======
->>>>>>> parent of 00f20c5... no message
     <ClCompile Include="Scene\GamePlayScene.cpp" />
     <ClCompile Include="Scene\SceneFactory.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
@@ -231,27 +223,19 @@
     <ClInclude Include="Collision\CollisionType.h" />
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
-<<<<<<< HEAD
     <ClInclude Include="DirectXCommon\PipelineManager.h" />
     <ClInclude Include="Effect\ParticleManager.h" />
     <ClInclude Include="Effect\PostEffect.h" />
     <ClInclude Include="EndScene.h" />
     <ClInclude Include="Enemy.h" />
-=======
-    <ClInclude Include="Effect\ParticleManager.h" />
-    <ClInclude Include="Effect\PostEffect.h" />
->>>>>>> parent of 00f20c5... no message
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Light\Light.h" />
     <ClInclude Include="Light\LightGroup.h" />
     <ClInclude Include="Light\PointLight.h" />
-<<<<<<< HEAD
     <ClInclude Include="Measurement.h" />
     <ClInclude Include="Player.h" />
-=======
->>>>>>> parent of 00f20c5... no message
     <ClInclude Include="Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\GamePlayScene.h" />
@@ -311,7 +295,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-<<<<<<< HEAD
     <FxCompile Include="Resources\Shaders\SpecularMapPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -320,8 +303,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-=======
->>>>>>> parent of 00f20c5... no message
     <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -357,10 +338,7 @@
     <None Include="Resources\Shaders\MonochromaticShaderHeader.hlsli" />
     <None Include="Resources\Shaders\Particle.hlsli" />
     <None Include="Resources\Shaders\PostEffect.hlsli" />
-<<<<<<< HEAD
     <None Include="Resources\Shaders\SpecularMapShaderHeader.hlsli" />
-=======
->>>>>>> parent of 00f20c5... no message
     <None Include="Resources\Shaders\Sprite.hlsli" />
     <None Include="Resources\Shaders\TextureBlendShaderHeader.hlsli" />
     <None Include="Resources\Shaders\ToonShaderHeader.hlsli" />

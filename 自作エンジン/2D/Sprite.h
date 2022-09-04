@@ -88,11 +88,7 @@ protected: //メンバ変数
 	//テクスチャ番号
 	UINT texNumber = 0;
 	//座標
-<<<<<<< HEAD
 	XMFLOAT2 position = { 0, 0 };
-=======
-	XMFLOAT3 position = { 0, 0, 0 };
->>>>>>> parent of 00f20c5... no message
 	//色
 	XMFLOAT4 color = { 1, 1, 1, 1 };
 	//大きさ

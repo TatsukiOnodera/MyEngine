@@ -30,7 +30,6 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-<<<<<<< HEAD
 private: // 定数
 	// デバッグテキスト用テクスチャの番号
 	const int fontNumber = 0;
@@ -40,25 +39,13 @@ private: // 定数
 		ADS, TOON, MONO, BLEND, SPECULAR
 	};
 	// 壁の配置
-=======
-private: //定数
-	//デバッグテキスト用テクスチャの番号
-	const int fontNumber = 0;
-
-	//壁の配置
->>>>>>> parent of 00f20c5... no message
 	enum WALLNUMBER
 	{
 		FRONT, BACK, RIGHT, LEFT, UP, DOWN, END
 	};
 
-<<<<<<< HEAD
 private: // メモリ置き場
 	// DIrectXCommon
-=======
-private: //メモリ置き場
-	//DIrectXCommon
->>>>>>> parent of 00f20c5... no message
 	DirectXCommon* dx_cmd = nullptr;
 	// 操作系
 	Input* input = nullptr;
@@ -69,17 +56,11 @@ private: //メモリ置き場
 	// デバッグテキスト
 	DebugText debugText;
 
-<<<<<<< HEAD
 private: // インスタンス
 	// ライト
-=======
-private: //インスタンス
-	//ライト
->>>>>>> parent of 00f20c5... no message
 	std::unique_ptr<Light> light = nullptr;
 	// パーティクル
 	std::unique_ptr<ParticleManager> particle = nullptr;
-<<<<<<< HEAD
 	// スプライト
 	std::unique_ptr<Sprite> sight = nullptr;
 	// OBJオブジェクト
@@ -98,24 +79,6 @@ private: // メンバ変数
 
 public: // メンバ関数
 	~GamePlayScene() override;
-=======
-
-	//スプライト
-	std::unique_ptr<Sprite> demo_back = nullptr;
-
-	//OBJオブジェクト
-	std::array<std::unique_ptr<Object3d>, END> defaultWall;
-	
-	//FBXオブジェクト
-	std::unique_ptr<FbxObject3d> fbxObject = nullptr;
-
-private: //メンバ変数
-	
-
-
-public: //メンバ関数
-	~GamePlayScene();
->>>>>>> parent of 00f20c5... no message
 
 	/// <summary>
 	/// 初期化
