@@ -25,7 +25,7 @@ void Enemy::Initialize()
 	assert(m_object);
 	m_object->SetPosition(m_pos);
 	m_object->SetScale({ 3, 3, 3 });
-	m_object->SetColor({ 0, 0.3, 0.9, 1 });
+	m_object->SetColor({ 0.0f, 0.3f, 0.9f, 1.0f });
 	m_object->Update();
 }
 

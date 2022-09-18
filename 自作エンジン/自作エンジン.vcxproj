@@ -130,9 +130,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game\;$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,9 +154,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game\;$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -181,7 +183,6 @@
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Base\FrameWork.cpp" />
     <ClCompile Include="Base\OnoGame.cpp" />
-    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Collision\Collision.cpp" />
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
@@ -190,13 +191,14 @@
     <ClCompile Include="DirectXCommon\PipelineManager.cpp" />
     <ClCompile Include="Effect\ParticleManager.cpp" />
     <ClCompile Include="Effect\PostEffect.cpp" />
-    <ClCompile Include="EndScene.cpp" />
-    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Game\Bullet.cpp" />
+    <ClCompile Include="Game\Enemy.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Scene\EndScene.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
     <ClCompile Include="Scene\SceneFactory.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
@@ -214,7 +216,6 @@
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Base\FrameWork.h" />
     <ClInclude Include="Base\OnoGame.h" />
-    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Collision\BaseCollider.h" />
     <ClInclude Include="Collision\Collision.h" />
@@ -226,8 +227,9 @@
     <ClInclude Include="DirectXCommon\PipelineManager.h" />
     <ClInclude Include="Effect\ParticleManager.h" />
     <ClInclude Include="Effect\PostEffect.h" />
-    <ClInclude Include="EndScene.h" />
-    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Game\Bullet.h" />
+    <ClInclude Include="Game\Enemy.h" />
+    <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />
@@ -235,9 +237,9 @@
     <ClInclude Include="Light\LightGroup.h" />
     <ClInclude Include="Light\PointLight.h" />
     <ClInclude Include="Measurement.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Scene\BaseScene.h" />
+    <ClInclude Include="Scene\EndScene.h" />
     <ClInclude Include="Scene\GamePlayScene.h" />
     <ClInclude Include="Scene\SceneFactory.h" />
     <ClInclude Include="Scene\SceneManager.h" />

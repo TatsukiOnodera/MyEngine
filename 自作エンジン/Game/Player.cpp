@@ -47,8 +47,8 @@ void Player::Update()
 			}
 
 			//ベクトル
-			pVec.x += (s_input->PushKey(DIK_D) - s_input->PushKey(DIK_A)) * 0.75;
-			pVec.z += (s_input->PushKey(DIK_W) - s_input->PushKey(DIK_S)) * 0.75;
+			pVec.x += (s_input->PushKey(DIK_D) - s_input->PushKey(DIK_A)) * 0.75f;
+			pVec.z += (s_input->PushKey(DIK_W) - s_input->PushKey(DIK_S)) * 0.75f;
 		}
 		else
 		{
@@ -62,7 +62,7 @@ void Player::Update()
 			pVec.x *= m_add0;
 			pVec.z *= m_add0;
 
-			m_add0 = m_add0 - 0.75;
+			m_add0 = m_add0 - 0.75f;
 
 			//加速度が0になったら
 			if (m_add0 <= 0)
@@ -78,7 +78,7 @@ void Player::Update()
 		{
 			pVec.y += 1.5;
 		}
-		pVec.y += -0.98;
+		pVec.y += -0.98f;
 
 		//カメラを軸にした変換
 		m_pos = m_object->GetPosition();

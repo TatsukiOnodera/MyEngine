@@ -50,7 +50,7 @@ private: // メモリ置き場
 	// 操作系
 	Input* input = nullptr;
 	// オーディオ
-	//Audio* audio = nullptr;
+	std::unique_ptr<Audio> audio = nullptr;
 	// カメラ
 	Camera* camera = nullptr;
 	// デバッグテキスト

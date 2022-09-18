@@ -126,32 +126,32 @@
     <ClCompile Include="Window\WinApp.cpp">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
+    <ClCompile Include="Scene\SceneFactory.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\GamePlayScene.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\TitleScene.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\EndScene.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Bullet.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
+    <ClCompile Include="Game\Enemy.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
+    <ClCompile Include="Game\Player.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClCompile>
     <ClCompile Include="DirectXCommon\PipelineManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneFactory.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\OtherScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\OtherScene</Filter>
-    </ClCompile>
-    <ClCompile Include="EndScene.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\GameScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\GamePlayScene.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\GameScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\TitleScene.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\GameScene</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,41 +236,41 @@
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Measurement.h">
       <Filter>ソース&amp;ヘッダーファイル\Lib</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="Scene\AbstractSceneFactory.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\BaseScene.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneFactory.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\GamePlayScene.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\TitleScene.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\EndScene.h">
+      <Filter>ソース&amp;ヘッダーファイル\Scene\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Bullet.h">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy.h">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player.h">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClInclude>
     <ClInclude Include="DirectXCommon\PipelineManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\AbstractSceneFactory.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\OtherScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\BaseScene.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\OtherScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneFactory.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\OtherScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\OtherScene</Filter>
-    </ClInclude>
-    <ClInclude Include="EndScene.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\GameScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\GamePlayScene.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\GameScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\TitleScene.h">
-      <Filter>ソース&amp;ヘッダーファイル\Scene\GameScene</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -399,10 +399,10 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Object\3D\FBX">
       <UniqueIdentifier>{84c8e693-c27c-40c0-8c5b-92cecd1fbb0b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\Scene\OtherScene">
+    <Filter Include="ソース&amp;ヘッダーファイル\Scene\Other">
       <UniqueIdentifier>{b73bf738-3bc4-4858-9826-687820f412e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース&amp;ヘッダーファイル\Scene\GameScene">
+    <Filter Include="ソース&amp;ヘッダーファイル\Scene\Game">
       <UniqueIdentifier>{a673ebf2-b232-4311-a170-8abdd975e10b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

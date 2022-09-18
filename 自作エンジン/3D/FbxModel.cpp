@@ -5,7 +5,7 @@ using namespace DirectX;
 
 FbxModel::~FbxModel()
 {
-	//FBXシーンの開放
+	// FBXシーンの開放
 	fbxScene->Destroy();
 }
 
@@ -13,13 +13,13 @@ void FbxModel::CreateBuffers(ID3D12Device* dev)
 {
 	HRESULT result = S_FALSE;
 
-	//メッシュのバッファ生成
+	// メッシュのバッファ生成
 	for (auto &m : meshes)
 	{
 		m->CreateBuffers(dev);
 	}
 
-	//テクスチャ画像データ
+	// テクスチャ画像データ
 	const DirectX::Image* img = scratchImg.GetImage(0, 0, 0); //生データ抽出
 	assert(img);
 
@@ -74,24 +74,24 @@ void FbxModel::CreateBuffers(ID3D12Device* dev)
 
 	srvDesc.Format = resDesc.Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;// 2Dテクスチャ
 	srvDesc.Texture2D.MipLevels = 1;
 
-	dev->CreateShaderResourceView(texBuff.Get(), //ビューと関連付けるバッファ
-		&srvDesc, //テクスチャ設定情報
-		descHeapSRV->GetCPUDescriptorHandleForHeapStart()); //ヒープの先頭アドレス
+	dev->CreateShaderResourceView(texBuff.Get(), // ビューと関連付けるバッファ
+		&srvDesc, // テクスチャ設定情報
+		descHeapSRV->GetCPUDescriptorHandleForHeapStart()); // ヒープの先頭アドレス
 }
 
 void FbxModel::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	// デスクリプタヒープの配列
 	ID3D12DescriptorHeap* ppHeaps[] = { descHeapSRV.Get() };
-	//デストラクタヒープをセット
+	// デストラクタヒープをセット
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	// シェーダリソースビューをセット
 	cmdList->SetGraphicsRootDescriptorTable(1, descHeapSRV->GetGPUDescriptorHandleForHeapStart());
 
-	//メッシュの描画処理
+	// メッシュの描画処理
 	for (auto &m : meshes)
 	{
 		m->Draw(cmdList);
@@ -100,7 +100,9 @@ void FbxModel::Draw(ID3D12GraphicsCommandList* cmdList)
 
 const XMMATRIX& FbxModel::GetInverseGlobalTransform()
 {
-	return DirectX::XMMatrixInverse(nullptr, GetModelTransform());
+	InverseModelTransform = DirectX::XMMatrixInverse(nullptr, GetModelTransform());
+
+	return InverseModelTransform;
 }
 
 void FbxModel::AddModelMesh(FbxModelMesh* modelMesh)

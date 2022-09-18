@@ -6,45 +6,47 @@
 #include <wrl.h>
 #include <DirectXMath.h>
 
-#define DIRECTINPUT_VERSION             0x0800 //Direct Inputのバージョン指定
-
 class Input : public InputList
 {
-public: //エイリアス
-	//namespace省略
+public: // エイリアス
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 
-private: //メンバ変数
-	//DirectInputのインスタンス
-	ComPtr<IDirectInput8> dinput;
-	//キーボードデバイス
-	ComPtr<IDirectInputDevice8> devkeyboard;
-	//キー判定
+private: // メンバ変数
+	// Direct Inputのバージョン指定
+	constexpr static int dInputVersion = 0x0800;
+	// DirectInputのインスタンス
+	ComPtr<IDirectInput8> dInput;
+	// キーボードデバイス
+	ComPtr<IDirectInputDevice8> devKeyboard;
+	// キー判定
 	BYTE keys[256] = {};
-	//前フレームのキー情報
-	BYTE oldkeys[256] = {};
-	//マウスデバイス
+	// 前フレームのキー情報
+	BYTE oldKeys[256] = {};
+	// マウスデバイス
 	ComPtr<IDirectInputDevice8> devMouse;
-	//マウス判定
+	// マウス判定
 	DIMOUSESTATE2 mouseState = {};
-	//前フレームのマウス判定
+	// 前フレームのマウス判定
 	DIMOUSESTATE2 oldMouseState = {};
-	//ゲームパッドデバイス
+	// ゲームパッドデバイス
 	ComPtr<IDirectInputDevice8> devGamePad;
-	//ゲームパッドの判定
+	// ゲームパッドの判定
 	DIJOYSTATE gamePadState = {};
-	//前フレームのゲームパッドの判定
+	// 前フレームのゲームパッドの判定
 	DIJOYSTATE oldGamePadState = {};
-	//ボタンデータ
-	bool is_push[32] = {};
-	//スティックの反応範囲
-	LONG responsive_range = 100;
-	//スティックの無反応範囲
-	LONG unresponsive_range = 40;
+	// ボタンデータ
+	bool isPush[32] = {};
+	// スティックの反応範囲
+	LONG responsiveRange = 100;
+	// スティックの無反応範囲
+	LONG unresponsiveRange = 40;
 
-public: //静的メンバ関数
+public: // 静的メンバ関数
+	/// <summary>
+	/// インスタンスを取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static Input* GetInstance();
 
 public: //メンバ関数
@@ -58,19 +60,25 @@ public: //メンバ関数
 	/// </summary>
 	void Update();
 
-	//キー操作
+	/// <summary>
+	/// キー操作
+	/// </summary>
 	//入力
 	bool PushKey(BYTE key);
 	//入力（長押し不可）
 	bool TriggerKey(BYTE key);
 
-	//クリック
+	/// <summary>
+	/// クリック
+	/// </summary>
 	//左クリック
 	bool PushMouse(int Mouse);
 	//左クリック（長押し不可）
 	bool TriggerMouse(int Mouse);
 
-	//ゲームパッド
+	/// <summary>
+	/// ゲームパッド
+	/// </summary>
 	//ゲームパッドスティック
 	bool TiltLeftStick(int stick);
 	//ゲームパッドスティック（長押し不可）

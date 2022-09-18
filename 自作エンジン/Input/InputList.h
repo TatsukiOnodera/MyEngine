@@ -3,7 +3,9 @@
 class InputList
 {
 public:
-	//ゲームパッド（ボタン）
+	/// <summary>
+	/// ゲームパッド（XBOX）
+	/// </summary>
 	enum ButtonKind
 	{
 		Button_A,
@@ -23,16 +25,19 @@ public:
 		ButtonMax
 	};
 
-	//マウス
+	/// <summary>
+	/// マウス
+	/// </summary>
 	enum MouseKind
 	{
 		M_Left, M_Right, M_Middle
 	};
 
-	//スティック
+	/// <summary>
+	/// スティック
+	/// </summary>
 	enum StickKind
 	{
 		S_Up, S_Down, S_Right, S_Left
 	};
-
 };

@@ -41,60 +41,62 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 	using TexMetadata = DirectX::TexMetadata;
 	using ScratchImage = DirectX::ScratchImage;
-	//std::を省略
+	// std::を省略
 	using string = std::string;
 	template <class T> using vector = std::vector<T>;
 
-public: //メモリ
-	//フレンドクラスを作る
+public: // メモリ
+	// フレンドクラスを作る
 	friend class FbxLoader;
 
-public: //サブクラス
-	//ボーン構造体
+public: // サブクラス
+	// ボーン構造体
 	struct Bone
 	{
-		//名前
+		// 名前
 		std::string name;
-		//初期姿勢の逆行列
+		// 初期姿勢の逆行列
 		DirectX::XMMATRIX invInitialPose;
-		//クラスター（FBX側のボーン情報）
+		// クラスター（FBX側のボーン情報）
 		FbxCluster* fbxCluster;
-		//コンストラクタ
+		// コンストラクタ
 		Bone(const std::string& name)
 		{
 			this->name = name;
 		}
 	};
 
-private: //モデルデータ用変数
-	//モデル名
+private: // モデルデータ用変数
+	// モデル名
 	std::string name;
-	//ノード配列
+	// ノード配列
 	std::vector<Node>nodes;
-	//メッシュを持つノード
+	// メッシュを持つノード
 	Node* meshNode = nullptr;
-	//アンビエント係数
+	// アンビエント係数
 	DirectX::XMFLOAT3 ambient = { 1, 1, 1 };
-	//ディフューズ係数
+	// ディフューズ係数
 	DirectX::XMFLOAT3 diffuse = { 1, 1, 1 };
-	//テクスチャメタデータ
+	// テクスチャメタデータ
 	DirectX::TexMetadata metadata = {};
-	//スクラッチイメージ
+	// スクラッチイメージ
 	DirectX::ScratchImage scratchImg = {};
-	//ボーン配列
+	// ボーン配列
 	std::vector<Bone> bones;
-	//FBXシーン
+	// FBXシーン
 	FbxScene* fbxScene = nullptr;
-	//メッシュ配列
+	// メッシュ配列
 	std::vector<FbxModelMesh*> meshes;
+	// グローバル変形逆行列
+	DirectX::XMMATRIX InverseModelTransform;
 
-private: //メンバ変数
+private: // メンバ変数
 	// テクスチャバッファ
 	ComPtr<ID3D12Resource> texBuff;
 	// SRV用デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
 
-public: //メンバ関数
+public: // メンバ関数
 	/// <summary>
 	/// デストラクタ
 	/// </summary>

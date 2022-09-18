@@ -16,7 +16,7 @@ void GamePlayScene::Initialize()
 {
 	dx_cmd = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
-	//audio = Audio::GetInstance();
+	//audio.reset(new Audio);
 	camera = Camera::GetInstance();
 
 	// スプライトテクスチャ読み込み
