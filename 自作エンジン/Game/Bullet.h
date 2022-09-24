@@ -47,7 +47,7 @@ public: // ƒƒ“ƒoŠÖ”
 	/// <summary>
 	///  XV
 	/// </summary>
-	bool Update(XMFLOAT3 pos);
+	void Update();
 
 	/// <summary>
 	/// •`‰æ

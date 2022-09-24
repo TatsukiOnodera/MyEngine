@@ -24,7 +24,6 @@
 class GamePlayScene : public BaseScene
 {
 public: // エイリアス
-	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -33,11 +32,13 @@ public: // エイリアス
 private: // 定数
 	// デバッグテキスト用テクスチャの番号
 	const int fontNumber = 0;
+
 	// シェーダーの種類
 	enum ShadersType
 	{
 		ADS, TOON, MONO, BLEND, SPECULAR
 	};
+
 	// 壁の配置
 	enum WALLNUMBER
 	{
@@ -45,12 +46,12 @@ private: // 定数
 	};
 
 private: // メモリ置き場
-	// DIrectXCommon
+	// DIrectXコマンド
 	DirectXCommon* dx_cmd = nullptr;
 	// 操作系
 	Input* input = nullptr;
 	// オーディオ
-	std::unique_ptr<Audio> audio = nullptr;
+	//std::unique_ptr<Audio> audio = nullptr;
 	// カメラ
 	Camera* camera = nullptr;
 	// デバッグテキスト
@@ -59,31 +60,27 @@ private: // メモリ置き場
 private: // インスタンス
 	// ライト
 	std::unique_ptr<Light> light = nullptr;
+
 	// パーティクル
-	std::unique_ptr<ParticleManager> particle = nullptr;
+	//std::unique_ptr<ParticleManager> particle = nullptr;
+
 	// スプライト
-	std::unique_ptr<Sprite> sight = nullptr;
-	std::unique_ptr<Sprite> damage = nullptr;
-	std::unique_ptr<Sprite> isAliveEnemys = nullptr;
-	std::unique_ptr<Sprite> tutorial1 = nullptr;
-	std::unique_ptr<Sprite> tutorial2 = nullptr;
+
+
 	// OBJオブジェクト
 	std::array<std::unique_ptr<Object3d>, END> defaultWall = {};
-	std::vector<std::unique_ptr<Enemy>> enemy;
+	std::unique_ptr<Enemy> enemy;
+
 	// FBXオブジェクト
 	std::unique_ptr<Player> player = nullptr;
 
 private: // メンバ変数
-	//標的番号
-	int targetNum;
-	//標的リスト
-	std::vector<int> targetList;
-	//リスト番号
-	int listNum;
-	//エフェクトタイマー
-	int effectTimer;
+
 
 public: // メンバ関数
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~GamePlayScene() override;
 
 	/// <summary>

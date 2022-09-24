@@ -206,62 +206,6 @@ bool Input::TriggerMouse(int Mouse)
 	return false;
 }
 
-bool Input::TiltLeftStick(int stick)
-{
-	assert(0 <= stick && stick < 4);
-
-	//左
-	if (gamePadState.lX < -unresponsiveRange && stick == S_Left)
-	{
-		return true;
-	}
-	//右
-	else if (gamePadState.lX > unresponsiveRange && stick == S_Right)
-	{
-		return true;
-	}
-	//後ろ
-	if (gamePadState.lY > unresponsiveRange && stick == S_Down)
-	{
-		return true;
-	}
-	//前
-	else if (gamePadState.lY < -unresponsiveRange && stick == S_Up)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool Input::TriggerLeftStick(int stick)
-{
-	assert(0 <= stick && stick < 4);
-
-	//左
-	if (gamePadState.lX < -unresponsiveRange && !(oldGamePadState.lX < -unresponsiveRange) && stick == S_Left)
-	{
-		return true;
-	}
-	//右
-	else if (gamePadState.lX > unresponsiveRange && !(oldGamePadState.lX > unresponsiveRange) && stick == S_Right)
-	{
-		return true;
-	}
-	//後ろ
-	if (gamePadState.lY > unresponsiveRange && !(oldGamePadState.lY > unresponsiveRange) && stick == S_Down)
-	{
-		return true;
-	}
-	//前
-	else if (gamePadState.lY < -unresponsiveRange && !(oldGamePadState.lY < -unresponsiveRange) && stick == S_Up)
-	{
-		return true;
-	}
-
-	return false;
-}
-
 XMFLOAT2 Input::LeftStickAngle()
 {
 	//スティックの方向判定
@@ -280,6 +224,11 @@ XMFLOAT2 Input::LeftStickAngle()
 	}
 
 	return XMFLOAT2(x_vec, y_vec);
+}
+
+XMFLOAT2 Input::RightStickAngle()
+{
+	return XMFLOAT2(0, 0);
 }
 
 bool Input::PushButton(int Button)
@@ -314,10 +263,10 @@ bool Input::PushButton(int Button)
 			isPush[ButtonKind::Button_RB] = true;
 			break;
 		case 6:
-			isPush[ButtonKind::Select] = true;
+			isPush[ButtonKind::Button_View] = true;
 			break;
 		case 7:
-			isPush[ButtonKind::Start] = true;
+			isPush[ButtonKind::Button_Menu] = true;
 			break;
 		case 8:
 			isPush[ButtonKind::Button_LS] = true;
@@ -382,10 +331,10 @@ bool Input::TriggerButton(int Button)
 			isPush[ButtonKind::Button_RB] = true;
 			break;
 		case 6:
-			isPush[ButtonKind::Select] = true;
+			isPush[ButtonKind::Button_View] = true;
 			break;
 		case 7:
-			isPush[ButtonKind::Start] = true;
+			isPush[ButtonKind::Button_Menu] = true;
 			break;
 		case 8:
 			isPush[ButtonKind::Button_LS] = true;
@@ -414,7 +363,7 @@ bool Input::TriggerButton(int Button)
 
 bool Input::PushCrossKey(int CrossKey)
 {
-	assert(Cross_Up <= CrossKey && CrossKey < Cross_Left);
+	assert(Cross_Up <= CrossKey && CrossKey <= Cross_Left);
 
 	if (gamePadState.rgdwPOV[0] != 0xFFFFFFFF)
 	{
@@ -450,7 +399,7 @@ bool Input::PushCrossKey(int CrossKey)
 			break;
 		}
 
-		for (int i = Cross_Up; i < ButtonMax; i++)
+		for (int i = Cross_Up; i <= Cross_Left; i++)
 		{
 			if (isPush[i] == true)
 			{
@@ -467,7 +416,7 @@ bool Input::PushCrossKey(int CrossKey)
 
 bool Input::TriggerCrossKey(int CrossKey)
 {
-	assert(Cross_Up <= CrossKey && CrossKey < Cross_Left);
+	assert(Cross_Up <= CrossKey && CrossKey <= Cross_Left);
 
 	if (gamePadState.rgdwPOV[0] != 0xFFFFFFFF && oldGamePadState.rgdwPOV[0] == 0xFFFFFFFF)
 	{
@@ -503,7 +452,7 @@ bool Input::TriggerCrossKey(int CrossKey)
 			break;
 		}
 
-		for (int i = Cross_Up; i < ButtonMax; i++)
+		for (int i = Cross_Up; i <= Cross_Left; i++)
 		{
 			if (isPush[i] == true)
 			{

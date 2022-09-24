@@ -49,7 +49,7 @@ public: // 静的メンバ関数
 	/// <returns>インスタンス</returns>
 	static Input* GetInstance();
 
-public: //メンバ関数
+public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -61,36 +61,70 @@ public: //メンバ関数
 	void Update();
 
 	/// <summary>
-	/// キー操作
+	/// キー入力
 	/// </summary>
-	//入力
+	/// <param name="key">押しているキー</param>
+	/// <returns>押しているか</returns>
 	bool PushKey(BYTE key);
-	//入力（長押し不可）
+
+	/// <summary>
+	/// キー入力（長押し不可）
+	/// </summary>
+	/// <param name="key">押しているキー</param>
+	/// <returns>押しているか</returns>
 	bool TriggerKey(BYTE key);
 
 	/// <summary>
-	/// クリック
+	/// 左クリック
 	/// </summary>
-	//左クリック
-	bool PushMouse(int Mouse);
-	//左クリック（長押し不可）
-	bool TriggerMouse(int Mouse);
+	/// <param name="Mouse">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool PushMouse(const int Mouse);
 
 	/// <summary>
-	/// ゲームパッド
+	/// 右クリック
 	/// </summary>
-	//ゲームパッドスティック
-	bool TiltLeftStick(int stick);
-	//ゲームパッドスティック（長押し不可）
-	bool TriggerLeftStick(int stick);
-	//ゲームパッドスティックを倒した比率
+	/// <param name="Mouse">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool TriggerMouse(const int Mouse);
+	
+	/// <summary>
+	/// ゲームパッド左スティックを倒した割合
+	/// </summary>
+	/// <returns>スティックを倒した割合</returns>
 	XMFLOAT2 LeftStickAngle();
-	//ゲームパッドボタン
-	bool PushButton(int Button);
-	//ゲームパッドボタン（長押し不可）
-	bool TriggerButton(int Button);
-	//ゲームパッド十字キー
-	bool PushCrossKey(int CrossKey);
-	//ゲームパッド十字キー（長押し不可）
-	bool TriggerCrossKey(int CrossKey);
+
+	/// <summary>
+	/// ゲームパッド左スティックを倒した割合
+	/// </summary>
+	/// <returns>スティックを倒した割合</returns>
+	XMFLOAT2 RightStickAngle();
+
+	/// <summary>
+	/// ゲームパッドボタン
+	/// </summary>
+	/// <param name="Button">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool PushButton(const int Button);
+
+	/// <summary>
+	/// ゲームパッドボタン（長押し不可）
+	/// </summary>
+	/// <param name="Button">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool TriggerButton(const int Button);
+
+	/// <summary>
+	/// ゲームパッド十字キー
+	/// </summary>
+	/// <param name="CrossKey">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool PushCrossKey(const int CrossKey);
+
+	/// <summary>
+	/// ゲームパッド十字キー（長押し不可）
+	/// </summary>
+	/// <param name="CrossKey">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool TriggerCrossKey(const int CrossKey);
 };

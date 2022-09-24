@@ -25,10 +25,6 @@ private: // メンバ変数
 	XMFLOAT3 m_vec = { 0, 0, 0 };
 	// 生存フラグ
 	bool m_alive = false;
-	//ショットの間隔
-	int intervalTime = 0;
-	//エフェクトタイマー
-	int effectTimer = 0;
 
 	//Bullet
 	vector<std::unique_ptr<Bullet>> bullet;
@@ -52,19 +48,12 @@ public: // メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="playerPosition">自機の座標</param>
-	bool Update(XMFLOAT3 playerPosition);
+	void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw();
-
-	/// <summary>
-	/// すべて弾を使っているか
-	/// </summary>
-	/// <returns>成否</returns>
-	bool UsingAllBullet();
 
 	/// <summary>
 	/// 始点から終点への距離
@@ -81,7 +70,9 @@ public: //アクセッサ
 	/// <returns>座標</returns>
 	XMFLOAT3 GetPosition() { return m_pos; }
 
+	/// <summary>
+	/// 生死フラグの取得
+	/// </summary>
+	/// <returns>生死フラグ</returns>
 	bool GetAlive() { return m_alive; }
-
-	void SetEffectTimer();
 };

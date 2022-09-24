@@ -113,7 +113,10 @@ void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, floa
 	/// <summary>
 	/// m_angleのリセット
 	/// </summary>
-	void InitializeAngle();
+	/// <param name="angleX">m_angleXの初期値</param>
+	/// <param name="angleY">m_angleYの初期値</param>
+	/// <param name="angleZ">m_angleZの初期値</param>
+	void InitializeAngle(float angleX = 0.0f, float angleY = 0.0f, float angleZ = 0.0f);
 
 public: //アクセッサ
 	/// <summary>
