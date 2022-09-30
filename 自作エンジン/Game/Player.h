@@ -40,6 +40,8 @@ private: // メンバ変数
 	bool m_alive = false;
 	// 加速する
 	bool m_isDash = false;
+	// フレーム
+	int m_frame = 0;
 
 	// Bullet
 	// オブジェクト

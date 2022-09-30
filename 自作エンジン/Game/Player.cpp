@@ -24,6 +24,7 @@ void Player::Initialize()
 	m_pos = { 0, 0, -50 };
 	m_add = { 0, 0, 0 };
 	m_speed = 1.0f;
+	m_frame = 0;
 	m_alive = true;
 	m_isDash = false;
 
@@ -37,23 +38,68 @@ void Player::Update()
 {
 	if (m_alive == true)
 	{
+		// 加速値
+		{
+			// 減速
+			if (0 < m_add.x)
+			{
+				m_add.x -= m_speed / 10;
+				if (m_add.x < 0)
+				{
+					m_add.x = 0;
+				}
+			}
+			else if (m_add.x < 0)
+			{
+				m_add.x += m_speed / 10;
+				if (0 < m_add.x)
+				{
+					m_add.x = 0;
+				}
+			}
+			if (0 < m_add.z)
+			{
+				m_add.z -= m_speed / 10;
+				if (m_add.z < 0)
+				{
+					m_add.z = 0;
+				}
+			}
+			else if (m_add.z < 0)
+			{
+				m_add.z += m_speed / 10;
+				if (0 < m_add.z)
+				{
+					m_add.z = 0;
+				}
+			}
+			// 重力
+			m_add.y -= 9.8f * powf(static_cast<float>(m_frame) / 60, 2);
+			m_frame++;
+		}
+
 		// 移動ベクトル
 		XMFLOAT3 vec = {};
 		// 移動
-		if (s_input->PushKey(DIK_D) || s_input->PushKey(DIK_A) || s_input->PushKey(DIK_W) || s_input->PushKey(DIK_S))
+		if (s_input->LeftStickAngle().x != 0 && s_input->LeftStickAngle().y != 0)
 		{
-			vec.x += (s_input->PushKey(DIK_D) - s_input->PushKey(DIK_A)) * m_speed;
-			vec.z += (s_input->PushKey(DIK_W) - s_input->PushKey(DIK_S)) * m_speed;
+			vec.x += s_input->LeftStickAngle().x * m_speed;
+			vec.z += s_input->LeftStickAngle().y * m_speed;
+
+			m_add.x = vec.x;
+			m_add.z = vec.z;
 		}
 		// ジャンプ
-		if (s_input->PushKey(DIK_C))
+		if (s_input->PullLeftTigger())
 		{
 			vec.y += 1.0f;
+
+			m_add.y = vec.y;
+			m_frame = 0;
 		}
-		vec.y -= 0.98f;
 
 		// カメラを軸にした変換
-		m_pos = s_camera->ConvertWindowPos(m_object->GetPosition(), vec);
+		m_pos = s_camera->ConvertWindowPos(m_object->GetPosition(), m_add);
 		
 		// 壁との当たり判定
 		if (m_pos.x < -100 + 5)
@@ -75,7 +121,11 @@ void Player::Update()
 		if (m_pos.y - 4.0f < -100)
 		{
 			m_pos.y = -100 + 4.0f;
+			m_add.y = 0;
+			m_frame = 0;
 		}
+
+		// 座標セット
 		m_object->SetPosition(m_pos);
 	}
 }

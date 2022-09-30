@@ -7,7 +7,7 @@ class SceneManager;
 /// <summary>
 /// シーン基底
 /// </summary>
-class BaseScene : public InputList
+class BaseScene
 {
 protected: //ポインタ置き場
 	//シーンマネージャー（借りてくる）

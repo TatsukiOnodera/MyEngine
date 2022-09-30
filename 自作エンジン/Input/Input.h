@@ -4,9 +4,11 @@
 #include <windows.h>
 #include <dinput.h>
 #include <wrl.h>
+#include <memory>
 #include <DirectXMath.h>
+#include <Xinput.h>
 
-class Input : public InputList
+class Input
 {
 public: // エイリアス
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -14,7 +16,7 @@ public: // エイリアス
 
 private: // メンバ変数
 	// Direct Inputのバージョン指定
-	constexpr static int dInputVersion = 0x0800;
+	constexpr static int s_dInputVersion = 0x0800;
 	// DirectInputのインスタンス
 	ComPtr<IDirectInput8> dInput;
 	// キーボードデバイス
@@ -29,18 +31,10 @@ private: // メンバ変数
 	DIMOUSESTATE2 mouseState = {};
 	// 前フレームのマウス判定
 	DIMOUSESTATE2 oldMouseState = {};
-	// ゲームパッドデバイス
-	ComPtr<IDirectInputDevice8> devGamePad;
 	// ゲームパッドの判定
-	DIJOYSTATE gamePadState = {};
+	XINPUT_STATE gamePadState = {};
 	// 前フレームのゲームパッドの判定
-	DIJOYSTATE oldGamePadState = {};
-	// ボタンデータ
-	bool isPush[32] = {};
-	// スティックの反応範囲
-	LONG responsiveRange = 100;
-	// スティックの無反応範囲
-	LONG unresponsiveRange = 40;
+	XINPUT_STATE oldGamePadState = {};
 
 public: // 静的メンバ関数
 	/// <summary>
@@ -115,16 +109,14 @@ public: // メンバ関数
 	bool TriggerButton(const int Button);
 
 	/// <summary>
-	/// ゲームパッド十字キー
+	/// 左トリガーを引いたか
 	/// </summary>
-	/// <param name="CrossKey">押しているボタン</param>
-	/// <returns>押しているか</returns>
-	bool PushCrossKey(const int CrossKey);
+	/// <returns>引いたか否か</returns>
+	bool PullLeftTigger();
 
 	/// <summary>
-	/// ゲームパッド十字キー（長押し不可）
+	/// 右トリガーを引いたか
 	/// </summary>
-	/// <param name="CrossKey">押しているボタン</param>
-	/// <returns>押しているか</returns>
-	bool TriggerCrossKey(const int CrossKey);
+	/// <returns>引いたか否か</returns>
+	bool PullRightTigger();
 };
