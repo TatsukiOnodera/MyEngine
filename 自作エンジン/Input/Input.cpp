@@ -121,7 +121,7 @@ bool Input::TriggerKey(BYTE key)
 	return false;
 }
 
-bool Input::PushMouse(int Mouse)
+bool Input::PushMouse(const int Mouse)
 {
 	assert(0 <= Mouse && Mouse < 3);
 
@@ -133,7 +133,7 @@ bool Input::PushMouse(int Mouse)
 	return false;
 }
 
-bool Input::TriggerMouse(int Mouse)
+bool Input::TriggerMouse(const int Mouse)
 {
 	assert(0 <= Mouse && Mouse < 3);
 
@@ -195,7 +195,7 @@ bool Input::TriggerButton(int Button)
 	return false;
 }
 
-bool Input::PullLeftTigger()
+bool Input::PullLeftTrigger()
 {
 	if (gamePadState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 	{
@@ -207,9 +207,33 @@ bool Input::PullLeftTigger()
 	}
 }
 
-bool Input::PullRightTigger()
+bool Input::PullRightTrigger()
 {
 	if (gamePadState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Input::SwitchLeftTrigger()
+{
+	if (gamePadState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD && !(oldGamePadState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Input::SwitchRightTrigger()
+{
+	if (gamePadState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD && !(oldGamePadState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD))
 	{
 		return true;
 	}

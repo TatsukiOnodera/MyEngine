@@ -30,22 +30,26 @@ private: // メンバ変数
 	// Player
 	// オブジェクト
 	unique_ptr<FbxObject3d> m_object = nullptr;
+	// 生存フラグ
+	bool m_alive = false;
+
 	// 座標
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 加速値
 	XMFLOAT3 m_add = { 0, 0, 0 };
 	// 移動速度
 	float m_speed = 0;
-	// 生存フラグ
-	bool m_alive = false;
+	// ダッシュ速度
+	float m_dashSpeed = 0;
+	// 重力加速値のフレーム
+	int m_gravityTime = 0;
+
 	// 加速する
 	bool m_isDash = false;
-	// フレーム
-	int m_frame = 0;
 
 	// Bullet
 	// オブジェクト
-	vector<unique_ptr<Bullet>> bullet;
+	//vector<unique_ptr<Bullet>> bullet;
 
 public: // メンバ関数
 	/// <summary>

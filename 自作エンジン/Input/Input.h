@@ -109,14 +109,26 @@ public: // メンバ関数
 	bool TriggerButton(const int Button);
 
 	/// <summary>
-	/// 左トリガーを引いたか
+	/// 左トリガーを引いているか
 	/// </summary>
-	/// <returns>引いたか否か</returns>
-	bool PullLeftTigger();
+	/// <returns>引いているか否か</returns>
+	bool PullLeftTrigger();
 
 	/// <summary>
-	/// 右トリガーを引いたか
+	/// 右トリガーを引いているか
 	/// </summary>
-	/// <returns>引いたか否か</returns>
-	bool PullRightTigger();
+	/// <returns>引いているか否か</returns>
+	bool PullRightTrigger();
+
+	/// <summary>
+	/// 左トリガーを引いているか（長押し不可）
+	/// </summary>
+	/// <returns>引いているか否か</returns>
+	bool SwitchLeftTrigger();
+
+	/// <summary>
+	/// 右トリガーを引いているか（長押し不可）
+	/// </summary>
+	/// <returns>引いているか否か</returns>
+	bool SwitchRightTrigger();
 };

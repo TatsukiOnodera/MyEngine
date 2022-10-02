@@ -21,11 +21,13 @@ void Player::Initialize()
 		assert(0);
 	}
 
+	m_alive = true;
+
 	m_pos = { 0, 0, -50 };
 	m_add = { 0, 0, 0 };
 	m_speed = 1.0f;
-	m_frame = 0;
-	m_alive = true;
+	m_gravityTime = 0;
+
 	m_isDash = false;
 
 	m_object->SetPosition(m_pos);
@@ -38,44 +40,9 @@ void Player::Update()
 {
 	if (m_alive == true)
 	{
-		// 加速値
+		// 加速度
 		{
-			// 減速
-			if (0 < m_add.x)
-			{
-				m_add.x -= m_speed / 10;
-				if (m_add.x < 0)
-				{
-					m_add.x = 0;
-				}
-			}
-			else if (m_add.x < 0)
-			{
-				m_add.x += m_speed / 10;
-				if (0 < m_add.x)
-				{
-					m_add.x = 0;
-				}
-			}
-			if (0 < m_add.z)
-			{
-				m_add.z -= m_speed / 10;
-				if (m_add.z < 0)
-				{
-					m_add.z = 0;
-				}
-			}
-			else if (m_add.z < 0)
-			{
-				m_add.z += m_speed / 10;
-				if (0 < m_add.z)
-				{
-					m_add.z = 0;
-				}
-			}
-			// 重力
-			m_add.y -= 9.8f * powf(static_cast<float>(m_frame) / 60, 2);
-			m_frame++;
+
 		}
 
 		// 移動ベクトル
@@ -85,21 +52,38 @@ void Player::Update()
 		{
 			vec.x += s_input->LeftStickAngle().x * m_speed;
 			vec.z += s_input->LeftStickAngle().y * m_speed;
+		}
+		// ダッシュ
+		if (s_input->SwitchRightTrigger() && m_isDash == false)
+		{
+			m_isDash = true;
+			m_dashSpeed = 5.0f;
+		}
+		if (m_isDash == true)
+		{
+			vec.x *= m_dashSpeed;
+			vec.z *= m_dashSpeed;
 
-			m_add.x = vec.x;
-			m_add.z = vec.z;
+			m_dashSpeed -= 0.2f;
+			if (m_dashSpeed < 1.0f)
+			{
+				m_dashSpeed = 0;
+				m_isDash = false;
+			}
 		}
 		// ジャンプ
-		if (s_input->PullLeftTigger())
+		if (s_input->PullLeftTrigger())
 		{
 			vec.y += 1.0f;
 
-			m_add.y = vec.y;
-			m_frame = 0;
+			m_gravityTime = 0;
 		}
+		// 重力
+		vec.y -= 9.8f * powf(static_cast<float>(m_gravityTime) / 60, 2);
+		m_gravityTime++;
 
 		// カメラを軸にした変換
-		m_pos = s_camera->ConvertWindowPos(m_object->GetPosition(), m_add);
+		m_pos = s_camera->ConvertWindowPos(m_object->GetPosition(), vec);
 		
 		// 壁との当たり判定
 		if (m_pos.x < -100 + 5)
@@ -121,8 +105,8 @@ void Player::Update()
 		if (m_pos.y - 4.0f < -100)
 		{
 			m_pos.y = -100 + 4.0f;
-			m_add.y = 0;
-			m_frame = 0;
+
+			m_gravityTime = 0;
 		}
 
 		// 座標セット
