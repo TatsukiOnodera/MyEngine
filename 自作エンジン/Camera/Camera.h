@@ -91,8 +91,8 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="target">注視点</param>
 	/// <param name="eyeDistance">注視点から始点への距離</param>
-	/// <param name="addAngleX">X軸の角度</param>
-	/// <param name="addAngleY">Y軸の角度</param>
+	/// <param name="addAngleX">X軸の回転した角度</param>
+	/// <param name="addAngleY">Y軸の回転した角度</param>
 void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, float addAngleY);
 
 	/// <summary>
@@ -113,7 +113,10 @@ void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, floa
 	/// <summary>
 	/// m_angleのリセット
 	/// </summary>
-	void InitializeAngle();
+	/// <param name="angleX">m_angleXの初期値</param>
+	/// <param name="angleY">m_angleYの初期値</param>
+	/// <param name="angleZ">m_angleZの初期値</param>
+	void InitializeAngle(float angleX = 0.0f, float angleY = 0.0f, float angleZ = 0.0f);
 
 public: //アクセッサ
 	/// <summary>
@@ -161,7 +164,8 @@ public: //アクセッサ
 	/// <summary>
 	/// 注視点から始点までの距離セット
 	/// </summary>
-	void SetDistance();
+	/// <param name="distance">距離</param>
+	void SetDistance(XMFLOAT3 distance);
 
 	/// <summary>
 	/// カメラの回転角を取得
