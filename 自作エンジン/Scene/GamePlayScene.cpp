@@ -107,8 +107,7 @@ void GamePlayScene::InitializeVariable()
 	}
 
 	camera->SetTarget({ 0, 0, 0 });
-	camera->SetEye({ 0, 1, -5 });
-	camera->SetDistance();
+	camera->SetDistance({ 0, 1, -5 });
 	camera->InitializeAngle();
 	camera->Update();
 
