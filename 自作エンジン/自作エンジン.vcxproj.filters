@@ -91,14 +91,11 @@
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClCompile>
     <ClCompile Include="3D\FbxLoader.cpp">
-		<Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
-	</ClCompile>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClCompile>
     <ClCompile Include="Input\Input.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
     </ClCompile>
-    <ClCompile Include="2D\Sprite.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
-	</ClCompile>
     <ClCompile Include="3D\FbxModel.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClCompile>
@@ -161,7 +158,13 @@
     </ClCompile>
     <ClCompile Include="Effect\PostEffect.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
-	</ClCompile>
+    </ClCompile>
+    <ClCompile Include="DirectXCommon\PipelineManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="2D\Sprite.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Object\2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\AbstractSceneFactory.h">
@@ -210,17 +213,14 @@
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxLoader.h">
-		<Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
     <ClInclude Include="Input\Input.h">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
     </ClInclude>
-    <ClInclude Include="2D\Sprite.h">
-      <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
-    </ClInclude>
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="3D\FbxModel.h">
       <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
@@ -292,6 +292,12 @@
     </ClInclude>
     <ClInclude Include="Effect\PostEffect.h">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXCommon\PipelineManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="2D\Sprite.h">
+      <Filter>ソース&amp;ヘッダーファイル\Object\2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
