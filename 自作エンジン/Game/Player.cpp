@@ -40,11 +40,6 @@ void Player::Update()
 {
 	if (m_alive == true)
 	{
-		// 加速度
-		{
-
-		}
-
 		// 移動ベクトル
 		XMFLOAT3 vec = {};
 		// 移動
@@ -53,8 +48,18 @@ void Player::Update()
 			vec.x += s_input->LeftStickAngle().x * m_speed;
 			vec.z += s_input->LeftStickAngle().y * m_speed;
 		}
+		else if (s_input->PushKey(DIK_D) || s_input->PushKey(DIK_A) || s_input->PushKey(DIK_W) || s_input->PushKey(DIK_S))
+		{
+			vec.x += (s_input->PushKey(DIK_D) - s_input->PushKey(DIK_A)) * m_speed;
+			vec.z += (s_input->PushKey(DIK_W) - s_input->PushKey(DIK_S)) * m_speed;
+		}
 		// ダッシュ
 		if (s_input->SwitchRightTrigger() && m_isDash == false)
+		{
+			m_isDash = true;
+			m_dashSpeed = 5.0f;
+		}
+		else if (s_input->TriggerKey(DIK_SPACE) && m_isDash == false)
 		{
 			m_isDash = true;
 			m_dashSpeed = 5.0f;
@@ -64,7 +69,7 @@ void Player::Update()
 			vec.x *= m_dashSpeed;
 			vec.z *= m_dashSpeed;
 
-			m_dashSpeed -= 0.2f;
+			m_dashSpeed -= 0.4f;
 			if (m_dashSpeed < 1.0f)
 			{
 				m_dashSpeed = 0;
@@ -73,6 +78,12 @@ void Player::Update()
 		}
 		// ジャンプ
 		if (s_input->PullLeftTrigger())
+		{
+			vec.y += 1.0f;
+
+			m_gravityTime = 0;
+		}
+		else if (s_input->PushKey(DIK_RETURN))
 		{
 			vec.y += 1.0f;
 
