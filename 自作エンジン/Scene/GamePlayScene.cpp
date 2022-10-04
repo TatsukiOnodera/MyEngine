@@ -217,7 +217,7 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	// 前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	
+	//demo_back->Draw();
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
