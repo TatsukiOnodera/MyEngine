@@ -151,6 +151,7 @@ void Audio::StopSound(const std::string& fileName)
 		return;
 	}
 
+	// 停止
 	soundData.sourceVoice->Stop(0);
 	soundData.sourceVoice->FlushSourceBuffers();
 	soundData.sourceVoice->SubmitSourceBuffer(&buf);

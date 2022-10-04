@@ -5,8 +5,8 @@
 #include "Input.h"
 #include "Camera.h"
 #include "FbxObject3d.h"
+
 #include "Bullet.h"
-#include "Enemy.h"
 
 using namespace std;
 
@@ -27,7 +27,9 @@ private: //
 	Input* s_input = Input::GetInstance();
 
 private: // メンバ変数
+	//==============================
 	// Player
+	//==============================
 	// オブジェクト
 	unique_ptr<FbxObject3d> m_object = nullptr;
 	// 生存フラグ
@@ -36,9 +38,11 @@ private: // メンバ変数
 	// 座標
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 加速値
-	XMFLOAT3 m_add = { 0, 0, 0 };
+	XMFLOAT3 m_vel = { 0, 0, 0 };
+	// 加速度
+	float m_addSpeed = 0;
 	// 移動速度
-	float m_speed = 0;
+	float m_maxSpeed = 0;
 	// ダッシュ速度
 	float m_dashSpeed = 0;
 	// 重力加速値のフレーム
@@ -47,7 +51,9 @@ private: // メンバ変数
 	// 加速する
 	bool m_isDash = false;
 
+	//==============================
 	// Bullet
+	//==============================
 	// オブジェクト
 	//vector<unique_ptr<Bullet>> bullet;
 

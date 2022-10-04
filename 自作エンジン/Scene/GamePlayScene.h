@@ -51,7 +51,7 @@ private: // メモリ置き場
 	// 操作系
 	Input* input = nullptr;
 	// オーディオ
-	//std::unique_ptr<Audio> audio = nullptr;
+	//Audio* audio = nullptr;
 	// カメラ
 	Camera* camera = nullptr;
 	// デバッグテキスト
@@ -75,6 +75,7 @@ private: // インスタンス
 	std::unique_ptr<Player> player = nullptr;
 
 private: // メンバ変数
+
 
 
 public: // メンバ関数

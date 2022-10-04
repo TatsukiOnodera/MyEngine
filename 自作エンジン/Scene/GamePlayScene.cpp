@@ -16,7 +16,7 @@ void GamePlayScene::Initialize()
 {
 	dx_cmd = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
-	//audio.reset(new Audio);
+	//audio = Audio::GetInstance();;
 	camera = Camera::GetInstance();
 
 	// サウンドファイル読み込み
@@ -63,9 +63,9 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
+	float size = 100;
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		float size = 100;
 		XMFLOAT3 pos;
 		XMFLOAT3 rot;
 		XMFLOAT3 scale = { size, size, size };
@@ -106,8 +106,7 @@ void GamePlayScene::InitializeVariable()
 	}
 
 	camera->SetTarget({ 0, 0, 0 });
-	camera->SetEye({ 0, 1, -5 });
-	camera->SetDistance();
+	camera->SetDistance({ 0, 1, -5 });
 	camera->InitializeAngle();
 	camera->Update();
 }
@@ -115,6 +114,7 @@ void GamePlayScene::InitializeVariable()
 void GamePlayScene::Update()
 {
 #pragma region ゲームメインシステム
+
 	// プレイヤー
 	player->Update();
 	
@@ -122,14 +122,16 @@ void GamePlayScene::Update()
 	enemy->Update();
 
 	// 追従カメラ
-	XMFLOAT2 angle = { 0, 0 };
-	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+	XMFLOAT2 angle = {};
+	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
 	{
 		angle.y += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 1;
-	}
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
-	{
 		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
+	}
+	else if (input->RightStickAngle().x != 0 || input->RightStickAngle().y != 0)
+	{
+		angle.y += input->RightStickAngle().x;
+		angle.x += input->RightStickAngle().y;
 	}
 	camera->FollowUpCamera(player->GetPosition(), camera->GetDistance(), angle.x, angle.y);
 
@@ -137,7 +139,10 @@ void GamePlayScene::Update()
 
 #pragma region カメラとライトの更新
 
+	// ライト更新
 	light->Update();
+	
+	// カメラ更新
 	camera->Update();
 
 #pragma endregion

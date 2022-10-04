@@ -132,7 +132,7 @@ void Camera::UpdateMatProjection()
 	// “§‹“Š‰e‚É‚æ‚éË‰es—ñ‚ÌXV
 	m_matProjection = XMMatrixPerspectiveFovLH(
 		XMConvertToRadians(60.0f),
-		(float)WinApp::window_width / WinApp::window_height,
+		static_cast<float>(WinApp::window_width) / WinApp::window_height,
 		m_nearZ, m_farZ);
 }
 
@@ -146,6 +146,7 @@ void Camera::SetEye(XMFLOAT3 eye)
 void Camera::SetTarget(XMFLOAT3 target)
 {
 	this->m_target = target;
+
 	m_dirty = true;
 }
 
@@ -156,11 +157,17 @@ void Camera::SetUp(XMFLOAT3 up)
 	m_dirty = true;
 }
 
-void Camera::SetDistance()
+void Camera::SetDistance(XMFLOAT3 distance)
 {
-	m_distance.x = m_eye.x - m_target.x;
-	m_distance.y = m_eye.y - m_target.y;
-	m_distance.z = m_eye.z - m_target.z;
+	m_eye.x = m_target.x + distance.x;
+	m_eye.y = m_target.y + distance.y;
+	m_eye.z = m_target.z + distance.z;
+
+	m_distance.x = distance.x;
+	m_distance.y = distance.y;
+	m_distance.z = distance.z;
+
+	m_dirty = true;
 }
 
 void Camera::SetNearFarZ(float nearZ, float farZ)

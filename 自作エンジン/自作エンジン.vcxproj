@@ -236,7 +236,6 @@
     <ClInclude Include="Light\Light.h" />
     <ClInclude Include="Light\LightGroup.h" />
     <ClInclude Include="Light\PointLight.h" />
-    <ClInclude Include="Measurement.h" />
     <ClInclude Include="Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\EndScene.h" />

@@ -27,7 +27,7 @@ private: // ƒƒ“ƒo•Ï”
 	bool m_alive = false;
 
 	//Bullet
-	vector<std::unique_ptr<Bullet>> bullet;
+	//vector<std::unique_ptr<Bullet>> bullet;
 
 public: // ƒƒ“ƒoŠÖ”
 	/// <summary>
