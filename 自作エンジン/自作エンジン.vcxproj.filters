@@ -91,22 +91,14 @@
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClCompile>
     <ClCompile Include="3D\FbxLoader.cpp">
-<<<<<<< HEAD
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
-<<<<<<< HEAD
-=======
+		<Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+	</ClCompile>
     <ClCompile Include="Input\Input.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
     </ClCompile>
     <ClCompile Include="2D\Sprite.cpp">
       <Filter>ソース&amp;ヘッダーファイル\2D</Filter>
->>>>>>> parent of 00f20c5... no message
-=======
-      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
->>>>>>> master2
-=======
->>>>>>> parent of 6ed51a4... no message
-    </ClCompile>
+	</ClCompile>
     <ClCompile Include="3D\FbxModel.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClCompile>
@@ -164,20 +156,12 @@
     <ClCompile Include="EndScene.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClCompile>
-<<<<<<< HEAD
-<<<<<<< HEAD
     <ClCompile Include="Effect\ParticleManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Effect\PostEffect.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
-=======
-    <ClCompile Include="DirectXCommon\PipelineManager.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Object</Filter>
->>>>>>> master2
-    </ClCompile>
-=======
->>>>>>> parent of 6ed51a4... no message
+	</ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\AbstractSceneFactory.h">
@@ -226,10 +210,8 @@
       <Filter>ソース&amp;ヘッダーファイル\DirectXCommon</Filter>
     </ClInclude>
     <ClInclude Include="3D\FbxLoader.h">
-<<<<<<< HEAD
-      <Filter>ソース&amp;ヘッダーファイル\3D\FBX</Filter>
-<<<<<<< HEAD
-=======
+		<Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClInclude>
     <ClInclude Include="Input\Input.h">
       <Filter>ソース&amp;ヘッダーファイル\Input</Filter>
     </ClInclude>
@@ -238,13 +220,7 @@
     </ClInclude>
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソース&amp;ヘッダーファイル\WinApp</Filter>
->>>>>>> parent of 00f20c5... no message
-=======
-      <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
->>>>>>> master2
-=======
->>>>>>> parent of 6ed51a4... no message
-    </ClInclude>
+	</ClInclude>
     <ClInclude Include="3D\FbxModel.h">
       <Filter>ソース&amp;ヘッダーファイル\Object\3D\FBX</Filter>
     </ClInclude>
@@ -311,20 +287,12 @@
     <ClInclude Include="EndScene.h">
       <Filter>ソース&amp;ヘッダーファイル\Scene</Filter>
     </ClInclude>
-<<<<<<< HEAD
-<<<<<<< HEAD
     <ClInclude Include="Effect\ParticleManager.h">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Effect\PostEffect.h">
       <Filter>ソース&amp;ヘッダーファイル\Effect</Filter>
-=======
-    <ClInclude Include="DirectXCommon\PipelineManager.h">
-      <Filter>ソース&amp;ヘッダーファイル\Object</Filter>
->>>>>>> master2
     </ClInclude>
-=======
->>>>>>> parent of 6ed51a4... no message
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\ADSShaderHeader.hlsli">
@@ -437,13 +405,6 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Game">
       <UniqueIdentifier>{656f5c88-606f-4bba-8ab1-b3f568c9a443}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-      <Filter>シェーダーファイル\PostEffectShader</Filter>
-    </None>
->>>>>>> parent of 00f20c5... no message
-=======
     <Filter Include="ソース&amp;ヘッダーファイル\Object">
       <UniqueIdentifier>{97cdb08c-fafd-4861-b74d-b4eb1691d332}</UniqueIdentifier>
     </Filter>
@@ -459,8 +420,5 @@
     <Filter Include="ソース&amp;ヘッダーファイル\Object\3D\FBX">
       <UniqueIdentifier>{84c8e693-c27c-40c0-8c5b-92cecd1fbb0b}</UniqueIdentifier>
     </Filter>
->>>>>>> master2
-=======
->>>>>>> parent of 6ed51a4... no message
   </ItemGroup>
 </Project>
