@@ -3,68 +3,56 @@
 #include <memory>
 
 #include "Object3d.h"
-#include "Player.h"
-#include "Bullet.h"
 
-class Enemy
+using namespace std;
+
+class Bullet
 {
 public: // エイリアス
-	// DirectX::を省略
+   // DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
 private: // メンバ変数
-	//Enemy
 	// オブジェクト
-	std::unique_ptr<Object3d> m_object = nullptr;
+	unique_ptr<Object3d> m_object = nullptr;
 	// 座標
-	XMFLOAT3 m_pos = { 0, 0, 50 };
+	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 移動ベクトル
 	XMFLOAT3 m_vec = { 0, 0, 0 };
 	// 生存フラグ
 	bool m_alive = false;
-	//ショットの間隔
-	int intervalTime = 0;
-	//エフェクトタイマー
-	int effectTimer = 0;
-
-	//Bullet
-	vector<std::unique_ptr<Bullet>> bullet;
 
 public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Enemy();
+	Bullet(XMFLOAT3 pos, XMFLOAT3 vec, bool alive);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~Enemy();
+	~Bullet();
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	/// <param name="pos">座標</param>
+	/// <param name="vec">ベクトル</param>
+	/// <param name="alive">生存フラグ</param>
+	void Initialize(XMFLOAT3 pos, XMFLOAT3 vec, bool alive);
 
 	/// <summary>
-	/// 更新
+	///  更新
 	/// </summary>
-	/// <param name="playerPosition">自機の座標</param>
-	bool Update(XMFLOAT3 playerPosition);
+	void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw();
-
-	/// <summary>
-	/// すべて弾を使っているか
-	/// </summary>
-	/// <returns>成否</returns>
-	bool UsingAllBullet();
 
 	/// <summary>
 	/// 始点から終点への距離
@@ -74,14 +62,40 @@ public: // メンバ関数
 	/// <returns>二点間の距離</returns>
 	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2);
 
-public: //アクセッサ
+public: // アクセッサ
 	/// <summary>
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
 	XMFLOAT3 GetPosition() { return m_pos; }
 
+	/// <summary>
+	/// 座標をセット
+	/// </summary>
+	/// <param name="pos">座標</param>
+	void SetPosition(XMFLOAT3 pos);
+
+	/// <summary>
+	/// 移動ベクトルを取得
+	/// </summary>
+	/// <returns>ベクトル</returns>
+	XMFLOAT3 GetVector() { return m_vec; }
+
+	/// <summary>
+	/// 移動ベクトルをセット
+	/// </summary>
+	/// <param name="vec">ベクトル</param>
+	void SetVector(XMFLOAT3 vec);
+
+	/// <summary>
+	/// 生存フラグを取得
+	/// </summary>
+	/// <returns>生存フラグ</returns>
 	bool GetAlive() { return m_alive; }
 
-	void SetEffectTimer();
+	/// <summary>
+	/// 生存フラグをセット
+	/// </summary>
+	/// <param name="alive">生存フラグ</param>
+	void SetAlive(bool alive);
 };

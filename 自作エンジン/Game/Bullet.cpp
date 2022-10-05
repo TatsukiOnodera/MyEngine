@@ -4,6 +4,7 @@ using namespace DirectX;
 
 Bullet::Bullet(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)
 {
+	m_object.reset(Object3d::Create("Bullet", true));
 	Initialize(pos, vec, alive);
 }
 
@@ -16,27 +17,28 @@ void Bullet::Initialize(XMFLOAT3 pos, XMFLOAT3 vec, bool alive)
 {
 	if (m_object == nullptr)
 	{
-		m_object.reset(Object3d::Create("Bullet", true));
+		assert(0);
 	}
 
 	m_pos = pos;
 	m_vec = vec;
 	m_alive = alive;
 
-	assert(m_object);
 	m_object->SetPosition(m_pos);
 	m_object->Update();
 }
 
-bool Bullet::Update(XMFLOAT3 pos)
+void Bullet::Update()
 {
-	if (m_alive)
+	if (m_alive == true)
 	{
 		//À•W‚ÌXV
 		m_pos = m_object->GetPosition();
+
 		m_pos.x += m_vec.x;
 		m_pos.y += m_vec.y;
 		m_pos.z += m_vec.z;
+
 		m_object->SetPosition(m_pos);
 
 		//•Ç‚Ì“–‚½‚è”»’è
@@ -48,21 +50,12 @@ bool Bullet::Update(XMFLOAT3 pos)
 		{
 			m_alive = false;
 		}
-
-		if (Length(pos, m_pos) < 3)
-		{
-			m_alive = false;
-
-			return true;
-		}
 	}
-
-	return false;
 }
 
 void Bullet::Draw()
 {
-	if (m_alive)
+	if (m_alive == true)
 	{
 		m_object->Draw();
 	}
@@ -78,6 +71,7 @@ const float Bullet::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 void Bullet::SetPosition(XMFLOAT3 pos)
 {
 	m_pos = pos;
+	m_object->SetPosition(m_pos);
 }
 
 void Bullet::SetVector(XMFLOAT3 vec)

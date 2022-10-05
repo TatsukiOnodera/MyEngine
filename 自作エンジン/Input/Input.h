@@ -4,50 +4,46 @@
 #include <windows.h>
 #include <dinput.h>
 #include <wrl.h>
+#include <memory>
 #include <DirectXMath.h>
+#include <Xinput.h>
 
-#define DIRECTINPUT_VERSION             0x0800 //Direct Inputのバージョン指定
-
-class Input : public InputList
+class Input
 {
-public: //エイリアス
-	//namespace省略
+public: // エイリアス
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 
-private: //メンバ変数
-	//DirectInputのインスタンス
-	ComPtr<IDirectInput8> dinput;
-	//キーボードデバイス
-	ComPtr<IDirectInputDevice8> devkeyboard;
-	//キー判定
+private: // メンバ変数
+	// Direct Inputのバージョン指定
+	constexpr static int s_dInputVersion = 0x0800;
+	// DirectInputのインスタンス
+	ComPtr<IDirectInput8> dInput;
+	// キーボードデバイス
+	ComPtr<IDirectInputDevice8> devKeyboard;
+	// キー判定
 	BYTE keys[256] = {};
-	//前フレームのキー情報
-	BYTE oldkeys[256] = {};
-	//マウスデバイス
+	// 前フレームのキー情報
+	BYTE oldKeys[256] = {};
+	// マウスデバイス
 	ComPtr<IDirectInputDevice8> devMouse;
-	//マウス判定
+	// マウス判定
 	DIMOUSESTATE2 mouseState = {};
-	//前フレームのマウス判定
+	// 前フレームのマウス判定
 	DIMOUSESTATE2 oldMouseState = {};
-	//ゲームパッドデバイス
-	ComPtr<IDirectInputDevice8> devGamePad;
-	//ゲームパッドの判定
-	DIJOYSTATE gamePadState = {};
-	//前フレームのゲームパッドの判定
-	DIJOYSTATE oldGamePadState = {};
-	//ボタンデータ
-	bool is_push[32] = {};
-	//スティックの反応範囲
-	LONG responsive_range = 100;
-	//スティックの無反応範囲
-	LONG unresponsive_range = 40;
+	// ゲームパッドの判定
+	XINPUT_STATE gamePadState = {};
+	// 前フレームのゲームパッドの判定
+	XINPUT_STATE oldGamePadState = {};
 
-public: //静的メンバ関数
+public: // 静的メンバ関数
+	/// <summary>
+	/// インスタンスを取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static Input* GetInstance();
 
-public: //メンバ関数
+public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -58,31 +54,81 @@ public: //メンバ関数
 	/// </summary>
 	void Update();
 
-	//キー操作
-	//入力
+	/// <summary>
+	/// キー入力
+	/// </summary>
+	/// <param name="key">押しているキー</param>
+	/// <returns>押しているか</returns>
 	bool PushKey(BYTE key);
-	//入力（長押し不可）
+
+	/// <summary>
+	/// キー入力（長押し不可）
+	/// </summary>
+	/// <param name="key">押しているキー</param>
+	/// <returns>押しているか</returns>
 	bool TriggerKey(BYTE key);
 
-	//クリック
-	//左クリック
-	bool PushMouse(int Mouse);
-	//左クリック（長押し不可）
-	bool TriggerMouse(int Mouse);
+	/// <summary>
+	/// 左クリック
+	/// </summary>
+	/// <param name="Mouse">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool PushMouse(const int Mouse);
 
-	//ゲームパッド
-	//ゲームパッドスティック
-	bool TiltLeftStick(int stick);
-	//ゲームパッドスティック（長押し不可）
-	bool TriggerLeftStick(int stick);
-	//ゲームパッドスティックを倒した比率
+	/// <summary>
+	/// 右クリック
+	/// </summary>
+	/// <param name="Mouse">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool TriggerMouse(const int Mouse);
+	
+	/// <summary>
+	/// ゲームパッド左スティックを倒した割合
+	/// </summary>
+	/// <returns>スティックを倒した割合</returns>
 	XMFLOAT2 LeftStickAngle();
-	//ゲームパッドボタン
-	bool PushButton(int Button);
-	//ゲームパッドボタン（長押し不可）
-	bool TriggerButton(int Button);
-	//ゲームパッド十字キー
-	bool PushCrossKey(int CrossKey);
-	//ゲームパッド十字キー（長押し不可）
-	bool TriggerCrossKey(int CrossKey);
+
+	/// <summary>
+	/// ゲームパッド左スティックを倒した割合
+	/// </summary>
+	/// <returns>スティックを倒した割合</returns>
+	XMFLOAT2 RightStickAngle();
+
+	/// <summary>
+	/// ゲームパッドボタン
+	/// </summary>
+	/// <param name="Button">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool PushButton(const int Button);
+
+	/// <summary>
+	/// ゲームパッドボタン（長押し不可）
+	/// </summary>
+	/// <param name="Button">押しているボタン</param>
+	/// <returns>押しているか</returns>
+	bool TriggerButton(const int Button);
+
+	/// <summary>
+	/// 左トリガーを引いているか
+	/// </summary>
+	/// <returns>引いているか否か</returns>
+	bool PullLeftTrigger();
+
+	/// <summary>
+	/// 右トリガーを引いているか
+	/// </summary>
+	/// <returns>引いているか否か</returns>
+	bool PullRightTrigger();
+
+	/// <summary>
+	/// 左トリガーを引いているか（長押し不可）
+	/// </summary>
+	/// <returns>引いているか否か</returns>
+	bool SwitchLeftTrigger();
+
+	/// <summary>
+	/// 右トリガーを引いているか（長押し不可）
+	/// </summary>
+	/// <returns>引いているか否か</returns>
+	bool SwitchRightTrigger();
 };

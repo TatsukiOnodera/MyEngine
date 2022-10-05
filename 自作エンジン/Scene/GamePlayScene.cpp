@@ -16,13 +16,15 @@ void GamePlayScene::Initialize()
 {
 	dx_cmd = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
-	//audio = Audio::GetInstance();
+	//audio = Audio::GetInstance();;
 	camera = Camera::GetInstance();
+
+	// サウンドファイル読み込み
+	//audio->LoadSound("Resources");
 
 	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-	Sprite::LoadTexture(1, L"Resources/background.png");
-	Sprite::LoadTexture(2, L"Resources/Reticle.png");
+
 
 	// ライト生成
 	light.reset(Light::Create());
@@ -34,20 +36,17 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	// パーティクル
-	particle.reset(ParticleManager::Create("Default/effect1.png"));
+	//particle.reset(ParticleManager::Create("Default/effect1.png"));
 
 	// スプライト
-	sight.reset(Sprite::Create(2, { 0.0f, 0.0f }, { 0.5f, 0.5f }));
+
 
 	// OBJオブジェクト
 	for (auto& m : defaultWall)
 	{
 		m.reset(Object3d::Create("Wall"));
 	}
-	for (int i = 0; i < 6; i++)
-	{
-		enemy.emplace_back(new Enemy);
-	}
+	enemy.reset(new Enemy);
 
 	// FBXオブェクト
 	player.reset(new Player);
@@ -64,9 +63,9 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
+	float size = 200;
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
-		float size = 100;
 		XMFLOAT3 pos;
 		XMFLOAT3 rot;
 		XMFLOAT3 scale = { size, size, size };
@@ -110,89 +109,40 @@ void GamePlayScene::InitializeVariable()
 	camera->SetDistance({ 0, 1, -5 });
 	camera->InitializeAngle();
 	camera->Update();
-
-	targetNum = 0;
-	listNum = 0;
 }
 
 void GamePlayScene::Update()
 {
 #pragma region ゲームメインシステム
+
 	// プレイヤー
 	player->Update();
-	targetList.clear();
-	for (int i = 0; i < enemy.size(); i++)
-	{
-		if (Length(enemy[i]->GetPosition(), player->GetPosition()) < 90 && enemy[i]->GetAlive())
-		{
-			targetList.emplace_back(i);
-		}
-	}
-	if (input->TriggerKey(DIK_P) || input->TriggerKey(DIK_O))
-	{
-		listNum += input->TriggerKey(DIK_P) - input->TriggerKey(DIK_O);
-	}
-	if (listNum >= targetList.size())
-	{
-		listNum = 0;
-	}
-	if (targetList.size() > 0)
-	{
-		targetNum = targetList[listNum];
-	}
-	player->ShotBullet(enemy[targetNum]->GetPosition());
-	for (auto& m : enemy)
-	{
-		if (player->bulletUpdate(m->GetPosition()))
-		{
-			m->SetEffectTimer();
-		}
-	}
 	
 	// エネミー
-	for (auto& m : enemy)
-	{
-		if (m->Update(player->GetPosition()))
-		{
-			player->SetEffectTimer();
-		}
-	}
+	enemy->Update();
 
-	bool isEnd = true;
-	for (auto& m : enemy)
-	{
-		if (m->GetAlive())
-		{
-			isEnd = false;
-		}
-	}
-	if (isEnd)
-	{
-		//シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("END");
-	}
-
-	//サイト
-	sight->SetPosition(camera->Convert3DPosTo2DPos(enemy[targetNum]->GetPosition()));
-
-	// カメラ
-	XMFLOAT2 angle = { 0, 0 };
-	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+	// 追従カメラ
+	XMFLOAT2 angle = {};
+	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
 	{
 		angle.y += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 1;
-	}
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
-	{
 		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
 	}
-	// 追従カメラ
+	else if (input->RightStickAngle().x != 0 || input->RightStickAngle().y != 0)
+	{
+		angle.y += input->RightStickAngle().x;
+		angle.x -= input->RightStickAngle().y;
+	}
 	camera->FollowUpCamera(player->GetPosition(), camera->GetDistance(), angle.x, angle.y);
 
 #pragma endregion
 
 #pragma region カメラとライトの更新
 
+	// ライト更新
 	light->Update();
+	
+	// カメラ更新
 	camera->Update();
 
 #pragma endregion
@@ -206,9 +156,9 @@ void GamePlayScene::Draw()
 	// 各描画
 	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
-	DrawEffect(cmdList);
+	//DrawEffect(cmdList);
 	DrawUI(cmdList);
-	DrawDebugText(cmdList);
+	//DrawDebugText(cmdList);
 }
 
 void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
@@ -234,10 +184,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	}
 
 	// 敵
-	for (auto& m : enemy)
-	{
-		m->Draw();
-	}
+	enemy->Draw();
 
 	Object3d::PostDraw();
 
@@ -262,11 +209,7 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 	// UI描画
 	Sprite::PreDraw(cmdList);
 
-	//サイト
-	if (Length(enemy[targetNum]->GetPosition(), player->GetPosition()) < 90 && enemy[targetNum]->GetAlive())
-	{
-		sight->Draw();
-	}
+	
 
 	Sprite::PostDraw();
 }
@@ -276,7 +219,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 	// パーティクル描画
 	ParticleManager::PreDraw(cmdList);
 
-	particle->Draw();
+	//particle->Draw();
 
 	ParticleManager::PostDraw();
 }
@@ -293,22 +236,3 @@ const float GamePlayScene::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 
 	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
 }
-
-//for (int i = 0; i < 30; i++)
-	//{
-	//	const float rnd_pos = 10.0f;
-	//	XMFLOAT3 pos = {};
-	//	pos.x = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-	//	pos.y = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-	//	pos.z = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-
-	//	const float rnd_vel = 1.0f;
-	//	XMFLOAT3 vel = {};
-	//	vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-	//	vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-	//	vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-
-	//	XMFLOAT3 acc = {};
-	//	//追加
-	//	particle->Add(120, pos, vel, acc, 5.0f, 0.0f);
-	//}

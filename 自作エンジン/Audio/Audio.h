@@ -1,80 +1,152 @@
-#pragma once
-
+ï»¿#pragma once
 #include <Windows.h>
 #include <xaudio2.h>
 #include <wrl.h>
+#include <cstdint>
+#include <map>
+#include <string>
 
 /// <summary>
-/// ƒI[ƒfƒBƒIƒR[ƒ‹ƒoƒbƒN
+/// ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
 /// </summary>
 class XAudio2VoiceCallback : public IXAudio2VoiceCallback
 {
 public:
-	// ƒ{ƒCƒXˆ—ƒpƒX‚ÌŠJn
-	//STDMETHOD_(void, OnVoiceProcessingPassStart) (THIS_ UINT32 BytesRequired) {};
+	// ãƒœã‚¤ã‚¹å‡¦ç†ãƒ‘ã‚¹ã®é–‹å§‹æ™‚
 	void OnVoiceProcessingPassStart(UINT32 BytesRequired) {};
-	// ƒ{ƒCƒXˆ—ƒpƒX‚ÌI—¹
+
+	// ãƒœã‚¤ã‚¹å‡¦ç†ãƒ‘ã‚¹ã®çµ‚äº†æ™‚
 	STDMETHOD_(void, OnVoiceProcessingPassEnd) (THIS) {};
-	// ƒoƒbƒtƒ@ƒXƒgƒŠ[ƒ€‚ÌÄ¶‚ªI—¹‚µ‚½
+
+	// ãƒãƒƒãƒ•ã‚¡ã‚¹ãƒˆãƒªãƒ¼ãƒ ã®å†ç”ŸãŒçµ‚äº†ã—ãŸæ™‚
 	STDMETHOD_(void, OnStreamEnd) (THIS) {};
-	// ƒoƒbƒtƒ@‚Ìg—pŠJn
+
+	// ãƒãƒƒãƒ•ã‚¡ã®ä½¿ç”¨é–‹å§‹æ™‚
 	STDMETHOD_(void, OnBufferStart) (THIS_ void* pBufferContext) {};
-	// ƒoƒbƒtƒ@‚Ì––”ö‚É’B‚µ‚½
-	STDMETHOD_(void, OnBufferEnd) (THIS_ void* pBufferContext) {
-		// ƒoƒbƒtƒ@‚ğ‰ğ•ú‚·‚é
+
+	// ãƒãƒƒãƒ•ã‚¡ã®æœ«å°¾ã«é”ã—ãŸæ™‚
+	STDMETHOD_(void, OnBufferEnd) (THIS_ void* pBufferContext)
+	{
+		// ãƒãƒƒãƒ•ã‚¡ã‚’è§£æ”¾ã™ã‚‹
 		delete[] pBufferContext;
 	};
-	// Ä¶‚ªƒ‹[ƒvˆÊ’u‚É’B‚µ‚½
+
+	// å†ç”ŸãŒãƒ«ãƒ¼ãƒ—ä½ç½®ã«é”ã—ãŸæ™‚
 	STDMETHOD_(void, OnLoopEnd) (THIS_ void* pBufferContext) {};
-	// ƒ{ƒCƒX‚ÌÀsƒGƒ‰[
+
+	// ãƒœã‚¤ã‚¹ã®å®Ÿè¡Œã‚¨ãƒ©ãƒ¼æ™‚
 	STDMETHOD_(void, OnVoiceError) (THIS_ void* pBufferContext, HRESULT Error) {};
 };
 
-/// <summary>
-/// ƒI[ƒfƒBƒI
-/// </summary>
 class Audio
 {
-private: // ƒGƒCƒŠƒAƒX
-	// Microsoft::WRL::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-public: // ƒTƒuƒNƒ‰ƒX
-	// ƒ`ƒƒƒ“ƒNƒwƒbƒ_
+
+public: // ã‚µãƒ–ã‚¯ãƒ©ã‚¹
+	// ãƒãƒ£ãƒ³ã‚¯ãƒ˜ãƒƒãƒ€
 	struct Chunk
 	{
-		char	id[4]; // ƒ`ƒƒƒ“ƒN–ˆ‚ÌID
-		int		size;  // ƒ`ƒƒƒ“ƒNƒTƒCƒY
+		char	id[4]; // ãƒãƒ£ãƒ³ã‚¯æ¯ã®ID
+		int		size;  // ãƒãƒ£ãƒ³ã‚¯ã‚µã‚¤ã‚º
 	};
 
-	// RIFFƒwƒbƒ_ƒ`ƒƒƒ“ƒN
+	// RIFFãƒ˜ãƒƒãƒ€ãƒãƒ£ãƒ³ã‚¯
 	struct RiffHeader
 	{
 		Chunk	chunk;   // "RIFF"
 		char	type[4]; // "WAVE"
 	};
 
-	// FMTƒ`ƒƒƒ“ƒN
+	// FMTãƒãƒ£ãƒ³ã‚¯
 	struct FormatChunk
 	{
 		Chunk		chunk; // "fmt "
-		WAVEFORMAT	fmt;   // ”gŒ`ƒtƒH[ƒ}ƒbƒg
+		WAVEFORMAT	fmt;   // æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
 	};
 
-public: //Ã“Iƒƒ“ƒoŠÖ”
+	// ã‚µã‚¦ãƒ³ãƒ‰ãƒ‡ãƒ¼ã‚¿
+	struct SoundData
+	{
+		// æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
+		WAVEFORMATEX wfex;
+		// ãƒãƒƒãƒ•ã‚¡ã®å…ˆé ­ã‚¢ãƒ‰ãƒ¬ã‚¹
+		BYTE* buffer;
+		// ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
+		unsigned int bufferSize;
+		// æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‚’å…ƒã«SourceVoiceã®ç”Ÿæˆã™ã‚‹å¥´
+		IXAudio2SourceVoice* sourceVoice;
+		// ãƒ«ãƒ¼ãƒ—
+		bool loop = false;
+		// å†ç”ŸçŠ¶æ…‹
+		bool playNow = false;
+	};
+
+public: // é™çš„ãƒ¡ãƒ³ãƒé–¢æ•°
+	/// <summary>
+	/// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
+	/// </summary>
+	/// <returns>ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹</returns>
 	static Audio* GetInstance();
 
-public: // ƒƒ“ƒoŠÖ”
-	/// <summary>
-	/// ‰Šú‰»
-	/// </summary>
-	/// <returns>¬”Û</returns>
-	void Initialize();
-
-	// ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚ÆÄ¶
-	void PlayWave(const char* filename);
-
-private: // ƒƒ“ƒo•Ï”
+private: // ãƒ¡ãƒ³ãƒå¤‰æ•°
 	ComPtr<IXAudio2> xAudio2;
-	IXAudio2MasteringVoice* masterVoice = nullptr;
 	XAudio2VoiceCallback voiceCallback;
+	std::map<std::string, SoundData> soundList;
+	XAUDIO2_BUFFER buf{};
+
+public: //ãƒ¡ãƒ³ãƒé–¢æ•°
+	/// <summary>
+	/// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	/// </summary>
+	Audio();
+
+	/// <summary>
+	/// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	/// </summary>
+	~Audio();
+
+	/// <summary>
+	/// åˆæœŸåŒ–
+	/// </summary>
+	/// <returns>æˆå¦</returns>
+	bool Initialize();
+
+	/// <summary>
+	/// ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®å†ç”Ÿ
+	/// </summary>
+	/// <param name="fileName">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
+	/// <param name="loop">ãƒ«ãƒ¼ãƒ—ã®æˆå¦</param>
+	/// <param name="volume">éŸ³é‡</param>
+	void PlayWave(const std::string& fileName, bool loop, float volume);
+
+	/// <summary>
+	/// ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+	/// </summary>
+	/// <param name="fileName">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
+	void LoadSound(const std::string& fileName);
+
+	/// <summary>
+	/// ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®åœæ­¢
+	/// </summary>
+	/// <param name="fileName">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
+	void StopSound(const std::string& fileName);
+
+	/// <summary>
+	/// ã‚µã‚¦ãƒ³ãƒ‰ãƒ‡ãƒ¼ã‚¿ã®ä½œæˆ
+	/// </summary>
+	/// <param name="soundData"></param>
+	void CreateSoundData(SoundData& soundData);
+
+	/// <summary>
+	/// ã‚µã‚¦ãƒ³ãƒ‰ãƒªã‚¹ãƒˆã®ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
+	/// </summary>
+	/// <param name="soundList">ã‚µã‚¦ãƒ³ãƒ‰ãƒªã‚¹ãƒˆ</param>
+	void Unload(SoundData* soundList);
+
+	/// <summary>
+	/// çµ‚äº†å‡¦ç†
+	/// </summary>
+	void Finalize();
 };
+

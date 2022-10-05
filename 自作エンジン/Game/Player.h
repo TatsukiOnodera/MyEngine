@@ -5,45 +5,57 @@
 #include "Input.h"
 #include "Camera.h"
 #include "FbxObject3d.h"
+
 #include "Bullet.h"
-#include "Enemy.h"
 
 using namespace std;
 
 class Player
 {
 public: // エイリアス
-	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
-	using XMVECTOR = DirectX::XMVECTOR;
 
-private: //静的メンバ変数
-	// 操作系
-	static Input* s_input;
+private: // 静的メンバ変数
 	// カメラ
 	static Camera* s_camera;
 
+private: //
+	// 操作系
+	Input* s_input = Input::GetInstance();
+
 private: // メンバ変数
+	//==============================
 	// Player
+	//==============================
 	// オブジェクト
 	unique_ptr<FbxObject3d> m_object = nullptr;
-	// 座標
-	XMFLOAT3 m_pos = { 0, 0, -50 };
 	// 生存フラグ
 	bool m_alive = false;
+
+	// 座標
+	XMFLOAT3 m_pos = { 0, 0, 0 };
+	// 加速値
+	XMFLOAT3 m_vel = { 0, 0, 0 };
+	// 加速度
+	float m_addSpeed = 0;
+	// 移動速度
+	float m_maxSpeed = 0;
+	// ダッシュ速度
+	float m_dashSpeed = 0;
+	// 重力加速値のフレーム
+	int m_gravityTime = 0;
+
 	// 加速する
 	bool m_isDash = false;
-	// 初期加速値
-	float m_add0 = 0;
-	//エフェクトタイマー
-	int effectTimer = 0;
 
+	//==============================
 	// Bullet
+	//==============================
 	// オブジェクト
-	vector<unique_ptr<Bullet>> bullet;
+	//vector<unique_ptr<Bullet>> bullet;
 
 public: // メンバ関数
 	/// <summary>
@@ -71,16 +83,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	bool bulletUpdate(XMFLOAT3 enemyPos);
-
-	void ShotBullet(XMFLOAT3 enemyPos);
-
-	/// <summary>
-	/// すべて弾を使っているか
-	/// </summary>
-	/// <returns>成否</returns>
-	bool UsingAllBullet();
-
 	/// <summary>
 	/// 始点から終点への距離
 	/// </summary>
@@ -95,6 +97,4 @@ public: // アクセッサ
 	/// </summary>
 	/// <returns>座標</returns>
 	XMFLOAT3 GetPosition() { return m_pos; }
-
-	void SetEffectTimer();
 };
