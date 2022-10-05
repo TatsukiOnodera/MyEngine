@@ -73,18 +73,18 @@ void Player::Update()
 		// ジャンプ
 		if (s_input->PullLeftTrigger())
 		{
-			add.y += 0.75f;
+			add.y += 0.7f;
 
 			m_gravityTime = 0;
 		}
 		else if (s_input->PushKey(DIK_RETURN))
 		{
-			add.y += 0.75f;
+			add.y += 0.7f;
 
 			m_gravityTime = 0;
 		}
 		// 重力
-		add.y += 0 - 4.9f * powf(static_cast<float>(m_gravityTime) / 60, 2);
+		add.y += -9.8f * powf(static_cast<float>(m_gravityTime) / 60, 2);
 		m_gravityTime++;
 
 		// ベクトルに加算
@@ -112,12 +112,12 @@ void Player::Update()
 		if (s_input->SwitchRightTrigger() && m_isDash == false)
 		{
 			m_isDash = true;
-			m_dashSpeed = 4.0f;
+			m_dashSpeed = 5.0f;
 		}
 		else if (s_input->TriggerKey(DIK_SPACE) && m_isDash == false)
 		{
 			m_isDash = true;
-			m_dashSpeed = 4.0f;
+			m_dashSpeed = 5.0f;
 		}
 		if (m_isDash == true)
 		{
@@ -136,25 +136,25 @@ void Player::Update()
 		m_pos = s_camera->ConvertWindowPos(m_object->GetPosition(), m_vel);
 		
 		// 壁との当たり判定
-		if (m_pos.x < -100 + 5)
+		if (m_pos.x < -200 + 5)
 		{
-			m_pos.x = -100 + 5;
+			m_pos.x = -200 + 5;
 		}
-		else if (100 - 5 < m_pos.x)
+		else if (200 - 5 < m_pos.x)
 		{
-			m_pos.x = 100 - 5;
+			m_pos.x = 200 - 5;
 		}
-		if (m_pos.z < -100 + 5)
+		if (m_pos.z < -200 + 5)
 		{
-			m_pos.z = -100 + 5;
+			m_pos.z = -200 + 5;
 		}
-		else if (100 - 5 < m_pos.z)
+		else if (200 - 5 < m_pos.z)
 		{
-			m_pos.z = 100 - 5;
+			m_pos.z = 200 - 5;
 		}
-		if (m_pos.y < -100 - 1.875f)
+		if (m_pos.y < -200 + 1.875f)
 		{
-			m_pos.y = -100 + 1.875f;
+			m_pos.y = -200 + 1.875f;
 
 			m_gravityTime = 0;
 		}

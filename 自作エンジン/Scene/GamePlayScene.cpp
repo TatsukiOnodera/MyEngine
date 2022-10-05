@@ -63,7 +63,7 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
-	float size = 100;
+	float size = 200;
 	for (int i = 0; i < defaultWall.size(); i++)
 	{
 		XMFLOAT3 pos;
@@ -131,7 +131,7 @@ void GamePlayScene::Update()
 	else if (input->RightStickAngle().x != 0 || input->RightStickAngle().y != 0)
 	{
 		angle.y += input->RightStickAngle().x;
-		angle.x += input->RightStickAngle().y;
+		angle.x -= input->RightStickAngle().y;
 	}
 	camera->FollowUpCamera(player->GetPosition(), camera->GetDistance(), angle.x, angle.y);
 
