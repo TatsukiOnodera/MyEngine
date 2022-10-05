@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "Camera.h"
 #include "FbxObject3d.h"
+#include "ParticleManager.h"
 
 #include "Bullet.h"
 
@@ -28,7 +29,7 @@ private: // メモリ置き場
 
 private: // メンバ変数
 	//==============================
-	// Player
+	// 自機
 	//==============================
 	// オブジェクト
 	unique_ptr<FbxObject3d> m_object = nullptr;
@@ -57,10 +58,15 @@ private: // メンバ変数
 	int m_gravityTime = 0;
 
 	//==============================
-	// Bullet
+	// 弾
 	//==============================
 	// オブジェクト
 	//vector<unique_ptr<Bullet>> bullet;
+
+	//==============================
+	// パーティクル
+	//==============================
+	std::unique_ptr<ParticleManager> m_booster = nullptr;
 
 public: // メンバ関数
 	/// <summary>

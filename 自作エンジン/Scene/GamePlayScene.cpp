@@ -172,7 +172,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	}
 
 	// “G
-	enemy->Draw();
+	//enemy->Draw();
 
 	Object3d::PostDraw();
 

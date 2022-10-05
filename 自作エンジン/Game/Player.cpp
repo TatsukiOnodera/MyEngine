@@ -7,7 +7,7 @@ Camera* Player::s_camera = Camera::GetInstance();
 Player::Player()
 {
 	m_object.reset(FbxObject3d::CreateFBXObject("player"));
-
+	m_booster.reset(ParticleManager::Create("default/effect1.png"));
 	Initialize();
 }
 
@@ -84,7 +84,7 @@ void Player::Update()
 
 		// 重力
 		{
-			add.y = (-9.8f / 0.5f) * powf(static_cast<float>(m_gravityTime) / 60, 2);
+			add.y = -(9.8f / 2.0f) * powf(static_cast<float>(m_gravityTime) / 60, 2);
 			m_gravityTime++;
 			if (60 < m_gravityTime)
 			{
@@ -96,27 +96,29 @@ void Player::Update()
 		{
 			if (input->PullLeftTrigger())
 			{
-				add.y += 0.05f;
+				add.y += 0.1f;
 
 				m_gravityTime = 0;
 			}
 		}
 
 		// ベクトルに加算
-		m_vel.x += add.x;
-		m_vel.y += add.y;
-		m_vel.z += add.z;
-		if (m_maxSpeed < fabs(m_vel.x))
 		{
-			m_vel.x = (fabs(m_vel.x) / m_vel.x) * m_maxSpeed;
-		}
-		if (m_maxSpeed < fabs(m_vel.z))
-		{
-			m_vel.z = (fabs(m_vel.z) / m_vel.z) * m_maxSpeed;
-		}
-		if (m_maxJumpSpeed < m_vel.y)
-		{
-			m_vel.y = m_maxJumpSpeed;
+			m_vel.x += add.x;
+			m_vel.y += add.y;
+			m_vel.z += add.z;
+			if (m_maxSpeed < fabs(m_vel.x))
+			{
+				m_vel.x = m_maxSpeed * (fabs(m_vel.x) / m_vel.x);
+			}
+			if (m_maxSpeed < fabs(m_vel.z))
+			{
+				m_vel.z = m_maxSpeed * (fabs(m_vel.z) / m_vel.z);
+			}
+			if (m_maxJumpSpeed < m_vel.y)
+			{
+				m_vel.y = m_maxJumpSpeed;
+			}
 		}
 
 		// ダッシュ
@@ -124,6 +126,7 @@ void Player::Update()
 			if (input->SwitchRightTrigger() && m_isDash == false)
 			{
 				m_isDash = true;
+
 			}
 			if (m_isDash == true)
 			{
@@ -177,6 +180,9 @@ void Player::Update()
 
 	// 焦点調整
 	XMFLOAT3 tPos = m_pos;
+	tPos.x -= m_vel.x;
+	tPos.y -= m_vel.y;
+	tPos.z -= m_vel.z;
 
 	// 追従カメラ
 	XMFLOAT2 angle = {};
