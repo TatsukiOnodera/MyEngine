@@ -170,6 +170,13 @@ void Camera::SetDistance(XMFLOAT3 distance)
 	m_dirty = true;
 }
 
+void Camera::SetAngle(float angleX, float angleY, float angleZ)
+{
+	m_angleX = angleX;
+	m_angleY = angleY;
+	m_angleZ = angleZ;
+}
+
 void Camera::SetNearFarZ(float nearZ, float farZ)
 {
 	this->m_nearZ = nearZ;
@@ -271,9 +278,15 @@ XMFLOAT2 Camera::Convert3DPosTo2DPos(XMFLOAT3 pos)
 	return position;
 }
 
-void Camera::InitializeAngle(float angleX, float angleY, float angleZ)
+void Camera::SetCameraPosition(XMFLOAT3 target)
 {
-	m_angleX = angleX;
-	m_angleY = angleY;
-	m_angleZ = angleZ;
+	m_target.x = target.x;
+	m_target.y = target.y;
+	m_target.z = target.z;
+
+	m_eye.x = target.x + m_distance.x;
+	m_eye.y = target.y + m_distance.y;
+	m_eye.z = target.z + m_distance.z;
+
+	m_dirty = true;
 }

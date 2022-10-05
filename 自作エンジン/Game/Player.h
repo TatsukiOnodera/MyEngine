@@ -22,9 +22,9 @@ private: // 静的メンバ変数
 	// カメラ
 	static Camera* s_camera;
 
-private: //
+private: // メモリ置き場
 	// 操作系
-	Input* s_input = Input::GetInstance();
+	Input* input = Input::GetInstance();
 
 private: // メンバ変数
 	//==============================
@@ -39,17 +39,22 @@ private: // メンバ変数
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 加速値
 	XMFLOAT3 m_vel = { 0, 0, 0 };
-	// 加速度
-	float m_addSpeed = 0;
+
 	// 移動速度
 	float m_maxSpeed = 0;
-	// ダッシュ速度
-	float m_dashSpeed = 0;
-	// 重力加速値のフレーム
-	int m_gravityTime = 0;
 
 	// 加速する
 	bool m_isDash = false;
+	// ダッシュ速度
+	float m_dashSpeed = 0;
+	// ダッシュ時間
+	float m_dashTime = 0;
+
+	// ジャンプの最大速度
+	float m_maxJumpSpeed = 0;
+
+	// 重力加速値の時間
+	int m_gravityTime = 0;
 
 	//==============================
 	// Bullet
@@ -97,4 +102,10 @@ public: // アクセッサ
 	/// </summary>
 	/// <returns>座標</returns>
 	XMFLOAT3 GetPosition() { return m_pos; }
+	
+	/// <summary>
+	/// void SetPosition(XMFLOAT3 position);
+	/// </summary>
+	/// <param name="position">座標</param>
+	void SetPosition(XMFLOAT3 position);
 };

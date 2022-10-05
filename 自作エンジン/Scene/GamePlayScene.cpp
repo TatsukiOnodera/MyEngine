@@ -69,6 +69,7 @@ void GamePlayScene::InitializeVariable()
 		XMFLOAT3 pos;
 		XMFLOAT3 rot;
 		XMFLOAT3 scale = { size, size, size };
+
 		if (i == FRONT)
 		{
 			pos = { 0, 0, size };
@@ -99,6 +100,7 @@ void GamePlayScene::InitializeVariable()
 			pos = { 0, -size, 0 };
 			rot = { -90, 0, 0 };
 		}
+
 		defaultWall[i]->SetPosition(pos);
 		defaultWall[i]->SetRotation(rot);
 		defaultWall[i]->SetScale(scale);
@@ -106,8 +108,8 @@ void GamePlayScene::InitializeVariable()
 	}
 
 	camera->SetTarget({ 0, 0, 0 });
-	camera->SetDistance({ 0, 1, -5 });
-	camera->InitializeAngle();
+	camera->SetDistance();
+	camera->SetAngle();
 	camera->Update();
 }
 
@@ -120,20 +122,6 @@ void GamePlayScene::Update()
 	
 	// エネミー
 	enemy->Update();
-
-	// 追従カメラ
-	XMFLOAT2 angle = {};
-	if (input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
-	{
-		angle.y += (input->PushKey(DIK_RIGHT) - input->PushKey(DIK_LEFT)) * 1;
-		angle.x += (input->PushKey(DIK_UP) - input->PushKey(DIK_DOWN)) * 1;
-	}
-	else if (input->RightStickAngle().x != 0 || input->RightStickAngle().y != 0)
-	{
-		angle.y += input->RightStickAngle().x;
-		angle.x -= input->RightStickAngle().y;
-	}
-	camera->FollowUpCamera(player->GetPosition(), camera->GetDistance(), angle.x, angle.y);
 
 #pragma endregion
 

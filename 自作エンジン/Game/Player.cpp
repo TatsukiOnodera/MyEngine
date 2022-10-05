@@ -18,22 +18,34 @@ Player::~Player()
 
 void Player::Initialize()
 {
+	// nullチェック
 	if (m_object == nullptr)
 	{
 		assert(0);
 	}
 
+	// 生死フラグ
 	m_alive = true;
 
+	// オブジェクト情報
 	m_pos = { 0, 0, -50 };
 	m_vel = { 0, 0, 0 };
-	m_addSpeed = 0.1f;
-	m_maxSpeed = 0.6f;
-	m_dashSpeed = 0;
+
+	// 移動
+	m_maxSpeed = 1.0f;
+
+	// ダッシュ
+	m_isDash = false;
+	m_dashSpeed = 2.0f;
+	m_dashTime = 0;
+
+	// ジャンプ
+	m_maxJumpSpeed = 1.0f;
+
+	// 重力
 	m_gravityTime = 0;
 
-	m_isDash = false;
-
+	// オブジェクト
 	m_object->SetPosition(m_pos);
 	m_object->SetRotation({ -90, 0, 0 });
 	m_object->SetScale({ 0.25f, 0.25f, 0.25f });
@@ -42,50 +54,53 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	// 加速度
+	XMFLOAT3 add = {};
+
+	// 生きているなら
 	if (m_alive == true)
 	{
-		// 加速度
-		XMFLOAT3 add = {};
 		// 移動
-		if (s_input->LeftStickAngle().x != 0 || s_input->LeftStickAngle().y != 0)
 		{
-			add.x += s_input->LeftStickAngle().x * m_addSpeed;
-			add.z += s_input->LeftStickAngle().y * m_addSpeed;
-		}
-		else if (s_input->PushKey(DIK_D) || s_input->PushKey(DIK_A) || s_input->PushKey(DIK_W) || s_input->PushKey(DIK_S))
-		{
-			add.x += (s_input->PushKey(DIK_D) - s_input->PushKey(DIK_A)) * m_addSpeed;
-			add.z += (s_input->PushKey(DIK_W) - s_input->PushKey(DIK_S)) * m_addSpeed;
-		}
-		else
-		{
-			m_vel.x *= 0.8f;
-			m_vel.z *= 0.8f;
-			if (fabs(m_vel.x) < 0.0001f)
+			if (input->LeftStickAngle().x != 0 || input->LeftStickAngle().y != 0)
 			{
-				m_vel.x = 0;
+				add.x = input->LeftStickAngle().x * 0.1f;
+				add.z = input->LeftStickAngle().y * 0.1f;
 			}
-			if (fabs(m_vel.z) < 0.0001f)
+			else
 			{
-				m_vel.z = 0;
+				m_vel.x *= 0.85f;
+				m_vel.z *= 0.85f;
+				if (fabs(m_vel.x) < 0.001f)
+				{
+					m_vel.x = 0;
+				}
+				if (fabs(m_vel.z) < 0.001f)
+				{
+					m_vel.z = 0;
+				}
 			}
 		}
-		// ジャンプ
-		if (s_input->PullLeftTrigger())
-		{
-			add.y += 0.7f;
 
-			m_gravityTime = 0;
-		}
-		else if (s_input->PushKey(DIK_RETURN))
-		{
-			add.y += 0.7f;
-
-			m_gravityTime = 0;
-		}
 		// 重力
-		add.y += -9.8f * powf(static_cast<float>(m_gravityTime) / 60, 2);
-		m_gravityTime++;
+		{
+			add.y = (-9.8f / 0.5f) * powf(static_cast<float>(m_gravityTime) / 60, 2);
+			m_gravityTime++;
+			if (60 < m_gravityTime)
+			{
+				m_gravityTime = 60;
+			}
+		}
+
+		// ジャンプ
+		{
+			if (input->PullLeftTrigger())
+			{
+				add.y += 0.05f;
+
+				m_gravityTime = 0;
+			}
+		}
 
 		// ベクトルに加算
 		m_vel.x += add.x;
@@ -93,42 +108,34 @@ void Player::Update()
 		m_vel.z += add.z;
 		if (m_maxSpeed < fabs(m_vel.x))
 		{
-			m_vel.x = m_maxSpeed * (m_vel.x / fabs(m_vel.x));
-		}
-		if (1.0f < m_vel.y)
-		{
-			m_vel.y = 1.0f;
-		}
-		else if (m_vel.y < -9.8f)
-		{
-			m_vel.y = -9.8f;
+			m_vel.x = (fabs(m_vel.x) / m_vel.x) * m_maxSpeed;
 		}
 		if (m_maxSpeed < fabs(m_vel.z))
 		{
-			m_vel.z = m_maxSpeed * (m_vel.z / fabs(m_vel.z));
+			m_vel.z = (fabs(m_vel.z) / m_vel.z) * m_maxSpeed;
+		}
+		if (m_maxJumpSpeed < m_vel.y)
+		{
+			m_vel.y = m_maxJumpSpeed;
 		}
 
 		// ダッシュ
-		if (s_input->SwitchRightTrigger() && m_isDash == false)
 		{
-			m_isDash = true;
-			m_dashSpeed = 5.0f;
-		}
-		else if (s_input->TriggerKey(DIK_SPACE) && m_isDash == false)
-		{
-			m_isDash = true;
-			m_dashSpeed = 5.0f;
-		}
-		if (m_isDash == true)
-		{
-			m_vel.x *= m_dashSpeed;
-			m_vel.z *= m_dashSpeed;
-
-			m_dashSpeed -= 0.3f;
-			if (m_dashSpeed < 1.0f)
+			if (input->SwitchRightTrigger() && m_isDash == false)
 			{
-				m_dashSpeed = 0;
-				m_isDash = false;
+				m_isDash = true;
+			}
+			if (m_isDash == true)
+			{
+				m_vel.x += m_dashSpeed * (1 - m_dashTime) * (fabs(m_vel.x) / m_vel.x);
+				m_vel.z += m_dashSpeed * (1 - m_dashTime) * (fabs(m_vel.z) / m_vel.z);
+
+				m_dashTime += 0.05f;
+				if (1 < m_dashTime)
+				{
+					m_dashTime = 0;
+					m_isDash = false;
+				}
 			}
 		}
 
@@ -156,12 +163,29 @@ void Player::Update()
 		{
 			m_pos.y = -200 + 1.875f;
 
+			m_vel.y = 0;
 			m_gravityTime = 0;
 		}
 
 		// 座標セット
 		m_object->SetPosition(m_pos);
 	}
+	else
+	{
+		m_vel = {};
+	}
+
+	// 焦点調整
+	XMFLOAT3 tPos = m_pos;
+
+	// 追従カメラ
+	XMFLOAT2 angle = {};
+	if (input->RightStickAngle().x != 0 || input->RightStickAngle().y != 0)
+	{
+		angle.y += input->RightStickAngle().x * 0.8f;
+		angle.x -= input->RightStickAngle().y * 0.8f;
+	}
+	s_camera->FollowUpCamera(tPos, s_camera->GetDistance(), angle.x, angle.y);
 }
 
 void Player::Draw()
@@ -177,4 +201,11 @@ const float Player::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
 
 	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
+}
+
+void Player::SetPosition(XMFLOAT3 position)
+{
+	m_pos = position;
+
+	m_object->SetPosition(m_pos);
 }
