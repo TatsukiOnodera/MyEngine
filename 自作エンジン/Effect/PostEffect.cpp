@@ -218,34 +218,34 @@ void PostEffect::Initialize()
 	//テクスチャバッファの生成
 	for (int i = 0; i < 2; i++)
 	{
-	result = dev->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0),
-		D3D12_HEAP_FLAG_NONE,
-		&texresDesc,
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		&CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor),
+		result = dev->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0),
+			D3D12_HEAP_FLAG_NONE,
+			&texresDesc,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			&CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor),
 			IID_PPV_ARGS(&texBuff[i])
-	);
-	assert(SUCCEEDED(result));
+		);
+		assert(SUCCEEDED(result));
 
-	//テクスチャを赤クリア
-	//画素数
-	const UINT pixelCount = WinApp::window_width * WinApp::window_height;
-	//画素数一行分のデータサイズ
-	const UINT rowPitch = sizeof(UINT) * WinApp::window_width;
-	//画像全体のデータサイズ
-	const UINT depthPitch = rowPitch * WinApp::window_height;
-	//画像イメージ
-	UINT* img = new UINT[pixelCount];
+		//テクスチャを赤クリア
+		//画素数
+		const UINT pixelCount = WinApp::window_width * WinApp::window_height;
+		//画素数一行分のデータサイズ
+		const UINT rowPitch = sizeof(UINT) * WinApp::window_width;
+		//画像全体のデータサイズ
+		const UINT depthPitch = rowPitch * WinApp::window_height;
+		//画像イメージ
+		UINT* img = new UINT[pixelCount];
 		for (int j = 0; j < pixelCount; j++)
-	{
+		{
 			img[j] = 0xff0000ff;
-	}
+		}
 
-	//テクスチャバッファにデータ転送
+		//テクスチャバッファにデータ転送
 		result = texBuff[i]->WriteToSubresource(0, nullptr, img, rowPitch, depthPitch);
-	assert(SUCCEEDED(result));
-	delete[] img;
+		assert(SUCCEEDED(result));
+		delete[] img;
 	}
 
 	//(SRV)デスクリプタヒープを設定
@@ -268,12 +268,12 @@ void PostEffect::Initialize()
 	for (int i = 0; i < 2; i++)
 	{
 		dev->CreateShaderResourceView(texBuff[i].Get(), //ビューと関連付けるバッファ
-		&srvDesc, //テクスチャ設定情報
+			&srvDesc, //テクスチャ設定情報
 			CD3DX12_CPU_DESCRIPTOR_HANDLE(
 				descHeapSRV->GetCPUDescriptorHandleForHeapStart(), i,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			)
-	);
+		);
 	}
 
 	//(RTV)デスクリプタヒープを設定
@@ -286,13 +286,13 @@ void PostEffect::Initialize()
 
 	for (int i = 0; i < 2; i++)
 	{
-	//デスクリプタヒープにレンダーターゲットビュー作成
+		//デスクリプタヒープにレンダーターゲットビュー作成
 		dev->CreateRenderTargetView(texBuff[i].Get(), //ビューと関連付けるバッファ
-		nullptr, //テクスチャ設定情報
+			nullptr, //テクスチャ設定情報
 			CD3DX12_CPU_DESCRIPTOR_HANDLE(
 				descHeapRTV->GetCPUDescriptorHandleForHeapStart(), i,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV))
-	);
+		);
 	}
 
 	//深度バッファリソース設定
@@ -397,11 +397,11 @@ void PostEffect::PreDrawScene(ID3D12GraphicsCommandList* cmdList)
 	//リソースバリア変更
 	for (int i = 0; i < 2; i++)
 	{
-	cmdList->ResourceBarrier(1,
+		cmdList->ResourceBarrier(1,
 			&CD3DX12_RESOURCE_BARRIER::Transition(texBuff[i].Get(),
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			D3D12_RESOURCE_STATE_RENDER_TARGET)
-	);
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+				D3D12_RESOURCE_STATE_RENDER_TARGET)
+		);
 	}
 
 	//RTV用デスクリプタヒープのハンドルを取得

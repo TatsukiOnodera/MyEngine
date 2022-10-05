@@ -1,11 +1,11 @@
 cbuffer cbuff0 : register(b0)
 {
-    //float4 color; //色(RGBA)
-    //matrix mat; //3D変換行列
+    //float4 color; //�F(RGBA)
+    //matrix mat; //3D�ϊ��s��
 };
 
 struct VSOutput
 {
-    float4 svpos : SV_POSITION; //システム用頂点座標
-    float2 uv : TEXCOORD; //uv値
+    float4 svpos : SV_POSITION; //�V�X�e���p���_���W
+    float2 uv : TEXCOORD; //uv�l
 };
