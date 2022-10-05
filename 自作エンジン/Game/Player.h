@@ -36,6 +36,8 @@ private: // メンバ変数
 	// 生存フラグ
 	bool m_alive = false;
 
+	bool jet = false;
+
 	// 座標
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 加速値
@@ -62,11 +64,6 @@ private: // メンバ変数
 	//==============================
 	// オブジェクト
 	//vector<unique_ptr<Bullet>> bullet;
-
-	//==============================
-	// パーティクル
-	//==============================
-	std::unique_ptr<ParticleManager> m_booster = nullptr;
 
 public: // メンバ関数
 	/// <summary>
@@ -114,4 +111,12 @@ public: // アクセッサ
 	/// </summary>
 	/// <param name="position">座標</param>
 	void SetPosition(XMFLOAT3 position);
+
+	/// <summary>
+	/// ベクトルを取得
+	/// </summary>
+	/// <returns>ベクトル</returns>
+	XMFLOAT3 GetVelocity() { return m_vel; }
+
+	bool GetIsDash() { return m_isDash; }
 };

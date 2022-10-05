@@ -36,7 +36,7 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	// パーティクル
-	//particle.reset(ParticleManager::Create("Default/effect1.png"));
+	particle.reset(ParticleManager::Create("Default/effect1.png"));
 
 	// スプライト
 
@@ -123,6 +123,25 @@ void GamePlayScene::Update()
 	// エネミー
 	enemy->Update();
 
+	// パーティクル
+	if (player->GetIsDash())
+	{
+		for (int i = 0; i < 40; i++)
+		{
+			XMFLOAT3 vel = player->GetVelocity();
+			vel.x = -vel.x + static_cast<float>(rand() % 20) / 100 - 0.01f + vel.x;
+			vel.y = -vel.y + static_cast<float>(rand() % 20) / 100 - 0.01f;
+			vel.z = -vel.z + static_cast<float>(rand() % 20) / 100 - 0.01f + vel.z;
+
+			XMFLOAT3 pos = player->GetPosition();
+			pos.x += vel.x;
+			pos.z += vel.z;
+
+			//追加
+			particle->Add(10, pos, vel, { 0, 0, 0 }, 0.1f, 0.0f);
+		}
+	}
+
 #pragma endregion
 
 #pragma region カメラとライトの更新
@@ -144,7 +163,7 @@ void GamePlayScene::Draw()
 	// 各描画
 	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
-	//DrawEffect(cmdList);
+	DrawEffect(cmdList);
 	DrawUI(cmdList);
 	//DrawDebugText(cmdList);
 }
@@ -207,7 +226,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 	// パーティクル描画
 	ParticleManager::PreDraw(cmdList);
 
-	//particle->Draw();
+	particle->Draw();
 
 	ParticleManager::PostDraw();
 }

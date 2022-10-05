@@ -7,7 +7,6 @@ Camera* Player::s_camera = Camera::GetInstance();
 Player::Player()
 {
 	m_object.reset(FbxObject3d::CreateFBXObject("player"));
-	m_booster.reset(ParticleManager::Create("default/effect1.png"));
 	Initialize();
 }
 
@@ -84,7 +83,7 @@ void Player::Update()
 
 		// èdóÕ
 		{
-			add.y = -(9.8f / 2.0f) * powf(static_cast<float>(m_gravityTime) / 60, 2);
+			add.y = -(9.8f / 9.0f) * powf(static_cast<float>(m_gravityTime) / 60, 2);
 			m_gravityTime++;
 			if (60 < m_gravityTime)
 			{
@@ -126,24 +125,25 @@ void Player::Update()
 			if (input->SwitchRightTrigger() && m_isDash == false)
 			{
 				m_isDash = true;
-
+				jet = true;
 			}
 			if (m_isDash == true)
 			{
 				m_vel.x += m_dashSpeed * (1 - m_dashTime) * (fabs(m_vel.x) / m_vel.x);
 				m_vel.z += m_dashSpeed * (1 - m_dashTime) * (fabs(m_vel.z) / m_vel.z);
 
-				m_dashTime += 0.05f;
+				m_dashTime += 0.03f;
 				if (1 < m_dashTime)
 				{
 					m_dashTime = 0;
 					m_isDash = false;
+					jet = false;
 				}
 			}
 		}
 
 		// ÉJÉÅÉâÇé≤Ç…ÇµÇΩïœä∑
-		m_pos = s_camera->ConvertWindowPos(m_object->GetPosition(), m_vel);
+		m_pos = s_camera->ConvertWindowPos(m_pos, m_vel);
 		
 		// ï«Ç∆ÇÃìñÇΩÇËîªíË
 		if (m_pos.x < -200 + 5)

@@ -61,6 +61,9 @@ private: // インスタンス
 	// ライト
 	std::unique_ptr<Light> light = nullptr;
 
+	// パーティクル
+	std::unique_ptr<ParticleManager> particle = nullptr;
+
 	// スプライト
 
 
