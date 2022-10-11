@@ -22,10 +22,8 @@ public: // エイリアス
 private: // 静的メンバ変数
 	// カメラ
 	static Camera* s_camera;
-
-private: // メモリ置き場
 	// 操作系
-	Input* input = Input::GetInstance();
+	static Input* s_input;
 
 private: // メンバ変数
 	//==============================
@@ -35,35 +33,35 @@ private: // メンバ変数
 	unique_ptr<FbxObject3d> m_object = nullptr;
 	// 生存フラグ
 	bool m_alive = false;
-
-	bool jet = false;
-
 	// 座標
 	XMFLOAT3 m_pos = { 0, 0, 0 };
-	// 加速値
+	// 速度
 	XMFLOAT3 m_vel = { 0, 0, 0 };
-
-	// 移動速度
-	float m_maxSpeed = 0;
-
-	// 加速する
-	bool m_isDash = false;
-	// ダッシュ速度
-	float m_dashSpeed = 0;
-	// ダッシュ時間
-	float m_dashTime = 0;
-
-	// ジャンプの最大速度
-	float m_maxJumpSpeed = 0;
-
+	// 毎加速度
+	float m_accSpeed = 0;
+	// 減速度
+	float m_decSpeed = 0;
+	// ジャンプ加速度
+	float m_accJumpSpeed = 0;
 	// 重力加速値の時間
 	int m_gravityTime = 0;
+	// ダッシュフラグ
+	bool m_isDash = false;
+	// ダッシュ加速比
+	float m_dashTimes = 0;
+	// ダッシュ加速比の毎加算値
+	float m_accDashTimes = 0;
+	// カメラの角度
+	XMFLOAT3 m_angle = { 360, 0, 0 };
+	// カメラの回転角度
+	float m_addAngle = 0;
+	// カメラ位置の正面化
+	bool m_cameraInitialize = false;
 
 	//==============================
-	// 弾
+	// 自機の弾
 	//==============================
-	// オブジェクト
-	//vector<unique_ptr<Bullet>> bullet;
+
 
 public: // メンバ関数
 	/// <summary>
@@ -89,15 +87,18 @@ public: // メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
-	/// 始点から終点への距離
+	/// カメラ位置の初期化
 	/// </summary>
-	/// <param name="pos1">終点</param>
-	/// <param name="pos2">始点</param>
-	/// <returns>二点間の距離</returns>
-	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2);
+	bool CameraInitialize(float& anglex, float& angleY);
+
+public: // 衝突
+	/// <summary>
+	/// 衝突時のコールバック関数
+	/// </summary>
+	void OnCollision();
 
 public: // アクセッサ
 	/// <summary>
@@ -110,13 +111,16 @@ public: // アクセッサ
 	/// void SetPosition(XMFLOAT3 position);
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(XMFLOAT3 position);
+	void SetPosition(const XMFLOAT3& position);
 
 	/// <summary>
-	/// ベクトルを取得
+	/// 速度を取得
 	/// </summary>
-	/// <returns>ベクトル</returns>
+	/// <returns>速度</returns>
 	XMFLOAT3 GetVelocity() { return m_vel; }
 
-	bool GetIsDash() { return m_isDash; }
+	/// <summary>
+	/// 生死フラグを取得
+	/// </summary>
+	bool GetAlive() { return m_alive; }
 };

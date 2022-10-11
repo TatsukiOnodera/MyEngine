@@ -155,7 +155,9 @@ XMFLOAT2 Input::LeftStickAngle()
 	}
 	else
 	{
-		return XMFLOAT2(static_cast<float>(gamePadState.Gamepad.sThumbLX) / 32768, static_cast<float>(gamePadState.Gamepad.sThumbLY) / 32768);
+		XMFLOAT2 result = { static_cast<float>(gamePadState.Gamepad.sThumbLX) / 32768, static_cast<float>(gamePadState.Gamepad.sThumbLY) / 32768 };
+
+		return result;
 	}
 }
 
@@ -169,7 +171,9 @@ XMFLOAT2 Input::RightStickAngle()
 	}
 	else
 	{
-		return XMFLOAT2(static_cast<float>(gamePadState.Gamepad.sThumbRX) / 32768, static_cast<float>(gamePadState.Gamepad.sThumbRY) / 32768);
+		XMFLOAT2 result = { static_cast<float>(gamePadState.Gamepad.sThumbRX) / 32768, static_cast<float>(gamePadState.Gamepad.sThumbRY) / 32768 };
+
+		return result;
 	}
 }
 

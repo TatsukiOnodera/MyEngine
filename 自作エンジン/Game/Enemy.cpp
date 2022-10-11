@@ -13,15 +13,20 @@ Enemy::~Enemy()
 
 void Enemy::Initialize()
 {
+	// nullチェック
 	if (m_object == nullptr)
 	{
 		assert(0);
 	}
 
+	// 座標
 	m_pos = { 0, 0, 50 };
-	m_vec = { 0, 0, 0 };
+	// 速度
+	m_vel = { 0, -0.98f, 0 };
+	// 生存フラグ
 	m_alive = true;
 
+	// オブジェクト
 	m_object->SetPosition(m_pos);
 	m_object->SetScale({ 3, 3, 3 });
 	m_object->SetColor({ 0.0f, 0.3f, 0.9f, 1.0f });
@@ -30,59 +35,63 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
-	if (m_alive == true && m_pos.y == -100)
+	if (m_alive == true)
 	{
 		//ベクトルの加算
 		m_pos = m_object->GetPosition();
 
-		m_pos.x += m_vec.x;
-		m_pos.z += m_vec.z;
+		m_pos.x += m_vel.x;
+		m_pos.y += m_vel.y;
+		m_pos.z += m_vel.z;
 
-		m_object->SetPosition(m_pos);
-
-		//壁の当たり判定
-		if (m_pos.x > 100)
+		// 仮当たり判定
+		if (m_pos.y < -200)
 		{
-			m_vec.x = -fabs(static_cast<float>(rand() % 101 - 50) / 100);
-		}
-		else if (m_pos.x < -100)
-		{
-			m_vec.x = fabs(static_cast<float>(rand() % 101 - 50) / 100);
-		}
-		if (m_pos.z > 100)
-		{
-			m_vec.z = -fabs(static_cast<float>(rand() % 101 - 50) / 100);
-		}
-		else if (m_pos.z < -100)
-		{
-			m_vec.z = fabs(static_cast<float>(rand() % 101 - 50) / 100);
-		}
-	}
-	else if (m_pos.y > -100)
-	{
-		m_pos = m_object->GetPosition();
-
-		m_pos.y -= 0.98f;
-		if (m_pos.y < -100)
-		{
-			m_pos.y = -100;
+			m_pos.y = -200;
 		}
 
 		m_object->SetPosition(m_pos);
 	}
 }
 
-void Enemy::Draw()
+void Enemy::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	if (m_alive == true)
 	{
+		// OBJオブジェクト描画
+		Object3d::PreDraw(cmdList);
+
 		m_object->Draw();
+
+		Object3d::PostDraw();
+
+		// FBXオブジェクト
+		FbxObject3d::PreDraw(cmdList);
+
+
+
+		FbxObject3d::PostDraw();
 	}
 }
 
-const float Enemy::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
+void Enemy::OnCollision()
 {
-	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
+	m_alive = false;
+}
 
-	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
+void Enemy::SetPosition(const XMFLOAT3& position)
+{
+	m_pos = position;
+
+	m_object->SetPosition(m_pos);
+}
+
+void Enemy::SetVelocity(const XMFLOAT3& velocity)
+{
+	m_vel = velocity;
+}
+
+void Enemy::SetAlive(const bool& alive)
+{
+	m_alive = alive;
 }

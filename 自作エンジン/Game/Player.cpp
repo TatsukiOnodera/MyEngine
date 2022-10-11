@@ -3,6 +3,7 @@
 #include "Player.h"
 
 Camera* Player::s_camera = Camera::GetInstance();
+Input* Player::s_input = Input::GetInstance();
 
 Player::Player()
 {
@@ -23,26 +24,32 @@ void Player::Initialize()
 		assert(0);
 	}
 
-	// 生死フラグ
+	// 生死
 	m_alive = true;
-
-	// オブジェクト情報
+	// 座標
 	m_pos = { 0, 0, -50 };
+	// 速度
 	m_vel = { 0, 0, 0 };
-
-	// 移動
-	m_maxSpeed = 1.0f;
-
-	// ダッシュ
-	m_isDash = false;
-	m_dashSpeed = 2.0f;
-	m_dashTime = 0;
-
-	// ジャンプ
-	m_maxJumpSpeed = 1.0f;
-
-	// 重力
+	// 毎加速度
+	m_accSpeed = 0.1f;
+	// 減速度
+	m_decSpeed = 0.8f;
+	// ジャンプ加速度
+	m_accJumpSpeed = 0.1f;
+	// 重力時間
 	m_gravityTime = 0;
+	// ダッシュフラグ
+	m_isDash = false;
+	// ダッシュ加速比
+	m_dashTimes = 1.0f;
+	// ダッシュ加速比の毎加算値
+	m_accDashTimes = 0.6f;
+	// カメラの角度
+	m_angle = { 0, 0, 0 };
+	// カメラの回転角度
+	m_addAngle = 1.0f;
+	// カメラ位置の正面化
+	m_cameraInitialize = false;
 
 	// オブジェクト
 	m_object->SetPosition(m_pos);
@@ -54,162 +61,216 @@ void Player::Initialize()
 void Player::Update()
 {
 	// 加速度
-	XMFLOAT3 add = {};
+	XMFLOAT3 acc = {};
 
 	// 生きているなら
 	if (m_alive == true)
 	{
-		// 移動
-		{
-			if (input->LeftStickAngle().x != 0 || input->LeftStickAngle().y != 0)
-			{
-				add.x = input->LeftStickAngle().x * 0.1f;
-				add.z = input->LeftStickAngle().y * 0.1f;
-			}
-			else
-			{
-				m_vel.x *= 0.85f;
-				m_vel.z *= 0.85f;
-				if (fabs(m_vel.x) < 0.001f)
-				{
-					m_vel.x = 0;
-				}
-				if (fabs(m_vel.z) < 0.001f)
-				{
-					m_vel.z = 0;
-				}
-			}
-		}
+		// 重力時間
+		m_gravityTime++;
 
-		// 重力
+		// 移動
+		if (s_input->LeftStickAngle().x != 0 || s_input->LeftStickAngle().y != 0)
 		{
-			add.y = -(9.8f / 9.0f) * powf(static_cast<float>(m_gravityTime) / 60, 2);
-			m_gravityTime++;
-			if (60 < m_gravityTime)
-			{
-				m_gravityTime = 60;
-			}
+			acc.x += s_input->LeftStickAngle().x * m_accSpeed;
+			acc.z += s_input->LeftStickAngle().y * m_accSpeed;
+		}
+		else
+		{
+			m_vel.x *= m_decSpeed;
+			m_vel.z *= m_decSpeed;
 		}
 
 		// ジャンプ
+		if (s_input->PullLeftTrigger())
 		{
-			if (input->PullLeftTrigger())
-			{
-				add.y += 0.1f;
-
-				m_gravityTime = 0;
-			}
+			acc.y += m_accJumpSpeed;
+			m_gravityTime = 0;
 		}
+		acc.y -= (9.8f / 5) * powf(static_cast<float>(m_gravityTime) / 60, 2);
 
-		// ベクトルに加算
+		// 速度に加速を加算
+		m_vel.x += acc.x;
+		m_vel.y += acc.y;
+		m_vel.z += acc.z;
+		if (1.0f < fabs(m_vel.x))
 		{
-			m_vel.x += add.x;
-			m_vel.y += add.y;
-			m_vel.z += add.z;
-			if (m_maxSpeed < fabs(m_vel.x))
-			{
-				m_vel.x = m_maxSpeed * (fabs(m_vel.x) / m_vel.x);
-			}
-			if (m_maxSpeed < fabs(m_vel.z))
-			{
-				m_vel.z = m_maxSpeed * (fabs(m_vel.z) / m_vel.z);
-			}
-			if (m_maxJumpSpeed < m_vel.y)
-			{
-				m_vel.y = m_maxJumpSpeed;
-			}
+			m_vel.z /= fabs(m_vel.x);
+			m_vel.x /= fabs(m_vel.x);
+		}
+		if (1.0f < fabs(m_vel.z))
+		{
+			m_vel.x /= fabs(m_vel.z);
+			m_vel.z /= fabs(m_vel.z);
+		}
+		if (1.0f < m_vel.y)
+		{
+			m_vel.y = 1.0f;
 		}
 
 		// ダッシュ
+		if (m_isDash == false)
 		{
-			if (input->SwitchRightTrigger() && m_isDash == false)
+			if (s_input->SwitchRightTrigger())
 			{
 				m_isDash = true;
-				jet = true;
 			}
-			if (m_isDash == true)
-			{
-				m_vel.x += m_dashSpeed * (1 - m_dashTime) * (fabs(m_vel.x) / m_vel.x);
-				m_vel.z += m_dashSpeed * (1 - m_dashTime) * (fabs(m_vel.z) / m_vel.z);
+		}
+		else
+		{
+			// 加速
+			m_vel.x *= m_dashTimes;
+			m_vel.z *= m_dashTimes;
 
-				m_dashTime += 0.03f;
-				if (1 < m_dashTime)
-				{
-					m_dashTime = 0;
-					m_isDash = false;
-					jet = false;
-				}
+			// 加速比に加算
+			m_dashTimes += m_accDashTimes;
+
+			// 加速値が5より大きいなら
+			if (6.0f < m_dashTimes)
+			{
+				m_dashTimes = 6.0f;
+				m_accDashTimes = -0.3f;
+			}
+			// 加速値が1を下回ったなら
+			else if (m_dashTimes < 1.0f)
+			{
+				m_dashTimes = 1.0f;
+				m_accDashTimes = 0.6f;
+				m_isDash = false;
 			}
 		}
 
 		// カメラを軸にした変換
-		m_pos = s_camera->ConvertWindowPos(m_pos, m_vel);
-		
-		// 壁との当たり判定
-		if (m_pos.x < -200 + 5)
-		{
-			m_pos.x = -200 + 5;
-		}
-		else if (200 - 5 < m_pos.x)
-		{
-			m_pos.x = 200 - 5;
-		}
-		if (m_pos.z < -200 + 5)
-		{
-			m_pos.z = -200 + 5;
-		}
-		else if (200 - 5 < m_pos.z)
-		{
-			m_pos.z = 200 - 5;
-		}
-		if (m_pos.y < -200 + 1.875f)
-		{
-			m_pos.y = -200 + 1.875f;
-
-			m_vel.y = 0;
-			m_gravityTime = 0;
-		}
+		m_pos = s_camera->ConvertWindowPos(m_pos, m_vel, m_angle.y);
 
 		// 座標セット
 		m_object->SetPosition(m_pos);
 	}
-	else
-	{
-		m_vel = {};
-	}
 
-	// 焦点調整
+	// カメラワーク
 	XMFLOAT3 tPos = m_pos;
-	tPos.x -= m_vel.x;
-	tPos.y -= m_vel.y;
-	tPos.z -= m_vel.z;
+	XMFLOAT3 tVel = s_camera->ConvertWindowPos({ 0, 0, 0 }, m_vel, m_angle.y);
+	tPos.x -= tVel.x;
+	tPos.y -= tVel.y;
+	tPos.z -= tVel.z;
 
 	// 追従カメラ
-	XMFLOAT2 angle = {};
-	if (input->RightStickAngle().x != 0 || input->RightStickAngle().y != 0)
+	if (m_cameraInitialize == false)
 	{
-		angle.y += input->RightStickAngle().x * 0.8f;
-		angle.x -= input->RightStickAngle().y * 0.8f;
+		if (s_input->PushButton(BUTTON::R_STICK))
+		{
+			m_cameraInitialize = true;
+		}
+		else if (s_input->RightStickAngle().x != 0 || s_input->RightStickAngle().y != 0)
+		{
+			// Y軸
+			m_angle.y += s_input->RightStickAngle().x * m_addAngle;
+			if (m_angle.y < 0)
+			{
+				m_angle.y += 360;
+			}
+			else if (360 < m_angle.y)
+			{
+				m_angle.y -= 360;
+			}
+			// X軸
+			m_angle.x += s_input->RightStickAngle().y * m_addAngle;
+			if (m_angle.x < 0)
+			{
+				m_angle.x += 360;
+			}
+			else if (360 < m_angle.x)
+			{
+				m_angle.x -= 360;
+			}
+		}
 	}
-	s_camera->FollowUpCamera(tPos, s_camera->GetDistance(), angle.x, angle.y);
+	else
+	{
+		// カメラ正面化
+		if (CameraInitialize(m_angle.x, m_angle.y) == true)
+		{
+			m_cameraInitialize = false;
+		}
+	}
+	s_camera->FollowUpCamera(tPos, s_camera->GetDistance(), m_angle.x, m_angle.y);
 }
 
-void Player::Draw()
+void Player::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	if (m_alive == true)
 	{
+		// OBJオブジェクト描画
+		Object3d::PreDraw(cmdList);
+
+
+
+		Object3d::PostDraw();
+
+		// FBXオブジェクト
+		FbxObject3d::PreDraw(cmdList);
+
+		// 自機
 		m_object->Draw();
+
+		FbxObject3d::PostDraw();
 	}
 }
 
-const float Player::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
+void Player::OnCollision()
 {
-	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
-
-	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
+	m_vel.y = 0;
+	m_gravityTime = 0;
 }
 
-void Player::SetPosition(XMFLOAT3 position)
+bool Player::CameraInitialize(float& angleX, float& angleY)
+{
+	// X軸
+	if (angleX < 180)
+	{
+		angleX -= 1.0f;
+		if (angleX <= 0)
+		{
+			angleX = 0;
+		}
+	}
+	else
+	{
+		angleX += 1.0f;
+		if (360 <= angleX)
+		{
+			angleX = 0;
+		}
+	}
+
+	// Y軸
+	if (angleY < 180)
+	{
+		angleY -= 1.0f;
+		if (angleY <= 0)
+		{
+			angleY = 0;
+		}
+	}
+	else
+	{
+		angleY += 1.0f;
+		if (360 <= angleY)
+		{
+			angleY = 0;
+		}
+	}
+
+	// 二つが0なら
+	if (angleX == 0 && angleY == 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void Player::SetPosition(const XMFLOAT3& position)
 {
 	m_pos = position;
 

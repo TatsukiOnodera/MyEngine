@@ -21,13 +21,10 @@ private: // メンバ変数
 	std::unique_ptr<Object3d> m_object = nullptr;
 	// 座標
 	XMFLOAT3 m_pos = { 0, 0, 50 };
-	// 移動ベクトル
-	XMFLOAT3 m_vec = { 0, 0, 0 };
+	// 速度
+	XMFLOAT3 m_vel = { 0, 0, 0 };
 	// 生存フラグ
 	bool m_alive = false;
-
-	//Bullet
-	//vector<std::unique_ptr<Bullet>> bullet;
 
 public: // メンバ関数
 	/// <summary>
@@ -53,15 +50,13 @@ public: // メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(ID3D12GraphicsCommandList* cmdList);
 
+public: // 衝突
 	/// <summary>
-	/// 始点から終点への距離
+	/// 衝突時のコールバック関数
 	/// </summary>
-	/// <param name="pos1">終点</param>
-	/// <param name="pos2">始点</param>
-	/// <returns>二点間の距離</returns>
-	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2);
+	void OnCollision();
 
 public: //アクセッサ
 	/// <summary>
@@ -71,8 +66,32 @@ public: //アクセッサ
 	XMFLOAT3 GetPosition() { return m_pos; }
 
 	/// <summary>
+	/// 座標をセット
+	/// </summary>
+	/// <param name="position">座標</param>
+	void SetPosition(const XMFLOAT3& position);
+
+	/// <summary>
+	/// 速度を取得
+	/// </summary>
+	/// <returns>速度</returns>
+	XMFLOAT3 GetVelocity() { return m_vel; }
+
+	/// <summary>
+	/// 速度をセット
+	/// </summary>
+	/// <param name="velocity">速度</param>
+	void SetVelocity(const XMFLOAT3& velocity);
+
+	/// <summary>
 	/// 生死フラグの取得
 	/// </summary>
 	/// <returns>生死フラグ</returns>
 	bool GetAlive() { return m_alive; }
+
+	/// <summary>
+	/// 生死フラグのセット
+	/// </summary>
+	/// <param name="alive">成否</param>
+	void SetAlive(const bool& alive);
 };

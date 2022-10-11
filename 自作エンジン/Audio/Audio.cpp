@@ -1,7 +1,8 @@
 ﻿#include "Audio.h"
+
 #include <fstream>
 #include <cassert>
-#include <SafeDelete.h>
+
 #pragma comment(lib,"xaudio2.lib")
 
 Audio* Audio::GetInstance()
@@ -18,7 +19,14 @@ Audio::Audio()
 
 Audio::~Audio()
 {
-	Finalize();
+	//音声データ解放
+	std::map<std::string, SoundData>::iterator it = soundList.begin();
+	while (it != soundList.end())
+	{
+		DeleteSoundList(&it->second);
+		++it;
+	}
+	soundList.clear();
 }
 
 bool Audio::Initialize()
@@ -44,7 +52,7 @@ bool Audio::Initialize()
 	return true;
 }
 
-void Audio::PlayWave(const std::string& fileName, bool loop, float volume)
+void Audio::PlayWave(const std::string& fileName, const bool& loop, const float& volume)
 {
 	HRESULT result = S_FALSE;
 
@@ -168,7 +176,7 @@ void Audio::CreateSoundData(SoundData& soundData)
 	assert(SUCCEEDED(result));
 }
 
-void Audio::Unload(SoundData *soundList)
+void Audio::DeleteSoundList(SoundData *soundList)
 {
 	//バッファのメモリを解放
 	delete[] soundList->buffer;
@@ -176,15 +184,4 @@ void Audio::Unload(SoundData *soundList)
 	soundList->wfex = {};
 	soundList->buffer = 0;
 	soundList->bufferSize = 0;
-}
-
-void Audio::Finalize()
-{
-	//音声データ解放
-	std::map<std::string, SoundData>::iterator it = soundList.begin();
-	for (; it != soundList.end(); ++it)
-	{
-		Unload(&it->second);
-	}
-	soundList.clear();
 }

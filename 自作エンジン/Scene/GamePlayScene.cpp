@@ -42,11 +42,14 @@ void GamePlayScene::Initialize()
 
 
 	// OBJオブジェクト
-	for (auto& m : defaultWall)
+	for (auto& m : wall)
 	{
 		m.reset(Object3d::Create("Wall"));
 	}
-	enemy.reset(new Enemy);
+	for (int e = 0; e < 6; e++)
+	{
+		enemy.emplace_back(new Enemy);
+	}
 
 	// FBXオブェクト
 	player.reset(new Player);
@@ -64,7 +67,7 @@ void GamePlayScene::Initialize()
 void GamePlayScene::InitializeVariable()
 {
 	float size = 200;
-	for (int i = 0; i < defaultWall.size(); i++)
+	for (int i = 0; i < wall.size(); i++)
 	{
 		XMFLOAT3 pos;
 		XMFLOAT3 rot;
@@ -101,15 +104,14 @@ void GamePlayScene::InitializeVariable()
 			rot = { -90, 0, 0 };
 		}
 
-		defaultWall[i]->SetPosition(pos);
-		defaultWall[i]->SetRotation(rot);
-		defaultWall[i]->SetScale(scale);
-		defaultWall[i]->Update();
+		wall[i]->SetPosition(pos);
+		wall[i]->SetRotation(rot);
+		wall[i]->SetScale(scale);
+		wall[i]->Update();
 	}
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetDistance();
-	camera->SetAngle();
 	camera->Update();
 }
 
@@ -121,26 +123,13 @@ void GamePlayScene::Update()
 	player->Update();
 	
 	// エネミー
-	enemy->Update();
-
-	// パーティクル
-	if (player->GetIsDash())
+	for (const auto& m : enemy)
 	{
-		for (int i = 0; i < 40; i++)
-		{
-			XMFLOAT3 vel = player->GetVelocity();
-			vel.x = -vel.x + static_cast<float>(rand() % 20) / 100 - 0.01f + vel.x;
-			vel.y = -vel.y + static_cast<float>(rand() % 20) / 100 - 0.01f;
-			vel.z = -vel.z + static_cast<float>(rand() % 20) / 100 - 0.01f + vel.z;
-
-			XMFLOAT3 pos = player->GetPosition();
-			pos.x += vel.x;
-			pos.z += vel.z;
-
-			//追加
-			particle->Add(10, pos, vel, { 0, 0, 0 }, 0.1f, 0.0f);
-		}
+		m->Update();
 	}
+	
+	// 衝突判定
+	CheckAllCollisions();
 
 #pragma endregion
 
@@ -185,23 +174,28 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	Object3d::PreDraw(cmdList);
 
 	// 壁
-	for (auto& m : defaultWall)
+	for (auto& m : wall)
 	{
 		m->Draw();
 	}
-
-	// 敵
-	//enemy->Draw();
 
 	Object3d::PostDraw();
 
 	// FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);
 
-	// 自機
-	player->Draw();
+
 
 	FbxObject3d::PostDraw();
+
+	// プレイヤー
+	player->Draw(cmdList);
+
+	// エネミー
+	for (const auto& m : enemy)
+	{
+		m->Draw(cmdList);
+	}
 
 	// スプライト描画
 	Sprite::PreDraw(cmdList);
@@ -242,4 +236,124 @@ const float GamePlayScene::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
 
 	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
+}
+
+void GamePlayScene::CheckAllCollisions()
+{
+	// プレイヤーとエネミーの座標
+	XMFLOAT3 playerPos = player->GetPosition();
+	XMFLOAT3 enemyPos[6] = {};
+	for (int e = 0; e < enemy.size(); e++)
+	{
+		enemyPos[e] = enemy[e]->GetPosition();
+	}
+
+#pragma region プレイヤーバレットとエネミーの当たり判定
+
+	
+
+#pragma endregion
+
+#pragma region プレイヤーとエネミーバレットの当たり判定
+
+	
+
+#pragma endregion
+
+#pragma region プレイヤーとエネミーの当たり判定
+
+	for (int e = 0; e < enemy.size(); e++)
+	{
+		if (player->GetAlive() == true && enemy[e]->GetAlive() == true && Length(playerPos, enemyPos[e]) < 20.0f)
+		{
+			/*XMFLOAT3 vel = enemy[e]->GetVelocity();
+			vel.x = -vel.x;
+			vel.y = -vel.y;
+			vel.z = -vel.z;
+			enemy[e]->SetVelocity(vel);*/
+		}
+	}
+
+#pragma endregion
+
+#pragma region プレイヤーと壁当たり判定
+
+	if (player->GetAlive() == true)
+	{
+		if (wall[FRONT]->GetPosition().z < playerPos.z)
+		{
+			playerPos.z = wall[FRONT]->GetPosition().z;
+			player->OnCollision();
+		}
+		else if (playerPos.z < wall[BACK]->GetPosition().z)
+		{
+			playerPos.z = wall[BACK]->GetPosition().z;
+			player->OnCollision();
+		}
+		if (wall[RIGHT]->GetPosition().x < playerPos.x)
+		{
+			playerPos.x = wall[RIGHT]->GetPosition().x;
+			player->OnCollision();
+		}
+		else if (playerPos.x < wall[LEFT]->GetPosition().x)
+		{
+			playerPos.x = wall[LEFT]->GetPosition().x;
+			player->OnCollision();
+		}
+		if (wall[UP]->GetPosition().y < playerPos.y)
+		{
+			playerPos.y = wall[UP]->GetPosition().y;
+			player->OnCollision();
+		}
+		else if (playerPos.y < wall[DOWN]->GetPosition().y + 1.875f)
+		{
+			playerPos.y = wall[DOWN]->GetPosition().y + 1.875f;
+			player->OnCollision();
+		}
+		player->SetPosition(playerPos);
+	}
+
+#pragma endregion
+
+#pragma region エネミーと壁当たり判定
+
+	for (int e = 0; e < enemy.size(); e++)
+	{
+		if (enemy[e]->GetAlive() == true)
+		{
+			if (wall[FRONT]->GetPosition().z < enemyPos[e].z)
+			{
+				enemyPos[e].z = wall[FRONT]->GetPosition().z;
+				enemy[e]->OnCollision();
+			}
+			else if (enemyPos[e].z < wall[BACK]->GetPosition().z)
+			{
+				enemyPos[e].z = wall[BACK]->GetPosition().z;
+				enemy[e]->OnCollision();
+			}
+			if (wall[RIGHT]->GetPosition().x < enemyPos[e].x)
+			{
+				enemyPos[e].x = wall[RIGHT]->GetPosition().x;
+				enemy[e]->OnCollision();
+			}
+			else if (enemyPos[e].x < wall[LEFT]->GetPosition().x)
+			{
+				enemyPos[e].x = wall[LEFT]->GetPosition().x;
+				enemy[e]->OnCollision();
+			}
+			if (wall[UP]->GetPosition().y < enemyPos[e].y)
+			{
+				enemyPos[e].y = wall[UP]->GetPosition().y;
+				enemy[e]->OnCollision();
+			}
+			else if (enemyPos[e].y < wall[DOWN]->GetPosition().y)
+			{
+				enemyPos[e].y = wall[DOWN]->GetPosition().y;
+				enemy[e]->OnCollision();
+			}
+			enemy[e]->SetPosition(enemyPos[e]);
+		}
+	}
+
+#pragma endregion
 }

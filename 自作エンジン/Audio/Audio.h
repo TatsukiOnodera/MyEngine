@@ -84,7 +84,7 @@ public: // サブクラス
 
 public: // 静的メンバ関数
 	/// <summary>
-	/// インスタンス取得
+	/// インスタンスの取得
 	/// </summary>
 	/// <returns>インスタンス</returns>
 	static Audio* GetInstance();
@@ -118,7 +118,7 @@ public: //メンバ関数
 	/// <param name="fileName">ファイル名</param>
 	/// <param name="loop">ループの成否</param>
 	/// <param name="volume">音量</param>
-	void PlayWave(const std::string& fileName, bool loop, float volume);
+	void PlayWave(const std::string& fileName, const bool& loop, const float& volume);
 
 	/// <summary>
 	/// サウンドファイルの読み込み
@@ -139,14 +139,8 @@ public: //メンバ関数
 	void CreateSoundData(SoundData& soundData);
 
 	/// <summary>
-	/// サウンドリストのアンロード
+	/// サウンドリストの消去
 	/// </summary>
 	/// <param name="soundList">サウンドリスト</param>
-	void Unload(SoundData* soundList);
-
-	/// <summary>
-	/// 終了処理
-	/// </summary>
-	void Finalize();
+	void DeleteSoundList(SoundData* soundList);
 };
-

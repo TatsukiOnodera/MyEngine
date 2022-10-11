@@ -43,12 +43,6 @@ private: // メンバ変数
 	XMMATRIX m_matBillboard;
 	// Y軸ビルボード行列
 	XMMATRIX m_matBillboardY;
-	// X軸の角度
-	float m_angleX = 0.0f;
-	// Y軸の角度
-	float m_angleY = 0.0f;
-	// Z軸の角度
-	float m_angleZ = 0.0f;
 	// ダーティーフラグ
 	bool m_dirty = false;
 	//	 更新したか
@@ -84,38 +78,39 @@ public: // メンバ関数
 	/// カメラの移動
 	/// </summary>
 	/// <param name="move">移動量</param>
-	void MoveCamera(XMFLOAT3 move);
+	void MoveCamera(const XMFLOAT3& move);
 
 	/// <summary>
 	/// 追従カメラ
 	/// </summary>
 	/// <param name="target">注視点</param>
 	/// <param name="eyeDistance">注視点から始点への距離</param>
-	/// <param name="addAngleX">X軸の回転した角度</param>
-	/// <param name="addAngleY">Y軸の回転した角度</param>
-	void FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, float addAngleY);
+	/// <param name="angleX">X軸の回転した角度</param>
+	/// <param name="angleY">Y軸の回転した角度</param>
+	void FollowUpCamera(const XMFLOAT3& target, const XMFLOAT3& eyeDistance, const float& angleX, const float& angleY);
 
 	/// <summary>
 	/// カメラを軸に座標を移動
 	/// </summary>
 	/// <param name="pos">初期位置</param>
 	/// <param name="vec">移動量</param>
+	/// <param name="angleY">Y軸の回転した角度</param>
 	/// <returns>移動した後の座標</returns>
-	XMFLOAT3 ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec);
+	XMFLOAT3 ConvertWindowPos(const XMFLOAT3& pos, const XMFLOAT3& vec, const float& angleY);
 
 	/// <summary>
 	/// 3D座標を2D座標に変換
 	/// </summary>
 	/// <param name="pos">3D座標</param>
 	/// <returns>2D座標</returns>
-	XMFLOAT2 Convert3DPosTo2DPos(XMFLOAT3 pos);
+	XMFLOAT2 Convert3DPosTo2DPos(const XMFLOAT3& pos);
 
 public: //アクセッサ
 	/// <summary>
 	/// カメラの座標セット
 	/// </summary>
 	/// <param name="target">焦点</param>
-	void SetCameraPosition(XMFLOAT3 target);
+	void SetCameraPosition(const XMFLOAT3& target);
 
 	/// <summary>
 	/// カメラ座標取得
@@ -127,7 +122,7 @@ public: //アクセッサ
 	/// カメラ座標セット
 	/// </summary>
 	/// <param name="eye">カメラ座標</param>
-	void SetEye(XMFLOAT3 eye);
+	void SetEye(const XMFLOAT3& eye);
 
 	/// <summary>
 	/// 焦点座標取得
@@ -139,7 +134,7 @@ public: //アクセッサ
 	/// 焦点座標セット
 	/// </summary>
 	/// <param name="target">焦点座標</param>
-	void SetTarget(XMFLOAT3 target);
+	void SetTarget(const XMFLOAT3& target);
 
 	/// <summary>
 	/// 上下取得
@@ -151,7 +146,7 @@ public: //アクセッサ
 	/// 上下のセット
 	/// </summary>
 	/// <param name="up">上の向き</param>
-	void SetUp(XMFLOAT3 up);
+	void SetUp(const XMFLOAT3& up);
 
 	/// <summary>
 	/// 注視点から始点までの距離取得
@@ -163,21 +158,7 @@ public: //アクセッサ
 	/// 注視点から始点までの距離セット
 	/// </summary>
 	/// <param name="distance">距離</param>
-	void SetDistance(XMFLOAT3 distance = { 0, 1, -5 });
-
-	/// <summary>
-	/// カメラの回転角を取得
-	/// </summary>
-	/// <returns>三方向のカメラの回転角</returns>
-	XMFLOAT3 GetAngle() { return XMFLOAT3(m_angleX, m_angleY, m_angleZ); }
-
-	/// <summary>
-	/// カメラの回転角をセット
-	/// </summary>
-	/// <param name="angleX">X軸</param>
-	/// <param name="angleY">Y軸</param>
-	/// <param name="angleZ">Z軸</param>
-	void SetAngle(float angleX = 0.0f, float angleY = 0.0f, float angleZ = 0.0f);
+	void SetDistance(const XMFLOAT3& distance = { 0, 1, -5 });
 
 	/// <summary>
 	/// カメラの最近遠Z値を取得
@@ -190,7 +171,7 @@ public: //アクセッサ
 	/// </summary>
 	/// <param name="nearZ">最近値</param>
 	/// <param name="farZ">最遠値</param>
-	void SetNearFarZ(float nearZ, float farZ);
+	void SetNearFarZ(const float& nearZ, const float& farZ);
 
 	/// <summary>
 	/// ビュー行列の取得

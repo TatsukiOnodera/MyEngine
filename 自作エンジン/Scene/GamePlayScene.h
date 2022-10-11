@@ -68,8 +68,8 @@ private: // インスタンス
 
 
 	// OBJオブジェクト
-	std::array<std::unique_ptr<Object3d>, END> defaultWall = {};
-	std::unique_ptr<Enemy> enemy;
+	std::array<std::unique_ptr<Object3d>, END> wall = {};
+	std::vector<std::unique_ptr<Enemy>> enemy = {};
 
 	// FBXオブジェクト
 	std::unique_ptr<Player> player = nullptr;
@@ -136,4 +136,9 @@ public: // メンバ関数
 	/// <param name="pos2">始点</param>
 	/// <returns>二点間の距離</returns>
 	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2);
+
+	/// <summary>
+	/// 衝突判定
+	/// </summary>
+	void CheckAllCollisions();
 };

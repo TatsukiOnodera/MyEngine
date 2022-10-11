@@ -136,28 +136,28 @@ void Camera::UpdateMatProjection()
 		m_nearZ, m_farZ);
 }
 
-void Camera::SetEye(XMFLOAT3 eye)
+void Camera::SetEye(const XMFLOAT3& eye)
 {
 	this->m_eye = eye;
 
 	m_dirty = true;
 }
 
-void Camera::SetTarget(XMFLOAT3 target)
+void Camera::SetTarget(const XMFLOAT3& target)
 {
 	this->m_target = target;
 
 	m_dirty = true;
 }
 
-void Camera::SetUp(XMFLOAT3 up)
+void Camera::SetUp(const XMFLOAT3& up)
 {
 	this->m_up = up;
 
 	m_dirty = true;
 }
 
-void Camera::SetDistance(XMFLOAT3 distance)
+void Camera::SetDistance(const XMFLOAT3& distance)
 {
 	m_eye.x = m_target.x + distance.x;
 	m_eye.y = m_target.y + distance.y;
@@ -170,14 +170,7 @@ void Camera::SetDistance(XMFLOAT3 distance)
 	m_dirty = true;
 }
 
-void Camera::SetAngle(float angleX, float angleY, float angleZ)
-{
-	m_angleX = angleX;
-	m_angleY = angleY;
-	m_angleZ = angleZ;
-}
-
-void Camera::SetNearFarZ(float nearZ, float farZ)
+void Camera::SetNearFarZ(const float& nearZ, const float& farZ)
 {
 	this->m_nearZ = nearZ;
 	this->m_farZ = farZ;
@@ -187,7 +180,7 @@ void Camera::SetNearFarZ(float nearZ, float farZ)
 	m_dirty = true;
 }
 
-void Camera::MoveCamera(XMFLOAT3 move)
+void Camera::MoveCamera(const XMFLOAT3& move)
 {
 	this->m_eye.x += move.x;
 	this->m_eye.y += move.y;
@@ -199,7 +192,7 @@ void Camera::MoveCamera(XMFLOAT3 move)
 	m_dirty = true;
 }
 
-void Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngleX, float addAngleY)
+void Camera::FollowUpCamera(const XMFLOAT3& target, const XMFLOAT3& eyeDistance, const float& angleX, const float& angleY)
 {
 	//注視点セット
 	SetTarget(target);
@@ -207,14 +200,10 @@ void Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngl
 	//オフセットベクトル
 	XMVECTOR v0 = { eyeDistance.x, eyeDistance.y, eyeDistance.z, 0 };
 
-	//軸の角度に加算する
-	m_angleX += addAngleX;
-	m_angleY += addAngleY;
-
 	//回転行列
 	XMMATRIX rotM = XMMatrixIdentity();
-	rotM *= XMMatrixRotationX(XMConvertToRadians(m_angleX));
-	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angleY));
+	rotM *= XMMatrixRotationX(XMConvertToRadians(angleX));
+	rotM *= XMMatrixRotationY(XMConvertToRadians(angleY));
 
 	//注視点から始点へのベクトルを求める
 	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
@@ -226,14 +215,14 @@ void Camera::FollowUpCamera(XMFLOAT3 target, XMFLOAT3 eyeDistance, float addAngl
 	SetEye(eyePosition);
 }
 
-XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec)
+XMFLOAT3 Camera::ConvertWindowPos(const XMFLOAT3& pos, const XMFLOAT3& vec, const float& angleY)
 {
 	//移動ベクトル
 	XMVECTOR v0 = { vec.x, vec.y, vec.z, 0 };
 
 	//回転行列
 	XMMATRIX rotM = XMMatrixIdentity();
-	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angleY));
+	rotM *= XMMatrixRotationY(XMConvertToRadians(angleY));
 
 	//正面をもとに移動したベクトルの向きを出す
 	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
@@ -244,7 +233,7 @@ XMFLOAT3 Camera::ConvertWindowPos(XMFLOAT3 pos, XMFLOAT3 vec)
 	return position;
 }
 
-XMFLOAT2 Camera::Convert3DPosTo2DPos(XMFLOAT3 pos)
+XMFLOAT2 Camera::Convert3DPosTo2DPos(const XMFLOAT3& pos)
 {
 	// ビューポート行列（スクリーン行列）の作成
 	float w = (float)WinApp::window_width / 2.0f;
@@ -278,7 +267,7 @@ XMFLOAT2 Camera::Convert3DPosTo2DPos(XMFLOAT3 pos)
 	return position;
 }
 
-void Camera::SetCameraPosition(XMFLOAT3 target)
+void Camera::SetCameraPosition(const XMFLOAT3& target)
 {
 	m_target.x = target.x;
 	m_target.y = target.y;
