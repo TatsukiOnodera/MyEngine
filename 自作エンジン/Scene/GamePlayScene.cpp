@@ -24,7 +24,7 @@ void GamePlayScene::Initialize()
 
 	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-
+	Sprite::LoadTexture(1, L"Resources/Reticle.png");
 
 	// ライト生成
 	light.reset(Light::Create());
@@ -39,7 +39,7 @@ void GamePlayScene::Initialize()
 	particle.reset(ParticleManager::Create("Default/effect1.png"));
 
 	// スプライト
-
+	reticle.reset(Sprite::Create(1, { 0, 0 }, { 0.5f, 0.5f }));
 
 	// OBJオブジェクト
 	for (auto& m : wall)
@@ -210,7 +210,7 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 	// UI描画
 	Sprite::PreDraw(cmdList);
 
-	
+	reticle->Draw();
 
 	Sprite::PostDraw();
 }
@@ -240,37 +240,73 @@ const float GamePlayScene::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 
 void GamePlayScene::CheckAllCollisions()
 {
-	// プレイヤーとエネミーの座標
 	XMFLOAT3 playerPos = player->GetPosition();
 	XMFLOAT3 enemyPos[6] = {};
 	for (int e = 0; e < enemy.size(); e++)
 	{
 		enemyPos[e] = enemy[e]->GetPosition();
 	}
-
-#pragma region プレイヤーバレットとエネミーの当たり判定
-
-	
-
-#pragma endregion
-
-#pragma region プレイヤーとエネミーバレットの当たり判定
-
-	
-
-#pragma endregion
+	const std::vector<std::unique_ptr<Bullet>>& playerBullets = player->GetPlayerBullets();
 
 #pragma region プレイヤーとエネミーの当たり判定
 
+	bool tmp_hit = false;
 	for (int e = 0; e < enemy.size(); e++)
 	{
-		if (player->GetAlive() == true && enemy[e]->GetAlive() == true && Length(playerPos, enemyPos[e]) < 20.0f)
+		if (Length(playerPos, enemyPos[e]) < 40.0f && enemy[e]->GetAlive() == true)
 		{
-			/*XMFLOAT3 vel = enemy[e]->GetVelocity();
-			vel.x = -vel.x;
-			vel.y = -vel.y;
-			vel.z = -vel.z;
-			enemy[e]->SetVelocity(vel);*/
+			targetNum = e + 1;
+			tmp_hit = true;
+		}
+	}
+	if (tmp_hit == false)
+	{
+		targetNum = 0;
+	}
+	if (targetNum == 0)
+	{
+		reticle->SetPosition({ 0, 0 });
+		player->SetTargetPosition({0, 0, 0});
+		player->SetIsLock(false);
+		reticle->SetInvisible(true);
+	}
+	else
+	{
+		reticle->SetPosition(camera->Convert3DPosTo2DPos(enemyPos[targetNum - 1]));
+		player->SetTargetPosition(enemyPos[targetNum - 1]);
+		player->SetIsLock(true);
+		reticle->SetInvisible(false);
+	}
+
+#pragma endregion
+
+#pragma region プレイヤー弾とエネミーの当たり判定
+
+	for (const auto& m : playerBullets)
+	{
+		for (int e = 0; e < enemy.size(); e++)
+		{
+			if (Length(m->GetPosition(), enemyPos[e]) < 10.0f)
+			{
+				m->OnCollision();
+				enemy[e]->OnCollision();
+			}
+		}
+	}
+
+#pragma endregion
+
+#pragma region プレイヤーとエネミー弾の当たり判定
+
+	for (int e = 0; e < enemy.size(); e++)
+	{
+		const std::vector<std::unique_ptr<Bullet>>& enemyrBullets = enemy[e]->GetEnemyBullet();
+		for (auto& m : enemyrBullets)
+		{
+			if (Length(m->GetPosition(), playerPos) < 10.0f)
+			{
+				m->OnCollision();
+			}
 		}
 	}
 
@@ -283,32 +319,23 @@ void GamePlayScene::CheckAllCollisions()
 		if (wall[FRONT]->GetPosition().z < playerPos.z)
 		{
 			playerPos.z = wall[FRONT]->GetPosition().z;
-			player->OnCollision();
 		}
 		else if (playerPos.z < wall[BACK]->GetPosition().z)
 		{
 			playerPos.z = wall[BACK]->GetPosition().z;
-			player->OnCollision();
 		}
 		if (wall[RIGHT]->GetPosition().x < playerPos.x)
 		{
 			playerPos.x = wall[RIGHT]->GetPosition().x;
-			player->OnCollision();
 		}
 		else if (playerPos.x < wall[LEFT]->GetPosition().x)
 		{
 			playerPos.x = wall[LEFT]->GetPosition().x;
-			player->OnCollision();
 		}
-		if (wall[UP]->GetPosition().y < playerPos.y)
-		{
-			playerPos.y = wall[UP]->GetPosition().y;
-			player->OnCollision();
-		}
-		else if (playerPos.y < wall[DOWN]->GetPosition().y + 1.875f)
+		if (playerPos.y < wall[DOWN]->GetPosition().y + 1.875f)
 		{
 			playerPos.y = wall[DOWN]->GetPosition().y + 1.875f;
-			player->OnCollision();
+			player->isLanding();
 		}
 		player->SetPosition(playerPos);
 	}
@@ -321,37 +348,72 @@ void GamePlayScene::CheckAllCollisions()
 	{
 		if (enemy[e]->GetAlive() == true)
 		{
+			XMFLOAT3 enemyVel = enemy[e]->GetVelocity();
+
 			if (wall[FRONT]->GetPosition().z < enemyPos[e].z)
 			{
 				enemyPos[e].z = wall[FRONT]->GetPosition().z;
-				enemy[e]->OnCollision();
+				enemyVel.z = -fabs(enemyVel.z);
 			}
 			else if (enemyPos[e].z < wall[BACK]->GetPosition().z)
 			{
 				enemyPos[e].z = wall[BACK]->GetPosition().z;
-				enemy[e]->OnCollision();
+				enemyVel.z = fabs(enemyVel.z);
 			}
 			if (wall[RIGHT]->GetPosition().x < enemyPos[e].x)
 			{
 				enemyPos[e].x = wall[RIGHT]->GetPosition().x;
-				enemy[e]->OnCollision();
+				enemyVel.x = -fabs(enemyVel.x);
 			}
 			else if (enemyPos[e].x < wall[LEFT]->GetPosition().x)
 			{
 				enemyPos[e].x = wall[LEFT]->GetPosition().x;
-				enemy[e]->OnCollision();
+				enemyVel.x = fabs(enemyVel.x);
 			}
-			if (wall[UP]->GetPosition().y < enemyPos[e].y)
-			{
-				enemyPos[e].y = wall[UP]->GetPosition().y;
-				enemy[e]->OnCollision();
-			}
-			else if (enemyPos[e].y < wall[DOWN]->GetPosition().y)
+			if (enemyPos[e].y < wall[DOWN]->GetPosition().y)
 			{
 				enemyPos[e].y = wall[DOWN]->GetPosition().y;
-				enemy[e]->OnCollision();
 			}
 			enemy[e]->SetPosition(enemyPos[e]);
+
+			enemy[e]->SetVelocity(enemyVel);
+		}
+	}
+
+#pragma endregion
+
+#pragma region プレイヤー弾と壁当たり判定
+
+	//壁の当たり判定
+	for (auto& m : playerBullets)
+	{
+		if (m->GetPosition().x < wall[LEFT]->GetPosition().x || wall[RIGHT]->GetPosition().x < m->GetPosition().x)
+		{
+			m->OnCollision();
+		}
+		else if (m->GetPosition().z < wall[BACK]->GetPosition().z || wall[FRONT]->GetPosition().z < m->GetPosition().z)
+		{
+			m->OnCollision();
+		}
+	}
+
+#pragma endregion
+
+#pragma region エネミー弾と壁当たり判定
+
+	for (int e = 0; e < 6; e++)
+	{
+		const std::vector<std::unique_ptr<Bullet>>& enemyrBullets = enemy[e]->GetEnemyBullet();
+		for (auto& m : enemyrBullets)
+		{
+			if (m->GetPosition().x < wall[LEFT]->GetPosition().x || wall[RIGHT]->GetPosition().x < m->GetPosition().x)
+			{
+				m->OnCollision();
+			}
+			else if (m->GetPosition().z < wall[BACK]->GetPosition().z || wall[BACK]->GetPosition().z < m->GetPosition().z)
+			{
+				m->OnCollision();
+			}
 		}
 	}
 

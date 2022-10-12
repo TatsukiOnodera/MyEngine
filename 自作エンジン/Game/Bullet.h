@@ -22,6 +22,8 @@ private: // メンバ変数
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 速度
 	XMFLOAT3 m_vel = { 0, 0, 0 };
+	// 標的の座標
+	XMFLOAT3 m_targetPos = { 0, 0, 0 };
 	// 生存フラグ
 	bool m_alive = false;
 
@@ -29,7 +31,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Bullet(XMFLOAT3 pos, XMFLOAT3 vec, bool alive);
+	Bullet(const XMFLOAT3& pos = { 0, 0, 0 }, const XMFLOAT3& vel = { 0, 0, 0 }, const bool& alive = true);
 
 	/// <summary>
 	/// デストラクタ
@@ -42,7 +44,7 @@ public: // メンバ関数
 	/// <param name="pos">座標</param>
 	/// <param name="vec">ベクトル</param>
 	/// <param name="alive">生存フラグ</param>
-	void Initialize(XMFLOAT3 pos, XMFLOAT3 vec, bool alive);
+	void Initialize(const XMFLOAT3& pos, const XMFLOAT3& vel, const bool& alive);
 
 	/// <summary>
 	///  更新
@@ -54,40 +56,45 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 衝突時のコールバック関数
+	/// </summary>
+	void OnCollision();
+
 public: // アクセッサ
 	/// <summary>
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
-	XMFLOAT3 GetPosition() { return m_pos; }
+	const XMFLOAT3 GetPosition() { return m_pos; }
 
 	/// <summary>
 	/// 座標をセット
 	/// </summary>
 	/// <param name="pos">座標</param>
-	void SetPosition(XMFLOAT3 pos);
+	void SetPosition(const XMFLOAT3& pos);
 
 	/// <summary>
 	/// 速度を取得
 	/// </summary>
 	/// <returns>ベクトル</returns>
-	XMFLOAT3 GetVelocity() { return m_vel; }
+	const XMFLOAT3 GetVelocity() { return m_vel; }
 
 	/// <summary>
 	/// 速度をセット
 	/// </summary>
 	/// <param name="vel">ベクトル</param>
-	void SetVelocity(XMFLOAT3 vel);
+	void SetVelocity(const XMFLOAT3& vel);
 
 	/// <summary>
 	/// 生存フラグを取得
 	/// </summary>
 	/// <returns>生存フラグ</returns>
-	bool GetAlive() { return m_alive; }
+	const bool GetAlive() { return m_alive; }
 
 	/// <summary>
 	/// 生存フラグをセット
 	/// </summary>
 	/// <param name="alive">生存フラグ</param>
-	void SetAlive(bool alive);
+	void SetAlive(const bool& alive);
 };

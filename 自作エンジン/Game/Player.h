@@ -59,9 +59,14 @@ private: // メンバ変数
 	bool m_cameraInitialize = false;
 
 	//==============================
-	// 自機の弾
+	// プレイヤーの弾
 	//==============================
-
+	// オブジェクト
+	std::vector<std::unique_ptr<Bullet>> playerBullets;
+	// 標的の座標
+	XMFLOAT3 m_targetPos = { 0, 0, 0 };
+	// ロック中か
+	bool m_isLock = false;
 
 public: // メンバ関数
 	/// <summary>
@@ -94,18 +99,22 @@ public: // メンバ関数
 	/// </summary>
 	bool CameraInitialize(float& anglex, float& angleY);
 
-public: // 衝突
 	/// <summary>
 	/// 衝突時のコールバック関数
 	/// </summary>
 	void OnCollision();
+
+	/// <summary>
+	/// 地面に着地したら
+	/// </summary>
+	void isLanding();
 
 public: // アクセッサ
 	/// <summary>
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
-	XMFLOAT3 GetPosition() { return m_pos; }
+	const XMFLOAT3 GetPosition() { return m_pos; }
 	
 	/// <summary>
 	/// void SetPosition(XMFLOAT3 position);
@@ -117,10 +126,32 @@ public: // アクセッサ
 	/// 速度を取得
 	/// </summary>
 	/// <returns>速度</returns>
-	XMFLOAT3 GetVelocity() { return m_vel; }
+	const XMFLOAT3 GetVelocity() { return m_vel; }
 
 	/// <summary>
 	/// 生死フラグを取得
 	/// </summary>
 	bool GetAlive() { return m_alive; }
+
+	/// <summary>
+	/// 標的の座標をセット
+	/// </summary>
+	/// <param name="targetPosition">標的の座標</param>
+	void SetTargetPosition(const XMFLOAT3& targetPosition);
+
+	/// <summary>
+	/// ロックフラグをセット
+	/// </summary>
+	void SetIsLock(const bool& isLock);
+
+	/// <summary>
+	/// 弾を取得
+	/// </summary>
+	const std::vector<std::unique_ptr<Bullet>>& GetPlayerBullets() { return playerBullets; }
+
+	/// <summary>
+	/// 使っていない弾があるか
+	/// </summary>
+	/// <returns>速度</returns>
+	const bool CheckNoUsingBullet();
 };

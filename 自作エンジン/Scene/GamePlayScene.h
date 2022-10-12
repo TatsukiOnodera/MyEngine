@@ -65,18 +65,18 @@ private: // インスタンス
 	std::unique_ptr<ParticleManager> particle = nullptr;
 
 	// スプライト
-
+	std::unique_ptr<Sprite> reticle = nullptr;
 
 	// OBJオブジェクト
-	std::array<std::unique_ptr<Object3d>, END> wall = {};
-	std::vector<std::unique_ptr<Enemy>> enemy = {};
+	std::array<std::unique_ptr<Object3d>, END> wall;
+	std::vector<std::unique_ptr<Enemy>> enemy;
 
 	// FBXオブジェクト
 	std::unique_ptr<Player> player = nullptr;
 
 private: // メンバ変数
-
-
+	// 標的の番号
+	int targetNum = 0;
 
 public: // メンバ関数
 	/// <summary>

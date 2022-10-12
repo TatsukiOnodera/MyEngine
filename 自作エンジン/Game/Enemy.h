@@ -26,6 +26,14 @@ private: // メンバ変数
 	// 生存フラグ
 	bool m_alive = false;
 
+	//==============================
+	// エネミーの弾
+	//==============================
+	// オブジェクト
+	std::vector<std::unique_ptr<Bullet>> enemyBullets;
+	// 標的の座標
+	XMFLOAT3 m_targetPos = { 0, 0, 0 };
+
 public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
@@ -52,7 +60,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
-public: // 衝突
 	/// <summary>
 	/// 衝突時のコールバック関数
 	/// </summary>
@@ -94,4 +101,9 @@ public: //アクセッサ
 	/// </summary>
 	/// <param name="alive">成否</param>
 	void SetAlive(const bool& alive);
+
+	/// <summary>
+	/// 弾を取得
+	/// </summary>
+	const std::vector<std::unique_ptr<Bullet>>& GetEnemyBullet() { return enemyBullets; }
 };

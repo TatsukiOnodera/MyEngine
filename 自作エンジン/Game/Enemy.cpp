@@ -22,7 +22,7 @@ void Enemy::Initialize()
 	// 座標
 	m_pos = { 0, 0, 50 };
 	// 速度
-	m_vel = { 0, -0.98f, 0 };
+	m_vel = { static_cast<float>(rand() % 21 - 10) / 10, -0.98f, static_cast<float>(rand() % 21 - 10) / 10 };
 	// 生存フラグ
 	m_alive = true;
 
@@ -43,12 +43,6 @@ void Enemy::Update()
 		m_pos.x += m_vel.x;
 		m_pos.y += m_vel.y;
 		m_pos.z += m_vel.z;
-
-		// 仮当たり判定
-		if (m_pos.y < -200)
-		{
-			m_pos.y = -200;
-		}
 
 		m_object->SetPosition(m_pos);
 	}
