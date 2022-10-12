@@ -35,7 +35,7 @@ void Player::Initialize()
 	// 減速度
 	m_decSpeed = 0.8f;
 	// ジャンプ加速度
-	m_accJumpSpeed = 0.1f;
+	m_accJump = 0.1f;
 	// 重力時間
 	m_gravityTime = 0;
 	// ダッシュフラグ
@@ -86,10 +86,14 @@ void Player::Update()
 		{
 			if (s_input->PullLeftTrigger())
 			{
-				acc.y += m_accJumpSpeed;
+				acc.y += m_accJump;
 				m_gravityTime = 0;
 			}
-			acc.y -= (9.8f / 5) * powf(static_cast<float>(m_gravityTime) / 60, 2);
+		}
+
+		// 重力
+		{
+			acc.y -= (9.8f / 10) * powf(static_cast<float>(m_gravityTime) / 60, 2);
 		}
 
 		// 速度に加速を加算
@@ -132,10 +136,10 @@ void Player::Update()
 				m_dashTimes += m_accDashTimes;
 	
 				// 加速値が5より大きいなら
-				if (6.0f < m_dashTimes)
+				if (5.0f < m_dashTimes)
 				{
-					m_dashTimes = 6.0f;
-					m_accDashTimes = -0.3f;
+					m_dashTimes = 5.0f;
+					m_accDashTimes = -0.2f;
 				}
 				// 加速値が1を下回ったなら
 				else if (m_dashTimes < 1.0f)
@@ -148,7 +152,7 @@ void Player::Update()
 		}
 
 		// カメラを軸にした変換
-		m_pos = s_camera->ConvertWindowPos(m_pos, m_vel, m_angle.y);
+		m_pos = s_camera->ConvertWindowYPos(m_pos, m_vel, m_angle.y);
 
 		// 座標セット
 		m_object->SetPosition(m_pos);
@@ -173,7 +177,7 @@ void Player::Update()
 				else
 				{
 					vel = { 0, 0, 10 };
-					vel = s_camera->ConvertWindowPos({ 0, 0, 0 }, vel, m_angle.y);
+					vel = s_camera->ConvertWindowXYPos({ 0, 0, 0 }, vel, m_angle.x, m_angle.y);
 				}
 				if (CheckNoUsingBullet() == true)
 				{
@@ -212,10 +216,17 @@ void Player::Update()
 	{
 		// 演出
 		XMFLOAT3 tPos = m_pos;
-		XMFLOAT3 tVel = s_camera->ConvertWindowPos({ 0, 0, 0 }, m_vel, m_angle.y);
+		XMFLOAT3 tVel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, m_vel, m_angle.y);
 		tPos.x -= tVel.x;
 		tPos.y -= tVel.y;
-		tPos.z -= tVel.z;
+		if (0 <= m_vel.z)
+		{
+			tPos.z -= tVel.z;
+		}
+		else
+		{
+			tPos.z -= tVel.z * 0.3f;
+		}
 
 		// 追従カメラ
 		if (m_cameraInitialize == false)

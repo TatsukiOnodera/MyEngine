@@ -42,7 +42,7 @@ private: // メンバ変数
 	// 減速度
 	float m_decSpeed = 0;
 	// ジャンプ加速度
-	float m_accJumpSpeed = 0;
+	float m_accJump = 0;
 	// 重力加速値の時間
 	int m_gravityTime = 0;
 	// ダッシュフラグ

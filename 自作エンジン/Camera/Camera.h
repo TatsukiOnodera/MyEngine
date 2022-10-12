@@ -90,13 +90,23 @@ public: // メンバ関数
 	void FollowUpCamera(const XMFLOAT3& target, const XMFLOAT3& eyeDistance, const float& angleX, const float& angleY);
 
 	/// <summary>
-	/// カメラを軸に座標を移動
+	/// カメラのY軸を元に座標を移動
 	/// </summary>
 	/// <param name="pos">初期位置</param>
 	/// <param name="vec">移動量</param>
 	/// <param name="angleY">Y軸の回転した角度</param>
 	/// <returns>移動した後の座標</returns>
-	XMFLOAT3 ConvertWindowPos(const XMFLOAT3& pos, const XMFLOAT3& vec, const float& angleY);
+	XMFLOAT3 ConvertWindowYPos(const XMFLOAT3& pos, const XMFLOAT3& vec, const float& angleY);
+
+	/// <summary>
+	/// カメラのX軸とY軸を元に座標を移動
+	/// </summary>
+	/// <param name="pos">初期位置</param>
+	/// <param name="vec">移動量</param>
+	/// <param name="angleX">X軸の回転した角度</param>
+	/// <param name="angleY">Y軸の回転した角度</param>
+	/// <returns>移動した後の座標</returns>
+	XMFLOAT3 ConvertWindowXYPos(const XMFLOAT3& pos, const XMFLOAT3& vec, const float& angleX, const float& angleY);
 
 	/// <summary>
 	/// 3D座標を2D座標に変換

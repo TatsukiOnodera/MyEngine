@@ -253,7 +253,7 @@ void GamePlayScene::CheckAllCollisions()
 	bool tmp_hit = false;
 	for (int e = 0; e < enemy.size(); e++)
 	{
-		if (Length(playerPos, enemyPos[e]) < 40.0f && enemy[e]->GetAlive() == true)
+		if (Length(playerPos, enemyPos[e]) < 80.0f && enemy[e]->GetAlive() == true)
 		{
 			targetNum = e + 1;
 			tmp_hit = true;
@@ -286,7 +286,7 @@ void GamePlayScene::CheckAllCollisions()
 	{
 		for (int e = 0; e < enemy.size(); e++)
 		{
-			if (Length(m->GetPosition(), enemyPos[e]) < 10.0f)
+			if (Length(m->GetPosition(), enemyPos[e]) < 5.0f)
 			{
 				m->OnCollision();
 				enemy[e]->OnCollision();
