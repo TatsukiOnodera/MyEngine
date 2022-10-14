@@ -95,14 +95,48 @@ public: // メンバ関数
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
-	/// カメラ位置の初期化
+	/// プレイヤーの移動
 	/// </summary>
-	bool CameraInitialize(float& anglex, float& angleY);
+	/// <param name="acc">加速値</param>
+	void MovePlayer(XMFLOAT3& acc);
 
 	/// <summary>
-	/// 衝突時のコールバック関数
+	/// プレイヤーのジャンプ
 	/// </summary>
-	void OnCollision();
+	/// <param name="acc">加速値</param>
+	void JumpPlayer(XMFLOAT3& acc);
+
+	/// <summary>
+	/// 速度に加速度を加算
+	/// </summary>
+	/// <param name="acc">加速値</param>
+	void AddAcceleration(const XMFLOAT3& acc);
+
+	/// <summary>
+	/// プレイヤーのダッシュ
+	/// </summary>
+	void DashPlayer();
+
+	/// <summary>
+	/// 弾を撃つ
+	/// </summary>
+	void ShotBullet();
+
+	/// <summary>
+	/// 使っていない弾があるか
+	/// </summary>
+	/// <returns>可否</returns>
+	bool CheckNoUsingBullet();
+
+	/// <summary>
+	/// カメラワーク
+	/// </summary>
+	void MoveCamera();
+
+	// <summary>
+	/// カメラの正面化
+	/// </summary>
+	bool CameraMoveFront(float anglex, float angleY);
 
 	/// <summary>
 	/// 地面に着地したら
@@ -120,7 +154,12 @@ public: // アクセッサ
 	/// void SetPosition(XMFLOAT3 position);
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(const XMFLOAT3& position);
+	void SetPosition(const XMFLOAT3& position)
+	{
+		m_pos = position;
+
+		m_object->SetPosition(m_pos);
+	}
 
 	/// <summary>
 	/// 速度を取得
@@ -137,21 +176,21 @@ public: // アクセッサ
 	/// 標的の座標をセット
 	/// </summary>
 	/// <param name="targetPosition">標的の座標</param>
-	void SetTargetPosition(const XMFLOAT3& targetPosition);
+	void SetTargetPosition(const XMFLOAT3& targetPosition)
+	{
+		m_targetPos = targetPosition;
+	}
 
 	/// <summary>
 	/// ロックフラグをセット
 	/// </summary>
-	void SetIsLock(const bool& isLock);
+	void SetIsLock(const bool isLock)
+	{
+		m_isLock = isLock;
+	}
 
 	/// <summary>
 	/// 弾を取得
 	/// </summary>
 	const std::vector<std::unique_ptr<Bullet>>& GetPlayerBullets() { return playerBullets; }
-
-	/// <summary>
-	/// 使っていない弾があるか
-	/// </summary>
-	/// <returns>速度</returns>
-	const bool CheckNoUsingBullet();
 };

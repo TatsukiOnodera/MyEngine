@@ -22,8 +22,6 @@ private: // メンバ変数
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 速度
 	XMFLOAT3 m_vel = { 0, 0, 0 };
-	// 標的の座標
-	XMFLOAT3 m_targetPos = { 0, 0, 0 };
 	// 生存フラグ
 	bool m_alive = false;
 
@@ -56,11 +54,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	/// <summary>
-	/// 衝突時のコールバック関数
-	/// </summary>
-	void OnCollision();
-
 public: // アクセッサ
 	/// <summary>
 	/// 座標を取得
@@ -72,7 +65,12 @@ public: // アクセッサ
 	/// 座標をセット
 	/// </summary>
 	/// <param name="pos">座標</param>
-	void SetPosition(const XMFLOAT3& pos);
+	void SetPosition(const XMFLOAT3& pos)
+	{
+		m_pos = pos;
+
+		m_object->SetPosition(m_pos);
+	}
 
 	/// <summary>
 	/// 速度を取得
@@ -84,7 +82,10 @@ public: // アクセッサ
 	/// 速度をセット
 	/// </summary>
 	/// <param name="vel">ベクトル</param>
-	void SetVelocity(const XMFLOAT3& vel);
+	void SetVelocity(const XMFLOAT3& vel)
+	{
+		m_vel = vel;
+	}
 
 	/// <summary>
 	/// 生存フラグを取得
@@ -96,5 +97,8 @@ public: // アクセッサ
 	/// 生存フラグをセット
 	/// </summary>
 	/// <param name="alive">生存フラグ</param>
-	void SetAlive(const bool& alive);
+	void SetAlive(const bool alive)
+	{
+		m_alive = alive;
+	}
 };

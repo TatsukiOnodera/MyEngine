@@ -25,6 +25,10 @@ void Enemy::Initialize()
 	m_vel = { static_cast<float>(rand() % 21 - 10) / 10, -0.98f, static_cast<float>(rand() % 21 - 10) / 10 };
 	// 生存フラグ
 	m_alive = true;
+	// 標的座標
+	m_targetPos = { 0, 0, 0 };
+	// 発射間隔
+	m_bulletInterval = 60 * 2;
 
 	// オブジェクト
 	m_object->SetPosition(m_pos);
@@ -37,55 +41,112 @@ void Enemy::Update()
 {
 	if (m_alive == true)
 	{
-		//ベクトルの加算
-		m_pos = m_object->GetPosition();
+		// 加速度
+		//XMFLOAT3 acc = {};
 
+		// 速度に加速度を加算
+		//m_vel.x += acc.x;
+		//m_vel.y += acc.y;
+		//m_vel.z += acc.z;
+
+		// 座標に速度を加算
 		m_pos.x += m_vel.x;
 		m_pos.y += m_vel.y;
 		m_pos.z += m_vel.z;
 
 		m_object->SetPosition(m_pos);
+
+		// 弾の更新
+		m_bulletInterval++;
+		if (60 * 2 < m_bulletInterval)
+		{
+			m_bulletInterval = 60 * 2;
+		}
+		if (0 < enemyBullets.size())
+		{
+			for (auto& m : enemyBullets)
+			{
+				m->Update();
+			}
+		}
 	}
 }
 
 void Enemy::Draw(ID3D12GraphicsCommandList* cmdList)
 {
+	// OBJオブジェクト描画
+	Object3d::PreDraw(cmdList);
+	
 	if (m_alive == true)
 	{
-		// OBJオブジェクト描画
-		Object3d::PreDraw(cmdList);
-
 		m_object->Draw();
+	}
+	if (0 < enemyBullets.size())
+	{
+		for (auto& m : enemyBullets)
+		{
+			m->Draw();
+		}
+	}
 
-		Object3d::PostDraw();
+	Object3d::PostDraw();
+}
 
-		// FBXオブジェクト
-		FbxObject3d::PreDraw(cmdList);
+void Enemy::ShotBullet()
+{
+	if (60 * 2 <= m_bulletInterval)
+	{
+		m_bulletInterval = 0;
 
+		XMFLOAT3 vel = {};
+		// 標的の座標を取得
+		vel.x = m_targetPos.x - m_pos.x;
+		vel.y = m_targetPos.y - m_pos.y;
+		vel.z = m_targetPos.z - m_pos.z;
 
+		// 長さを1にして10倍する
+		float len = sqrtf(powf(vel.x, 2) + powf(vel.y, 2) + powf(vel.z, 2));
+		vel.x = vel.x / len * 5;
+		vel.y = vel.y / len * 5;
+		vel.z = vel.z / len * 5;
 
-		FbxObject3d::PostDraw();
+		if (CheckNoUsingBullet() == true)
+		{
+			for (auto& m : enemyBullets)
+			{
+				if (m->GetAlive() == false)
+				{
+					m->Initialize(m_pos, vel, true);
+					break;
+				}
+			}
+		}
+		else
+		{
+			enemyBullets.emplace_back(new Bullet(m_pos, vel, true));
+		}
 	}
 }
 
-void Enemy::OnCollision()
+bool Enemy::CheckNoUsingBullet()
 {
-	m_alive = false;
-}
+	if (0 < enemyBullets.size())
+	{
+		// 使っていないのがあるか
+		bool hit = false;
+		for (const auto& m : enemyBullets)
+		{
+			if (m->GetAlive() == false)
+			{
+				hit = true;
+				break;
+			}
+		}
 
-void Enemy::SetPosition(const XMFLOAT3& position)
-{
-	m_pos = position;
-
-	m_object->SetPosition(m_pos);
-}
-
-void Enemy::SetVelocity(const XMFLOAT3& velocity)
-{
-	m_vel = velocity;
-}
-
-void Enemy::SetAlive(const bool& alive)
-{
-	m_alive = alive;
+		return hit;
+	}
+	else
+	{
+		return false;
+	}
 }

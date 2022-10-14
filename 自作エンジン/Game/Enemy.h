@@ -33,6 +33,8 @@ private: // メンバ変数
 	std::vector<std::unique_ptr<Bullet>> enemyBullets;
 	// 標的の座標
 	XMFLOAT3 m_targetPos = { 0, 0, 0 };
+	// 発射間隔
+	int m_bulletInterval = 0;
 
 public: // メンバ関数
 	/// <summary>
@@ -61,9 +63,15 @@ public: // メンバ関数
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
-	/// 衝突時のコールバック関数
+	/// 弾を発射
 	/// </summary>
-	void OnCollision();
+	void ShotBullet();
+
+	/// <summary>
+	/// 使っていない弾があるか
+	/// </summary>
+	/// <returns>可否</returns>
+	bool CheckNoUsingBullet();
 
 public: //アクセッサ
 	/// <summary>
@@ -76,7 +84,12 @@ public: //アクセッサ
 	/// 座標をセット
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(const XMFLOAT3& position);
+	void SetPosition(const XMFLOAT3& position)
+	{
+		m_pos = position;
+
+		m_object->SetPosition(m_pos);
+	}
 
 	/// <summary>
 	/// 速度を取得
@@ -88,7 +101,10 @@ public: //アクセッサ
 	/// 速度をセット
 	/// </summary>
 	/// <param name="velocity">速度</param>
-	void SetVelocity(const XMFLOAT3& velocity);
+	void SetVelocity(const XMFLOAT3& velocity)
+	{
+		m_vel = velocity;
+	}
 
 	/// <summary>
 	/// 生死フラグの取得
@@ -100,7 +116,19 @@ public: //アクセッサ
 	/// 生死フラグのセット
 	/// </summary>
 	/// <param name="alive">成否</param>
-	void SetAlive(const bool& alive);
+	void SetAlive(const bool alive)
+	{
+		m_alive = alive;
+	}
+
+	/// <summary>
+	/// 標的の座標をセット
+	/// </summary>
+	/// <param name="targetPosition">標的の座標</param>
+	void SetTargetPosition(const XMFLOAT3& targetPosition)
+	{
+		m_targetPos = targetPosition;
+	}
 
 	/// <summary>
 	/// 弾を取得
