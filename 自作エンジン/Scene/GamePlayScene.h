@@ -15,6 +15,7 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "Bullet.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -141,4 +142,48 @@ public: // メンバ関数
 	/// 衝突判定
 	/// </summary>
 	void CheckAllCollisions();
+
+	/// <summary>
+	/// プレイヤーとエネミーの衝突判定	
+	/// </summary>
+	/// <param name="playerPos">プレイヤーの座標</param>
+	/// <param name="enemyPos">エネミーの座標</param>
+	void CheckPlayer2Enemy(const XMFLOAT3& playerPos, const XMFLOAT3* enemyPos);
+
+	/// <summary>
+	/// プレイヤーの弾とエネミーの衝突判定
+	/// </summary>
+	/// <param name="playerBullets">プレイヤーの弾</param>
+	/// <param name="enemyPos">エネミーの座標</param>
+	void CheckPlayerBullets2Enemy(const std::vector<std::unique_ptr<Bullet>>& playerBullets, const XMFLOAT3* enemyPos);
+
+	/// <summary>
+	/// プレイヤーとエネミーの弾の衝突判定
+	/// </summary>
+	/// <param name="playerPos">プレイヤーの座標</param>
+	void CheckPlayer2EnemyBullets(const XMFLOAT3& playerPos);
+
+	/// <summary>
+	/// プレイヤーと壁の衝突判定
+	/// </summary>
+	/// <param name="playerPos">プレイヤーの座標</param>
+	void CheckPlayer2Wall(XMFLOAT3& playerPos);
+	
+	/// <summary>
+	/// エネミーと壁の衝突判定
+	/// </summary>
+	/// <param name="playerPos">エネミーの座標</param>
+	void CheckEnemy2Wall(XMFLOAT3* enemyPos);
+
+	/// <summary>
+	/// プレイヤーの弾と壁の衝突判定
+	/// </summary>
+	/// <param name="playerBullets">プレイヤーの弾</param>
+	void CheckPlayerBullets2Wall(const std::vector<std::unique_ptr<Bullet>>& playerBullets);
+	
+	/// <summary>
+	/// エネミーの弾と壁の衝突判定
+	/// </summary>
+	/// <param name="enemyBullets">エネミーの弾</param>
+	void CheckEnemyBullets2Wall();
 };

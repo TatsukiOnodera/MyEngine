@@ -25,8 +25,6 @@ void Enemy::Initialize()
 	m_vel = { static_cast<float>(rand() % 21 - 10) / 10, -0.98f, static_cast<float>(rand() % 21 - 10) / 10 };
 	// 生存フラグ
 	m_alive = true;
-	// 標的座標
-	m_targetPos = { 0, 0, 0 };
 	// 発射間隔
 	m_bulletInterval = 60 * 2;
 
@@ -62,12 +60,9 @@ void Enemy::Update()
 		{
 			m_bulletInterval = 60 * 2;
 		}
-		if (0 < enemyBullets.size())
+		for (auto& m : enemyBullets)
 		{
-			for (auto& m : enemyBullets)
-			{
-				m->Update();
-			}
+			m->Update();
 		}
 	}
 }
@@ -92,7 +87,7 @@ void Enemy::Draw(ID3D12GraphicsCommandList* cmdList)
 	Object3d::PostDraw();
 }
 
-void Enemy::ShotBullet()
+void Enemy::ShotBullet(const XMFLOAT3& targetPos)
 {
 	if (60 * 2 <= m_bulletInterval)
 	{
@@ -100,9 +95,9 @@ void Enemy::ShotBullet()
 
 		XMFLOAT3 vel = {};
 		// 標的の座標を取得
-		vel.x = m_targetPos.x - m_pos.x;
-		vel.y = m_targetPos.y - m_pos.y;
-		vel.z = m_targetPos.z - m_pos.z;
+		vel.x = targetPos.x - m_pos.x;
+		vel.y = targetPos.y - m_pos.y;
+		vel.z = targetPos.z - m_pos.z;
 
 		// 長さを1にして10倍する
 		float len = sqrtf(powf(vel.x, 2) + powf(vel.y, 2) + powf(vel.z, 2));

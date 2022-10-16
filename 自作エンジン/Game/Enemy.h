@@ -31,8 +31,6 @@ private: // メンバ変数
 	//==============================
 	// オブジェクト
 	std::vector<std::unique_ptr<Bullet>> enemyBullets;
-	// 標的の座標
-	XMFLOAT3 m_targetPos = { 0, 0, 0 };
 	// 発射間隔
 	int m_bulletInterval = 0;
 
@@ -65,7 +63,8 @@ public: // メンバ関数
 	/// <summary>
 	/// 弾を発射
 	/// </summary>
-	void ShotBullet();
+	/// <param name="targetPosition">標的の座標</param>
+	void ShotBullet(const XMFLOAT3& targetPos);
 
 	/// <summary>
 	/// 使っていない弾があるか
@@ -119,15 +118,6 @@ public: //アクセッサ
 	void SetAlive(const bool alive)
 	{
 		m_alive = alive;
-	}
-
-	/// <summary>
-	/// 標的の座標をセット
-	/// </summary>
-	/// <param name="targetPosition">標的の座標</param>
-	void SetTargetPosition(const XMFLOAT3& targetPosition)
-	{
-		m_targetPos = targetPosition;
 	}
 
 	/// <summary>
