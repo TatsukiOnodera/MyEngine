@@ -190,6 +190,11 @@ public: // アクセッサ
 	}
 
 	/// <summary>
+	/// ダッシュフラグを取得
+	/// </summary>
+	bool GetIsDash() { return m_isDash; }
+
+	/// <summary>
 	/// 弾を取得
 	/// </summary>
 	const std::vector<std::unique_ptr<Bullet>>& GetPlayerBullets() { return playerBullets; }

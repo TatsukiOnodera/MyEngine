@@ -178,5 +178,11 @@ public: // メンバ関数
 	/// <summary>
 	/// パーティクルの追加
 	/// </summary>
-	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale);
+	void Add(int life, XMFLOAT3& position, XMFLOAT3& velocity, XMFLOAT3& accel, float start_scale, float end_scale);
+
+public: // アクセッサ
+	/// <summary>
+	/// パーティクルの移動
+	/// </summary>
+	void SetMoveParticle(XMFLOAT3& moveVector);
 };

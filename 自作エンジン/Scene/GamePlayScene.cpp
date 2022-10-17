@@ -131,6 +131,31 @@ void GamePlayScene::Update()
 	// 衝突判定
 	CheckAllCollisions();
 
+	// パーティクル
+	if (player->GetIsDash() == true)
+	{
+		XMFLOAT3 pos = player->GetPosition();
+		XMFLOAT3 vel = player->GetVelocity();
+
+		particle->SetMoveParticle(vel);
+
+		// 単位化
+		float tmp_len = Length({ 0, 0, 0 }, vel);
+		vel.x = vel.x / -tmp_len * 0.5f;
+		vel.y = vel.y / -tmp_len * 0.5f;
+		vel.z = vel.z / -tmp_len * 0.5f;
+
+		for (int i = 0; i < 20; i++)
+		{
+			// 散らす
+			vel.x += static_cast<float>(rand() % 21 - 10) / 400;
+			vel.y += static_cast<float>(rand() % 21 - 10) / 400;
+			vel.z += static_cast<float>(rand() % 21 - 10) / 400;
+
+			particle->Add(10, pos, vel, XMFLOAT3(0, -0.01f, 0), 0.1f, 0.0f);
+		}
+	}
+
 #pragma endregion
 
 #pragma region カメラとライトの更新

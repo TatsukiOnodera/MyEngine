@@ -569,7 +569,7 @@ void ParticleManager::Draw()
 	}
 }
 
-void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale)
+void ParticleManager::Add(int life, XMFLOAT3& position, XMFLOAT3& velocity, XMFLOAT3& accel, float start_scale, float end_scale)
 {
 	//リストに要素を追加
 	m_partices.emplace_front();
@@ -582,4 +582,13 @@ void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOA
 	p.num_frame = life;
 	p.s_scale = start_scale;
 	p.e_scale = end_scale;
+}
+
+void ParticleManager::SetMoveParticle(XMFLOAT3& moveVector)
+{
+	//全パーティクル更新
+	for (std::forward_list<Particle>::iterator it = m_partices.begin(); it != m_partices.end(); it++)
+	{
+		it->position = it->position + moveVector;
+	}
 }
