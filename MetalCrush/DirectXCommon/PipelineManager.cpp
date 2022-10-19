@@ -11,10 +11,10 @@ using namespace Microsoft::WRL;
 
 PipelineManager::PipelineManager(ID3D12Device* dev)
 {
-	CreateADSPipeline(dev);
+	CreatePhongShaderPipeline(dev);
 }
 
-void PipelineManager::CreateADSPipeline(ID3D12Device* dev)
+void PipelineManager::CreatePhongShaderPipeline(ID3D12Device* dev)
 {
 	HRESULT result = S_FALSE;
 
@@ -26,7 +26,7 @@ void PipelineManager::CreateADSPipeline(ID3D12Device* dev)
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/ADSVertexShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/PhongVertexShader.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -49,7 +49,7 @@ void PipelineManager::CreateADSPipeline(ID3D12Device* dev)
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/ADSPixelShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/PhongPixelShader.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定

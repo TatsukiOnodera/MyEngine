@@ -118,7 +118,7 @@ void Model::SetGraphicsPipeline(const int shaderType)
 	switch (shaderType)
 	{
 	case 0:
-		m_graphicsPipeline->CreateADSPipeline(s_dev);
+		m_graphicsPipeline->CreatePhongShaderPipeline(s_dev);
 		break;
 
 	case 1:

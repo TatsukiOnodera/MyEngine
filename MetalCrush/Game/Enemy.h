@@ -121,6 +121,12 @@ public: //アクセッサ
 	}
 
 	/// <summary>
+	/// オブジェクト情報を取得
+	/// </summary>
+	/// <returns>オブジェクト</returns>
+	Object3d* GetObject3d() { return m_object.get(); }
+
+	/// <summary>
 	/// 弾を取得
 	/// </summary>
 	const std::vector<std::unique_ptr<Bullet>>& GetEnemyBullet() { return enemyBullets; }

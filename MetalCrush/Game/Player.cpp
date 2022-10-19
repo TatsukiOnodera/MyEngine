@@ -27,7 +27,7 @@ void Player::Initialize()
 	// 生死
 	m_alive = true;
 	// 座標
-	m_pos = { 0, 0, -50 };
+	m_pos = { 0, 0, -100 };
 	// 速度
 	m_vel = { 0, 0, 0 };
 	// 毎加速度
@@ -44,12 +44,17 @@ void Player::Initialize()
 	m_dashTimes = 1.0f;
 	// ダッシュ加速比の毎加算値
 	m_accDashTimes = 0.6f;
-	// カメラの角度
-	m_angle = { 0, 0, 0 };
 	// カメラの回転角度
 	m_addAngle = 1.0f;
 	// カメラ位置の正面化
 	m_cameraInitialize = false;
+
+	// 標的の座標
+	m_targetPos = { 0, 0, 0 };
+	// ロック中か
+	m_isLock = false;
+	// 発射間隔
+	m_shotInterval = 0;
 
 	// オブジェクト
 	m_object->SetPosition(m_pos);
@@ -85,19 +90,19 @@ void Player::Update()
 		DashPlayer();
 
 		// カメラを軸にした変換
-		m_pos = s_camera->ConvertWindowYPos(m_pos, m_vel, m_angle.y);
+		m_pos = s_camera->ConvertWindowYPos(m_pos, m_vel);
 
 		// 座標セット
 		m_object->SetPosition(m_pos);
 
 		// ショット
 		ShotBullet();
+	}
 
-		// 弾の更新
-		for (auto& m : playerBullets)
-		{
-			m->Update();
-		}
+	// 弾の更新
+	for (auto& m : playerBullets)
+	{
+		m->Update();
 	}
 
 	// カメラワーク
@@ -209,8 +214,12 @@ void Player::DashPlayer()
 
 void Player::ShotBullet()
 {
-	if (s_input->TriggerButton(BUTTON::RB))
+	m_shotInterval++;
+
+	if (s_input->PushButton(BUTTON::RB) && 8 < m_shotInterval)
 	{
+		m_shotInterval = 0;
+
 		XMFLOAT3 vel = {};
 		if (m_isLock == true)
 		{
@@ -228,7 +237,7 @@ void Player::ShotBullet()
 		else
 		{
 			vel = { 0, 0, 10 };
-			vel = s_camera->ConvertWindowXYPos({ 0, 0, 0 }, vel, m_angle.x, m_angle.y);
+			vel = s_camera->ConvertWindowXYPos({ 0, 0, 0 }, vel);
 		}
 		if (CheckNoUsingBullet() == true)
 		{
@@ -275,18 +284,20 @@ void Player::MoveCamera()
 {
 	// 遅れて追従
 	XMFLOAT3 tPos = m_pos;
-	XMFLOAT3 tVel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, m_vel, m_angle.y);
+	XMFLOAT3 tVel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, m_vel);
 	tPos.x -= tVel.x;
 	tPos.y -= tVel.y;
 	if (0 <= m_vel.z)
 	{
 		tPos.z -= tVel.z;
-	} else
+	}
+	else
 	{
 		tPos.z -= tVel.z * 0.3f;
 	}
 
 	// 追従カメラ
+	XMFLOAT3 cameraAngle = {};
 	if (m_cameraInitialize == false)
 	{
 		if (s_input->PushButton(BUTTON::R_STICK))
@@ -295,89 +306,23 @@ void Player::MoveCamera()
 		}
 		else if (s_input->RightStickAngle().x != 0 || s_input->RightStickAngle().y != 0)
 		{
-			// Y軸
-			m_angle.y += s_input->RightStickAngle().x * m_addAngle;
-			if (m_angle.y < 0)
-			{
-				m_angle.y += 360;
-			}
-			else if (360 < m_angle.y)
-			{
-				m_angle.y -= 360;
-			}
-
-			// X軸
-			m_angle.x -= s_input->RightStickAngle().y * m_addAngle;
-			if (m_angle.x < 0)
-			{
-				m_angle.x += 360;
-			}
-			else if (360 < m_angle.x)
-			{
-				m_angle.x -= 360;
-			}
+			cameraAngle.y += s_input->RightStickAngle().x * m_addAngle;
+			cameraAngle.x -= s_input->RightStickAngle().y * m_addAngle;
 		}
 	}
 	else
 	{
 		// カメラ正面化
-		if (CameraMoveFront(m_angle.x, m_angle.y) == true)
+		if (true)
 		{
 			m_cameraInitialize = false;
 		}
 	}
 
-	s_camera->FollowUpCamera(tPos, s_camera->GetDistance(), m_angle.x, m_angle.y);
+	s_camera->FollowUpCamera(tPos, s_camera->GetDistance(), cameraAngle);
 }
 
-bool Player::CameraMoveFront(float angleX, float angleY)
-{
-	// X軸
-	if (angleX < 180)
-	{
-		angleX -= 1.0f;
-		if (angleX <= 0)
-		{
-			angleX = 0;
-		}
-	}
-	else
-	{
-		angleX += 1.0f;
-		if (360 <= angleX)
-		{
-			angleX = 0;
-		}
-	}
-
-	// Y軸
-	if (angleY < 180)
-	{
-		angleY -= 1.0f;
-		if (angleY <= 0)
-		{
-			angleY = 0;
-		}
-	}
-	else
-	{
-		angleY += 1.0f;
-		if (360 <= angleY)
-		{
-			angleY = 0;
-		}
-	}
-
-	// 二つが0なら
-	if (angleX == 0 && angleY == 0)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-void Player::isLanding()
+void Player::OnLand()
 {
 	m_vel.y = 0;
 	m_gravityTime = 0;

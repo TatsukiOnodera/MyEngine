@@ -2,7 +2,7 @@
 
 Enemy::Enemy()
 {
-	m_object.reset(Object3d::Create("Dragon", true));
+	m_object.reset(Object3d::Create("Enemy", true));
 	Initialize();
 }
 
@@ -20,23 +20,24 @@ void Enemy::Initialize()
 	}
 
 	// 座標
-	m_pos = { 0, 0, 50 };
+	m_pos = { 0, 0, 100 };
 	// 速度
 	m_vel = { static_cast<float>(rand() % 21 - 10) / 10, -0.98f, static_cast<float>(rand() % 21 - 10) / 10 };
 	// 生存フラグ
 	m_alive = true;
 	// 発射間隔
-	m_bulletInterval = 60 * 2;
+	m_bulletInterval = 0;
 
 	// オブジェクト
 	m_object->SetPosition(m_pos);
 	m_object->SetScale({ 3, 3, 3 });
-	m_object->SetColor({ 0.0f, 0.3f, 0.9f, 1.0f });
+	m_object->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
 	m_object->Update();
 }
 
 void Enemy::Update()
 {
+	// エネミーの更新
 	if (m_alive == true)
 	{
 		// 加速度
@@ -54,16 +55,18 @@ void Enemy::Update()
 
 		m_object->SetPosition(m_pos);
 
-		// 弾の更新
+		// 弾の間隔
 		m_bulletInterval++;
-		if (60 * 2 < m_bulletInterval)
+		if (90 < m_bulletInterval)
 		{
-			m_bulletInterval = 60 * 2;
+			m_bulletInterval = 90;
 		}
-		for (auto& m : enemyBullets)
-		{
-			m->Update();
-		}
+	}
+
+	// 弾の更新
+	for (auto& m : enemyBullets)
+	{
+		m->Update();
 	}
 }
 
@@ -89,7 +92,7 @@ void Enemy::Draw(ID3D12GraphicsCommandList* cmdList)
 
 void Enemy::ShotBullet(const XMFLOAT3& targetPos)
 {
-	if (60 * 2 <= m_bulletInterval)
+	if (90 <= m_bulletInterval)
 	{
 		m_bulletInterval = 0;
 

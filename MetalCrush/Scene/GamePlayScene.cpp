@@ -25,6 +25,7 @@ void GamePlayScene::Initialize()
 	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/Reticle.png");
+	Sprite::LoadTexture(2, L"Resources/PlayerHP.png");
 
 	// ライト生成
 	light.reset(Light::Create());
@@ -40,6 +41,9 @@ void GamePlayScene::Initialize()
 
 	// スプライト
 	reticle.reset(Sprite::Create(1, { 0, 0 }, { 0.5f, 0.5f }));
+	HP.reset(Sprite::Create(2, { 0, 0 }, { 0, 0 }));
+	HP->SetPosition({ WinApp::window_width / 2 - 256 / 2, 8});
+	HP->SetColor({ 1, 1, 1, 0.8f });
 
 	// OBJオブジェクト
 	for (auto& m : wall)
@@ -130,7 +134,7 @@ void GamePlayScene::Update()
 	
 	// 衝突判定
 	CheckAllCollisions();
-
+	
 	// パーティクル
 	if (player->GetIsDash() == true)
 	{
@@ -140,10 +144,10 @@ void GamePlayScene::Update()
 		particle->SetMoveParticle(vel);
 
 		// 単位化
-		float tmp_len = Length({ 0, 0, 0 }, vel);
-		vel.x = vel.x / -tmp_len * 0.5f;
-		vel.y = vel.y / -tmp_len * 0.5f;
-		vel.z = vel.z / -tmp_len * 0.5f;
+		float tmp_len = Length(vel);
+		vel.x = vel.x / tmp_len * -0.5f;
+		vel.y = vel.y / tmp_len * -0.5f;
+		vel.z = vel.z / tmp_len * -0.5f;
 
 		for (int i = 0; i < 20; i++)
 		{
@@ -151,10 +155,13 @@ void GamePlayScene::Update()
 			vel.x += static_cast<float>(rand() % 21 - 10) / 400;
 			vel.y += static_cast<float>(rand() % 21 - 10) / 400;
 			vel.z += static_cast<float>(rand() % 21 - 10) / 400;
-
+			
 			particle->Add(10, pos, vel, XMFLOAT3(0, -0.01f, 0), 0.1f, 0.0f);
 		}
 	}
+
+	// HP
+	HP->SetSize({ 256.0f / 20 * player->GetPlayerHP(), 72});
 
 #pragma endregion
 
@@ -221,6 +228,7 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 	// UI描画
 	Sprite::PreDraw(cmdList);
 
+	HP->Draw();
 	reticle->Draw();
 
 	Sprite::PostDraw();
@@ -310,13 +318,13 @@ void GamePlayScene::CheckPlayer2Enemy(const XMFLOAT3& playerPos, const XMFLOAT3*
 	{
 		if (enemy[e]->GetAlive() == true)
 		{
-			if (Length(playerPos, enemyPos[e]) < 60.0f)
+			if (Length(playerPos, enemyPos[e]) < 100.0f && camera->ObjectComeInSight(enemyPos[e]))
 			{
 				// プレイヤーの発射
 				targetNum = e + 1;
 				tmp_hit = true;
 			}
-			if (Length(playerPos, enemyPos[e]) < 70.0f)
+			if (Length(playerPos, enemyPos[e]) < 150.0f)
 			{
 				// エネミーの発射
 				enemy[e]->ShotBullet(playerPos);
@@ -352,12 +360,26 @@ void GamePlayScene::CheckPlayerBullets2Enemy(const std::vector<std::unique_ptr<B
 {
 	for (const auto& m : playerBullets)
 	{
-		for (int e = 0; e < enemy.size(); e++)
+		if (m->GetAlive() == true)
 		{
-			if (Length(m->GetPosition(), enemyPos[e]) < 5.0f)
+			for (int e = 0; e < enemy.size(); e++)
 			{
-				m->SetAlive(false);
-				enemy[e]->SetAlive(false);
+				if (Length(m->GetPosition(), enemyPos[e]) < 5.0f && enemy[e]->GetAlive() == true)
+				{
+					m->SetAlive(false);
+					enemy[e]->SetAlive(false);
+
+					XMFLOAT3 pos = enemyPos[e];
+					XMFLOAT3 vel = {};
+					for (int i = 0; i < 10; i++)
+					{
+						vel.x += static_cast<float>(rand() % 21 - 10) / 10;
+						vel.y += static_cast<float>(rand() % 21 - 10) / 10;
+						vel.z += static_cast<float>(rand() % 21 - 10) / 10;
+
+						particle->Add(30, pos, vel, XMFLOAT3(0, -0.01f, 0), 1.0f, 0.0f);
+					}
+				}
 			}
 		}
 	}
@@ -374,6 +396,21 @@ void GamePlayScene::CheckPlayer2EnemyBullets(const XMFLOAT3& playerPos)
 			if (Length(m->GetPosition(), playerPos) < 5.0f && m->GetAlive() == true)
 			{
 				m->SetAlive(false);
+				if (0 < player->GetPlayerHP())
+				{
+					player->SetPlayerHP(player->GetPlayerHP() - 1);
+				}
+
+				XMFLOAT3 pos = playerPos;
+				XMFLOAT3 vel = {};
+				for (int i = 0; i < 10; i++)
+				{
+					vel.x += static_cast<float>(rand() % 21 - 10) / 100;
+					vel.y += static_cast<float>(rand() % 21 - 10) / 100;
+					vel.z += static_cast<float>(rand() % 21 - 10) / 100;
+
+					particle->Add(30, pos, vel, XMFLOAT3(0, -0.01f, 0), 1.0f, 0.0f);
+				}
 			}
 		}
 	}
@@ -383,6 +420,12 @@ void GamePlayScene::CheckPlayer2Wall(XMFLOAT3& playerPos)
 {
 	if (player->GetAlive() == true)
 	{
+		if (playerPos.y < wall[DOWN]->GetPosition().y + 1.875f)
+		{
+			playerPos.y = wall[DOWN]->GetPosition().y + 1.875f;
+			player->OnLand();
+		}
+
 		if (wall[FRONT]->GetPosition().z < playerPos.z)
 		{
 			playerPos.z = wall[FRONT]->GetPosition().z;
@@ -401,12 +444,6 @@ void GamePlayScene::CheckPlayer2Wall(XMFLOAT3& playerPos)
 			playerPos.x = wall[LEFT]->GetPosition().x;
 		}
 
-		if (playerPos.y < wall[DOWN]->GetPosition().y + 1.875f)
-		{
-			playerPos.y = wall[DOWN]->GetPosition().y + 1.875f;
-			player->isLanding();
-		}
-
 		player->SetPosition(playerPos);
 	}
 }
@@ -418,6 +455,11 @@ void GamePlayScene::CheckEnemy2Wall(XMFLOAT3* enemyPos)
 		if (enemy[e]->GetAlive() == true)
 		{
 			XMFLOAT3 enemyVel = enemy[e]->GetVelocity();
+
+			if (enemyPos[e].y < wall[DOWN]->GetPosition().y + 1.0f * enemy[e]->GetObject3d()->GetScale().y)
+			{
+				enemyPos[e].y = wall[DOWN]->GetPosition().y + 1.0f * enemy[e]->GetObject3d()->GetScale().y;
+			}
 
 			if (wall[FRONT]->GetPosition().z < enemyPos[e].z)
 			{
@@ -441,12 +483,7 @@ void GamePlayScene::CheckEnemy2Wall(XMFLOAT3* enemyPos)
 				enemyVel.x = fabs(enemyVel.x);
 			}
 
-			if (enemyPos[e].y < wall[DOWN]->GetPosition().y)
-			{
-				enemyPos[e].y = wall[DOWN]->GetPosition().y;
-			}
 			enemy[e]->SetPosition(enemyPos[e]);
-
 			enemy[e]->SetVelocity(enemyVel);
 		}
 	}

@@ -67,6 +67,7 @@ private: // インスタンス
 
 	// スプライト
 	std::unique_ptr<Sprite> reticle = nullptr;
+	std::unique_ptr<Sprite> HP = nullptr;
 
 	// OBJオブジェクト
 	std::array<std::unique_ptr<Object3d>, END> wall;
@@ -136,7 +137,7 @@ public: // メンバ関数
 	/// <param name="pos1">終点</param>
 	/// <param name="pos2">始点</param>
 	/// <returns>二点間の距離</returns>
-	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2);
+	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2 = { 0, 0, 0 });
 
 	/// <summary>
 	/// 衝突判定

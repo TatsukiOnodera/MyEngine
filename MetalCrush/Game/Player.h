@@ -33,6 +33,8 @@ private: // メンバ変数
 	unique_ptr<FbxObject3d> m_object = nullptr;
 	// 生存フラグ
 	bool m_alive = false;
+	// HP
+	int m_HP = 20;
 	// 座標
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 速度
@@ -51,8 +53,6 @@ private: // メンバ変数
 	float m_dashTimes = 0;
 	// ダッシュ加速比の毎加算値
 	float m_accDashTimes = 0;
-	// カメラの角度
-	XMFLOAT3 m_angle = { 360, 0, 0 };
 	// カメラの回転角度
 	float m_addAngle = 0;
 	// カメラ位置の正面化
@@ -67,6 +67,8 @@ private: // メンバ変数
 	XMFLOAT3 m_targetPos = { 0, 0, 0 };
 	// ロック中か
 	bool m_isLock = false;
+	// 発射間隔
+	int m_shotInterval = 0;
 
 public: // メンバ関数
 	/// <summary>
@@ -133,15 +135,10 @@ public: // メンバ関数
 	/// </summary>
 	void MoveCamera();
 
-	// <summary>
-	/// カメラの正面化
-	/// </summary>
-	bool CameraMoveFront(float anglex, float angleY);
-
 	/// <summary>
 	/// 地面に着地したら
 	/// </summary>
-	void isLanding();
+	void OnLand();
 
 public: // アクセッサ
 	/// <summary>
@@ -173,6 +170,15 @@ public: // アクセッサ
 	bool GetAlive() { return m_alive; }
 
 	/// <summary>
+	/// 生死フラグをセット
+	/// </summary>
+	/// <param name="alive">生死フラグ</param>
+	void SetAlive(const bool alive)
+	{
+		m_alive = alive;
+	}
+
+	/// <summary>
 	/// 標的の座標をセット
 	/// </summary>
 	/// <param name="targetPosition">標的の座標</param>
@@ -187,6 +193,21 @@ public: // アクセッサ
 	void SetIsLock(const bool isLock)
 	{
 		m_isLock = isLock;
+	}
+
+	/// <summary>
+	/// HPの取得
+	/// </summary>
+	/// <returns>HP</returns>
+	int GetPlayerHP() { return m_HP; }
+
+	/// <summary>
+	/// HPのセット
+	/// </summary>
+	/// <param name="m_HP">HP</param>
+	void SetPlayerHP(const int HP)
+	{
+		m_HP = HP;
 	}
 
 	/// <summary>

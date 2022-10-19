@@ -246,11 +246,11 @@
     <ClInclude Include="Window\WinApp.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\ADSPixelShader.hlsl">
+    <FxCompile Include="Resources\Shaders\PhongPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\ADSVertexShader.hlsl">
+    <FxCompile Include="Resources\Shaders\PhongVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
@@ -334,7 +334,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\ADSShaderHeader.hlsli" />
+    <None Include="Resources\Shaders\PhongShaderHeader.hlsli" />
     <None Include="Resources\Shaders\FBXShaderHeader.hlsli" />
     <None Include="Resources\Shaders\MonochromaticShaderHeader.hlsli" />
     <None Include="Resources\Shaders\Particle.hlsli" />

@@ -26,10 +26,10 @@ public: //メンバ関数
 	PipelineManager(ID3D12Device* dev);
 
 	/// <summary>
-	/// ADSシェーダー
+	/// フォンシェーダー
 	/// </summary>
 	/// <param name="dev">デバイス</param>
-	void CreateADSPipeline(ID3D12Device* dev);
+	void CreatePhongShaderPipeline(ID3D12Device* dev);
 	
 	/// <summary>
 	/// トゥーンシェーダー
