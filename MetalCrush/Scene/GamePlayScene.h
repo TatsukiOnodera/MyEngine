@@ -68,6 +68,7 @@ private: // インスタンス
 	// スプライト
 	std::unique_ptr<Sprite> reticle = nullptr;
 	std::unique_ptr<Sprite> HP = nullptr;
+	std::unique_ptr<Sprite> bulletCapacity = nullptr;
 
 	// OBJオブジェクト
 	std::array<std::unique_ptr<Object3d>, END> wall;

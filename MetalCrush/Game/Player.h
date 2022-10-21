@@ -25,38 +25,52 @@ private: // 静的メンバ変数
 	// 操作系
 	static Input* s_input;
 
+private: // サブクラス
+	// プレイヤーのステータス
+	struct PlayerStatus
+	{
+		// HP
+		int HP = 20;
+
+		// 生存フラグ
+		bool isAlive = false;
+		// ダッシュフラグ
+		bool isDash = false;
+
+		// 座標
+		XMFLOAT3 pos = { 0, 0, 0 };
+		// 速度
+		XMFLOAT3 vel = { 0, 0, 0 };
+	};
+
 private: // メンバ変数
 	//==============================
 	// 自機
 	//==============================
 	// オブジェクト
 	unique_ptr<FbxObject3d> m_object = nullptr;
-	// 生存フラグ
-	bool m_alive = false;
-	// HP
-	int m_HP = 20;
-	// 座標
-	XMFLOAT3 m_pos = { 0, 0, 0 };
-	// 速度
-	XMFLOAT3 m_vel = { 0, 0, 0 };
-	// 毎加速度
-	float m_accSpeed = 0;
-	// 減速度
-	float m_decSpeed = 0;
-	// ジャンプ加速度
-	float m_accJump = 0;
+	// ステータス
+	PlayerStatus m_status;
+
+	// 通常移動の加速度
+	const float c_accMove = 0.0325f;
+	// 通常移動の減速度
+	const float c_decMove = 0.9f;
+	// 通常移動の最大速度
+	const float c_maxVelXZ = 0.6f;
+	// ジャンプの加速度
+	const float c_accJump = 0.05f;
+	// ジャンプの最大速度
+	const float c_maxVelY = 0.6f;
+
+	// ダッシュの加速度
+	float m_dashAcc = 0;
+	// ダッシュの時間
+	float m_dashTime = 0;
+	// 1フレーム当たりの加算（DT = DashTime）
+	float m_addDT = 6.0f;
 	// 重力加速値の時間
 	int m_gravityTime = 0;
-	// ダッシュフラグ
-	bool m_isDash = false;
-	// ダッシュ加速比
-	float m_dashTimes = 0;
-	// ダッシュ加速比の毎加算値
-	float m_accDashTimes = 0;
-	// カメラの回転角度
-	float m_addAngle = 0;
-	// カメラ位置の正面化
-	bool m_cameraInitialize = false;
 
 	//==============================
 	// プレイヤーの弾
@@ -69,6 +83,18 @@ private: // メンバ変数
 	bool m_isLock = false;
 	// 発射間隔
 	int m_shotInterval = 0;
+	// 装弾数
+	int m_bulletCapacity = 0;
+	// リロードタイム
+	int m_reloadTimer = 0;
+
+	//==============================
+	// カメラ
+	//==============================
+	// カメラの回転角度
+	const float c_addAngle = 0;
+	// カメラ位置の正面化
+	bool m_cameraInitialize = false;
 
 public: // メンバ関数
 	/// <summary>
@@ -133,7 +159,7 @@ public: // メンバ関数
 	/// <summary>
 	/// カメラワーク
 	/// </summary>
-	void MoveCamera();
+	void CameraWork();
 
 	/// <summary>
 	/// 地面に着地したら
@@ -145,7 +171,7 @@ public: // アクセッサ
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
-	const XMFLOAT3 GetPosition() { return m_pos; }
+	const XMFLOAT3 GetPosition() { return m_status.pos; }
 	
 	/// <summary>
 	/// void SetPosition(XMFLOAT3 position);
@@ -153,21 +179,21 @@ public: // アクセッサ
 	/// <param name="position">座標</param>
 	void SetPosition(const XMFLOAT3& position)
 	{
-		m_pos = position;
+		m_status.pos = position;
 
-		m_object->SetPosition(m_pos);
+		m_object->SetPosition(m_status.pos);
 	}
 
 	/// <summary>
 	/// 速度を取得
 	/// </summary>
 	/// <returns>速度</returns>
-	const XMFLOAT3 GetVelocity() { return m_vel; }
+	const XMFLOAT3 GetVelocity() { return m_status.vel; }
 
 	/// <summary>
 	/// 生死フラグを取得
 	/// </summary>
-	bool GetAlive() { return m_alive; }
+	bool GetAlive() { return m_status.isAlive; }
 
 	/// <summary>
 	/// 生死フラグをセット
@@ -175,7 +201,7 @@ public: // アクセッサ
 	/// <param name="alive">生死フラグ</param>
 	void SetAlive(const bool alive)
 	{
-		m_alive = alive;
+		m_status.isAlive = alive;
 	}
 
 	/// <summary>
@@ -199,7 +225,7 @@ public: // アクセッサ
 	/// HPの取得
 	/// </summary>
 	/// <returns>HP</returns>
-	int GetPlayerHP() { return m_HP; }
+	int GetPlayerHP() { return m_status.HP; }
 
 	/// <summary>
 	/// HPのセット
@@ -207,13 +233,19 @@ public: // アクセッサ
 	/// <param name="m_HP">HP</param>
 	void SetPlayerHP(const int HP)
 	{
-		m_HP = HP;
+		m_status.HP = HP;
 	}
+
+	/// <summary>
+	/// 装弾数取得
+	/// </summary>
+	/// <returns>装弾数</returns>
+	int GetBulletCapacity() { return m_bulletCapacity; }
 
 	/// <summary>
 	/// ダッシュフラグを取得
 	/// </summary>
-	bool GetIsDash() { return m_isDash; }
+	bool GetIsDash() { return m_status.isDash; }
 
 	/// <summary>
 	/// 弾を取得

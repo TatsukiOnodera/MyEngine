@@ -26,6 +26,7 @@ void GamePlayScene::Initialize()
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/Reticle.png");
 	Sprite::LoadTexture(2, L"Resources/PlayerHP.png");
+	Sprite::LoadTexture(3, L"Resources/BulletCapacity.png");
 
 	// ライト生成
 	light.reset(Light::Create());
@@ -41,19 +42,22 @@ void GamePlayScene::Initialize()
 
 	// スプライト
 	reticle.reset(Sprite::Create(1, { 0, 0 }, { 0.5f, 0.5f }));
-	HP.reset(Sprite::Create(2, { 0, 0 }, { 0, 0 }));
+	HP.reset(Sprite::Create(2));
 	HP->SetPosition({ WinApp::window_width / 2 - 256 / 2, 8});
-	HP->SetColor({ 1, 1, 1, 0.8f });
+	HP->SetColor({ 0, 0.6f, 0.5f, 0.8f });
+	bulletCapacity.reset(Sprite::Create(3, { 0, 0 }, { 1.0f, 1.0f }));
+	bulletCapacity->SetPosition({ WinApp::window_width - 8, WinApp::window_height / 2 + 256 / 2 });
+	bulletCapacity->SetColor({ 0, 0.5f, 0.6f, 0.8f });
 
 	// OBJオブジェクト
 	for (auto& m : wall)
 	{
 		m.reset(Object3d::Create("Wall"));
 	}
-	for (int e = 0; e < 1; e++)
+	/*for (int e = 0; e < 6; e++)
 	{
 		enemy.emplace_back(new Enemy);
-	}
+	}*/
 
 	// FBXオブェクト
 	player.reset(new Player);
@@ -162,6 +166,7 @@ void GamePlayScene::Update()
 
 	// HP
 	HP->SetSize({ 256.0f / 20 * player->GetPlayerHP(), 72});
+	bulletCapacity->SetSize({ 72, 256.0f / 20 * player->GetBulletCapacity()});
 
 #pragma endregion
 
@@ -228,8 +233,9 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 	// UI描画
 	Sprite::PreDraw(cmdList);
 
-	HP->Draw();
 	reticle->Draw();
+	HP->Draw();
+	bulletCapacity->Draw();
 
 	Sprite::PostDraw();
 }
