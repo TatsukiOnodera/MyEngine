@@ -276,7 +276,6 @@ void FbxObject3d::Update()
 			if (isLoop == false)
 			{
 				currentTime = endTime;
-				isPlay = false;
 			}
 			else
 			{
@@ -371,11 +370,11 @@ void FbxObject3d::Draw()
 	fbxModel->Draw(cmdList);
 }
 
-void FbxObject3d::PlayAnimation(bool loop)
+void FbxObject3d::PlayAnimation(const int number, const bool loop)
 {
 	FbxScene* fbxScene = fbxModel->GetFbxScene();
 	//0番目のアニメーション取得
-	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(number);
 	//アニメーションがなかったら
 	if (animStack == nullptr)
 	{

@@ -9,8 +9,6 @@
 
 #include "Bullet.h"
 
-using namespace std;
-
 class Player
 {
 public: // エイリアス
@@ -68,7 +66,7 @@ private: // メンバ変数
 	// ダッシュの時間
 	float m_dashTime = 0;
 	// 1フレーム当たりの加算（DT = DashTime）
-	float m_addDT = 6.0f;
+	float m_addDT = 10.0f;
 	// 重力加速値の時間
 	int m_gravityTime = 0;
 
@@ -89,10 +87,17 @@ private: // メンバ変数
 	int m_reloadTimer = 0;
 
 	//==============================
+	// パーティクル
+	//==============================
+	std::unique_ptr<ParticleManager> booster = nullptr;
+	// 追従座標
+	XMFLOAT3 targetPos = {};
+
+	//==============================
 	// カメラ
 	//==============================
 	// カメラの回転角度
-	const float c_addAngle = 0;
+	const float c_addAngle = 1.0f;
 	// カメラ位置の正面化
 	bool m_cameraInitialize = false;
 
@@ -165,6 +170,14 @@ public: // メンバ関数
 	/// 地面に着地したら
 	/// </summary>
 	void OnLand();
+
+	/// <summary>
+	/// 始点から終点への距離
+	/// </summary>
+	/// <param name="pos1">終点</param>
+	/// <param name="pos2">始点</param>
+	/// <returns>二点間の距離</returns>
+	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2 = { 0, 0, 0 });
 
 public: // アクセッサ
 	/// <summary>
@@ -246,6 +259,8 @@ public: // アクセッサ
 	/// ダッシュフラグを取得
 	/// </summary>
 	bool GetIsDash() { return m_status.isDash; }
+
+	FbxObject3d* GetPlayerObject() { return m_object.get(); }
 
 	/// <summary>
 	/// 弾を取得

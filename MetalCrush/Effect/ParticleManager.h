@@ -22,12 +22,20 @@ private: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+private: // 定数
+	static const int s_division = 50;					// 分割数
+	static const float s_radius;				// 底面の半径
+	static const float s_prizmHeight;			// 柱の高さ
+	static const int s_planeCount = s_division * 2 + s_division * 2;		// 面の数
+	static const int s_vertexCount = 1024; //長点数
+
 public: // サブクラス
 	// 頂点データ構造体
 	struct VertexPos
 	{
 		XMFLOAT3 pos; // xyz座標
 		float scale; //スケール
+		XMFLOAT4 color; // RGBA
 	};
 
 	// 定数バッファ用データ構造体
@@ -40,32 +48,33 @@ public: // サブクラス
 	//パーティクル1粒
 	struct Particle
 	{
-		using XMFLOAT3 = DirectX::XMFLOAT3;
-
 		//座標
 		XMFLOAT3 position = {};
+		// ワールド座標
+		XMFLOAT3 w_position = {};
 		//速度
 		XMFLOAT3 velocity = {};
 		//加速度
 		XMFLOAT3 accel = {};
+		// RGBA
+		XMFLOAT4 color = {};
 		//現在フレーム
 		int frame = 0;
 		//終了フレーム
 		int num_frame = 0;
 		//スケール
 		float scale = 1.0f;
+		// 初期値
+		XMFLOAT4 s_color = {};
+		// 最終値
+		XMFLOAT4 e_color = {};
 		//初期値
 		float s_scale = 1.0f;
-		//最終地
+		//最終値
 		float e_scale = 0.0f;
+		// カメラに追従するか
+		bool isFollow = false;
 	};
-
-private: // 定数
-	static const int s_division = 50;					// 分割数
-	static const float s_radius;				// 底面の半径
-	static const float s_prizmHeight;			// 柱の高さ
-	static const int s_planeCount = s_division * 2 + s_division * 2;		// 面の数
-	static const int s_vertexCount = 1024; //長点数
 
 private: // 静的メンバ変数
 	// デバイス
@@ -93,7 +102,7 @@ private: // 静的メンバ変数
 	// Y軸回りビルボード行列
 	static XMMATRIX matBillboardY;
 
-private:// 静的メンバ関数
+private: // 静的メンバ関数
 	/// <summary>
 	/// グラフィックパイプライン生成
 	/// </summary>
@@ -141,24 +150,19 @@ private: // メンバ変数
 	//パーティクル配列
 	std::forward_list<Particle> m_partices;
 	// デスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> descHeap;
+	ComPtr<ID3D12DescriptorHeap> m_descHeap;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> m_constBuff;
 	// テクスチャバッファ
-	ComPtr<ID3D12Resource> texbuff;
+	ComPtr<ID3D12Resource> m_texbuff;
 	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE m_cpuDescHandleSRV;
 	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
+	CD3DX12_GPU_DESCRIPTOR_HANDLE m_gpuDescHandleSRV;
+	// 追従対象座標
+	XMFLOAT3 m_targetPos = {};
 
 public: // メンバ関数
-	/// <summary>
-	/// テクスチャ読み込み
-	/// </summary>
-	/// <param name="textureName">テクスチャの名前</param>
-	/// <returns>成否</returns>
-	bool LoadTexture(const std::string& textureName);
-
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -176,13 +180,23 @@ public: // メンバ関数
 	void Draw();
 
 	/// <summary>
+	/// テクスチャ読み込み
+	/// </summary>
+	/// <param name="textureName">テクスチャの名前</param>
+	/// <returns>成否</returns>
+	bool LoadTexture(const std::string& textureName);
+
+	/// <summary>
 	/// パーティクルの追加
 	/// </summary>
-	void Add(int life, XMFLOAT3& position, XMFLOAT3& velocity, XMFLOAT3& accel, float start_scale, float end_scale);
+	void Add(const int life, const XMFLOAT3& w_position, const XMFLOAT3& velocity, const XMFLOAT3& accel, const XMFLOAT4& start_color, const XMFLOAT4& end_color, const float start_scale, const float end_scale, const bool isFollow);
 
-public: // アクセッサ
 	/// <summary>
-	/// パーティクルの移動
+	/// 追従座標をセット
 	/// </summary>
-	void SetMoveParticle(XMFLOAT3& moveVector);
+	/// <param name="position">座標</param>
+	void SetTargetPos(const XMFLOAT3& position)
+	{
+		m_targetPos = position;
+	}
 };

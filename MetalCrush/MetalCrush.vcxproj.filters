@@ -1,62 +1,62 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\PhongPixelShader.hlsl">
-      <Filter>シェーダーファイル\OBJ\Phong</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PhongVertexShader.hlsl">
-      <Filter>シェーダーファイル\OBJ\Phong</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleGS.hlsl">
-      <Filter>シェーダーファイル\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
-      <Filter>シェーダーファイル\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
-      <Filter>シェーダーファイル\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\TextureBlendPixelShader.hlsl">
-      <Filter>シェーダーファイル\OBJ\Blend</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\TextureBlendVertexShader.hlsl">
-      <Filter>シェーダーファイル\OBJ\Blend</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\MonochromaticVertexShader.hlsl">
-      <Filter>シェーダーファイル\OBJ\Mono</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\MonochromaticPixelShader.hlsl">
-      <Filter>シェーダーファイル\OBJ\Mono</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\SpecularMapPixelShader.hlsl">
-      <Filter>シェーダーファイル\OBJ\Specular</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\SpecularMapVertexShader.hlsl">
-      <Filter>シェーダーファイル\OBJ\Specular</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\FBXPixelShader.hlsl">
+    <FxCompile Include="Resources\Shaders\FBX\FBXPS.hlsl">
       <Filter>シェーダーファイル\FBX</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\FBXVertexShader.hlsl">
+    <FxCompile Include="Resources\Shaders\FBX\FBXVS.hlsl">
       <Filter>シェーダーファイル\FBX</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\PostEffectPS.hlsl">
+    <FxCompile Include="Resources\Shaders\Blend\BlendPS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Blend</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Blend\BlendVS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Blend</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Mono\MonoVS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Mono</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Mono\MonoPS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Mono</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Particle\ParticleVS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Particle\ParticleGS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Particle\ParticlePS.hlsl">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Phong\PhongVS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Phong</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Phong\PhongPS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Phong</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PostEffect\PostEffectVS.hlsl">
       <Filter>シェーダーファイル\PostEffect</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\PostEffectVS.hlsl">
+    <FxCompile Include="Resources\Shaders\PostEffect\PostEffectPS.hlsl">
       <Filter>シェーダーファイル\PostEffect</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\SpriteVS.hlsl">
+    <FxCompile Include="Resources\Shaders\Sprite\SpritePS.hlsl">
       <Filter>シェーダーファイル\Sprite</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
+    <FxCompile Include="Resources\Shaders\Sprite\SpriteVS.hlsl">
       <Filter>シェーダーファイル\Sprite</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\ToonVertexShader.hlsl">
+    <FxCompile Include="Resources\Shaders\Toon\ToonPS.hlsl">
       <Filter>シェーダーファイル\OBJ\Toon</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\ToonPixelShader.hlsl">
+    <FxCompile Include="Resources\Shaders\Toon\ToonVS.hlsl">
       <Filter>シェーダーファイル\OBJ\Toon</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpecularMap\SpecularMapPS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Specular</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SpecularMap\SpecularMapVS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Specular</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -271,32 +271,32 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\PhongShaderHeader.hlsli">
-      <Filter>シェーダーファイル\OBJ\Phong</Filter>
-    </None>
-    <None Include="Resources\Shaders\Particle.hlsli">
-      <Filter>シェーダーファイル\Particle</Filter>
-    </None>
-    <None Include="Resources\Shaders\TextureBlendShaderHeader.hlsli">
-      <Filter>シェーダーファイル\OBJ\Blend</Filter>
-    </None>
-    <None Include="Resources\Shaders\MonochromaticShaderHeader.hlsli">
-      <Filter>シェーダーファイル\OBJ\Mono</Filter>
-    </None>
-    <None Include="Resources\Shaders\SpecularMapShaderHeader.hlsli">
-      <Filter>シェーダーファイル\OBJ\Specular</Filter>
-    </None>
-    <None Include="Resources\Shaders\FBXShaderHeader.hlsli">
+    <None Include="Resources\Shaders\FBX\FBX.hlsli">
       <Filter>シェーダーファイル\FBX</Filter>
     </None>
-    <None Include="Resources\Shaders\PostEffect.hlsli">
+    <None Include="Resources\Shaders\Blend\Blend.hlsli">
+      <Filter>シェーダーファイル\OBJ\Blend</Filter>
+    </None>
+    <None Include="Resources\Shaders\Mono\Mono.hlsli">
+      <Filter>シェーダーファイル\OBJ\Mono</Filter>
+    </None>
+    <None Include="Resources\Shaders\Particle\Particle.hlsli">
+      <Filter>シェーダーファイル\Particle</Filter>
+    </None>
+    <None Include="Resources\Shaders\Phong\Phong.hlsli">
+      <Filter>シェーダーファイル\OBJ\Phong</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostEffect\PostEffect.hlsli">
       <Filter>シェーダーファイル\PostEffect</Filter>
     </None>
-    <None Include="Resources\Shaders\Sprite.hlsli">
+    <None Include="Resources\Shaders\Sprite\Sprite.hlsli">
       <Filter>シェーダーファイル\Sprite</Filter>
     </None>
-    <None Include="Resources\Shaders\ToonShaderHeader.hlsli">
+    <None Include="Resources\Shaders\Toon\Toon.hlsli">
       <Filter>シェーダーファイル\OBJ\Toon</Filter>
+    </None>
+    <None Include="Resources\Shaders\SpecularMap\SpecularMap.hlsli">
+      <Filter>シェーダーファイル\OBJ\Specular</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -404,6 +404,9 @@
     </Filter>
     <Filter Include="シェーダーファイル\OBJ\Phong">
       <UniqueIdentifier>{b91f9cad-478a-4a67-9cd4-8b14177f6f68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\OBJ\Bloom">
+      <UniqueIdentifier>{390b530d-279c-4e5d-a903-b992fab9c622}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -62,16 +62,13 @@ private: // インスタンス
 	// ライト
 	std::unique_ptr<Light> light = nullptr;
 
-	// パーティクル
-	std::unique_ptr<ParticleManager> particle = nullptr;
-
 	// スプライト
+	std::unique_ptr<Sprite> backScreen = nullptr;
 	std::unique_ptr<Sprite> reticle = nullptr;
 	std::unique_ptr<Sprite> HP = nullptr;
-	std::unique_ptr<Sprite> bulletCapacity = nullptr;
 
 	// OBJオブジェクト
-	std::array<std::unique_ptr<Object3d>, END> wall;
+	std::unique_ptr<Object3d> ground = nullptr;
 	std::vector<std::unique_ptr<Enemy>> enemy;
 
 	// FBXオブジェクト

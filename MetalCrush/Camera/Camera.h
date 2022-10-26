@@ -55,6 +55,8 @@ private: // メンバ変数
 	bool m_dirty = false;
 	//	 更新したか
 	bool m_isDirty = false;
+	// カメラの速度を合わせる速度比
+	float m_frontAcc = 0;
 
 public: // メンバ関数
 	/// <summary>
@@ -127,6 +129,12 @@ public: // メンバ関数
 	/// <param name="pos">判定対象の座標</param>
 	/// <returns>成否</returns>
 	bool ObjectComeInSight(const XMFLOAT3& pos);
+
+	/// カメラを正面に向かせる
+	/// </summary>
+	/// <param name="vel">向かせる速度</param>
+	/// <returns>向けたか否か</returns>
+	bool MoveFront(const float vel = 1.0f);
 
 public: //アクセッサ
 	/// <summary>

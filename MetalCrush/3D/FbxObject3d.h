@@ -143,8 +143,9 @@ public: //メンバ関数
 	/// <summary>
 	/// アニメーション開始
 	/// </summary>
+	/// <param name="number">アニメーションの番号</param>
 	/// <param name="loop">ループの成否</param>
-	void PlayAnimation(bool loop = false);
+	void PlayAnimation(const int number = 0, const bool loop = false);
 
 	/// <summary>
 	/// アニメーションをリセット

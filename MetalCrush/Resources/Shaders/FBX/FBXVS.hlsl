@@ -1,4 +1,4 @@
-#include "FBXShaderHeader.hlsli"
+#include "FBX.hlsli"
 
 //スキニング後の頂点・法線が入る
 struct SkinOutput

@@ -208,14 +208,17 @@ XMFLOAT3 Camera::ConvertWindowYPos(const XMFLOAT3& pos, const XMFLOAT3& vec, con
 	XMVECTOR v0 = { vec.x, vec.y, vec.z, 0 };
 
 	//âÒì]çsóÒ
+	if (addAngleY != 0)
+	{
 	m_angleY += addAngleY;
 	if (360 < m_angleY)
 	{
 		m_angleY -= 360;
-	}
+	} 
 	else if (m_angleY < 0)
-	{
-		m_angleY += 360;
+		{
+			m_angleY += 360;
+		}
 	}
 
 	XMMATRIX rotM = XMMatrixIdentity();
@@ -236,24 +239,32 @@ XMFLOAT3 Camera::ConvertWindowXYPos(const XMFLOAT3& pos, const XMFLOAT3& vec, co
 	XMVECTOR v0 = { vec.x, vec.y, vec.z, 0 };
 
 	//âÒì]çsóÒ
-	m_angleX += addAngle.x;
-	if (360 < m_angleX)
+	// Xé≤
+	if (addAngle.x != 0)
 	{
-		m_angleX -= 360;
-	}
-	else if (m_angleX < 0)
-	{
-		m_angleX += 360;
+		m_angleX += addAngle.x;
+		if (360 < m_angleX)
+		{
+			m_angleX -= 360;
+		}
+		else if (m_angleX < 0)
+		{
+			m_angleX += 360;
+		}
 	}
 
-	m_angleY += addAngle.y;
-	if (360 < m_angleY)
+	// Yé≤
+	if (addAngle.y != 0)
 	{
-		m_angleY -= 360;
-	}
-	else if (m_angleY < 0)
-	{
-		m_angleY += 360;
+		m_angleY += addAngle.y;
+		if (360 < m_angleY)
+		{
+			m_angleY -= 360;
+		}
+		else if (m_angleY < 0)
+		{
+			m_angleY += 360;
+		}
 	}
 
 	XMMATRIX rotM = XMMatrixIdentity();
@@ -316,4 +327,66 @@ bool Camera::ObjectComeInSight(const XMFLOAT3& pos)
 	}
 
 	return true;
+}
+
+bool Camera::MoveFront(const float vel)
+{
+	if (m_frontAcc == 0 && m_angleX != 0 && m_angleY != 0)
+	{
+		float tmpX = m_angleX;
+		float tmpY = m_angleY;
+
+		if (180 <= m_angleX)
+		{
+			tmpX = 360 - m_angleX;
+		}
+		if (180 <= m_angleY)
+		{
+			tmpY = 360 - m_angleY;
+		}
+		
+		m_frontAcc = tmpX / tmpY;
+	}
+
+	if (m_angleX < 180)
+	{
+		m_angleX -= vel * m_frontAcc;
+		if (m_angleX <= 0)
+		{
+			m_angleX = 0;
+		}
+	}
+	else
+	{
+		m_angleX += vel * m_frontAcc;
+		if (360 <= m_angleX)
+		{
+			m_angleX = 0;
+		}
+	}
+
+	if (m_angleY < 180)
+	{
+		m_angleY -= vel;
+		if (m_angleY <= 0)
+		{
+			m_angleY = 0;
+		}
+	}
+	else
+	{
+		m_angleY += vel;
+		if (360 <= m_angleY)
+		{
+			m_angleY = 0;
+		}
+	}
+
+	if (m_angleX == 0 && m_angleY == 0)
+	{
+		m_frontAcc = 0;
+		return true;
+	}
+
+	return false;
 }

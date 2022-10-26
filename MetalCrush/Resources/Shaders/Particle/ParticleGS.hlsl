@@ -27,14 +27,15 @@ void main(
 	GSOutput element;
 	for (uint i = 0; i < vnum; i++)
 	{
-		// ’†S‚©‚ç‚ÌƒIƒtƒZƒbƒg‚ðƒXƒP[ƒŠƒ“ƒO
+		// ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½ÌƒIï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½O
 		float4 offset = offset_array[i] * input[0].scale;
-		// ’†S‚©‚çƒIƒtƒZƒbƒg‚ðƒrƒ‹ƒ{[ƒh‰ñ“] (ƒ‚ƒfƒ‹À•W)
+		// ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½Iï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½rï¿½ï¿½ï¿½{ï¿½[ï¿½hï¿½ï¿½] (ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ï¿½ï¿½W)
 		offset = mul(matBillboard, offset);
 		element.svpos = input[0].pos + offset;
 
 		element.svpos = mul(mat, element.svpos);
 		element.uv = uv_array[i];
+		element.color = input[0].color;
 		output.Append(element);
 	}
 }

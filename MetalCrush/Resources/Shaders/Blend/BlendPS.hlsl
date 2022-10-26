@@ -1,4 +1,4 @@
-#include "TextureBlendShaderHeader.hlsli"
+#include "Blend.hlsli"
 
 Texture2D<float4> maintex : register(t0);  // 0番スロットに設定されたテクスチャ
 Texture2D<float4> subtex : register(t1);  // 1番スロットに設定されたテクスチャ

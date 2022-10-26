@@ -1,4 +1,4 @@
-#include "SpecularMapShaderHeader.hlsli"
+#include "Bloom.hlsli"
 
 Texture2D<float4> maintex : register(t0);  // 0番スロットに設定されたテクスチャ
 Texture2D<float4> masktex : register(t1);  // 1番スロットに設定されたテクスチャ

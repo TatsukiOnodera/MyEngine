@@ -26,7 +26,7 @@ void PipelineManager::CreatePhongShaderPipeline(ID3D12Device* dev)
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/PhongVertexShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/Phong/PhongVS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -49,7 +49,7 @@ void PipelineManager::CreatePhongShaderPipeline(ID3D12Device* dev)
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/PhongPixelShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/Phong/PhongPS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -174,7 +174,7 @@ void PipelineManager::CreateToonPipeline(ID3D12Device* dev)
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/ToonVertexShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/Toon/ToonVS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -197,7 +197,7 @@ void PipelineManager::CreateToonPipeline(ID3D12Device* dev)
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/ToonPixelShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/Toon/ToonPS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -322,7 +322,7 @@ void PipelineManager::CreateMonochromaticPipeline(ID3D12Device* dev)
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/MonochromaticVertexShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/Mono/MonoVS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -345,7 +345,7 @@ void PipelineManager::CreateMonochromaticPipeline(ID3D12Device* dev)
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/MonochromaticPixelShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/Mono/MonoPS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -468,7 +468,7 @@ void PipelineManager::CreateTextureBlendPipeline(ID3D12Device* dev)
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/TextureBlendVertexShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/Blend/BlendVS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -491,7 +491,7 @@ void PipelineManager::CreateTextureBlendPipeline(ID3D12Device* dev)
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/TextureBlendPixelShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/Blend/BlendPS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -622,7 +622,7 @@ void PipelineManager::CreateSpecularMapPipeline(ID3D12Device* dev)
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/SpecularMapVertexShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/SpecularMap/SpecularMapVS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -645,7 +645,7 @@ void PipelineManager::CreateSpecularMapPipeline(ID3D12Device* dev)
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/SpecularMapPixelShader.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/SpecularMap/SpecularMapPS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定

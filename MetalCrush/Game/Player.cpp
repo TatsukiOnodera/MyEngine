@@ -7,7 +7,9 @@ Input* Player::s_input = Input::GetInstance();
 
 Player::Player()
 {
-	m_object.reset(FbxObject3d::CreateFBXObject("player"));
+	m_object.reset(FbxObject3d::CreateFBXObject("PlayerBone"));
+	//booster.reset(ParticleManager::Create("Particle/effect1.png"));
+	booster.reset(ParticleManager::Create("Particle/FireParticle.png"));
 	Initialize();
 }
 
@@ -35,6 +37,8 @@ void Player::Initialize()
 	m_dashAcc = 0;
 	// ダッシュの時間
 	m_dashTime = 0;
+	// 1フレーム当たりの加算（DT = DashTime）
+	m_addDT = 8.0f;
 	// 重力時間
 	m_gravityTime = 0;
 
@@ -54,8 +58,8 @@ void Player::Initialize()
 
 	// オブジェクト
 	m_object->SetPosition(m_status.pos);
-	m_object->SetRotation({ -90, 0, 0 });
 	m_object->SetScale({ 0.25f, 0.25f, 0.25f });
+	m_object->SetRotation({ -90, 180, 0 });
 	m_object->Update();
 }
 
@@ -97,7 +101,7 @@ void Player::Update()
 	{
 		m->Update();
 	}
-
+	
 	// カメラワーク
 	CameraWork();
 }
@@ -106,6 +110,17 @@ void Player::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	// OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
+	
+	if (0 < playerBullets.size())
+	{
+		for (auto& m : playerBullets)
+		{
+			m->Draw();
+		}
+	}
+	
+	Object3d::PostDraw();
+
 	// FBXオブジェクト
 	FbxObject3d::PreDraw(cmdList);
 
@@ -114,16 +129,19 @@ void Player::Draw(ID3D12GraphicsCommandList* cmdList)
 		// 自機
 		m_object->Draw();
 	}
-	if (0 < playerBullets.size())
-	{
-		for (auto& m : playerBullets)
-		{
-			m->Draw();
-		}
-	}
 
-	Object3d::PostDraw();
 	FbxObject3d::PostDraw();
+
+	// パーティクル描画
+	ParticleManager::PreDraw(cmdList);
+
+	XMFLOAT3 pos = m_status.pos;
+	pos.y += 3.0f * m_object->GetScale().z;
+	pos.z += -2.0f * m_object->GetScale().y;
+	booster->SetTargetPos(pos);
+	booster->Draw();
+	
+	ParticleManager::PostDraw();
 }
 
 void Player::MovePlayer(XMFLOAT3& acc)
@@ -162,7 +180,7 @@ void Player::JumpPlayer(XMFLOAT3& acc)
 	}
 
 	// 重力
-	acc.y += -0.98f * powf(static_cast<float>(m_gravityTime) / 60, 2);
+	acc.y += (-0.98f *0.5f) * powf(static_cast<float>(m_gravityTime) / 60, 2);
 }
 
 void Player::AddAcceleration(const XMFLOAT3& acc)
@@ -196,7 +214,7 @@ void Player::AddAcceleration(const XMFLOAT3& acc)
 void Player::DashPlayer()
 {
 	// ダッシュ
-	if(s_input->SwitchRightTrigger() && m_status.isDash == false)
+	if(s_input->SwitchRightTrigger() && m_status.isDash == false && m_status.vel.x != 0 && m_status.vel.z != 0)
 	{
 		m_status.isDash = true;
 	}
@@ -208,13 +226,13 @@ void Player::DashPlayer()
 
 		if (60 <= m_dashTime)
 		{
-			m_dashAcc = 60;
-			m_addDT = -fabs(m_addDT);
+			m_dashTime = 60;
+			m_addDT = -3.0f;
 		}
 		else if (m_dashTime <= 0)
 		{
 			m_dashTime = 0;
-			m_addDT = fabs(m_addDT);
+			m_addDT = 8.0f;
 			m_status.isDash = false;
 		}
 
@@ -222,6 +240,24 @@ void Player::DashPlayer()
 		if (0 < fabs(m_addDT))
 		{
 			tmp_t = (m_dashTime / 60) * (2 - (m_dashTime) / 60);
+
+			XMFLOAT3 pos = m_status.pos;
+			pos.y += 3.0f * m_object->GetScale().z;
+			pos.z += -2.0f * m_object->GetScale().y;
+
+			// 正規化
+			XMFLOAT3 vel = m_status.vel;
+			float tmp_len = Length(vel);
+			vel.x = vel.x / tmp_len * -0.3f;
+			vel.y = 0;
+			vel.z = vel.z / tmp_len * -0.3f;
+			vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, vel);
+			for (int p = 0; p < 3; p++)
+			{
+				pos.x *= 1.0f + static_cast<float>(rand() % 11) / 10;
+				pos.z *= 1.0f + static_cast<float>(rand() % 11) / 10;
+				booster->Add(5, targetPos, vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.4f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 1.5f, 0.0f, true);
+			}
 		}
 		else
 		{
@@ -229,10 +265,24 @@ void Player::DashPlayer()
 		}
 
 		m_dashAcc = 4.0f * tmp_t;
-	}
 
-	m_status.vel.x *= 1 + m_dashAcc;
-	m_status.vel.z *= 1 + m_dashAcc;
+		m_status.vel.x *= 1 + m_dashAcc;
+		m_status.vel.z *= 1 + m_dashAcc;
+	}
+	else
+	{
+		XMFLOAT3 pos = m_status.pos;
+		pos.y += 3.0f * m_object->GetScale().z;
+		pos.z += -2.0f * m_object->GetScale().y;
+
+		// 正規化
+		XMFLOAT3 vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, m_status.vel);
+		float tmp_len = Length(vel);
+		vel.x = vel.x / tmp_len * -0.04f;
+		vel.y = -fabs(vel.y / tmp_len * -0.04f);
+		vel.z = vel.z / tmp_len * -0.04f;
+		booster->Add(10, targetPos, vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.4f, 0.00001f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.3f, 0.2f, true);
+	}
 }
 
 void Player::ShotBullet()
@@ -245,7 +295,7 @@ void Player::ShotBullet()
 		if (s_input->PushButton(BUTTON::RB) && 8 < m_shotInterval)
 		{
 			m_shotInterval = 0;
-
+			
 			XMFLOAT3 vel = {};
 			if (m_isLock == true)
 			{
@@ -353,7 +403,7 @@ void Player::CameraWork()
 	else
 	{
 		// カメラ正面化
-		if (true)
+		if (s_camera->MoveFront(3))
 		{
 			m_cameraInitialize = false;
 		}
@@ -366,4 +416,11 @@ void Player::OnLand()
 {
 	m_gravityTime = 0;
 	m_status.vel.y = 0;
+}
+
+const float Player::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
+{
+	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
+
+	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
 }
