@@ -14,9 +14,7 @@ class BaseCollider;
 class Object3d
 {
 public: // エイリアス
-	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -32,16 +30,22 @@ private: //静的変数;
 	//ライトクラス
 	static Light* s_light;
 
+public: // シェーダータイプ
+	enum ShaderType
+	{
+		Phong, Toon, Mono, Blend, Specular, Bloom
+	};
+
 public: //静的関数
 	/// <summary>
 	/// 静的初期化
 	/// </summary>
-	static bool StaticInitialize(ID3D12Device* device, int window_width, int window_height);
+	static bool StaticInitialize(ID3D12Device* device);
 
 	/// <summary>
 	/// オブジェクト生成
 	/// </summary>
-	static Object3d* Create(const std::string& modelName = "defaultTexture", bool smooting = false);
+	static Object3d* Create(const std::string& modelName = "defaultTexture", const bool smooting = false);
 
 	/// <summary>
 	/// カメラセット
@@ -126,40 +130,78 @@ public: //メンバ関数
 
 public: //アクセッサ
 	/// <summary>
-	/// 座標
+	/// 座標を取得
 	/// </summary>
+	/// <returns>座標</returns>
 	XMFLOAT3 GetPosition() { return m_position; }
-	void SetPosition(XMFLOAT3 position);
-
-	//void SetOffset(XMFLOAT2 offset);
 
 	/// <summary>
-	/// 回転
+	/// 座標をセット
 	/// </summary>
+	/// <param name="position">座標</param>
+	void SetPosition(const XMFLOAT3& position)
+	{
+		m_position = position;
+		m_dirty = true;
+	}
+
+	/// <summary>
+	/// 回転角を取得
+	/// </summary>
+	/// <returns>回転</returns>
 	XMFLOAT3 GetRotation() { return m_rotation; }
-	void SetRotation(XMFLOAT3 rotation);
 
 	/// <summary>
-	/// スケール
+	/// 回転角をセット
 	/// </summary>
+	/// <param name="rotation"></param>
+	void SetRotation(const XMFLOAT3& rotation)
+	{
+		m_rotation = rotation;
+		m_dirty = true;
+	}
+
+	/// <summary>
+	/// スケールを取得
+	/// </summary>
+	/// <returns>スケール</returns>
 	XMFLOAT3 GetScale() { return m_scale; }
-	void SetScale(XMFLOAT3 scale);
 
 	/// <summary>
-	/// 色
+	/// スケールをセット
 	/// </summary>
+	/// <param name="scale">スケール</param>
+	void SetScale(const XMFLOAT3& scale)
+	{
+		m_scale = scale;
+		m_dirty = true;
+	}
+
+	/// <summary>
+	/// 色を取得
+	/// </summary>
+	/// <returns>色</returns>
 	XMFLOAT4 GetColor() { return m_color; }
-	void SetColor(XMFLOAT4 color);
+
+	/// <summary>
+	/// 色をセット
+	/// </summary>
+	/// <param name="color">色</param>
+	void SetColor(const XMFLOAT4& color)
+	{
+		m_color = color;
+		m_dirty = true;
+	}
 
 	/// <summary>
 	/// モデルデータセット
 	/// </summary>
-	void SetModel(Model* model) { this->m_model = model; }
+	void SetModel(Model* model) { m_model = model; }
 
 	/// <summary>
 	/// ビルボードセット
 	/// </summary>
-	void SetBillboard(bool isBillboard) { this->m_isBillboard = isBillboard; }
+	void SetBillboard(const bool isBillboard) { m_isBillboard = isBillboard; }
 
 	/// <summary>
 	/// ワールド行列を取得
@@ -177,23 +219,35 @@ public: //アクセッサ
 	/// シェーダーセット
 	/// </summary>
 	/// <param name="shaderType">シェーダーの種類</param>
-	void SetShader(const int shaderType);
+	void SetShader(const int shaderType)
+	{
+		m_model->SetGraphicsPipeline(shaderType);
+	}
 
 	/// <summary>
 	/// サブテクスチャのセット
 	/// </summary>
 	/// <param name="filename">ファイル名</param>
-	void SetSubTexture(const std::string& filename);
+	void SetSubTexture(const std::string& filename)
+	{
+		m_model->SetSubTexture(filename);
+	}
 
 	/// <summary>
 	/// マスクテクスチャのセット
 	/// </summary>
 	/// <param name="filename">ファイル名</param>
-	void SetMaskTexture(const std::string& filename);
+	void SetMaskTexture(const std::string& filename)
+	{
+		m_model->SetMaskTexture(filename);
+	}
 
 	/// <summary>
 	/// 衝突時コールバック関数
 	/// </summary>
 	/// <param name="info">衝突情報</param>
-	virtual void OnCollision(const CollisionInfo& info) {};
+	virtual void OnCollision(const CollisionInfo& info)
+	{
+
+	};
 };

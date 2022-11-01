@@ -1,10 +1,11 @@
 #include "Model.h"
+
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
-#include <fstream> //ファイル入出力
-#include <sstream> //文字列に対する入出力
-#include <string> //文字列
-#include <vector> //頂点データをまとめるのに使う
+#include <fstream> // ファイル入出力
+#include <sstream> // 文字列に対する入出力
+#include <string> // 文字列
+#include <vector> // 頂点データをまとめるのに使う
 #include <map>
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -24,7 +25,7 @@ void Model::StaticInitialize(ID3D12Device* dev)
 	Model::s_dev = dev;
 }
 
-Model *Model::CreateModel(const std::string& modelName, bool smooting)
+Model *Model::CreateModel(const std::string& modelName, const bool smooting)
 {
 	//インスタンス生成
 	Model* model = new Model;
@@ -109,97 +110,7 @@ void Model::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->DrawIndexedInstanced((UINT)m_indices.size(), 1, 0, 0, 0);
 }
 
-void Model::SetGraphicsPipeline(const int shaderType)
-{
-	//nullチェック
-	assert(m_graphicsPipeline);
-
-	//指定のシェーダー生成
-	switch (shaderType)
-	{
-	case 0:
-		m_graphicsPipeline->CreatePhongShaderPipeline(s_dev);
-		break;
-
-	case 1:
-		m_graphicsPipeline->CreateToonPipeline(s_dev);
-		break;
-
-	case 2:
-		m_graphicsPipeline->CreateMonochromaticPipeline(s_dev);
-		break;
-
-	case 3:
-		m_graphicsPipeline->CreateTextureBlendPipeline(s_dev);
-		break;
-
-	case 4:
-		m_graphicsPipeline->CreateSpecularMapPipeline(s_dev);
-		break;
-
-	default:
-		assert(0);
-	}
-
-	textureName.resize(1);
-
-	//テクスチャの数が1より多いなら
-	if (m_graphicsPipeline->GetTexNum() == 2)
-	{
-		//マスクテクスチャ名取得
-		LoadTextureName("Resources/Default/", "red1x1.png");
-	}
-	else if (m_graphicsPipeline->GetTexNum() == 3)
-	{
-		//サブテクスチャ名取得
-		LoadTextureName("Resources/Default/", "black1x1.png");
-		//マスクテクスチャ名取得
-		LoadTextureName("Resources/Default/", "red1x1.png");
-	}
-
-	//テクスチャの読み込み
-	LoadTexture();
-}
-
-void Model::SetSubTexture(const std::string& filename)
-{
-	if (!(m_graphicsPipeline->GetTexNum() == 3) || !(textureName.size() == 3))
-	{
-		return;
-	}
-
-	//サブテクスチャ名取得
-	textureName[1] = filename;
-
-	//テクスチャの読み込み
-	LoadTexture();
-}
-
-void Model::SetMaskTexture(const std::string& filename)
-{
-	if (textureName.size() == 2 || textureName.size() == 3)
-	{
-		if (m_graphicsPipeline->GetTexNum() == 2)
-		{
-			//マスクテクスチャ名取得
-			textureName[1] = filename;
-		} 
-		else if (m_graphicsPipeline->GetTexNum() == 3)
-		{
-			//マスクテクスチャ名取得
-			textureName[2] = filename;
-		}
-	}
-	else
-	{
-		return;
-	}
-
-	//テクスチャの読み込み
-	LoadTexture();
-}
-
-void Model::InitializeModel(const std::string& modelName, bool smooting)
+void Model::InitializeModel(const std::string& modelName, const bool smooting)
 {
 	HRESULT result = S_FALSE;
 
@@ -429,7 +340,7 @@ void Model::LoadTexture()
 		ScratchImage scratchImg{};
 
 		//ファイルパスを結合
-		string filepath = textureName[i];
+		string filepath = m_textureName[i];
 
 		//ユニコード文字列に変換する
 		wchar_t wfilepath[128];
@@ -569,5 +480,99 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 
 void Model::LoadTextureName(const std::string& directoryPath, const std::string& filename)
 {
-	textureName.emplace_back(directoryPath + filename);
+	m_textureName.emplace_back(directoryPath + filename);
+}
+
+void Model::SetGraphicsPipeline(const int shaderType)
+{
+	//nullチェック
+	assert(m_graphicsPipeline);
+
+	//指定のシェーダー生成
+	switch (shaderType)
+	{
+	case 0:
+		m_graphicsPipeline->CreatePhongShaderPipeline(s_dev);
+		break;
+
+	case 1:
+		m_graphicsPipeline->CreateToonPipeline(s_dev);
+		break;
+
+	case 2:
+		m_graphicsPipeline->CreateMonochromaticPipeline(s_dev);
+		break;
+
+	case 3:
+		m_graphicsPipeline->CreateTextureBlendPipeline(s_dev);
+		break;
+
+	case 4:
+		m_graphicsPipeline->CreateSpecularMapPipeline(s_dev);
+		break;
+
+	case 5:
+		m_graphicsPipeline->CreateBloomPipeline(s_dev);
+		break;
+
+	default:
+		assert(0);
+	}
+
+	m_textureName.resize(1);
+
+	//テクスチャの数が1より多いなら
+	if (m_graphicsPipeline->GetTexNum() == 2)
+	{
+		//マスクテクスチャ名取得
+		LoadTextureName("Resources/Default/", "red1x1.png");
+	}
+	else if (m_graphicsPipeline->GetTexNum() == 3)
+	{
+		//サブテクスチャ名取得
+		LoadTextureName("Resources/Default/", "black1x1.png");
+		//マスクテクスチャ名取得
+		LoadTextureName("Resources/Default/", "red1x1.png");
+	}
+
+	//テクスチャの読み込み
+	LoadTexture();
+}
+
+void Model::SetSubTexture(const std::string& filename)
+{
+	if (!(m_graphicsPipeline->GetTexNum() == 3) || !(m_textureName.size() == 3))
+	{
+		return;
+	}
+
+	//サブテクスチャ名取得
+	m_textureName[1] = filename;
+
+	//テクスチャの読み込み
+	LoadTexture();
+}
+
+void Model::SetMaskTexture(const std::string& filename)
+{
+	if (m_textureName.size() == 2 || m_textureName.size() == 3)
+	{
+		if (m_graphicsPipeline->GetTexNum() == 2)
+		{
+			//マスクテクスチャ名取得
+			m_textureName[1] = filename;
+		}
+		else if (m_graphicsPipeline->GetTexNum() == 3)
+		{
+			//マスクテクスチャ名取得
+			m_textureName[2] = filename;
+		}
+	}
+	else
+	{
+		return;
+	}
+
+	//テクスチャの読み込み
+	LoadTexture();
 }

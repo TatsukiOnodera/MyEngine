@@ -26,7 +26,7 @@ void PostEffect::CreateGraphicsPipelineState()
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/PostEffectVS.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/PostEffect/PostEffectVS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -50,7 +50,7 @@ void PostEffect::CreateGraphicsPipelineState()
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/PostEffectPS.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/PostEffect/PostEffectPS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -153,13 +153,13 @@ void PostEffect::CreateGraphicsPipelineState()
 	assert(SUCCEEDED(result));
 
 	// ルートシグネチャの生成
-	result = dev->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
+	result = s_dev->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&s_rootsignature));
 	assert(SUCCEEDED(result));
 
-	gpipeline.pRootSignature = rootsignature.Get();
+	gpipeline.pRootSignature = s_rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
-	result = dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
+	result = s_dev->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&s_pipelinestate));
 	assert(SUCCEEDED(result));
 }
 
@@ -168,17 +168,17 @@ void PostEffect::Initialize()
 	HRESULT result;
 
 	//頂点バッファの生成
-	result = dev->CreateCommittedResource(
+	result = s_dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(VertexPosUv) * vertNum),
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(VertexPosUv) * c_vertNum),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&vertBuff));
+		IID_PPV_ARGS(&m_vertBuff));
 	assert(SUCCEEDED(result));
 
 	//頂点データ
-	VertexPosUv vertices[vertNum] = {
+	VertexPosUv vertices[c_vertNum] = {
 		{ { -0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f } },
 		{ { -0.5f, +0.5f, 0.0f }, { 0.0f, 0.0f } },
 		{ { +0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f } },
@@ -187,23 +187,23 @@ void PostEffect::Initialize()
 
 	// 頂点バッファへのデータ転送
 	VertexPosUv* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	result = m_vertBuff->Map(0, nullptr, (void**)&vertMap);
 	memcpy(vertMap, vertices, sizeof(vertices));
-	vertBuff->Unmap(0, nullptr);
+	m_vertBuff->Unmap(0, nullptr);
 
 	// 頂点バッファビューの作成
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	vbView.SizeInBytes = sizeof(VertexPosUv) * vertNum;
-	vbView.StrideInBytes = sizeof(VertexPosUv);
+	m_vbView.BufferLocation = m_vertBuff->GetGPUVirtualAddress();
+	m_vbView.SizeInBytes = sizeof(VertexPosUv) * c_vertNum;
+	m_vbView.StrideInBytes = sizeof(VertexPosUv);
 
 	//定数バッファの生成
-	result = dev->CreateCommittedResource(
+	result = s_dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&constBuff)
+		IID_PPV_ARGS(&m_constBuff)
 	);
 	assert(SUCCEEDED(result));
 
@@ -218,7 +218,7 @@ void PostEffect::Initialize()
 	//テクスチャバッファの生成
 	for (int i = 0; i < 2; i++)
 	{
-		result = dev->CreateCommittedResource(
+		result = s_dev->CreateCommittedResource(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0),
 			D3D12_HEAP_FLAG_NONE,
 			&texresDesc,
@@ -254,7 +254,7 @@ void PostEffect::Initialize()
 	srvDescHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	srvDescHeapDesc.NumDescriptors = 2;
 	//(SRV)デスクリプタヒープを生成
-	result = dev->CreateDescriptorHeap(&srvDescHeapDesc, IID_PPV_ARGS(&descHeapSRV));
+	result = s_dev->CreateDescriptorHeap(&srvDescHeapDesc, IID_PPV_ARGS(&descHeapSRV));
 	assert(SUCCEEDED(result));
 
 	//シェーダリソースビュー設定
@@ -267,11 +267,11 @@ void PostEffect::Initialize()
 	//デスクリプタヒープにシェーダリソースビュー作成
 	for (int i = 0; i < 2; i++)
 	{
-		dev->CreateShaderResourceView(texBuff[i].Get(), //ビューと関連付けるバッファ
+		s_dev->CreateShaderResourceView(texBuff[i].Get(), //ビューと関連付けるバッファ
 			&srvDesc, //テクスチャ設定情報
 			CD3DX12_CPU_DESCRIPTOR_HANDLE(
 				descHeapSRV->GetCPUDescriptorHandleForHeapStart(), i,
-				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+				s_dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			)
 		);
 	}
@@ -281,17 +281,17 @@ void PostEffect::Initialize()
 	rtvDescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	rtvDescHeapDesc.NumDescriptors = 2;
 	//(RTV)デスクリプタヒープを生成
-	result = dev->CreateDescriptorHeap(&rtvDescHeapDesc, IID_PPV_ARGS(&descHeapRTV));
+	result = s_dev->CreateDescriptorHeap(&rtvDescHeapDesc, IID_PPV_ARGS(&descHeapRTV));
 	assert(SUCCEEDED(result));
 
 	for (int i = 0; i < 2; i++)
 	{
 		//デスクリプタヒープにレンダーターゲットビュー作成
-		dev->CreateRenderTargetView(texBuff[i].Get(), //ビューと関連付けるバッファ
+		s_dev->CreateRenderTargetView(texBuff[i].Get(), //ビューと関連付けるバッファ
 			nullptr, //テクスチャ設定情報
 			CD3DX12_CPU_DESCRIPTOR_HANDLE(
 				descHeapRTV->GetCPUDescriptorHandleForHeapStart(), i,
-				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV))
+				s_dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV))
 		);
 	}
 
@@ -305,7 +305,7 @@ void PostEffect::Initialize()
 		D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
 	);
 	//深度バッファの生成
-	result = dev->CreateCommittedResource(
+	result = s_dev->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
 		&depthResDesc,
@@ -320,7 +320,7 @@ void PostEffect::Initialize()
 	DescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 	DescHeapDesc.NumDescriptors = 1;
 	//(DSV)デスクリプタヒープを生成
-	result = dev->CreateDescriptorHeap(&DescHeapDesc, IID_PPV_ARGS(&descHeapDSV));
+	result = s_dev->CreateDescriptorHeap(&DescHeapDesc, IID_PPV_ARGS(&descHeapDSV));
 	assert(SUCCEEDED(result));
 
 	//デプスステンシルビュー設定
@@ -328,7 +328,7 @@ void PostEffect::Initialize()
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	//デスクリプタヒープにデプスステンシルビュー作成
-	dev->CreateDepthStencilView(depthBuff.Get(), //ビューと関連付けるバッファ
+	s_dev->CreateDepthStencilView(depthBuff.Get(), //ビューと関連付けるバッファ
 		nullptr, //テクスチャ設定情報
 		descHeapDSV->GetCPUDescriptorHandleForHeapStart()
 	);
@@ -339,22 +339,22 @@ void PostEffect::Initialize()
 void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	// ワールド行列の更新
-	this->matWorld = XMMatrixIdentity();
-	this->matWorld *= XMMatrixRotationZ(XMConvertToRadians(rotation));
-	this->matWorld *= XMMatrixTranslation(position.x, position.y, 0.0f);
+	this->m_matWorld = XMMatrixIdentity();
+	this->m_matWorld *= XMMatrixRotationZ(XMConvertToRadians(m_rotation));
+	this->m_matWorld *= XMMatrixTranslation(m_position.x, m_position.y, 0.0f);
 
 	// 定数バッファにデータ転送
 	ConstBufferData* constMap = nullptr;
-	HRESULT result = this->constBuff->Map(0, nullptr, (void**)&constMap);
+	HRESULT result = this->m_constBuff->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result))
 	{
-		constMap->color = this->color;
+		constMap->color = this->m_color;
 		constMap->mat = XMMatrixIdentity();
-		this->constBuff->Unmap(0, nullptr);
+		this->m_constBuff->Unmap(0, nullptr);
 	}
 
 	//非表示フラグがtrueなら
-	if (isInvisible)
+	if (m_isInvisible)
 	{
 		//描画せず抜ける
 		return;
@@ -367,27 +367,27 @@ void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	//頂点バッファをセット
-	cmdList->IASetVertexBuffers(0, 1, &vbView);
+	cmdList->IASetVertexBuffers(0, 1, &m_vbView);
 
 	//頂点バッファをセット
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(0, m_constBuff->GetGPUVirtualAddress());
 
 	//シェーダリソースビューをセット
 	cmdList->SetGraphicsRootDescriptorTable(1,
 		CD3DX12_GPU_DESCRIPTOR_HANDLE(
 			descHeapSRV->GetGPUDescriptorHandleForHeapStart(), 0,
-			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			s_dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		)
 	);
 	cmdList->SetGraphicsRootDescriptorTable(2,
 		CD3DX12_GPU_DESCRIPTOR_HANDLE(
 			descHeapSRV->GetGPUDescriptorHandleForHeapStart(), 1,
-			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			s_dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		)
 	);
 
 	//ポリゴンの描画（４頂点で四角形）
-	cmdList->DrawInstanced(vertNum, 1, 0, 0);
+	cmdList->DrawInstanced(c_vertNum, 1, 0, 0);
 
 	PostDraw();
 }
@@ -410,7 +410,7 @@ void PostEffect::PreDrawScene(ID3D12GraphicsCommandList* cmdList)
 	{
 		rtvHs[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
 			descHeapRTV->GetCPUDescriptorHandleForHeapStart(), i,
-			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
+			s_dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
 	}
 	//DSV用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvH = descHeapDSV->GetCPUDescriptorHandleForHeapStart();

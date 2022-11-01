@@ -22,7 +22,7 @@ Object3d::~Object3d()
 
 }
 
-bool Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
+bool Object3d::StaticInitialize(ID3D12Device* device)
 {
 	if (device == nullptr)
 	{
@@ -48,7 +48,7 @@ void Object3d::PostDraw()
 	s_cmdList = nullptr;
 }
 
-Object3d* Object3d::Create(const std::string& modelName, bool smooting)
+Object3d* Object3d::Create(const std::string& modelName, const bool smooting)
 {
 	Object3d* object = new Object3d;
 
@@ -171,48 +171,9 @@ void Object3d::Draw()
 	m_model->Draw(s_cmdList);
 }
 
-void Object3d::SetPosition(XMFLOAT3 position)
-{
-	this->m_position = position;
-	m_dirty = true;
-}
-
-void Object3d::SetRotation(XMFLOAT3 rotation)
-{
-	this->m_rotation = rotation;
-	m_dirty = true;
-}
-
-void Object3d::SetScale(XMFLOAT3 scale)
-{
-	this->m_scale = scale;
-	m_dirty = true;
-}
-
-void Object3d::SetColor(XMFLOAT4 color)
-{
-	this->m_color = color;
-	m_dirty = true;
-}
-
 void Object3d::SetCollider(BaseCollider* collider)
 {
 	collider->SetObject(this);
 
 	this->m_collider.reset(collider);
-}
-
-void Object3d::SetShader(const int shaderType)
-{
-	m_model->SetGraphicsPipeline(shaderType);
-}
-
-void Object3d::SetSubTexture(const std::string& filename)
-{
-	m_model->SetSubTexture(filename);
-}
-
-void Object3d::SetMaskTexture(const std::string& filename)
-{
-	m_model->SetMaskTexture(filename);
 }

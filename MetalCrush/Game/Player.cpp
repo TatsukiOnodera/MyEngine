@@ -8,7 +8,6 @@ Input* Player::s_input = Input::GetInstance();
 Player::Player()
 {
 	m_object.reset(FbxObject3d::CreateFBXObject("PlayerBone"));
-	//booster.reset(ParticleManager::Create("Particle/effect1.png"));
 	booster.reset(ParticleManager::Create("Particle/FireParticle.png"));
 	Initialize();
 }
@@ -248,20 +247,16 @@ void Player::DashPlayer()
 			// ³‹K‰»
 			XMFLOAT3 vel = m_status.vel;
 			float tmp_len = Length(vel);
-			vel.x = vel.x / tmp_len * -0.3f;
+			vel.x = vel.x / tmp_len * -0.5f;
 			vel.y = 0;
-			vel.z = vel.z / tmp_len * -0.3f;
+			vel.z = vel.z / tmp_len * -0.5f;
 			vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, vel);
 			for (int p = 0; p < 3; p++)
 			{
 				pos.x *= 1.0f + static_cast<float>(rand() % 11) / 10;
 				pos.z *= 1.0f + static_cast<float>(rand() % 11) / 10;
-				booster->Add(5, targetPos, vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.4f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 1.5f, 0.0f, true);
+				booster->Add(5, targetPos, vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.4f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.5f, 1.5f, true);
 			}
-		}
-		else
-		{
-			tmp_t = (m_dashTime / 60) * (m_dashTime / 60);
 		}
 
 		m_dashAcc = 4.0f * tmp_t;
@@ -271,17 +266,7 @@ void Player::DashPlayer()
 	}
 	else
 	{
-		XMFLOAT3 pos = m_status.pos;
-		pos.y += 3.0f * m_object->GetScale().z;
-		pos.z += -2.0f * m_object->GetScale().y;
 
-		// ³‹K‰»
-		XMFLOAT3 vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, m_status.vel);
-		float tmp_len = Length(vel);
-		vel.x = vel.x / tmp_len * -0.04f;
-		vel.y = -fabs(vel.y / tmp_len * -0.04f);
-		vel.z = vel.z / tmp_len * -0.04f;
-		booster->Add(10, targetPos, vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.4f, 0.00001f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.3f, 0.2f, true);
 	}
 }
 
@@ -306,13 +291,13 @@ void Player::ShotBullet()
 
 				// ’·‚³‚ð³‹K‰»‚µ‚Ä10”{‚·‚é
 				float len = sqrtf(powf(vel.x, 2) + powf(vel.y, 2) + powf(vel.z, 2));
-				vel.x = vel.x / len * 6;
-				vel.y = vel.y / len * 6;
-				vel.z = vel.z / len * 6;
+				vel.x = vel.x / len * 5;
+				vel.y = vel.y / len * 5;
+				vel.z = vel.z / len * 5;
 			}
 			else
 			{
-				vel = { 0, 0, 6 };
+				vel = { 0, 0, 5 };
 
 				// ƒJƒƒ‰‚Ì•ûŒü‚É•ÏŠ·
 				vel = s_camera->ConvertWindowXYPos({ 0, 0, 0 }, vel);

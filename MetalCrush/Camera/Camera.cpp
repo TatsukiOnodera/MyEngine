@@ -331,20 +331,20 @@ bool Camera::ObjectComeInSight(const XMFLOAT3& pos)
 
 bool Camera::MoveFront(const float vel)
 {
-	if (m_frontAcc == 0 && m_angleX != 0 && m_angleY != 0)
-	{
-		float tmpX = m_angleX;
-		float tmpY = m_angleY;
+	float m_frontAcc = 1;
+	float tmpX = m_angleX;
+	float tmpY = m_angleY;
 
-		if (180 <= m_angleX)
-		{
-			tmpX = 360 - m_angleX;
-		}
-		if (180 <= m_angleY)
-		{
-			tmpY = 360 - m_angleY;
-		}
-		
+	if (180 <= m_angleX)
+	{
+		tmpX = 360 - m_angleX;
+	}
+	if (180 <= m_angleY)
+	{
+		tmpY = 360 - m_angleY;
+	}
+	if (tmpX != 0 && tmpY != 0 && tmpX < tmpY)
+	{
 		m_frontAcc = tmpX / tmpY;
 	}
 

@@ -56,6 +56,12 @@ public: //メンバ関数
 	void CreateSpecularMapPipeline(ID3D12Device* dev);
 
 	/// <summary>
+	/// ブルーム
+	/// </summary>
+	/// <param name="dev"></param>
+	void CreateBloomPipeline(ID3D12Device* dev);
+
+	/// <summary>
 	/// パイプラインステートを取得
 	/// </summary>
 	/// <returns>パイプラインステート</returns>

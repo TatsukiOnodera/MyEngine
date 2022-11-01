@@ -252,6 +252,12 @@
     <FxCompile Include="Resources\Shaders\Blend\BlendVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\BloomPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\BloomVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\FBX\FBXPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
     </FxCompile>
@@ -306,6 +312,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Blend\Blend.hlsli" />
+    <None Include="Resources\Shaders\Bloom\Bloom.hlsli" />
     <None Include="Resources\Shaders\FBX\FBX.hlsli" />
     <None Include="Resources\Shaders\Mono\Mono.hlsli" />
     <None Include="Resources\Shaders\Particle\Particle.hlsli" />

@@ -1,4 +1,6 @@
 #pragma once
+#include "PipelineManager.h"
+
 #include <Windows.h>
 #include <wrl.h>
 #include <d3d12.h>
@@ -6,50 +8,48 @@
 #include <d3dx12.h>
 #include <unordered_map>
 
-#include "PipelineManager.h"
-
 class Model
 {
-private: //エイリアス
-	//Microsoft::WRL::を省略
+private: // エイリアス
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private: //定数
-	static const int maxTexNum = 3;
+private: // 定数
+	static const int c_maxTexNum = 3;
 
-public: //サブクラス
-	//頂点データ構造体
+private: // サブクラス
+	// 頂点データ構造体
 	struct VertexPosNormalUv
 	{
 		XMFLOAT3 pos; // xyz座標
 		XMFLOAT3 normal; // 法線ベクトル
 		XMFLOAT2 uv;  // uv座標
 	};
-	//定数バッファ用データ構造体
+
+	// 定数バッファ用データ構造体
 	struct ConstBufferData
 	{
-		XMFLOAT3 ambient; //アンビエント係数
-		float pad1; //パディング
-		XMFLOAT3 diffuse; //ディフューズ係数
-		float pad2; //パディング
-		XMFLOAT3 specular; //スペキュラー係数
-		float alpha; //アルファ
+		XMFLOAT3 ambient; // アンビエント係数
+		float pad1; // パディング
+		XMFLOAT3 diffuse; // ディフューズ係数
+		float pad2; // パディング
+		XMFLOAT3 specular; // スペキュラー係数
+		float alpha; // アルファ
 	};
-	//マテリアル
+
+	// マテリアル
 	struct Material
 	{
-		std::string name; //マテリアル名
-		XMFLOAT3 ambient; //アンビエント影響度
-		XMFLOAT3 diffuse; //ディフューズ影響度
-		XMFLOAT3 specular; //スペキュラー影響度
+		std::string name; // マテリアル名
+		XMFLOAT3 ambient; // アンビエント影響度
+		XMFLOAT3 diffuse; // ディフューズ影響度
+		XMFLOAT3 specular; // スペキュラー影響度
 		float alpha; //アルファ
-		std::string textureFilename = "defaultTexture"; //テクスチャファイル名
-		//コンストラクタ
+		std::string textureFilename = "defaultTexture"; // テクスチャファイル名
+		// コンストラクタ
 		Material() {
 			ambient = { 0.5, 0.5, 0.5 };
 			diffuse = { 0.0, 0.0, 0.0 };
@@ -58,25 +58,29 @@ public: //サブクラス
 		}
 	};
 
-private: //静的メンバ変数
+private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* s_dev;
 	// デスクリプタサイズ
 	static UINT s_descriptorHandleIncrementSize;
 
-public: //静的メンバ関数
+public: // 静的メンバ関数
 	/// <summary>
 	/// 静的初期化
 	/// </summary>
+	/// <param name="dev">デバイス</param>
 	static void StaticInitialize(ID3D12Device* dev);
 
 	/// <summary>
 	/// モデル生成
 	/// </summary>
-	static Model* CreateModel(const std::string& modelName, bool smooting);
+	/// <param name="modelName">モデルのパス</param>
+	/// <param name="smooting">スムースシェーディングの有無</param>
+	/// <returns>モデル</returns>
+	static Model* CreateModel(const std::string& modelName, const bool smooting);
 
-private: //メンバ変数
-	//グラフィックスパイプライン
+private: // メンバ変数
+	// グラフィックスパイプライン
 	std::unique_ptr<PipelineManager> m_graphicsPipeline = nullptr;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> m_vertBuff;
@@ -90,32 +94,35 @@ private: //メンバ変数
 	std::vector<VertexPosNormalUv> m_vertices;
 	// 頂点インデックス配列
 	std::vector<unsigned short> m_indices;
-	//マテリアル
+	// マテリアル
 	Material m_material;
-	//テクスチャ名
-	std::vector<std::string> textureName;
+	// テクスチャ名
+	std::vector<std::string> m_textureName;
 	// テクスチャバッファ
-	ComPtr<ID3D12Resource> m_texbuff[maxTexNum];
-	//定数バッファ
+	ComPtr<ID3D12Resource> m_texbuff[c_maxTexNum];
+	// 定数バッファ
 	ComPtr<ID3D12Resource> m_constBuff;
 	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_CPU_DESCRIPTOR_HANDLE m_cpuDescHandleSRV[maxTexNum];
+	CD3DX12_CPU_DESCRIPTOR_HANDLE m_cpuDescHandleSRV[c_maxTexNum];
 	// シェーダリソースビューのハンドル(GPU)
-	CD3DX12_GPU_DESCRIPTOR_HANDLE m_gpuDescHandleSRV[maxTexNum];
+	CD3DX12_GPU_DESCRIPTOR_HANDLE m_gpuDescHandleSRV[c_maxTexNum];
 	// デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> m_descHeap;
-	//頂点法線スムージング用データ
+	// 頂点法線スムージング用データ
 	std::unordered_map<unsigned short, std::vector<unsigned short>> m_smoothData;
 
-public: //メンバ関数
+public: // メンバ関数
 	/// <summary>
 	/// マテリアルの取得
 	/// </summary>
+	/// <returns>マテリアル</returns>
 	Material GetMaterial() { return m_material; }
 
 	/// <summary>
 	/// テクスチャ名読み込み
 	/// </summary>
+	/// <param name="directoryPath">ダイレクトパス</param>
+	/// <param name="filename">ファイル名</param>
 	void LoadTextureName(const std::string& directoryPath, const std::string& filename);
 
 	/// <summary>
@@ -126,11 +133,15 @@ public: //メンバ関数
 	/// <summary>
 	/// モデル作成
 	/// </summary>
-	void InitializeModel(const std::string& modelName, bool smooting);
+	/// <param name="modelName">モデルのパス</param>
+	/// <param name="smooting">スムースシェーディングの有無</param>
+	void InitializeModel(const std::string& modelName, const bool smooting);
 
 	/// <summary>
 	/// エッジ平滑化データの追加
 	/// </summary>
+	/// <param name="indexPosition">頂点位置</param>
+	/// <param name="indexVertex">頂点座標</param>
 	void AddSmoothData(unsigned short indexPosition, unsigned short indexVertex);
 
 	/// <summary>
@@ -141,6 +152,8 @@ public: //メンバ関数
 	/// <summary>
 	/// マテリアルの読み込み
 	/// </summary>
+	/// <param name="directoryPath">ダイレクトパス</param>
+	/// <param name="filename">ファイル名</param>
 	void LoadMaterial(const std::string& directoryPath, const std::string& filename);
 
 	/// <summary>
@@ -156,9 +169,10 @@ public: //メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
+	/// <param name="cmdList">コマンドリスト</param>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
-public: //アクセッサ
+public: // アクセッサ
 	/// <summary>
 	/// パイプラインステートを取得
 	/// </summary>

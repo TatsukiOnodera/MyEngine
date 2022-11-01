@@ -58,6 +58,12 @@
     <FxCompile Include="Resources\Shaders\SpecularMap\SpecularMapVS.hlsl">
       <Filter>シェーダーファイル\OBJ\Specular</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\BloomPS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\BloomVS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Bloom</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -297,6 +303,9 @@
     </None>
     <None Include="Resources\Shaders\SpecularMap\SpecularMap.hlsli">
       <Filter>シェーダーファイル\OBJ\Specular</Filter>
+    </None>
+    <None Include="Resources\Shaders\Bloom\Bloom.hlsli">
+      <Filter>シェーダーファイル\OBJ\Bloom</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

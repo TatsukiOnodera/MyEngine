@@ -55,8 +55,6 @@ private: // メンバ変数
 	bool m_dirty = false;
 	//	 更新したか
 	bool m_isDirty = false;
-	// カメラの速度を合わせる速度比
-	float m_frontAcc = 0;
 
 public: // メンバ関数
 	/// <summary>

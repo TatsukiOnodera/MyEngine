@@ -7,175 +7,146 @@
 class Sprite
 {
 public: // エイリアス
-	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-protected: //定数
-	//テクスチャの最大枚数
-	static const int spriteSRVCount = 512;
-	//テクスチャの最大枚数
-	static const int vertNum = 4;
+protected: // 定数
+	// テクスチャの最大枚数
+	static const int c_spriteSRVCount = 512;
+	// テクスチャの最大枚数
+	static const int c_vertNum = 4;
 
-protected: //静的変数
-	//DirectXCommon->dev
-	static ID3D12Device* dev;
-	//DirectXCommon->cmdList
-	static ID3D12GraphicsCommandList* cmdList; 
-	// デスクリプタサイズ
-	static UINT descriptorHandleIncrementSize;
-	//射影行列
-	static XMMATRIX matProjection;
-	//テクスチャ用デスクリプタヒープの生成
-	static ComPtr<ID3D12DescriptorHeap> descHeap; 
-	//テクスチャリソース（テクスチャバッファ）の配列
-	static ComPtr<ID3D12Resource> texBuff[spriteSRVCount];
-	//パイプラインステートオブジェクト
-	static ComPtr<ID3D12PipelineState> pipelinestate;
-	//ルートシグネチャ
-	static ComPtr<ID3D12RootSignature> rootsignature; 
-
-public: //静的関数
-	//静的初期化
-	static bool StaticInitialize(ID3D12Device* device, int window_width, int window_height);
-
-	//パイプライン生成
-	static void CreateGraphicsPipeline();
-
-	//スプライトの共通データ生成
-	static void CreateSpriteCommon(int window_width, int window_height);
-
-	//テクスチャのロード
-	static void LoadTexture(UINT texNumber, const wchar_t* filename);
-
-	//描画前処理
-	static void PreDraw(ID3D12GraphicsCommandList* cmdList);
-
-	//描画後処理
-	static void PostDraw();
-
-	//スプライト作成
-	static Sprite* Create(UINT texNumber, XMFLOAT2 texLeftTop = { 0, 0 }, XMFLOAT2 anchorpoint = { 0.0f, 0.0f }, bool isFilpX = false, bool isFilpY = false, bool isInvisible = false);
-
-protected: //サブクラス
-	//定数バッファ用データ構造体
+protected: // サブクラス
+	// 定数バッファ用データ構造体
 	struct ConstBufferData
 	{
-		XMFLOAT4 color; //色
+		XMFLOAT4 color; // 色
 
-		XMMATRIX mat; //行列
+		XMMATRIX mat; // 行列
 	};
 
-	//スプライトの頂点データ型
+	// スプライトの頂点データ型
 	struct VertexPosUv
 	{
-		XMFLOAT3 pos; //xyz座標
+		XMFLOAT3 pos; // xyz座標
 
-		XMFLOAT2 uv; //uv座標
+		XMFLOAT2 uv; // uv座標
 	};
 
-protected: //メンバ変数
-	//頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
-	//頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView;
-	//定数バッファ
-	ComPtr<ID3D12Resource> constBuff;
-	//テクスチャ番号
-	UINT texNumber = 0;
-	//座標
-	XMFLOAT2 position = { 0, 0 };
-	//色
-	XMFLOAT4 color = { 1, 1, 1, 1 };
-	//大きさ
-	XMFLOAT2 size = { 10, 10 };
-	//テクスチャの左上座標
-	XMFLOAT2 texLeftTop = { 0, 0 };
-	//テクスチャの切り出しサイズ
-	XMFLOAT2 texSize = { 100, 100 };
-	//アンカーポイント
-	XMFLOAT2 anchorpoint = { 0.0f, 0.0f };
-	//ワールド行列
-	XMMATRIX matWorld;
-	//Z軸回りの回転角
-	float rotation = 0.0f;
-	//左右反転
-	bool isFilpX = false;
-	//上下反転
-	bool isFilpY = false;
-	//非表示
-	bool isInvisible = false;
+protected: // 静的変数
+	// デバイス
+	static ID3D12Device* s_dev;
+	// コマンドリスト
+	static ID3D12GraphicsCommandList* s_cmdList; 
+	// デスクリプタサイズ
+	static UINT s_descriptorHandleIncrementSize;
+	// 射影行列
+	static XMMATRIX s_matProjection;
+	// テクスチャ用デスクリプタヒープの生成
+	static ComPtr<ID3D12DescriptorHeap> s_descHeap; 
+	// テクスチャリソース（テクスチャバッファ）の配列
+	static ComPtr<ID3D12Resource> s_texBuff[c_spriteSRVCount];
+	// パイプラインステートオブジェクト
+	static ComPtr<ID3D12PipelineState> s_pipelinestate;
+	// ルートシグネチャ
+	static ComPtr<ID3D12RootSignature> s_rootsignature; 
 
-public: //アクセッサ
+public: // 静的関数
 	/// <summary>
-	/// 座標を取得
+	/// 静的初期化
 	/// </summary>
-	/// <returns>座標</returns>
-	XMFLOAT2 GetPostion() { return position; }
+	/// <param name="device">デバイス</param>
+	/// <returns>完了か否か</returns>
+	static bool StaticInitialize(ID3D12Device* device);
 
 	/// <summary>
-	/// 座標をセット	
+	/// パイプライン生成
 	/// </summary>
-	/// <param name="position">座標</param>
-	void SetPosition(XMFLOAT2 position);
+	static void CreateGraphicsPipeline();
 
 	/// <summary>
-	/// 色を取得
+	/// スプライトの共通データ生成
 	/// </summary>
-	/// <returns>色</returns>
-	XMFLOAT4 GetColor() { return color; }
+	static void CreateSpriteCommon();
 
 	/// <summary>
-	/// 色をセット
+	/// テクスチャの読み込み
 	/// </summary>
-	/// <param name="color">色</param>
-	void SetColor(XMFLOAT4 color);
+	/// <param name="texNumber">テクスチャの割り振り番号</param>
+	/// <param name="filename">ファイルのパス</param>
+	static void LoadTexture(const UINT texNumber, const wchar_t* filename);
 
 	/// <summary>
-	/// サイズをセット
+	/// 描画前処理
 	/// </summary>
-	/// <param name="size">画像サイズ</param>
-	void SetSize(XMFLOAT2 size);
+	/// <param name="cmdList">コマンドリスト</param>
+	static void PreDraw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
-	/// 画像の左上の座標をセット
+	/// 描画後処理
 	/// </summary>
-	/// <param name="LeftTop">左上の座標</param>
-	void SetLeftTop(XMFLOAT2 LeftTop);
+	static void PostDraw();
 
 	/// <summary>
-	/// テクスチャのサイズをセット
+	/// 作成
 	/// </summary>
-	/// <param name="texSize">テクスチャのサイズ</param>
-	void SetTexSize(XMFLOAT2 texSize);
+	/// <param name="texNumber">テクスチャの番号</param>
+	/// <param name="texLeftTop">左上の座標</param>
+	/// <param name="anchorpoint">アンカーポイントの座標</param>
+	/// <param name="isFilpX">横を軸に反転</param>
+	/// <param name="isFilpY">縦を軸に反転</param>
+	/// <param name="isInvisible">表示するか</param>
+	/// <returns>スプライト</returns>
+	static Sprite* Create(const UINT texNumber, const XMFLOAT2& texLeftTop = { 0, 0 }, const XMFLOAT2& anchorpoint = { 0.0f, 0.0f }, const bool isFilpX = false, const bool isFilpY = false, const bool isInvisible = false);
 
+protected: // メンバ変数
+	// 頂点バッファ
+	ComPtr<ID3D12Resource> m_vertBuff;
+	// 頂点バッファビュー
+	D3D12_VERTEX_BUFFER_VIEW m_vbView;
+	// 定数バッファ
+	ComPtr<ID3D12Resource> m_constBuff;
+	// テクスチャ番号
+	UINT m_texNumber = 0;
+	// 座標
+	XMFLOAT2 m_position = { 0, 0 };
+	// 色
+	XMFLOAT4 m_color = { 1, 1, 1, 1 };
+	// 大きさ
+	XMFLOAT2 m_size = { 10, 10 };
+	// テクスチャの左上座標
+	XMFLOAT2 m_texLeftTop = { 0, 0 };
+	// テクスチャの切り出しサイズ
+	XMFLOAT2 m_texSize = { 100, 100 };
+	// アンカーポイント
+	XMFLOAT2 m_anchorpoint = { 0.0f, 0.0f };
+	// ワールド行列
+	XMMATRIX m_matWorld;
+	// Z軸回りの回転角
+	float m_rotation = 0.0f;
+	// 左右反転
+	bool m_isFilpX = false;
+	// 上下反転
+	bool m_isFilpY = false;
+	// 非表示
+	bool m_isInvisible = false;
+
+public: // メンバ関数
 	/// <summary>
-	/// 回転角をセット
+	/// コンストラクタ
 	/// </summary>
-	/// <param name="rotation">回転角</param>
-	void SetRotation(float rotation);
-
-	/// <summary>
-	/// 反転情報をセット
-	/// </summary>
-	/// <param name="isFilpX">X軸を反転</param>
-	/// <param name="isFilpY">Y軸を反転</param>
-	void SetFilp(bool isFilpX, bool isFilpY);
-
-	/// <summary>
-	/// 不可視情報をセット
-	/// </summary>
-	/// <param name="isInvisible">不可視情報</param>
-	void SetInvisible(bool isInvisible);
-
-public: //メンバ関数
-	//コンストラクタ
-	Sprite(XMFLOAT2 size, UINT texNumber, XMFLOAT2 texLeftTop, XMFLOAT2 anchorpoint, bool isFilpX, bool isFilpY, bool isInvisible);
-
+	/// <param name="size">サイズ</param>
+	/// <param name="texNumber">テクスチャの番号</param>
+	/// <param name="texLeftTop">左上の座標</param>
+	/// <param name="anchorpoint">アンカーポイントの座標</param>
+	/// <param name="isFilpX">横を軸に反転</param>
+	/// <param name="isFilpY">縦を軸に反転</param>
+	/// <param name="isInvisible">表示するか</param>
+	Sprite(const XMFLOAT2& size, const UINT texNumber, const XMFLOAT2& texLeftTop, const XMFLOAT2& anchorpoint, const bool isFilpX, const bool isFilpY, const bool isInvisible);
+	
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -190,7 +161,116 @@ public: //メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
-
-	//頂点データ更新
+	
+	/// <summary>
+	/// 頂点データ更新
+	/// </summary>
 	void SpriteTransferVertexBuffer();
+
+public: // アクセッサ
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
+	XMFLOAT2 GetPostion() { return m_position; }
+
+	/// <summary>
+	/// 座標をセット	
+	/// </summary>
+	/// <param name="position">座標</param>
+	void SetPosition(XMFLOAT2 position)
+	{
+		m_position = position;
+
+		Update();
+	}
+
+	/// <summary>
+	/// 色を取得
+	/// </summary>
+	/// <returns>色</returns>
+	XMFLOAT4 GetColor() { return m_color; }
+
+	/// <summary>
+	/// 色をセット
+	/// </summary>
+	/// <param name="color">色</param>
+	void SetColor(XMFLOAT4 color)
+	{
+		m_color = color;
+
+		Update();
+	}
+
+	/// <summary>
+	/// サイズを取得
+	/// </summary>
+	/// <returns>サイズ</returns>
+	XMFLOAT2 GetSize() { return m_size; }
+
+	/// <summary>
+	/// サイズをセット
+	/// </summary>
+	/// <param name="size">画像サイズ</param>
+	void SetSize(XMFLOAT2 size)
+	{
+		m_size = size;
+
+		SpriteTransferVertexBuffer();
+	}
+
+	/// <summary>
+	/// テクスチャのサイズをセット
+	/// </summary>
+	/// <param name="texSize">テクスチャのサイズ</param>
+	void SetTexSize(XMFLOAT2 texSize)
+	{
+		m_texSize = texSize;
+
+		SpriteTransferVertexBuffer();
+	}
+
+	/// <summary>
+	/// 画像の左上の座標をセット
+	/// </summary>
+	/// <param name="LeftTop">左上の座標</param>
+	void SetLeftTop(XMFLOAT2 LeftTop)
+	{
+		m_texLeftTop = LeftTop;
+
+		SpriteTransferVertexBuffer();
+	}
+
+	/// <summary>
+	/// 回転角をセット
+	/// </summary>
+	/// <param name="rotation">回転角</param>
+	void SetRotation(float rotation)
+	{
+		m_rotation = rotation;
+
+		Update();
+	}
+
+	/// <summary>
+	/// 反転情報をセット
+	/// </summary>
+	/// <param name="isFilpX">X軸を反転</param>
+	/// <param name="isFilpY">Y軸を反転</param>
+	void SetFilp(bool isFilpX, bool isFilpY)
+	{
+		m_isFilpX = isFilpX;
+		m_isFilpY = isFilpY;
+
+		SpriteTransferVertexBuffer();
+	}
+
+	/// <summary>
+	/// 不可視情報をセット
+	/// </summary>
+	/// <param name="isInvisible">不可視情報</param>
+	void SetInvisible(bool isInvisible)
+	{
+		m_isInvisible = isInvisible;
+	}
 };

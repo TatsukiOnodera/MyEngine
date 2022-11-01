@@ -45,25 +45,25 @@ void FrameWork::Initialize()
 	}
 
 	//スプライト静的初期化
-	if (!Sprite::StaticInitialize(dx_cmd->GetDev(), WinApp::window_width, WinApp::window_height))
+	if (!Sprite::StaticInitialize(dx_cmd->GetDev()))
 	{
 		assert(0);
 	}
 
 	//オブジェクト静的初期化
-	if (!Object3d::StaticInitialize(dx_cmd->GetDev(), WinApp::window_width, WinApp::window_height))
+	if (!Object3d::StaticInitialize(dx_cmd->GetDev()))
 	{
 		assert(0);
 	}
 
 	//パーティクル静的初期化
-	if (!ParticleManager::StaticInitialize(dx_cmd->GetDev(), WinApp::window_width, WinApp::window_height))
+	if (!ParticleManager::StaticInitialize(dx_cmd->GetDev()))
 	{
 		assert(0);
 	}
 
 	//ポストエフェクト静的初期化
-	if (!PostEffect::StaticInitialize(dx_cmd->GetDev(), WinApp::window_width, WinApp::window_height))
+	if (!PostEffect::StaticInitialize(dx_cmd->GetDev()))
 	{
 		assert(0);
 	}
