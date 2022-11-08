@@ -115,11 +115,7 @@ void EndScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 void EndScene::DrawParticles(ID3D12GraphicsCommandList* cmdList)
 {
 	//パーティクル描画
-	ParticleManager::PreDraw(cmdList);
-
 	//particle->Draw();
-
-	ParticleManager::PostDraw();
 }
 
 void EndScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)

@@ -99,7 +99,7 @@ void Input::Update()
 	DWORD dwResult = XInputGetState(0, &gamePadState);
 }
 
-bool Input::PushKey(BYTE key)
+bool Input::PushKey(const BYTE key)
 {
 	assert(0 <= key && key < 256);
 
@@ -110,7 +110,7 @@ bool Input::PushKey(BYTE key)
 	return false;
 }
 
-bool Input::TriggerKey(BYTE key)
+bool Input::TriggerKey(const BYTE key)
 {
 	assert(0 <= key && key < 256);
 

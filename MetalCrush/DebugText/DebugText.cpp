@@ -1,6 +1,6 @@
 #include "DebugText.h"
 
-void DebugText::Initialize(UINT texnumber)
+void DebugText::Initialize(const UINT texnumber)
 {
 	for (int i = 0; i < _countof(sprites); i++)
 	{
@@ -8,11 +8,11 @@ void DebugText::Initialize(UINT texnumber)
 	}
 }
 
-void DebugText::Print(const std::string& text, float x, float y, float scale)
+void DebugText::Print(const std::string& text, const float x, const float y, const float scale)
 {
 	for (int i = 0; i < text.size(); i++)
 	{
-		if (spriteIndex >= maxCharCount)
+		if (spriteIndex >= c_maxCharCount)
 		{
 			break;
 		}
@@ -25,13 +25,13 @@ void DebugText::Print(const std::string& text, float x, float y, float scale)
 			fontIndex = 0;
 		}
 
-		int fontIndexY = fontIndex / fontLineCount;
-		int fontIndexX = fontIndex % fontLineCount;
+		int fontIndexY = fontIndex / c_fontLineCount;
+		int fontIndexX = fontIndex % c_fontLineCount;
 
-		sprites[spriteIndex]->SetPosition({ x + fontWidth * scale * i, y});
-		sprites[spriteIndex]->SetLeftTop({ (float)fontIndexX * fontWidth, (float)fontIndexY * fontHeight });
-		sprites[spriteIndex]->SetTexSize({ fontWidth, fontHeight });
-		sprites[spriteIndex]->SetSize({ fontWidth * scale, fontHeight * scale });
+		sprites[spriteIndex]->SetPosition({ x + c_fontWidth * scale * i, y});
+		sprites[spriteIndex]->SetLeftTop({ (float)fontIndexX * c_fontWidth, (float)fontIndexY * c_fontHeight });
+		sprites[spriteIndex]->SetTexSize({ c_fontWidth, c_fontHeight });
+		sprites[spriteIndex]->SetSize({ c_fontWidth * scale, c_fontHeight * scale });
 
 		sprites[spriteIndex]->SpriteTransferVertexBuffer();
 

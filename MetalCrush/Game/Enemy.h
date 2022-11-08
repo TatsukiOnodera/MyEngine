@@ -1,10 +1,10 @@
 #pragma once
-#include <DirectXMath.h>
-#include <memory>
-
 #include "Object3d.h"
 #include "Player.h"
 #include "Bullet.h"
+
+#include <DirectXMath.h>
+#include <memory>
 
 class Enemy
 {

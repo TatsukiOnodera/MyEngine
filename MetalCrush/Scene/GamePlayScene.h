@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Bullet.h"
+#include "AutoLockOn.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -62,6 +63,9 @@ private: // インスタンス
 	// ライト
 	std::unique_ptr<Light> light = nullptr;
 
+	// パーティクル
+	std::unique_ptr<ParticleManager> explosion = nullptr;
+
 	// スプライト
 	std::unique_ptr<Sprite> backScreen = nullptr;
 	std::unique_ptr<Sprite> reticle = nullptr;
@@ -69,14 +73,16 @@ private: // インスタンス
 
 	// OBJオブジェクト
 	std::unique_ptr<Object3d> ground = nullptr;
-	std::vector<std::unique_ptr<Enemy>> enemy;
+	std::list<std::unique_ptr<Enemy>> enemy;
 
 	// FBXオブジェクト
 	std::unique_ptr<Player> player = nullptr;
 
+	// その他
+	std::unique_ptr<AutoLockOn> lockList = nullptr;
+
 private: // メンバ変数
-	// 標的の番号
-	int targetNum = 0;
+	
 
 public: // メンバ関数
 	/// <summary>
@@ -135,7 +141,7 @@ public: // メンバ関数
 	/// <param name="pos1">終点</param>
 	/// <param name="pos2">始点</param>
 	/// <returns>二点間の距離</returns>
-	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2 = { 0, 0, 0 });
+	const float Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2 = { 0, 0, 0 });
 
 	/// <summary>
 	/// 衝突判定
@@ -145,44 +151,35 @@ public: // メンバ関数
 	/// <summary>
 	/// プレイヤーとエネミーの衝突判定	
 	/// </summary>
-	/// <param name="playerPos">プレイヤーの座標</param>
-	/// <param name="enemyPos">エネミーの座標</param>
-	void CheckPlayer2Enemy(const XMFLOAT3& playerPos, const XMFLOAT3* enemyPos);
+	void CheckPlayer2Enemy();
 
 	/// <summary>
 	/// プレイヤーの弾とエネミーの衝突判定
 	/// </summary>
-	/// <param name="playerBullets">プレイヤーの弾</param>
-	/// <param name="enemyPos">エネミーの座標</param>
-	void CheckPlayerBullets2Enemy(const std::vector<std::unique_ptr<Bullet>>& playerBullets, const XMFLOAT3* enemyPos);
+	void CheckPlayerBullets2Enemy();
 
 	/// <summary>
 	/// プレイヤーとエネミーの弾の衝突判定
 	/// </summary>
-	/// <param name="playerPos">プレイヤーの座標</param>
-	void CheckPlayer2EnemyBullets(const XMFLOAT3& playerPos);
+	void CheckPlayer2EnemyBullets();
 
 	/// <summary>
 	/// プレイヤーと壁の衝突判定
 	/// </summary>
-	/// <param name="playerPos">プレイヤーの座標</param>
-	void CheckPlayer2Wall(XMFLOAT3& playerPos);
+	void CheckPlayer2Wall();
 	
 	/// <summary>
 	/// エネミーと壁の衝突判定
 	/// </summary>
-	/// <param name="playerPos">エネミーの座標</param>
-	void CheckEnemy2Wall(XMFLOAT3* enemyPos);
+	void CheckEnemy2Wall();
 
 	/// <summary>
 	/// プレイヤーの弾と壁の衝突判定
 	/// </summary>
-	/// <param name="playerBullets">プレイヤーの弾</param>
-	void CheckPlayerBullets2Wall(const std::vector<std::unique_ptr<Bullet>>& playerBullets);
+	void CheckPlayerBullets2Wall();
 	
 	/// <summary>
 	/// エネミーの弾と壁の衝突判定
 	/// </summary>
-	/// <param name="enemyBullets">エネミーの弾</param>
 	void CheckEnemyBullets2Wall();
 };

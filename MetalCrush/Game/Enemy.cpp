@@ -2,7 +2,10 @@
 
 Enemy::Enemy()
 {
+	// モデルの読み込み
 	m_object.reset(Object3d::Create("Enemy", true));
+
+	// 初期化
 	Initialize();
 }
 
@@ -20,9 +23,10 @@ void Enemy::Initialize()
 	}
 
 	// 座標
-	m_pos = { 0, 0, 100 };
+	m_pos = { static_cast<float>(rand() % 21 - 10), -900, 100 };
 	// 速度
-	m_vel = { static_cast<float>(rand() % 21 - 10) / 10, -0.98f, static_cast<float>(rand() % 21 - 10) / 10 };
+	//m_vel = { static_cast<float>(rand() % 21 - 10) / 10, -9.8f, static_cast<float>(rand() % 21 - 10) / 10 };
+	m_vel = { 0, -0.98f, 0 };
 	// 生存フラグ
 	m_alive = true;
 	// 発射間隔
@@ -104,9 +108,9 @@ void Enemy::ShotBullet(const XMFLOAT3& targetPos)
 
 		// 長さを1にして10倍する
 		float len = sqrtf(powf(vel.x, 2) + powf(vel.y, 2) + powf(vel.z, 2));
-		vel.x = vel.x / len * 5;
-		vel.y = vel.y / len * 5;
-		vel.z = vel.z / len * 5;
+		vel.x = vel.x / len * 2;
+		vel.y = vel.y / len * 2;
+		vel.z = vel.z / len * 2;
 
 		if (CheckNoUsingBullet() == true)
 		{
@@ -114,14 +118,14 @@ void Enemy::ShotBullet(const XMFLOAT3& targetPos)
 			{
 				if (m->GetAlive() == false)
 				{
-					m->Initialize(m_pos, vel, true);
+					m->Initialize(m_pos, vel, XMFLOAT3(0, 0, 0), true);
 					break;
 				}
 			}
 		}
 		else
 		{
-			enemyBullets.emplace_back(new Bullet(m_pos, vel, true));
+			enemyBullets.emplace_back(new Bullet(m_pos, vel));
 		}
 	}
 }

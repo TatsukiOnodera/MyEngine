@@ -42,7 +42,7 @@ private: // メンバ変数
 	// カメラの最近Z値
 	float m_nearZ = 0.1f;
 	// カメラの最遠Z値
-	float m_farZ = 1000.0f;
+	float m_farZ = 2000.0f;
 	// ビュー行列
 	XMMATRIX m_matView;
 	// 射影行列
@@ -101,18 +101,16 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="pos">初期位置</param>
 	/// <param name="vec">移動量</param>
-	/// <param name="addAngleY">Y軸の回転した角度</param>
 	/// <returns>移動した後の座標</returns>
-	XMFLOAT3 ConvertWindowYPos(const XMFLOAT3& pos, const XMFLOAT3& vec, const float addAngleY = 0.0f);
+	XMFLOAT3 ConvertWindowYPos(const XMFLOAT3& pos, const XMFLOAT3& vec);
 
 	/// <summary>
 	/// カメラのX軸とY軸を元に座標を移動
 	/// </summary>
 	/// <param name="pos">初期位置</param>
 	/// <param name="vec">移動量</param>
-	/// <param name="addAngle">回転した角度</param>
 	/// <returns>移動した後の座標</returns>
-	XMFLOAT3 ConvertWindowXYPos(const XMFLOAT3& pos, const XMFLOAT3& vec, const XMFLOAT2& addAngle = { 0, 0 });
+	XMFLOAT3 ConvertWindowXYPos(const XMFLOAT3& pos, const XMFLOAT3& vec);
 
 	/// <summary>
 	/// 3D座標を2D座標に変換
@@ -128,12 +126,6 @@ public: // メンバ関数
 	/// <returns>成否</returns>
 	bool ObjectComeInSight(const XMFLOAT3& pos);
 
-	/// カメラを正面に向かせる
-	/// </summary>
-	/// <param name="vel">向かせる速度</param>
-	/// <returns>向けたか否か</returns>
-	bool MoveFront(const float vel = 1.0f);
-
 public: //アクセッサ
 	/// <summary>
 	/// カメラ座標取得
@@ -147,7 +139,7 @@ public: //アクセッサ
 	/// <param name="eye">カメラ座標</param>
 	void SetEye(const XMFLOAT3& eye)
 	{
-		this->m_eye = eye;
+		m_eye = eye;
 
 		m_dirty = true;
 	}
@@ -164,7 +156,7 @@ public: //アクセッサ
 	/// <param name="target">焦点座標</param>
 	void SetTarget(const XMFLOAT3& target)
 	{
-		this->m_target = target;
+		m_target = target;
 
 		m_dirty = true;
 	}
@@ -181,7 +173,7 @@ public: //アクセッサ
 	/// <param name="up">上の向き</param>
 	void SetUp(const XMFLOAT3& up)
 	{
-		this->m_up = up;
+		m_up = up;
 
 		m_dirty = true;
 	}
@@ -233,13 +225,19 @@ public: //アクセッサ
 	/// <param name="farZ">最遠値</param>
 	void SetNearFarZ(const float nearZ, const float farZ)
 	{
-		this->m_nearZ = nearZ;
-		this->m_farZ = farZ;
+		m_nearZ = nearZ;
+		m_farZ = farZ;
 
 		UpdateMatProjection();
 
 		m_dirty = true;
 	}
+
+	/// <summary>
+	/// カメラの回転角度を取得
+	/// </summary>
+	/// <returns>回転角度</returns>
+	XMFLOAT3 GetCameraAngles() { return XMFLOAT3(m_angleX, m_angleY, m_angleZ); }
 
 	/// <summary>
 	/// ビュー行列の取得

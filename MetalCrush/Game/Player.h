@@ -23,6 +23,22 @@ private: // 静的メンバ変数
 	// 操作系
 	static Input* s_input;
 
+private: // 定数
+	// 通常移動の加速度
+	const float c_accMove = 0.0325f;
+	// 通常移動の減速度
+	const float c_decMove = 0.9f;
+	// 通常移動の最大速度
+	const float c_maxVelXZ = 0.6f;
+
+	// ジャンプの加速度
+	const float c_accJump = 0.05f;
+	// ジャンプの最大速度
+	const float c_maxVelY = 0.6f;
+
+	// カメラの回転角度
+	const float c_addAngle = 1.0f;
+
 private: // サブクラス
 	// プレイヤーのステータス
 	struct PlayerStatus
@@ -46,20 +62,10 @@ private: // メンバ変数
 	// 自機
 	//==============================
 	// オブジェクト
-	unique_ptr<FbxObject3d> m_object = nullptr;
+	unique_ptr<FbxObject3d> m_player = nullptr;
+
 	// ステータス
 	PlayerStatus m_status;
-
-	// 通常移動の加速度
-	const float c_accMove = 0.0325f;
-	// 通常移動の減速度
-	const float c_decMove = 0.9f;
-	// 通常移動の最大速度
-	const float c_maxVelXZ = 0.6f;
-	// ジャンプの加速度
-	const float c_accJump = 0.05f;
-	// ジャンプの最大速度
-	const float c_maxVelY = 0.6f;
 
 	// ダッシュの加速度
 	float m_dashAcc = 0;
@@ -67,6 +73,7 @@ private: // メンバ変数
 	float m_dashTime = 0;
 	// 1フレーム当たりの加算（DT = DashTime）
 	float m_addDT = 10.0f;
+
 	// 重力加速値の時間
 	int m_gravityTime = 0;
 
@@ -74,7 +81,8 @@ private: // メンバ変数
 	// プレイヤーの弾
 	//==============================
 	// オブジェクト
-	std::vector<std::unique_ptr<Bullet>> playerBullets;
+	std::vector<std::unique_ptr<Bullet>> m_playerBullets;
+
 	// 標的の座標
 	XMFLOAT3 m_targetPos = { 0, 0, 0 };
 	// ロック中か
@@ -89,17 +97,10 @@ private: // メンバ変数
 	//==============================
 	// パーティクル
 	//==============================
-	std::unique_ptr<ParticleManager> booster = nullptr;
-	// 追従座標
-	XMFLOAT3 targetPos = {};
-
-	//==============================
-	// カメラ
-	//==============================
-	// カメラの回転角度
-	const float c_addAngle = 1.0f;
-	// カメラ位置の正面化
-	bool m_cameraInitialize = false;
+	std::unique_ptr<ParticleManager> m_booster;
+	XMFLOAT3 m_mBoosterPos[2] = {};
+	XMFLOAT3 m_sBoosterPos[2] = {};
+	XMFLOAT3 m_bBoosterPos[2] = {};
 
 public: // メンバ関数
 	/// <summary>
@@ -172,12 +173,27 @@ public: // メンバ関数
 	void OnLand();
 
 	/// <summary>
+	/// 背面ブースター
+	/// </summary>
+	void MainBooster();
+
+	/// <summary>
+	/// 横ブースター
+	/// </summary>
+	void SideBooster();
+
+	/// <summary>
+	/// 前ブースター
+	/// </summary>
+	void BacktBooster();
+
+	/// <summary>
 	/// 始点から終点への距離
 	/// </summary>
 	/// <param name="pos1">終点</param>
 	/// <param name="pos2">始点</param>
 	/// <returns>二点間の距離</returns>
-	const float Length(XMFLOAT3 pos1, XMFLOAT3 pos2 = { 0, 0, 0 });
+	const float Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2 = { 0, 0, 0 });
 
 public: // アクセッサ
 	/// <summary>
@@ -194,7 +210,7 @@ public: // アクセッサ
 	{
 		m_status.pos = position;
 
-		m_object->SetPosition(m_status.pos);
+		m_player->SetPosition(m_status.pos);
 	}
 
 	/// <summary>
@@ -260,10 +276,10 @@ public: // アクセッサ
 	/// </summary>
 	bool GetIsDash() { return m_status.isDash; }
 
-	FbxObject3d* GetPlayerObject() { return m_object.get(); }
+	FbxObject3d* GetPlayerObject() { return m_player.get(); }
 
 	/// <summary>
 	/// 弾を取得
 	/// </summary>
-	const std::vector<std::unique_ptr<Bullet>>& GetPlayerBullets() { return playerBullets; }
+	const std::vector<std::unique_ptr<Bullet>>& GetPlayerBullets() { return m_playerBullets; }
 };

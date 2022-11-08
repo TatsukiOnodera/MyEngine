@@ -1,6 +1,6 @@
 ﻿#include "ParticleManager.h"
-#include "Camera.h"
 
+#include <time.h>
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 
@@ -12,20 +12,20 @@ using namespace Microsoft::WRL;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-const float ParticleManager::s_radius = 5.0f;				// 底面の半径
-const float ParticleManager::s_prizmHeight = 8.0f;			// 柱の高さ
-ID3D12Device* ParticleManager::device = nullptr;
-UINT ParticleManager::descriptorHandleIncrementSize = 0;
-ID3D12GraphicsCommandList* ParticleManager::cmdList = nullptr;
-ComPtr<ID3D12RootSignature> ParticleManager::rootsignature;
-ComPtr<ID3D12PipelineState> ParticleManager::pipelinestate;
-ComPtr<ID3D12Resource> ParticleManager::vertBuff;
-XMMATRIX ParticleManager::matView;
+const float ParticleManager::c_radius = 5.0f;				// 底面の半径
+const float ParticleManager::c_prizmHeight = 8.0f;			// 柱の高さ
+ID3D12Device* ParticleManager::s_device = nullptr;
+UINT ParticleManager::s_descriptorHandleIncrementSize = 0;
+ID3D12GraphicsCommandList* ParticleManager::s_cmdList = nullptr;
+ComPtr<ID3D12RootSignature> ParticleManager::s_rootsignature;
+ComPtr<ID3D12PipelineState> ParticleManager::s_pipelinestate;
+ComPtr<ID3D12Resource> ParticleManager::s_vertBuff;
+XMMATRIX ParticleManager::s_matView;
 Camera *ParticleManager::s_camera = nullptr;
-D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
-ParticleManager::VertexPos ParticleManager::vertices[s_vertexCount];
-XMMATRIX ParticleManager::matBillboard = XMMatrixIdentity();
-XMMATRIX ParticleManager::matBillboardY = XMMatrixIdentity();
+D3D12_VERTEX_BUFFER_VIEW ParticleManager::s_vbView{};
+ParticleManager::VertexPos ParticleManager::s_vertices[c_vertexCount];
+XMMATRIX ParticleManager::s_matBillboard = XMMatrixIdentity();
+XMMATRIX ParticleManager::s_matBillboardY = XMMatrixIdentity();
 
 const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
 {
@@ -65,12 +65,23 @@ const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const DirectX::X
 	return result;
 }
 
+ParticleManager::ParticleManager()
+{
+
+}
+
+ParticleManager::~ParticleManager()
+{
+
+}
+
 bool ParticleManager::StaticInitialize(ID3D12Device* device)
 {
-	// nullptrチェック
+	// nullチェック
 	assert(device);
 
-	ParticleManager::device = device;
+	// デバイスとカメラ
+	ParticleManager::s_device = device;
 	ParticleManager::s_camera = Camera::GetInstance();
 
 	// パイプライン初期化
@@ -80,34 +91,12 @@ bool ParticleManager::StaticInitialize(ID3D12Device* device)
 	}
 
 	//頂点バッファの転送
-	if (!CreateModel())
+	if (!InitializeVertBuffer())
 	{
 		assert(0);
 	}
 
 	return true;
-}
-
-void ParticleManager::PreDraw(ID3D12GraphicsCommandList* cmdList)
-{
-	// PreDrawとPostDrawがペアで呼ばれていなければエラー
-	assert(ParticleManager::cmdList == nullptr);
-
-	// コマンドリストをセット
-	ParticleManager::cmdList = cmdList;
-
-	// パイプラインステートの設定
-	cmdList->SetPipelineState(pipelinestate.Get());
-	// ルートシグネチャの設定
-	cmdList->SetGraphicsRootSignature(rootsignature.Get());
-	// プリミティブ形状を設定
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
-}
-
-void ParticleManager::PostDraw()
-{
-	// コマンドリストを解除
-	ParticleManager::cmdList = nullptr;
 }
 
 ParticleManager* ParticleManager::Create(const std::string& textureName)
@@ -116,11 +105,7 @@ ParticleManager* ParticleManager::Create(const std::string& textureName)
 	ParticleManager* particle = new ParticleManager();
 
 	// 初期化
-	if (!particle->Initialize())
-	{
-		assert(0);
-		return nullptr;
-	}
+	particle->Initialize();
 
 	//テクスチャ読み込み
 	particle->LoadTexture(textureName);
@@ -274,7 +259,7 @@ bool ParticleManager::InitializeGraphicsPipeline()
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[2];
+	CD3DX12_ROOT_PARAMETER rootparams[2] = {};
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
 
@@ -289,17 +274,19 @@ bool ParticleManager::InitializeGraphicsPipeline()
 	// バージョン自動判定のシリアライズ
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
-	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
-	if (FAILED(result)) {
+	result = s_device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&s_rootsignature));
+	if (FAILED(result))
+	{
 		return result;
 	}
 
-	gpipeline.pRootSignature = rootsignature.Get();
+	gpipeline.pRootSignature = s_rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
-	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
+	result = s_device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&s_pipelinestate));
 
-	if (FAILED(result)) {
+	if (FAILED(result))
+	{
 		return result;
 	}
 
@@ -315,14 +302,14 @@ bool ParticleManager::LoadTexture(const std::string& textureName)
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
 	descHeapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
-	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&m_descHeap));//生成
+	result = s_device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&m_descHeap));//生成
 	if (FAILED(result))
 	{
 		return false;
 	}
 
 	// デスクリプタサイズを取得
-	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	s_descriptorHandleIncrementSize = s_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	// WICテクスチャのロード
 	TexMetadata metadata{};
@@ -352,7 +339,7 @@ bool ParticleManager::LoadTexture(const std::string& textureName)
 	);
 
 	// テクスチャ用バッファの生成
-	result = device->CreateCommittedResource(
+	result = s_device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0),
 		D3D12_HEAP_FLAG_NONE,
 		&texresDesc,
@@ -370,16 +357,15 @@ bool ParticleManager::LoadTexture(const std::string& textureName)
 		nullptr, // 全領域へコピー
 		img->pixels,    // 元データアドレス
 		(UINT)img->rowPitch,  // 1ラインサイズ
-		(UINT)img->slicePitch // 1枚サイズ
-	);
+		(UINT)img->slicePitch); // 1枚サイズ
 	if (FAILED(result))
 	{
 		return false;
 	}
 
 	// シェーダリソースビュー作成
-	m_cpuDescHandleSRV = CD3DX12_CPU_DESCRIPTOR_HANDLE(m_descHeap->GetCPUDescriptorHandleForHeapStart(), 0, descriptorHandleIncrementSize);
-	m_gpuDescHandleSRV = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_descHeap->GetGPUDescriptorHandleForHeapStart(), 0, descriptorHandleIncrementSize);
+	m_cpuDescHandleSRV = CD3DX12_CPU_DESCRIPTOR_HANDLE(m_descHeap->GetCPUDescriptorHandleForHeapStart(), 0, s_descriptorHandleIncrementSize);
+	m_gpuDescHandleSRV = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_descHeap->GetGPUDescriptorHandleForHeapStart(), 0, s_descriptorHandleIncrementSize);
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
 	D3D12_RESOURCE_DESC resDesc = m_texbuff->GetDesc();
@@ -389,7 +375,7 @@ bool ParticleManager::LoadTexture(const std::string& textureName)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
 	srvDesc.Texture2D.MipLevels = 1;
 
-	device->CreateShaderResourceView(m_texbuff.Get(), //ビューと関連付けるバッファ
+	s_device->CreateShaderResourceView(m_texbuff.Get(), //ビューと関連付けるバッファ
 		&srvDesc, //テクスチャ設定情報
 		m_cpuDescHandleSRV
 	);
@@ -397,18 +383,18 @@ bool ParticleManager::LoadTexture(const std::string& textureName)
 	return true;
 }
 
-bool ParticleManager::CreateModel()
+bool ParticleManager::InitializeVertBuffer()
 {
 	HRESULT result = S_FALSE;
 
 	// 頂点バッファ生成
-	result = device->CreateCommittedResource(
+	result = s_device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(vertices)),
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(s_vertices)),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&vertBuff));
+		IID_PPV_ARGS(&s_vertBuff));
 	if (FAILED(result))
 	{
 		return false;
@@ -416,16 +402,17 @@ bool ParticleManager::CreateModel()
 
 	// 頂点バッファへのデータ転送
 	VertexPos* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(result)) {
-		memcpy(vertMap, vertices, sizeof(vertices));
-		vertBuff->Unmap(0, nullptr);
+	result = s_vertBuff->Map(0, nullptr, (void**)&vertMap);
+	if (SUCCEEDED(result))
+	{
+		memcpy(vertMap, s_vertices, sizeof(s_vertices));
+		s_vertBuff->Unmap(0, nullptr);
 	}
 
 	// 頂点バッファビューの作成
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	vbView.SizeInBytes = sizeof(vertices);
-	vbView.StrideInBytes = sizeof(vertices[0]);
+	s_vbView.BufferLocation = s_vertBuff->GetGPUVirtualAddress();
+	s_vbView.SizeInBytes = sizeof(s_vertices);
+	s_vbView.StrideInBytes = sizeof(s_vertices[0]);
 
 	return true;
 }
@@ -473,7 +460,7 @@ void ParticleManager::UpdateViewMatrix()
 	matCameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
 
 	//転置により逆行列を計算
-	matView = XMMatrixTranspose(matCameraRot);
+	s_matView = XMMatrixTranspose(matCameraRot);
 
 	//視点座標に-1をかけた座標
 	XMVECTOR reverseEyePosition = XMVectorNegate(eyePosition);
@@ -485,13 +472,13 @@ void ParticleManager::UpdateViewMatrix()
 	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
 
 	//ビュー行列に平行移動成分を設定
-	matView.r[3] = translation;
+	s_matView.r[3] = translation;
 
 	//ビルボード行列
-	matBillboard.r[0] = cameraAxisX;
-	matBillboard.r[1] = cameraAxisY;
-	matBillboard.r[2] = cameraAxisZ;
-	matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
+	s_matBillboard.r[0] = cameraAxisX;
+	s_matBillboard.r[1] = cameraAxisY;
+	s_matBillboard.r[2] = cameraAxisZ;
+	s_matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
 
 	//カメラX軸、Y軸、Z軸
 	XMVECTOR ybillCameraAxisX, ybillCameraAxisY, ybillCameraAxisZ;
@@ -504,41 +491,44 @@ void ParticleManager::UpdateViewMatrix()
 	ybillCameraAxisZ = XMVector3Cross(ybillCameraAxisX, ybillCameraAxisY);
 
 	//Y軸回りビルボード行列
-	matBillboardY.r[0] = ybillCameraAxisX;
-	matBillboardY.r[1] = ybillCameraAxisY;
-	matBillboardY.r[2] = ybillCameraAxisZ;
-	matBillboardY.r[3] = XMVectorSet(0, 0, 0, 1);
+	s_matBillboardY.r[0] = ybillCameraAxisX;
+	s_matBillboardY.r[1] = ybillCameraAxisY;
+	s_matBillboardY.r[2] = ybillCameraAxisZ;
+	s_matBillboardY.r[3] = XMVectorSet(0, 0, 0, 1);
 }
 
-bool ParticleManager::Initialize()
+void ParticleManager::Initialize()
 {
 	// nullptrチェック
-	assert(device);
+	assert(s_device);
 
 	HRESULT result;
 
 	// 定数バッファの生成
-	result = device->CreateCommittedResource(
+	result = s_device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&m_constBuff));
-
-	return true;
+	if (FAILED(result))
+	{
+		assert(0);
+	}
 }
 
 void ParticleManager::Update()
 {
 	HRESULT result;
 
+	// ビュー行列
 	UpdateViewMatrix();
 
 	//寿命が尽きたパーティクルを全削除
 	m_partices.remove_if(
 		[](Particle& x) {
-			return x.frame >= x.num_frame;
+			return x.frame >= x.endFrame;
 		}
 	);
 
@@ -550,65 +540,79 @@ void ParticleManager::Update()
 		// 速度に加速度を加算
 		it->velocity = it->velocity + it->accel;
 		// 速度による移動
-		if (it->isFollow == true)
+		if (it->isFollow == true && it->targetPosition != nullptr)
 		{
-			it->position = Camera::GetInstance()->ConvertWindowYPos(it->position, it->velocity);
-			it->w_position = m_targetPos + it->position;
+			it->position = it->position + it->velocity;
+			XMFLOAT3 tmp = {};
+			tmp.x = it->targetPosition->x;
+			tmp.y = it->targetPosition->y;
+			tmp.z = it->targetPosition->z;
+			it->worldPosition = tmp + it->position;
 		}
 		else
 		{
-			it->w_position = it->w_position + it->velocity;
+			it->worldPosition = it->worldPosition + it->velocity;
 		}
 
-		float f = (float)it->num_frame / it->frame;
+		float f = (float)it->endFrame / it->frame;
 
 		// RGBA
-		it->color = it->e_color - it->s_color;
+		it->color = it->endColor - it->startColor;
 		it->color.x /= f;
 		it->color.y /= f;
 		it->color.z /= f;
-		it->color = it->color + it->s_color;
+		it->color = it->color + it->startColor;
 
 		//	スケール
-		it->scale = (it->e_scale - it->s_scale) / f;
-		it->scale += it->s_scale;
+		it->scale = (it->endScale - it->startScale) / f;
+		it->scale += it->startScale;
 	}
 
 	//頂点バッファへデータ転送
 	VertexPos* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	result = s_vertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result))
 	{
 		for (std::forward_list<Particle>::iterator it = m_partices.begin(); it != m_partices.end(); it++)
 		{
-			vertMap->pos = it->w_position;
+			vertMap->pos = it->worldPosition;
 			vertMap->scale = it->scale;
 			vertMap->color = it->color;
 			vertMap++;
 		}
-		vertBuff->Unmap(0, nullptr);
+		s_vertBuff->Unmap(0, nullptr);
 	}
 
 	// 定数バッファへデータ転送
 	ConstBufferData* constMap = nullptr;
 	result = m_constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = matView * s_camera->GetMatProject();
-	constMap->matBillboard = matBillboard;
+	constMap->mat = s_matView * s_camera->GetMatProject();
+	constMap->matBillboard = s_matBillboard;
 	m_constBuff->Unmap(0, nullptr);
 }
 
-void ParticleManager::Draw()
+void ParticleManager::Draw(ID3D12GraphicsCommandList* cmdList)
 {
-	//更新
-	Update();
-
 	if (!m_partices.empty())
 	{
-		// nullptrチェック
-		assert(ParticleManager::cmdList);
+		//更新
+		Update();
+
+		// nullチェック
+		assert(cmdList);
+
+		// コマンドリストをセット
+		ParticleManager::s_cmdList = cmdList;
+
+		// パイプラインステートの設定
+		cmdList->SetPipelineState(s_pipelinestate.Get());
+		// ルートシグネチャの設定
+		cmdList->SetGraphicsRootSignature(s_rootsignature.Get());
+		// プリミティブ形状を設定
+		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 		// 頂点バッファの設定
-		cmdList->IASetVertexBuffers(0, 1, &vbView);
+		cmdList->IASetVertexBuffers(0, 1, &s_vbView);
 
 		// デスクリプタヒープの配列
 		ID3D12DescriptorHeap* ppHeaps[] = { m_descHeap.Get() };
@@ -620,24 +624,28 @@ void ParticleManager::Draw()
 		cmdList->SetGraphicsRootDescriptorTable(1, m_gpuDescHandleSRV);
 		// 描画コマンド
 		cmdList->DrawInstanced((UINT)std::distance(m_partices.begin(), m_partices.end()), 1, 0, 0);
+
+		//コマンドリストを開放
+		ParticleManager::s_cmdList = nullptr;
 	}
 }
 
-void ParticleManager::Add(const int life, const XMFLOAT3& w_position, const XMFLOAT3& velocity, const XMFLOAT3& accel, const XMFLOAT4& start_color, const XMFLOAT4& end_color, const float start_scale, const float end_scale, const bool isFollow)
+void ParticleManager::Add(const int life, const XMFLOAT3& position, const XMFLOAT3& velocity, const XMFLOAT3& accel, const XMFLOAT4& startColor, const XMFLOAT4& endColor, const float startScale, const float endScale, const bool isFollow, XMFLOAT3* targetPosition)
 {
 	//リストに要素を追加
 	m_partices.emplace_front();
 	//追加した要素の参照
 	Particle& p = m_partices.front();
 	//値のセット
-	p.num_frame = life;
+	p.endFrame = life;
 	p.position = { 0, 0, 0 };
-	p.w_position = w_position;
+	p.worldPosition = position;
 	p.velocity = velocity;
 	p.accel = accel;
-	p.s_color = start_color;
-	p.e_color = end_color;
-	p.s_scale = start_scale;
-	p.e_scale = end_scale;
+	p.startColor = startColor;
+	p.endColor = endColor;
+	p.startScale = startScale;
+	p.endScale = endScale;
 	p.isFollow = isFollow;
+	p.targetPosition = targetPosition;
 }

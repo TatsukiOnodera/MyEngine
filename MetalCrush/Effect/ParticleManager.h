@@ -23,11 +23,11 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 private: // 定数
-	static const int s_division = 50;					// 分割数
-	static const float s_radius;				// 底面の半径
-	static const float s_prizmHeight;			// 柱の高さ
-	static const int s_planeCount = s_division * 2 + s_division * 2;		// 面の数
-	static const int s_vertexCount = 1024; //長点数
+	static const int c_division = 50;					// 分割数
+	static const float c_radius;				// 底面の半径
+	static const float c_prizmHeight;			// 柱の高さ
+	static const int c_planeCount = c_division * 2 + c_division * 2;		// 面の数
+	static const int c_vertexCount = 1024; //長点数
 
 public: // サブクラス
 	// 頂点データ構造体
@@ -51,7 +51,7 @@ public: // サブクラス
 		//座標
 		XMFLOAT3 position = {};
 		// ワールド座標
-		XMFLOAT3 w_position = {};
+		XMFLOAT3 worldPosition = {};
 		//速度
 		XMFLOAT3 velocity = {};
 		//加速度
@@ -61,46 +61,48 @@ public: // サブクラス
 		//現在フレーム
 		int frame = 0;
 		//終了フレーム
-		int num_frame = 0;
+		int endFrame = 0;
 		//スケール
 		float scale = 1.0f;
 		// 初期値
-		XMFLOAT4 s_color = {};
+		XMFLOAT4 startColor = {};
 		// 最終値
-		XMFLOAT4 e_color = {};
+		XMFLOAT4 endColor = {};
 		//初期値
-		float s_scale = 1.0f;
+		float startScale = 1.0f;
 		//最終値
-		float e_scale = 0.0f;
+		float endScale = 0.0f;
 		// カメラに追従するか
 		bool isFollow = false;
+		// 追従先の座標
+		XMFLOAT3* targetPosition = nullptr;
 	};
 
 private: // 静的メンバ変数
 	// デバイス
-	static ID3D12Device* device;
+	static ID3D12Device* s_device;
 	// デスクリプタサイズ
-	static UINT descriptorHandleIncrementSize;
+	static UINT s_descriptorHandleIncrementSize;
 	// コマンドリスト
-	static ID3D12GraphicsCommandList* cmdList;
+	static ID3D12GraphicsCommandList* s_cmdList;
 	// ルートシグネチャ
-	static ComPtr<ID3D12RootSignature> rootsignature;
+	static ComPtr<ID3D12RootSignature> s_rootsignature;
 	// パイプラインステートオブジェクト
-	static ComPtr<ID3D12PipelineState> pipelinestate;
+	static ComPtr<ID3D12PipelineState> s_pipelinestate;
 	// 頂点バッファ
-	static ComPtr<ID3D12Resource> vertBuff;
+	static ComPtr<ID3D12Resource> s_vertBuff;
 	// ビュー行列
-	static XMMATRIX matView;
+	static XMMATRIX s_matView;
 	// 視点座標
 	static Camera* s_camera;
 	// 頂点バッファビュー
-	static D3D12_VERTEX_BUFFER_VIEW vbView;
+	static D3D12_VERTEX_BUFFER_VIEW s_vbView;
 	// 頂点データ配列
-	static VertexPos vertices[s_vertexCount];
+	static VertexPos s_vertices[c_vertexCount];
 	// ビルボード行列
-	static XMMATRIX matBillboard;
+	static XMMATRIX s_matBillboard;
 	// Y軸回りビルボード行列
-	static XMMATRIX matBillboardY;
+	static XMMATRIX s_matBillboardY;
 
 private: // 静的メンバ関数
 	/// <summary>
@@ -123,20 +125,9 @@ public:// 静的メンバ関数
 	static bool StaticInitialize(ID3D12Device* device);
 
 	/// <summary>
-	/// 描画前処理
-	/// </summary>
-	/// <param name="cmdList">描画コマンドリスト</param>
-	static void PreDraw(ID3D12GraphicsCommandList* cmdList);
-
-	/// <summary>
-	/// 描画後処理
-	/// </summary>
-	static void PostDraw();
-
-	/// <summary>
 	/// モデル作成
 	/// </summary>
-	static bool CreateModel();
+	static bool InitializeVertBuffer();
 
 	/// <summary>
 	/// 3Dオブジェクト生成
@@ -157,15 +148,22 @@ private: // メンバ変数
 	CD3DX12_CPU_DESCRIPTOR_HANDLE m_cpuDescHandleSRV;
 	// シェーダリソースビューのハンドル(CPU)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE m_gpuDescHandleSRV;
-	// 追従対象座標
-	XMFLOAT3 m_targetPos = {};
 
 public: // メンバ関数
 	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	ParticleManager();
+	
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~ParticleManager();
+
+	/// <summary>
 	/// 初期化
 	/// </summary>
-	/// <returns>初期化できたか</returns>
-	bool Initialize();
+	void Initialize();
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -175,7 +173,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// テクスチャ読み込み
@@ -187,14 +185,14 @@ public: // メンバ関数
 	/// <summary>
 	/// パーティクルの追加
 	/// </summary>
-	void Add(const int life, const XMFLOAT3& w_position, const XMFLOAT3& velocity, const XMFLOAT3& accel, const XMFLOAT4& start_color, const XMFLOAT4& end_color, const float start_scale, const float end_scale, const bool isFollow);
-
-	/// <summary>
-	/// 追従座標をセット
-	/// </summary>
-	/// <param name="position">座標</param>
-	void SetTargetPos(const XMFLOAT3& position)
-	{
-		m_targetPos = position;
-	}
+	/// <param name="life">寿命</param>
+	/// <param name="w_position">座標</param>
+	/// <param name="velocity">速度</param>
+	/// <param name="accel">加速度</param>
+	/// <param name="start_color">初期色</param>
+	/// <param name="end_color">終了色</param>
+	/// <param name="start_scale">初期スケール</param>
+	/// <param name="end_scale">終了スケール</param>
+	/// <param name="isFollow">追従するか否か</param>
+	void Add(const int life, const XMFLOAT3& position, const XMFLOAT3& velocity, const XMFLOAT3& accel, const XMFLOAT4& startColor, const XMFLOAT4& endColor, const float startScale, const float endScale, const bool isFollow, XMFLOAT3* targetPosition = nullptr);
 };

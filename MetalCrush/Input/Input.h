@@ -59,14 +59,14 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="key">押しているキー</param>
 	/// <returns>押しているか</returns>
-	bool PushKey(BYTE key);
+	bool PushKey(const BYTE key);
 
 	/// <summary>
 	/// キー入力（長押し不可）
 	/// </summary>
 	/// <param name="key">押しているキー</param>
 	/// <returns>押しているか</returns>
-	bool TriggerKey(BYTE key);
+	bool TriggerKey(const BYTE key);
 
 	/// <summary>
 	/// 左クリック

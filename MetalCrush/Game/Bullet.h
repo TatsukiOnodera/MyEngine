@@ -22,6 +22,8 @@ private: // メンバ変数
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 速度
 	XMFLOAT3 m_vel = { 0, 0, 0 };
+	// 加速度
+	XMFLOAT3 m_acc = { 0, 0, 0 };
 	// 生存フラグ
 	bool m_alive = false;
 
@@ -29,7 +31,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Bullet(const XMFLOAT3& pos = { 0, 0, 0 }, const XMFLOAT3& vel = { 0, 0, 0 }, const bool& alive = true);
+	Bullet(const XMFLOAT3& pos = { 0, 0, 0 }, const XMFLOAT3& vel = { 0, 0, 0 }, const XMFLOAT3& acc = { 0, 0, 0 }, const bool& alive = true);
 
 	/// <summary>
 	/// デストラクタ
@@ -42,7 +44,7 @@ public: // メンバ関数
 	/// <param name="pos">座標</param>
 	/// <param name="vec">ベクトル</param>
 	/// <param name="alive">生存フラグ</param>
-	void Initialize(const XMFLOAT3& pos, const XMFLOAT3& vel, const bool& alive);
+	void Initialize(const XMFLOAT3& pos, const XMFLOAT3& vel, const XMFLOAT3& acc, const bool& alive);
 
 	/// <summary>
 	///  更新

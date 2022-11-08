@@ -2,13 +2,18 @@
 
 #include "Player.h"
 
+#include <time.h>
+
 Camera* Player::s_camera = Camera::GetInstance();
 Input* Player::s_input = Input::GetInstance();
 
 Player::Player()
 {
-	m_object.reset(FbxObject3d::CreateFBXObject("PlayerBone"));
-	booster.reset(ParticleManager::Create("Particle/FireParticle.png"));
+	// モデルの読み込み
+	m_player.reset(FbxObject3d::CreateFBXObject("PlayerBone"));
+	m_booster.reset(ParticleManager::Create("Particle/FireParticle.png"));
+
+	// 初期化
 	Initialize();
 }
 
@@ -20,7 +25,7 @@ Player::~Player()
 void Player::Initialize()
 {
 	// nullチェック
-	if (m_object == nullptr)
+	if (m_player == nullptr)
 	{
 		assert(0);
 	}
@@ -38,6 +43,7 @@ void Player::Initialize()
 	m_dashTime = 0;
 	// 1フレーム当たりの加算（DT = DashTime）
 	m_addDT = 8.0f;
+
 	// 重力時間
 	m_gravityTime = 0;
 
@@ -52,14 +58,18 @@ void Player::Initialize()
 	// リロードタイム
 	m_reloadTimer = 0;
 
-	// カメラ位置の正面化
-	m_cameraInitialize = false;
+	for (int i = 0; i < 2; i++)
+	{
+		m_mBoosterPos[i] =XMFLOAT3(0, 0, 0);
+		m_sBoosterPos[i] = XMFLOAT3(0, 0, 0);
+		m_bBoosterPos[i] = XMFLOAT3(0, 0, 0);
+	}
 
 	// オブジェクト
-	m_object->SetPosition(m_status.pos);
-	m_object->SetScale({ 0.25f, 0.25f, 0.25f });
-	m_object->SetRotation({ -90, 180, 0 });
-	m_object->Update();
+	m_player->SetPosition(m_status.pos);
+	m_player->SetScale({ 0.25f, 0.25f, 0.25f });
+	m_player->SetRotation({ -90, 180, 0 });
+	m_player->Update();
 }
 
 void Player::Update()
@@ -89,18 +99,27 @@ void Player::Update()
 		m_status.pos = s_camera->ConvertWindowYPos(m_status.pos, m_status.vel);
 
 		// 座標セット
-		m_object->SetPosition(m_status.pos);
+		m_player->SetPosition(m_status.pos);
 
 		// ショット
 		ShotBullet();
 	}
 
 	// 弾の更新
-	for (auto& m : playerBullets)
+	for (auto& m : m_playerBullets)
 	{
 		m->Update();
 	}
-	
+
+	// メインブースターのエフェクト
+	MainBooster();
+
+	// サイドブースターのエフェクト
+	SideBooster();
+
+	// バックブースターのエフェクト
+	BacktBooster();
+
 	// カメラワーク
 	CameraWork();
 }
@@ -110,9 +129,9 @@ void Player::Draw(ID3D12GraphicsCommandList* cmdList)
 	// OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 	
-	if (0 < playerBullets.size())
+	if (0 < m_playerBullets.size())
 	{
-		for (auto& m : playerBullets)
+		for (auto& m : m_playerBullets)
 		{
 			m->Draw();
 		}
@@ -126,21 +145,14 @@ void Player::Draw(ID3D12GraphicsCommandList* cmdList)
 	if (m_status.isAlive == true)
 	{
 		// 自機
-		m_object->Draw();
+		m_player->Draw();
 	}
 
 	FbxObject3d::PostDraw();
 
 	// パーティクル描画
-	ParticleManager::PreDraw(cmdList);
-
-	XMFLOAT3 pos = m_status.pos;
-	pos.y += 3.0f * m_object->GetScale().z;
-	pos.z += -2.0f * m_object->GetScale().y;
-	booster->SetTargetPos(pos);
-	booster->Draw();
-	
-	ParticleManager::PostDraw();
+	// ブースター
+	m_booster->Draw(cmdList);
 }
 
 void Player::MovePlayer(XMFLOAT3& acc)
@@ -151,7 +163,7 @@ void Player::MovePlayer(XMFLOAT3& acc)
 		acc.x += s_input->LeftStickAngle().x * c_accMove;
 		acc.z += s_input->LeftStickAngle().y * c_accMove;
 	}
-	else
+	else if (m_status.isDash == false)
 	{
 		// 減速
 		m_status.vel.x *= c_decMove;
@@ -239,34 +251,12 @@ void Player::DashPlayer()
 		if (0 < fabs(m_addDT))
 		{
 			tmp_t = (m_dashTime / 60) * (2 - (m_dashTime) / 60);
-
-			XMFLOAT3 pos = m_status.pos;
-			pos.y += 3.0f * m_object->GetScale().z;
-			pos.z += -2.0f * m_object->GetScale().y;
-
-			// 正規化
-			XMFLOAT3 vel = m_status.vel;
-			float tmp_len = Length(vel);
-			vel.x = vel.x / tmp_len * -0.5f;
-			vel.y = 0;
-			vel.z = vel.z / tmp_len * -0.5f;
-			vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, vel);
-			for (int p = 0; p < 3; p++)
-			{
-				pos.x *= 1.0f + static_cast<float>(rand() % 11) / 10;
-				pos.z *= 1.0f + static_cast<float>(rand() % 11) / 10;
-				booster->Add(5, targetPos, vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.4f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.5f, 1.5f, true);
-			}
 		}
 
 		m_dashAcc = 4.0f * tmp_t;
 
 		m_status.vel.x *= 1 + m_dashAcc;
 		m_status.vel.z *= 1 + m_dashAcc;
-	}
-	else
-	{
-
 	}
 }
 
@@ -306,11 +296,11 @@ void Player::ShotBullet()
 			// 使っていない弾を探す
 			if (CheckNoUsingBullet() == true)
 			{
-				for (auto& m : playerBullets)
+				for (auto& m : m_playerBullets)
 				{
 					if (m->GetAlive() == false)
 					{
-						m->Initialize(m_status.pos, vel, true);
+						m->Initialize(m_status.pos, vel, XMFLOAT3(0, 0, 0), true);
 						m_bulletCapacity--;
 						break;
 					}
@@ -318,7 +308,7 @@ void Player::ShotBullet()
 			}
 			else
 			{
-				playerBullets.emplace_back(new Bullet(m_status.pos, vel, true));
+				m_playerBullets.emplace_back(new Bullet(m_status.pos, vel));
 				m_bulletCapacity--;
 			}
 		}
@@ -340,11 +330,11 @@ void Player::ShotBullet()
 
 bool Player::CheckNoUsingBullet()
 {
-	if (0 < playerBullets.size())
+	if (0 < m_playerBullets.size())
 	{
 		// 使っていないのがあるか
 		bool hit = false;
-		for (const auto& m : playerBullets)
+		for (const auto& m : m_playerBullets)
 		{
 			if (m->GetAlive() == false)
 			{
@@ -373,28 +363,17 @@ void Player::CameraWork()
 
 	// 追従カメラ
 	XMFLOAT3 cameraAngle = {};
-	if (m_cameraInitialize == false)
+	if (s_input->RightStickAngle().x != 0 || s_input->RightStickAngle().y != 0)
 	{
-		if (s_input->PushButton(BUTTON::R_STICK))
-		{
-			m_cameraInitialize = true;
-		}
-		else if (s_input->RightStickAngle().x != 0 || s_input->RightStickAngle().y != 0)
-		{
-			cameraAngle.y += s_input->RightStickAngle().x * c_addAngle;
-			cameraAngle.x -= s_input->RightStickAngle().y * c_addAngle;
-		}
+		cameraAngle.y += s_input->RightStickAngle().x * c_addAngle;
+		cameraAngle.x -= s_input->RightStickAngle().y * c_addAngle;
 	}
-	else
-	{
-		// カメラ正面化
-		if (s_camera->MoveFront(3))
-		{
-			m_cameraInitialize = false;
-		}
-	}
-
 	s_camera->FollowUpCamera(tPos, s_camera->GetDistance(), cameraAngle);
+
+	// 姿勢制御
+	XMFLOAT3 tmp_rot = m_player->GetRotation();
+	tmp_rot.y += cameraAngle.y;
+	m_player->SetRotation(tmp_rot);
 }
 
 void Player::OnLand()
@@ -403,7 +382,103 @@ void Player::OnLand()
 	m_status.vel.y = 0;
 }
 
-const float Player::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
+void Player::MainBooster()
+{
+	// オフセット
+	XMFLOAT3 posA = { 1.0f * m_player->GetScale().x, 2.5f * m_player->GetScale().z, -1.5f * m_player->GetScale().y };
+	XMFLOAT3 posB = { -1.0f * m_player->GetScale().x, 2.5f * m_player->GetScale().z, -1.5f * m_player->GetScale().y };
+	posA = s_camera->ConvertWindowYPos(m_status.pos, posA);
+	posB = s_camera->ConvertWindowYPos(m_status.pos, posB);
+	// 右
+	m_mBoosterPos[0] = posA;
+	// 左
+	m_mBoosterPos[1] = posB;
+
+	if (0 < m_status.vel.z || 0 < m_status.vel.y)
+	{
+		XMFLOAT3 tmp_vel = {};
+		if (0 < m_status.vel.y)
+		{
+			tmp_vel.y = -0.1f;
+		}
+		if (0 < m_status.vel.z)
+		{
+			tmp_vel.z = -0.1f;
+		}
+		tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+		for (int i = 0; i < 3; i++)
+		{
+			m_booster->Add(5, posA, tmp_vel, { 0, 0, 0 }, { 0.4f, 0.2f, 0.6f, 1.0f }, { 0.0f, 0.0f, 0.0f, 0.0f }, 0.3f, 0.1f, true, &m_mBoosterPos[0]);
+			m_booster->Add(5, posB, tmp_vel, { 0, 0, 0 }, { 0.4f, 0.2f, 0.6f, 1.0f }, { 0.0f, 0.0f, 0.0f, 0.0f }, 0.3f, 0.1f, true, &m_mBoosterPos[1]);
+		}
+	}
+}
+
+void Player::SideBooster()
+{
+	// オフセット
+	XMFLOAT3 posA = { -2.5f * m_player->GetScale().x, 3.5f * m_player->GetScale().z, 0 };
+	XMFLOAT3 posB = { 2.5f * m_player->GetScale().x, 3.5f * m_player->GetScale().z, 0 };
+	posA = s_camera->ConvertWindowYPos(m_status.pos, posA);
+	posB = s_camera->ConvertWindowYPos(m_status.pos, posB);
+	// 右
+	m_sBoosterPos[0] = posA;
+	// 左
+	m_sBoosterPos[1] = posB;
+
+
+	if (0 < m_status.vel.x)
+	{
+		XMFLOAT3 tmp_vel = {};
+		tmp_vel.x = -0.1f;
+		tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+		for (int i = 0; i < 3; i++)
+		{
+			m_booster->Add(5, posA, tmp_vel, { 0, 0, 0 }, { 0.4f, 0.2f, 0.6f, 1.0f }, { 0.0f, 0.0f, 0.0f, 0.0f }, 0.3f, 0.1f, true, &m_sBoosterPos[0]);
+		}
+	}
+	else if (m_status.vel.z < 0)
+	{
+		XMFLOAT3 tmp_vel = {};
+		tmp_vel.x = 0.1f;
+		tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+		for (int i = 0; i < 3; i++)
+		{
+			m_booster->Add(5, posA, tmp_vel, { 0, 0, 0 }, { 0.4f, 0.2f, 0.6f, 1.0f }, { 0.0f, 0.0f, 0.0f, 0.0f }, 0.3f, 0.1f, true, &m_sBoosterPos[1]);
+		}
+	}
+}
+
+void Player::BacktBooster()
+{
+	// オフセット
+	XMFLOAT3 posA = { -1.0f * m_player->GetScale().x, 0.5f * m_player->GetScale().z, 0.5f * m_player->GetScale().y };
+	XMFLOAT3 posB = { 1.0f * m_player->GetScale().x, 0.5f * m_player->GetScale().z, 0.5f * m_player->GetScale().y };
+	posA = s_camera->ConvertWindowYPos(m_status.pos, posA);
+	posB = s_camera->ConvertWindowYPos(m_status.pos, posB);
+	// 右
+	m_bBoosterPos[0] = posA;
+	// 左
+	m_bBoosterPos[1] = posB;
+
+	if (m_status.vel.z < 0)
+	{
+		XMFLOAT3 tmp_vel = {};
+		tmp_vel.z = 0.1f;
+		tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+		for (int i = 0; i < 3; i++)
+		{
+			m_booster->Add(5, posA, tmp_vel, { 0, 0, 0 }, { 0.4f, 0.2f, 0.6f, 1.0f }, { 0.0f, 0.0f, 0.0f, 0.0f }, 0.3f, 0.1f, true, &m_bBoosterPos[0]);
+			m_booster->Add(5, posB, tmp_vel, { 0, 0, 0 }, { 0.4f, 0.2f, 0.6f, 1.0f }, { 0.0f, 0.0f, 0.0f, 0.0f }, 0.3f, 0.1f, true, &m_bBoosterPos[1]);
+		}
+	}
+}
+
+const float Player::Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2)
 {
 	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
 

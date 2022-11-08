@@ -1,7 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 
-class PointLight
+class DirectionalLight
 {
 private: // エイリアス
 	using XMFLOAT2 = DirectX::XMFLOAT2;
@@ -14,38 +14,33 @@ public: // サブクラス
 	// 定数バッファ用
 	struct ConstBufferData
 	{
-		XMFLOAT3 lightPos;
-		float pad1;
+		XMVECTOR lightDir;
 		XMFLOAT3 lightColor;
-		float pad2;
-		XMFLOAT3 lightAtten;
 		unsigned int active;
 	};
 
 private: // メンバ変数
-	// ライト座標（ワールド座標）
-	XMFLOAT3 m_lightPos = { 0, 0, 0 };
-	// ライト色
+	// ライトのベクトル
+	XMVECTOR m_lightDir = { 1, 0, 0, 0 };
+	// ライトの色
 	XMFLOAT3 m_lightColor = { 1, 1, 1 };
-	// ライト距離減衰係数
-	XMFLOAT3 m_lightAtten = { 1.0f, 1.0f, 1.0f };
 	// 有効フラグ
 	bool m_active = false;
 
 public: // アクセッサ
 	/// <summary>
-	/// ライト座標を取得
+	/// ライトのベクトルを取得
 	/// </summary>
-	/// <returns>ライト座標</returns>
-	inline const XMFLOAT3& GetLightPos() { return m_lightPos; }
+	/// <returns>ライトのベクトル</returns>
+	inline const XMVECTOR& GetLightDir() { return m_lightDir; }
 
 	/// <summary>
-	/// ライト座標をセット
+	/// ライトのベクトルをセット
 	/// </summary>
-	/// <param name="lightPos">ライト座標</param>
-	inline void SetLightPos(const XMFLOAT3& lightPos)
+	/// <param name="lightPos">ライトのベクトル</param>
+	inline void SetLightDir(const XMVECTOR& lightDir)
 	{
-		m_lightPos = lightPos;
+		m_lightDir = lightDir;
 	}
 
 	/// <summary>
@@ -61,21 +56,6 @@ public: // アクセッサ
 	inline void SetLightColor(const XMFLOAT3& lightColor)
 	{
 		m_lightColor = lightColor;
-	}
-	
-	/// <summary>
-	/// ライト距離減衰係数を取得
-	/// </summary>
-	/// <returns>ライト距離減衰係数</returns>
-	inline const XMFLOAT3& GetLightAtten() { return m_lightAtten; }
-
-	/// <summary>
-	/// ライト距離減衰係数をセット
-	/// </summary>
-	/// <param name="lightPos">ライト距離減衰係数</param>
-	inline void SetLightAtten(const XMFLOAT3& lightAtten)
-	{
-		m_lightAtten = lightAtten;
 	}
 
 	/// <summary>

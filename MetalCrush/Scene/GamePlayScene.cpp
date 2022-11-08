@@ -37,6 +37,9 @@ void GamePlayScene::Initialize()
 	// デバックテキスト
 	debugText.Initialize(fontNumber);
 
+	// パーティクル
+	explosion.reset(ParticleManager::Create("Particle/FireParticle.png"));
+
 	// 前景スプライト
 	backScreen.reset(Sprite::Create(1));
 
@@ -48,13 +51,16 @@ void GamePlayScene::Initialize()
 
 	// OBJオブジェクト
 	ground.reset(Object3d::Create("Wall"));
-	/*for (int e = 0; e < 6; e++)
+	for (int e = 0; e < 3; e++)
 	{
 		enemy.emplace_back(new Enemy);
-	}*/
+	}
 
 	// FBXオブェクト
 	player.reset(new Player);
+
+	// その他
+	lockList.reset(new AutoLockOn);
 
 	// オーディオ
 	//audio->Initialize();
@@ -63,7 +69,7 @@ void GamePlayScene::Initialize()
 	InitializeVariable();
 
 	// 乱数初期化
-	srand(NULL);
+	srand((unsigned int)time(NULL));
 }
 
 void GamePlayScene::InitializeVariable()
@@ -93,6 +99,16 @@ void GamePlayScene::Update()
 	{
 		m->Update();
 	}
+
+	// オートロック
+	if (input->TriggerKey(DIK_RIGHT))
+	{
+		lockList->ChangeTargetNum(1);
+	}
+	else if (input->TriggerKey(DIK_LEFT))
+	{
+		lockList->ChangeTargetNum(-1);
+	}
 	
 	// 衝突判定
 	CheckAllCollisions();
@@ -121,7 +137,7 @@ void GamePlayScene::Draw()
 	// 各描画
 	DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
-	//DrawEffect(cmdList);
+	DrawEffect(cmdList);
 	DrawUI(cmdList);
 	//DrawDebugText(cmdList);
 }
@@ -171,11 +187,7 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 {
 	// パーティクル描画
-	ParticleManager::PreDraw(cmdList);
-
-	
-
-	ParticleManager::PostDraw();
+	explosion->Draw(cmdList);
 }
 
 void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
@@ -184,7 +196,7 @@ void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 	debugText.Draw(cmdList);
 }
 
-const float GamePlayScene::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
+const float GamePlayScene::Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2)
 {
 	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
 
@@ -193,47 +205,39 @@ const float GamePlayScene::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 
 void GamePlayScene::CheckAllCollisions()
 {
-	XMFLOAT3 playerPos = player->GetPosition();
-	XMFLOAT3 enemyPos[6] = {};
-	for (int e = 0; e < enemy.size(); e++)
-	{
-		enemyPos[e] = enemy[e]->GetPosition();
-	}
-	const std::vector<std::unique_ptr<Bullet>>& playerBullets = player->GetPlayerBullets();
-
 #pragma region プレイヤーとエネミーの衝突判定
 
-	CheckPlayer2Enemy(playerPos, enemyPos);
+	CheckPlayer2Enemy();
 
 #pragma endregion
 
 #pragma region プレイヤー弾とエネミーの衝突判定
 
-	CheckPlayerBullets2Enemy(playerBullets, enemyPos);
+	CheckPlayerBullets2Enemy();
 
 #pragma endregion
 
 #pragma region プレイヤーとエネミー弾の衝突判定
 
-	CheckPlayer2EnemyBullets(playerPos);
+	CheckPlayer2EnemyBullets();
 
 #pragma endregion
 
 #pragma region プレイヤーと壁の衝突判定
 
-	CheckPlayer2Wall(playerPos);
+	CheckPlayer2Wall();
 
 #pragma endregion
 
 #pragma region エネミーと壁の衝突判定
 
-	CheckEnemy2Wall(enemyPos);
+	CheckEnemy2Wall();
 
 #pragma endregion
 
 #pragma region プレイヤー弾と壁の衝突判定
 
-	CheckPlayerBullets2Wall(playerBullets);
+	CheckPlayerBullets2Wall();
 
 #pragma endregion
 
@@ -244,35 +248,34 @@ void GamePlayScene::CheckAllCollisions()
 #pragma endregion
 }
 
-void GamePlayScene::CheckPlayer2Enemy(const XMFLOAT3& playerPos, const XMFLOAT3* enemyPos)
+void GamePlayScene::CheckPlayer2Enemy()
 {
 	// 射程内にいるものを探す
-	bool tmp_hit = false;
-	for (int e = 0; e < enemy.size(); e++)
+	for (auto& m : enemy)
 	{
-		if (enemy[e]->GetAlive() == true)
+		if (m->GetAlive() == true)
 		{
-			if (Length(playerPos, enemyPos[e]) < 100.0f && camera->ObjectComeInSight(enemyPos[e]))
+			// ロック
+			if (Length(player->GetPosition(), m->GetPosition()) < 100.0f && camera->ObjectComeInSight(m->GetPosition()) && m->GetAlive() == true)
 			{
-				// プレイヤーの発射
-				targetNum = e + 1;
-				tmp_hit = true;
+				lockList->LockOn(m.get());
 			}
-			if (Length(playerPos, enemyPos[e]) < 150.0f)
+			else
+			{
+				lockList->Lost(m.get());
+			}
+			if (Length(player->GetPosition(), m->GetPosition()) < 150.0f && m->GetAlive() == true)
 			{
 				// エネミーの発射
-				enemy[e]->ShotBullet(playerPos);
+				//enemy[e]->ShotBullet(playerPos);
 			}
 		}
 	}
-	// 何もロックしていないなら
-	if (tmp_hit == false)
-	{
-		targetNum = 0;
-	}
+
+	lockList->Update();
 
 	// 何もロックしてないなら
-	if (targetNum == 0)
+	if (lockList->GetTargetNum() == 0)
 	{
 		// まっすぐ飛ぶ
 		reticle->SetPosition({ 0, 0 });
@@ -283,33 +286,35 @@ void GamePlayScene::CheckPlayer2Enemy(const XMFLOAT3& playerPos, const XMFLOAT3*
 	else
 	{
 		// ロック先に打つ
-		reticle->SetPosition(camera->Convert3DPosTo2DPos(enemyPos[targetNum - 1]));
-		player->SetTargetPosition(enemyPos[targetNum - 1]);
+		reticle->SetPosition(camera->Convert3DPosTo2DPos(lockList->GetTargetEnemy()->GetPosition()));
+		player->SetTargetPosition(lockList->GetTargetEnemy()->GetPosition());
 		player->SetIsLock(true);
 		reticle->SetInvisible(false);
 	}
 }
 
-void GamePlayScene::CheckPlayerBullets2Enemy(const std::vector<std::unique_ptr<Bullet>>& playerBullets, const XMFLOAT3* enemyPos)
+void GamePlayScene::CheckPlayerBullets2Enemy()
 {
-	for (const auto& m : playerBullets)
+	const std::vector<unique_ptr<Bullet>>& playerBullets = player->GetPlayerBullets();
+	for (const auto& pB : playerBullets)
 	{
-		if (m->GetAlive() == true)
+		if (pB->GetAlive() == true)
 		{
-			for (int e = 0; e < enemy.size(); e++)
+			for (auto& e : enemy)
 			{
-				if (Length(m->GetPosition(), enemyPos[e]) < 5.0f && enemy[e]->GetAlive() == true)
+				if (Length(pB->GetPosition(), e->GetPosition()) < 3.0f && e->GetAlive() == true)
 				{
-					m->SetAlive(false);
-					enemy[e]->SetAlive(false);
+					pB->SetAlive(false);
+					e->SetAlive(false);
+					lockList->Lost(e.get());
 
-					XMFLOAT3 pos = enemyPos[e];
 					XMFLOAT3 vel = {};
-					for (int i = 0; i < 10; i++)
+					for (int i = 0; i < 360; i++)
 					{
-						vel.x += static_cast<float>(rand() % 21 - 10) / 10;
-						vel.y += static_cast<float>(rand() % 21 - 10) / 10;
-						vel.z += static_cast<float>(rand() % 21 - 10) / 10;
+						vel.x += cosf(static_cast<float>(rand() % 360)) * 0.01f;
+						vel.y += sinf(static_cast<float>(rand() % 360)) * 0.01f;
+						vel.z += cosf(static_cast<float>(rand() % 360)) * 0.01f;
+						explosion->Add(40, e->GetPosition(), vel, {0, 0, 0}, {0.7f, 0.4f, 0.1f, 0.1f}, {0.0f, 0.0f, 0.0f, 0.0f}, 0.2f, 2.0f, false);
 					}
 				}
 			}
@@ -317,39 +322,40 @@ void GamePlayScene::CheckPlayerBullets2Enemy(const std::vector<std::unique_ptr<B
 	}
 }
 
-void GamePlayScene::CheckPlayer2EnemyBullets(const XMFLOAT3& playerPos)
+void GamePlayScene::CheckPlayer2EnemyBullets()
 {
-	for (int e = 0; e < enemy.size(); e++)
+	for (auto& e : enemy)
 	{
-		const std::vector<std::unique_ptr<Bullet>>& enemyrBullets = enemy[e]->GetEnemyBullet();
+		const std::vector<std::unique_ptr<Bullet>>& enemyrBullets = e->GetEnemyBullet();
 
-		for (const auto& m : enemyrBullets)
+		for (const auto& eB : enemyrBullets)
 		{
-			if (Length(m->GetPosition(), playerPos) < 5.0f && m->GetAlive() == true)
+			if (Length(eB->GetPosition(), player->GetPosition()) < 3.0f && eB->GetAlive() == true)
 			{
-				m->SetAlive(false);
+				eB->SetAlive(false);
 				if (0 < player->GetPlayerHP())
 				{
 					player->SetPlayerHP(player->GetPlayerHP() - 1);
 				}
-
-				XMFLOAT3 pos = playerPos;
 				XMFLOAT3 vel = {};
-				for (int i = 0; i < 10; i++)
+				for (int i = 0; i < 360; i++)
 				{
-					vel.x += static_cast<float>(rand() % 21 - 10) / 100;
-					vel.y += static_cast<float>(rand() % 21 - 10) / 100;
-					vel.z += static_cast<float>(rand() % 21 - 10) / 100;
+					vel.x += cosf(static_cast<float>(rand() % 360)) * 0.01f;
+					vel.y += sinf(static_cast<float>(rand() % 360)) * 0.01f;
+					vel.z += cosf(static_cast<float>(rand() % 360)) * 0.01f;
+					explosion->Add(40, player->GetPosition(), vel, {0, 0, 0}, {0.7f, 0.4f, 0.1f, 0.1f}, {0.0f, 0.0f, 0.0f, 0.0f}, 0.2f, 2.0f, false);
 				}
 			}
 		}
 	}
 }
 
-void GamePlayScene::CheckPlayer2Wall(XMFLOAT3& playerPos)
+void GamePlayScene::CheckPlayer2Wall()
 {
 	if (player->GetAlive() == true)
 	{
+		XMFLOAT3 playerPos = player->GetPosition();
+
 		if (playerPos.y < -ground->GetScale().y + 5.0f * player->GetPlayerObject()->GetScale().z)
 		{
 			playerPos.y = -ground->GetScale().y + 5.0f * player->GetPlayerObject()->GetScale().z;
@@ -378,50 +384,52 @@ void GamePlayScene::CheckPlayer2Wall(XMFLOAT3& playerPos)
 	}
 }
 
-void GamePlayScene::CheckEnemy2Wall(XMFLOAT3* enemyPos)
+void GamePlayScene::CheckEnemy2Wall()
 {
-	for (int e = 0; e < enemy.size(); e++)
+	for (auto& m : enemy)
 	{
-		if (enemy[e]->GetAlive() == true)
+		if (m->GetAlive() == true)
 		{
-			XMFLOAT3 enemyVel = enemy[e]->GetVelocity();
+			XMFLOAT3 enemyPos = m->GetPosition();
+			XMFLOAT3 enemyVel = m->GetVelocity();
 
-			if (enemyPos[e].y < -ground->GetScale().y + 5.0f * player->GetPlayerObject()->GetScale().z)
+			if (enemyPos.y < -ground->GetScale().y + 1.0f * 3)
 			{
-				enemyPos[e].y = ground->GetScale().y + 5.0f * player->GetPlayerObject()->GetScale().z;
+				enemyPos.y = -ground->GetScale().y + 1.0f * 3;
 			}
 
-			if (ground->GetScale().x - 5 < enemyPos[e].x)
+			if (ground->GetScale().x - 5 < enemyPos.x)
 			{
-				enemyPos[e].x = ground->GetScale().x - 5;
+				enemyPos.x = ground->GetScale().x - 5;
 				enemyVel.x = -fabs(enemyVel.x);
 			}
-			else if (enemyPos[e].x < -ground->GetScale().x + 5)
+			else if (enemyPos.x < -ground->GetScale().x + 5)
 			{
-				enemyPos[e].x = -ground->GetScale().x + 5;
+				enemyPos.x = -ground->GetScale().x + 5;
 				enemyVel.x = fabs(enemyVel.x);
 			}
 
-			if (ground->GetScale().z - 0.5f * player->GetPlayerObject()->GetScale().y < enemyPos[e].z)
+			if (ground->GetScale().z - 0.5f * player->GetPlayerObject()->GetScale().y < enemyPos.z)
 			{
-				enemyPos[e].z = ground->GetScale().z - 0.5f * player->GetPlayerObject()->GetScale().y;
+				enemyPos.z = ground->GetScale().z - 0.5f * player->GetPlayerObject()->GetScale().y;
 				enemyVel.z = -fabs(enemyVel.x);
 			}
-			else if (enemyPos[e].z < -ground->GetScale().z + 0.5f * player->GetPlayerObject()->GetScale().y)
+			else if (enemyPos.z < -ground->GetScale().z + 0.5f * player->GetPlayerObject()->GetScale().y)
 			{
-				enemyPos[e].z = -ground->GetScale().z + 0.5f * player->GetPlayerObject()->GetScale().y;
+				enemyPos.z = -ground->GetScale().z + 0.5f * player->GetPlayerObject()->GetScale().y;
 				enemyVel.z = fabs(enemyVel.x);
 			}
 
-			enemy[e]->SetPosition(enemyPos[e]);
-			enemy[e]->SetVelocity(enemyVel);
+			m->SetPosition(enemyPos);
+			m->SetVelocity(enemyVel);
 		}
 	}
 }
 
-void GamePlayScene::CheckPlayerBullets2Wall(const std::vector<std::unique_ptr<Bullet>>& playerBullets)
+void GamePlayScene::CheckPlayerBullets2Wall()
 {
 	//壁の当たり判定
+	const std::vector<unique_ptr<Bullet>>& playerBullets = player->GetPlayerBullets();
 	for (auto& m : playerBullets)
 	{
 		if (m->GetPosition().x < -ground->GetScale().x || ground->GetScale().x < m->GetPosition().x)
@@ -437,19 +445,19 @@ void GamePlayScene::CheckPlayerBullets2Wall(const std::vector<std::unique_ptr<Bu
 
 void GamePlayScene::CheckEnemyBullets2Wall()
 {
-	for (int e = 0; e < enemy.size(); e++)
+	for (auto& e : enemy)
 	{
-		const std::vector<std::unique_ptr<Bullet>>& enemyrBullets = enemy[e]->GetEnemyBullet();
+		const std::vector<std::unique_ptr<Bullet>>& enemyrBullets = e->GetEnemyBullet();
 
-		for (auto& m : enemyrBullets)
+		for (auto& eB : enemyrBullets)
 		{
-			if (m->GetPosition().x < -ground->GetScale().x|| ground->GetScale().x < m->GetPosition().x)
+			if (eB->GetPosition().x < -ground->GetScale().x|| ground->GetScale().x < eB->GetPosition().x)
 			{
-				enemy[e]->SetAlive(false);
+				eB->SetAlive(false);
 			}
-			else if (m->GetPosition().z < -ground->GetScale().z || ground->GetScale().z < m->GetPosition().z)
+			else if (eB->GetPosition().z < -ground->GetScale().z || ground->GetScale().z < eB->GetPosition().z)
 			{
-				enemy[e]->SetAlive(false);
+				eB->SetAlive(false);
 			}
 		}
 	}

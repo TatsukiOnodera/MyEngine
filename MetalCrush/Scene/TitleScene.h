@@ -81,7 +81,7 @@ public: //メンバ関数
 	/// <summary>
 	/// パーティクル描画
 	/// </summary>
-	void DrawParticles(ID3D12GraphicsCommandList* cmdList);
+	void DrawEffect(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// UI描画

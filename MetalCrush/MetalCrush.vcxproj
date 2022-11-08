@@ -191,6 +191,7 @@
     <ClCompile Include="DirectXCommon\PipelineManager.cpp" />
     <ClCompile Include="Effect\ParticleManager.cpp" />
     <ClCompile Include="Effect\PostEffect.cpp" />
+    <ClCompile Include="Game\AutoLockOn.cpp" />
     <ClCompile Include="Game\Bullet.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\Player.cpp" />
@@ -227,6 +228,7 @@
     <ClInclude Include="DirectXCommon\PipelineManager.h" />
     <ClInclude Include="Effect\ParticleManager.h" />
     <ClInclude Include="Effect\PostEffect.h" />
+    <ClInclude Include="Game\AutoLockOn.h" />
     <ClInclude Include="Game\Bullet.h" />
     <ClInclude Include="Game\Enemy.h" />
     <ClInclude Include="Game\Player.h" />

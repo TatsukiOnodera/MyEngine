@@ -112,14 +112,10 @@ void TitleScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 	Sprite::PostDraw();
 }
 
-void TitleScene::DrawParticles(ID3D12GraphicsCommandList* cmdList)
+void TitleScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 {
 	//パーティクル描画
-	ParticleManager::PreDraw(cmdList);
-
 	//particle->Draw();
-
-	ParticleManager::PostDraw();
 }
 
 void TitleScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)

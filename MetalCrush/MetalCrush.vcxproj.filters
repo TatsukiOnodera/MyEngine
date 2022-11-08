@@ -159,6 +159,9 @@
     <ClCompile Include="DirectXCommon\PipelineManager.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\DirectXCommon</Filter>
     </ClCompile>
+    <ClCompile Include="Game\AutoLockOn.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\Audio.h">
@@ -274,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="DirectXCommon\PipelineManager.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\AutoLockOn.h">
+      <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

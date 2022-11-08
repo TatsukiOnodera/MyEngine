@@ -202,25 +202,12 @@ void Camera::FollowUpCamera(const XMFLOAT3& target, const XMFLOAT3& eyeDistance,
 	SetEye(eyePosition);
 }
 
-XMFLOAT3 Camera::ConvertWindowYPos(const XMFLOAT3& pos, const XMFLOAT3& vec, const float addAngleY)
+XMFLOAT3 Camera::ConvertWindowYPos(const XMFLOAT3& pos, const XMFLOAT3& vec)
 {
 	//移動ベクトル
 	XMVECTOR v0 = { vec.x, vec.y, vec.z, 0 };
 
-	//回転行列
-	if (addAngleY != 0)
-	{
-	m_angleY += addAngleY;
-	if (360 < m_angleY)
-	{
-		m_angleY -= 360;
-	} 
-	else if (m_angleY < 0)
-		{
-			m_angleY += 360;
-		}
-	}
-
+	// 回転行列
 	XMMATRIX rotM = XMMatrixIdentity();
 	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angleY));
 
@@ -233,40 +220,12 @@ XMFLOAT3 Camera::ConvertWindowYPos(const XMFLOAT3& pos, const XMFLOAT3& vec, con
 	return position;
 }
 
-XMFLOAT3 Camera::ConvertWindowXYPos(const XMFLOAT3& pos, const XMFLOAT3& vec, const XMFLOAT2& addAngle)
+XMFLOAT3 Camera::ConvertWindowXYPos(const XMFLOAT3& pos, const XMFLOAT3& vec)
 {
 	//移動ベクトル
 	XMVECTOR v0 = { vec.x, vec.y, vec.z, 0 };
 
 	//回転行列
-	// X軸
-	if (addAngle.x != 0)
-	{
-		m_angleX += addAngle.x;
-		if (360 < m_angleX)
-		{
-			m_angleX -= 360;
-		}
-		else if (m_angleX < 0)
-		{
-			m_angleX += 360;
-		}
-	}
-
-	// Y軸
-	if (addAngle.y != 0)
-	{
-		m_angleY += addAngle.y;
-		if (360 < m_angleY)
-		{
-			m_angleY -= 360;
-		}
-		else if (m_angleY < 0)
-		{
-			m_angleY += 360;
-		}
-	}
-
 	XMMATRIX rotM = XMMatrixIdentity();
 	rotM *= XMMatrixRotationX(XMConvertToRadians(m_angleX));
 	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angleY));
@@ -327,66 +286,4 @@ bool Camera::ObjectComeInSight(const XMFLOAT3& pos)
 	}
 
 	return true;
-}
-
-bool Camera::MoveFront(const float vel)
-{
-	float m_frontAcc = 1;
-	float tmpX = m_angleX;
-	float tmpY = m_angleY;
-
-	if (180 <= m_angleX)
-	{
-		tmpX = 360 - m_angleX;
-	}
-	if (180 <= m_angleY)
-	{
-		tmpY = 360 - m_angleY;
-	}
-	if (tmpX != 0 && tmpY != 0 && tmpX < tmpY)
-	{
-		m_frontAcc = tmpX / tmpY;
-	}
-
-	if (m_angleX < 180)
-	{
-		m_angleX -= vel * m_frontAcc;
-		if (m_angleX <= 0)
-		{
-			m_angleX = 0;
-		}
-	}
-	else
-	{
-		m_angleX += vel * m_frontAcc;
-		if (360 <= m_angleX)
-		{
-			m_angleX = 0;
-		}
-	}
-
-	if (m_angleY < 180)
-	{
-		m_angleY -= vel;
-		if (m_angleY <= 0)
-		{
-			m_angleY = 0;
-		}
-	}
-	else
-	{
-		m_angleY += vel;
-		if (360 <= m_angleY)
-		{
-			m_angleY = 0;
-		}
-	}
-
-	if (m_angleX == 0 && m_angleY == 0)
-	{
-		m_frontAcc = 0;
-		return true;
-	}
-
-	return false;
 }
