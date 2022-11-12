@@ -9,7 +9,7 @@
 #include "ParticleManager.h"
 #include "SceneManager.h"
 #include "AbstractSceneFactory.h"
-#include "Light.h"
+#include "LightGroup.h"
 #include "FbxObject3d.h"
 #include "PostEffect.h"
 

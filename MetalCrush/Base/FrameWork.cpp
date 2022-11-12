@@ -69,7 +69,7 @@ void FrameWork::Initialize()
 	}
 
 	//ƒ‰ƒCƒgÃ“I‰Šú‰»
-	if (!Light::StaticInitialize(dx_cmd->GetDev()))
+	if (!LightGroup::StaticInitialize(dx_cmd->GetDev()))
 	{
 		assert(0);
 	}

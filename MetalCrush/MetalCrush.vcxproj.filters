@@ -105,9 +105,6 @@
     <ClCompile Include="Light\Light.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Light\LightGroup.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Base</Filter>
     </ClCompile>
@@ -162,6 +159,9 @@
     <ClCompile Include="Game\AutoLockOn.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClCompile>
+    <ClCompile Include="LightGroup.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\Audio.h">
@@ -215,9 +215,6 @@
     <ClInclude Include="Light\Light.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
     </ClInclude>
-    <ClInclude Include="Light\LightGroup.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
-    </ClInclude>
     <ClInclude Include="3D\Object3d.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
     </ClInclude>
@@ -226,9 +223,6 @@
     </ClInclude>
     <ClInclude Include="Base\OnoGame.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Light\PointLight.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
     </ClInclude>
     <ClInclude Include="Effect\PostEffect.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Effect\PostEffect</Filter>
@@ -280,6 +274,21 @@
     </ClInclude>
     <ClInclude Include="Game\AutoLockOn.h">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\PointLight.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="LightGroup.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\DirectionalLight.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\SpotLight.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\CircleShadow.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

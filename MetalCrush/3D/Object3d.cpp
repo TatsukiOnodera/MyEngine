@@ -15,7 +15,7 @@ using namespace Microsoft::WRL;
 ID3D12Device* Object3d::s_dev = nullptr;
 ID3D12GraphicsCommandList* Object3d::s_cmdList = nullptr;
 Camera *Object3d::s_camera = nullptr;
-Light* Object3d::s_light = nullptr;
+LightGroup* Object3d::s_lightGroup = nullptr;
 
 Object3d::~Object3d()
 {
@@ -83,7 +83,7 @@ void Object3d::Initialize()
 
 void Object3d::Update()
 {
-	if (m_dirty || s_camera->GetDirty() || s_light->GetDirty())
+	if (m_dirty || s_camera->GetDirty() || s_lightGroup->GetDirty())
 	{
 		//ワールド行列の更新
 		if (m_isBillboard)
@@ -165,7 +165,7 @@ void Object3d::Draw()
 	s_cmdList->SetGraphicsRootConstantBufferView(0, m_constBuff->GetGPUVirtualAddress());
 
 	//ライトの描画
-	s_light->Draw(s_cmdList, 2);
+	s_lightGroup->Draw(s_cmdList, 2);
 
 	//モデル描画
 	m_model->Draw(s_cmdList);

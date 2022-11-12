@@ -40,7 +40,7 @@ public: // アクセッサ
 	/// <param name="lightPos">ライトのベクトル</param>
 	inline void SetLightDir(const XMVECTOR& lightDir)
 	{
-		m_lightDir = lightDir;
+		m_lightDir = DirectX::XMVector3Normalize(lightDir);
 	}
 
 	/// <summary>

@@ -29,6 +29,8 @@ void AutoLockOn::Update()
 
 void AutoLockOn::ChangeTargetLock()
 {
+	targetNum += 1;
+
 	if (enemysList.empty() == false)
 	{
 		int tmp_count = 0;
@@ -96,11 +98,4 @@ bool AutoLockOn::InList(Enemy * enemy)
 	}
 
 	return false;
-}
-
-void AutoLockOn::ChangeTargetNum(int addNum)
-{
-	targetNum += addNum;
-
-	ChangeTargetLock();
 }

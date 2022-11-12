@@ -16,7 +16,7 @@ void GamePlayScene::Initialize()
 {
 	dx_cmd = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
-	//audio = Audio::GetInstance();;
+	//audio = Audio::GetInstance();
 	camera = Camera::GetInstance();
 
 	// サウンドファイル読み込み
@@ -29,19 +29,14 @@ void GamePlayScene::Initialize()
 	Sprite::LoadTexture(3, L"Resources/PlayerHP.png");
 
 	// ライト生成
-	light.reset(Light::Create());
-	light->SetLightColor({ 1, 1, 1 });
-	light->SetLightDir({ -5, -5, 0, 0 });
-	Object3d::SetLight(light.get());
+	lightGroup.reset(LightGroup::Create());
+	Object3d::SetGroupLight(lightGroup.get());
 
 	// デバックテキスト
 	debugText.Initialize(fontNumber);
 
 	// パーティクル
 	explosion.reset(ParticleManager::Create("Particle/FireParticle.png"));
-
-	// 前景スプライト
-	backScreen.reset(Sprite::Create(1));
 
 	// スプライト
 	reticle.reset(Sprite::Create(2, { 0, 0 }, { 0.5f, 0.5f }));
@@ -81,6 +76,14 @@ void GamePlayScene::InitializeVariable()
 	ground->SetScale({ size, size, size });
 	ground->Update();
 
+	// ライト
+	//lightGroup->SetDirLightActive(0, true);
+
+	/*lightGroup->SetPointLightActive(0, false);
+	lightGroup->SetPointLightAtten(0, { 0.01f, 0.01f, 0.01f });
+	lightGroup->SetPointLightColor(0, { 1, 1, 1 });
+	lightGroup->SetPointLightPos(0, { 0, -950 ,-100 });*/
+
 	// カメラ
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetDistance();
@@ -101,13 +104,9 @@ void GamePlayScene::Update()
 	}
 
 	// オートロック
-	if (input->TriggerKey(DIK_RIGHT))
+	if (input->TriggerButton(BUTTON::U_CROSS))
 	{
-		lockList->ChangeTargetNum(1);
-	}
-	else if (input->TriggerKey(DIK_LEFT))
-	{
-		lockList->ChangeTargetNum(-1);
+		lockList->ChangeTargetLock();
 	}
 	
 	// 衝突判定
@@ -121,7 +120,7 @@ void GamePlayScene::Update()
 #pragma region カメラとライトの更新
 
 	// ライト更新
-	light->Update();
+	lightGroup->Update();
 	
 	// カメラ更新
 	camera->Update();
@@ -135,7 +134,7 @@ void GamePlayScene::Draw()
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
 	// 各描画
-	DrawBackSprite(cmdList);
+	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
 	DrawEffect(cmdList);
 	DrawUI(cmdList);
@@ -147,7 +146,7 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	// 前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	backScreen->Draw();
+
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();

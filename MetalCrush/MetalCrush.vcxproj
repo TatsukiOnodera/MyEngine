@@ -196,8 +196,8 @@
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="LightGroup.cpp" />
     <ClCompile Include="Light\Light.cpp" />
-    <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\EndScene.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
@@ -235,9 +235,12 @@
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />
+    <ClInclude Include="LightGroup.h" />
+    <ClInclude Include="Light\CircleShadow.h" />
+    <ClInclude Include="Light\DirectionalLight.h" />
     <ClInclude Include="Light\Light.h" />
-    <ClInclude Include="Light\LightGroup.h" />
     <ClInclude Include="Light\PointLight.h" />
+    <ClInclude Include="Light\SpotLight.h" />
     <ClInclude Include="Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\EndScene.h" />

@@ -5,7 +5,7 @@
 #include <DirectXMath.h>
 #include "Model.h"
 #include "Camera.h"
-#include "Light.h"
+#include "LightGroup.h"
 #include "CollisionInfo.h"
 #include "PipelineManager.h"
 
@@ -27,8 +27,8 @@ private: //静的変数;
 	static ID3D12GraphicsCommandList* s_cmdList;
 	//カメラクラス
 	static Camera *s_camera;
-	//ライトクラス
-	static Light* s_light;
+	//ライトグループクラス
+	static LightGroup* s_lightGroup;
 
 public: // シェーダータイプ
 	enum ShaderType
@@ -55,7 +55,7 @@ public: //静的関数
 	/// <summary>
 	/// ライトセット
 	/// </summary>
-	static void SetLight(Light* light) { Object3d::s_light = light; }
+	static void SetGroupLight(LightGroup* lightGroup) { Object3d::s_lightGroup = lightGroup; }
 
 	/// <summary>
 	/// 描画前処理

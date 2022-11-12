@@ -1,7 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 
-class PointLight
+struct SpotLight
 {
 private: // エイリアス
 	using XMFLOAT2 = DirectX::XMFLOAT2;
@@ -10,31 +10,52 @@ private: // エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-
-
 public: // サブクラス
 	// 定数バッファ用
 	struct ConstBufferData
 	{
+		XMVECTOR lightDir;
 		XMFLOAT3 lightPos;
 		float pad1;
 		XMFLOAT3 lightColor;
 		float pad2;
 		XMFLOAT3 lightAtten;
+		float pad3;
+		XMFLOAT2  lightFactorAngleCos;
 		unsigned int active;
+		float pad4;
 	};
 
 private: // メンバ変数
+	// ライトのベクトル
+	XMVECTOR m_lightDir = { 1, 0, 0, 0 };
 	// ライト座標（ワールド座標）
 	XMFLOAT3 m_lightPos = { 0, 0, 0 };
 	// ライト色
 	XMFLOAT3 m_lightColor = { 1, 1, 1 };
 	// ライト距離減衰係数
-	XMFLOAT3 m_lightAtten = { 1, 1, 1 };
+	XMFLOAT3 m_lightAtten = { 1.0f, 1.0f, 1.0f };
+	// ライト減衰角度（開始角度、終了角度）
+	XMFLOAT2 m_lightFactorAngleCos = { 0.5f, 0.2f };
 	// 有効フラグ
 	bool m_active = false;
 
 public: // アクセッサ
+	/// <summary>
+	/// ライトのベクトルを取得
+	/// </summary>
+	/// <returns>ライトのベクトル</returns>
+	inline const XMVECTOR& GetLightDir() { return m_lightDir; }
+
+	/// <summary>
+	/// ライトのベクトルをセット
+	/// </summary>
+	/// <param name="lightPos">ライトのベクトル</param>
+	inline void SetLightDir(const XMVECTOR& lightDir)
+	{
+		m_lightDir = DirectX::XMVector3Normalize(lightDir);
+	}
+
 	/// <summary>
 	/// ライト座標を取得
 	/// </summary>
@@ -78,6 +99,22 @@ public: // アクセッサ
 	inline void SetLightAtten(const XMFLOAT3& lightAtten)
 	{
 		m_lightAtten = lightAtten;
+	}
+
+	/// <summary>
+	/// ライト角度減衰を取得
+	/// </summary>
+	/// <returns>ライト角度減衰</returns>
+	inline const XMFLOAT2& GetLightFactorAngleCos() { return m_lightFactorAngleCos; }
+
+	/// <summary>
+	/// ライト角度減衰をセット
+	/// </summary>
+	/// <param name="lightFactorAngleCos">ライト減衰角度</param>
+	inline void SetLightFactorAngleCos(const XMFLOAT2& lightFactorAngleCos)
+	{
+		m_lightFactorAngleCos.x = cosf(DirectX::XMConvertToRadians(lightFactorAngleCos.x));
+		m_lightFactorAngleCos.y = cosf(DirectX::XMConvertToRadians(lightFactorAngleCos.y));
 	}
 
 	/// <summary>

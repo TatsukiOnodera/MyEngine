@@ -30,12 +30,10 @@ private: // 定数
 	const float c_decMove = 0.9f;
 	// 通常移動の最大速度
 	const float c_maxVelXZ = 0.6f;
-
 	// ジャンプの加速度
 	const float c_accJump = 0.05f;
 	// ジャンプの最大速度
 	const float c_maxVelY = 0.6f;
-
 	// カメラの回転角度
 	const float c_addAngle = 1.0f;
 
@@ -45,12 +43,10 @@ private: // サブクラス
 	{
 		// HP
 		int HP = 20;
-
 		// 生存フラグ
 		bool isAlive = false;
 		// ダッシュフラグ
 		bool isDash = false;
-
 		// 座標
 		XMFLOAT3 pos = { 0, 0, 0 };
 		// 速度
@@ -62,18 +58,15 @@ private: // メンバ変数
 	// 自機
 	//==============================
 	// オブジェクト
-	unique_ptr<FbxObject3d> m_player = nullptr;
-
+	unique_ptr<FbxObject3d> m_playerFBX = nullptr;
 	// ステータス
-	PlayerStatus m_status;
-
+	PlayerStatus m_player;
 	// ダッシュの加速度
 	float m_dashAcc = 0;
 	// ダッシュの時間
 	float m_dashTime = 0;
 	// 1フレーム当たりの加算（DT = DashTime）
 	float m_addDT = 10.0f;
-
 	// 重力加速値の時間
 	int m_gravityTime = 0;
 
@@ -82,7 +75,6 @@ private: // メンバ変数
 	//==============================
 	// オブジェクト
 	std::vector<std::unique_ptr<Bullet>> m_playerBullets;
-
 	// 標的の座標
 	XMFLOAT3 m_targetPos = { 0, 0, 0 };
 	// ロック中か
@@ -200,7 +192,7 @@ public: // アクセッサ
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
-	const XMFLOAT3 GetPosition() { return m_status.pos; }
+	const XMFLOAT3 GetPosition() { return m_player.pos; }
 	
 	/// <summary>
 	/// void SetPosition(XMFLOAT3 position);
@@ -208,21 +200,21 @@ public: // アクセッサ
 	/// <param name="position">座標</param>
 	void SetPosition(const XMFLOAT3& position)
 	{
-		m_status.pos = position;
+		m_player.pos = position;
 
-		m_player->SetPosition(m_status.pos);
+		m_playerFBX->SetPosition(m_player.pos);
 	}
 
 	/// <summary>
 	/// 速度を取得
 	/// </summary>
 	/// <returns>速度</returns>
-	const XMFLOAT3 GetVelocity() { return m_status.vel; }
+	const XMFLOAT3 GetVelocity() { return m_player.vel; }
 
 	/// <summary>
 	/// 生死フラグを取得
 	/// </summary>
-	bool GetAlive() { return m_status.isAlive; }
+	bool GetAlive() { return m_player.isAlive; }
 
 	/// <summary>
 	/// 生死フラグをセット
@@ -230,7 +222,7 @@ public: // アクセッサ
 	/// <param name="alive">生死フラグ</param>
 	void SetAlive(const bool alive)
 	{
-		m_status.isAlive = alive;
+		m_player.isAlive = alive;
 	}
 
 	/// <summary>
@@ -254,7 +246,7 @@ public: // アクセッサ
 	/// HPの取得
 	/// </summary>
 	/// <returns>HP</returns>
-	int GetPlayerHP() { return m_status.HP; }
+	int GetPlayerHP() { return m_player.HP; }
 
 	/// <summary>
 	/// HPのセット
@@ -262,7 +254,7 @@ public: // アクセッサ
 	/// <param name="m_HP">HP</param>
 	void SetPlayerHP(const int HP)
 	{
-		m_status.HP = HP;
+		m_player.HP = HP;
 	}
 
 	/// <summary>
@@ -274,9 +266,12 @@ public: // アクセッサ
 	/// <summary>
 	/// ダッシュフラグを取得
 	/// </summary>
-	bool GetIsDash() { return m_status.isDash; }
+	bool GetIsDash() { return m_player.isDash; }
 
-	FbxObject3d* GetPlayerObject() { return m_player.get(); }
+	/// <summary>
+	/// FBX取得
+	/// </summary>
+	FbxObject3d* GetPlayerObject() { return m_playerFBX.get(); }
 
 	/// <summary>
 	/// 弾を取得

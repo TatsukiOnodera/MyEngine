@@ -9,7 +9,7 @@
 #include "Camera.h"
 #include "DirectXCommon.h"
 #include "BaseScene.h"
-#include "Light.h"
+#include "LightGroup.h"
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
 
@@ -61,13 +61,12 @@ private: // メモリ置き場
 
 private: // インスタンス
 	// ライト
-	std::unique_ptr<Light> light = nullptr;
+	std::unique_ptr<LightGroup> lightGroup = nullptr;
 
 	// パーティクル
 	std::unique_ptr<ParticleManager> explosion = nullptr;
 
 	// スプライト
-	std::unique_ptr<Sprite> backScreen = nullptr;
 	std::unique_ptr<Sprite> reticle = nullptr;
 	std::unique_ptr<Sprite> HP = nullptr;
 

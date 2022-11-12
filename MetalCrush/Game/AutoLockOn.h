@@ -76,10 +76,4 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>標的の番号</returns>
 	const int GetTargetNum() { return targetNum; }
-
-	/// <summary>
-	/// 標的の番号切り替え
-	/// </summary>
-	/// <param name="addNum">変更値</param>
-	void ChangeTargetNum(int addNum);
 };
