@@ -25,8 +25,7 @@ void Enemy::Initialize()
 	// 座標
 	m_pos = { static_cast<float>(rand() % 21 - 10), -900, 100 };
 	// 速度
-	//m_vel = { static_cast<float>(rand() % 21 - 10) / 10, -9.8f, static_cast<float>(rand() % 21 - 10) / 10 };
-	m_vel = { 0, -0.98f, 0 };
+	m_vel = { static_cast<float>(rand() % 21 - 10) / 10, -9.8f, static_cast<float>(rand() % 21 - 10) / 10 };
 	// 生存フラグ
 	m_alive = true;
 	// 発射間隔
@@ -44,14 +43,6 @@ void Enemy::Update()
 	// エネミーの更新
 	if (m_alive == true)
 	{
-		// 加速度
-		//XMFLOAT3 acc = {};
-
-		// 速度に加速度を加算
-		//m_vel.x += acc.x;
-		//m_vel.y += acc.y;
-		//m_vel.z += acc.z;
-
 		// 座標に速度を加算
 		m_pos.x += m_vel.x;
 		m_pos.y += m_vel.y;

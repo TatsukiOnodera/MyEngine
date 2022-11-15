@@ -49,7 +49,7 @@ struct SpotLight
 };
 
 // 丸影の数
-static const int CIRCLESHADOW_NUM = 1;
+static const int CIRCLESHADOW_NUM = 10;
 
 struct CircleShadow
 {

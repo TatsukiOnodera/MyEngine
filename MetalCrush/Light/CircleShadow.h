@@ -21,7 +21,7 @@ public: // サブクラス
 		float pad1;
 		XMFLOAT2  factorAngleCos;
 		unsigned int active;
-		float pad2;
+		unsigned int num;
 	};
 
 private: // メンバ変数

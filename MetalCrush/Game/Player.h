@@ -187,18 +187,20 @@ public: // メンバ関数
 	/// <returns>二点間の距離</returns>
 	const float Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2 = { 0, 0, 0 });
 
+	const XMFLOAT3 normalize(const XMFLOAT3& tmp);
+
 public: // アクセッサ
 	/// <summary>
 	/// 座標を取得
 	/// </summary>
 	/// <returns>座標</returns>
-	const XMFLOAT3 GetPosition() { return m_player.pos; }
+	inline const XMFLOAT3& GetPosition() { return m_player.pos; }
 	
 	/// <summary>
 	/// void SetPosition(XMFLOAT3 position);
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(const XMFLOAT3& position)
+	inline void SetPosition(const XMFLOAT3& position)
 	{
 		m_player.pos = position;
 
@@ -209,18 +211,18 @@ public: // アクセッサ
 	/// 速度を取得
 	/// </summary>
 	/// <returns>速度</returns>
-	const XMFLOAT3 GetVelocity() { return m_player.vel; }
+	inline const XMFLOAT3& GetVelocity() { return m_player.vel; }
 
 	/// <summary>
 	/// 生死フラグを取得
 	/// </summary>
-	bool GetAlive() { return m_player.isAlive; }
+	inline bool GetAlive() { return m_player.isAlive; }
 
 	/// <summary>
 	/// 生死フラグをセット
 	/// </summary>
 	/// <param name="alive">生死フラグ</param>
-	void SetAlive(const bool alive)
+	inline void SetAlive(const bool alive)
 	{
 		m_player.isAlive = alive;
 	}
@@ -229,7 +231,7 @@ public: // アクセッサ
 	/// 標的の座標をセット
 	/// </summary>
 	/// <param name="targetPosition">標的の座標</param>
-	void SetTargetPosition(const XMFLOAT3& targetPosition)
+	inline void SetTargetPosition(const XMFLOAT3& targetPosition)
 	{
 		m_targetPos = targetPosition;
 	}
@@ -237,7 +239,7 @@ public: // アクセッサ
 	/// <summary>
 	/// ロックフラグをセット
 	/// </summary>
-	void SetIsLock(const bool isLock)
+	inline void SetIsLock(const bool isLock)
 	{
 		m_isLock = isLock;
 	}
@@ -246,13 +248,13 @@ public: // アクセッサ
 	/// HPの取得
 	/// </summary>
 	/// <returns>HP</returns>
-	int GetPlayerHP() { return m_player.HP; }
+	inline int GetPlayerHP() { return m_player.HP; }
 
 	/// <summary>
 	/// HPのセット
 	/// </summary>
 	/// <param name="m_HP">HP</param>
-	void SetPlayerHP(const int HP)
+	inline void SetPlayerHP(const int HP)
 	{
 		m_player.HP = HP;
 	}
@@ -261,20 +263,20 @@ public: // アクセッサ
 	/// 装弾数取得
 	/// </summary>
 	/// <returns>装弾数</returns>
-	int GetBulletCapacity() { return m_bulletCapacity; }
+	inline int GetBulletCapacity() { return m_bulletCapacity; }
 
 	/// <summary>
 	/// ダッシュフラグを取得
 	/// </summary>
-	bool GetIsDash() { return m_player.isDash; }
+	inline bool GetIsDash() { return m_player.isDash; }
 
 	/// <summary>
 	/// FBX取得
 	/// </summary>
-	FbxObject3d* GetPlayerObject() { return m_playerFBX.get(); }
+	inline FbxObject3d* GetPlayerObject() { return m_playerFBX.get(); }
 
 	/// <summary>
 	/// 弾を取得
 	/// </summary>
-	const std::vector<std::unique_ptr<Bullet>>& GetPlayerBullets() { return m_playerBullets; }
+	inline const std::vector<std::unique_ptr<Bullet>>& GetPlayerBullets() { return m_playerBullets; }
 };

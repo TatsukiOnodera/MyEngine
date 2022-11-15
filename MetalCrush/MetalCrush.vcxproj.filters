@@ -102,9 +102,6 @@
     <ClCompile Include="Input\Input.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Light\Light.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Base</Filter>
     </ClCompile>
@@ -211,9 +208,6 @@
     </ClInclude>
     <ClInclude Include="Input\InputList.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Light\Light.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
     </ClInclude>
     <ClInclude Include="3D\Object3d.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
