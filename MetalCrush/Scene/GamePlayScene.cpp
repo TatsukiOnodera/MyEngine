@@ -9,7 +9,7 @@ using namespace DirectX;
 
 GamePlayScene::~GamePlayScene()
 {
-	
+
 }
 
 void GamePlayScene::Initialize()
@@ -24,9 +24,10 @@ void GamePlayScene::Initialize()
 
 	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-	Sprite::LoadTexture(1, L"Resources/BackScreen.png");
+	//Sprite::LoadTexture(1, L"Resources/BackScreen.png");
 	Sprite::LoadTexture(2, L"Resources/Reticle.png");
-	Sprite::LoadTexture(3, L"Resources/PlayerHP.png");
+	Sprite::LoadTexture(3, L"Resources/ParameterBar.png");
+	Sprite::LoadTexture(4, L"Resources/NumberText.png");
 
 	// ライト生成
 	lightGroup.reset(LightGroup::Create());
@@ -40,19 +41,32 @@ void GamePlayScene::Initialize()
 
 	// スプライト
 	reticle.reset(Sprite::Create(2, { 0, 0 }, { 0.5f, 0.5f }));
-	HP.reset(Sprite::Create(3));
-	HP->SetPosition({ WinApp::window_width / 2 - 256 / 2, 8});
+	/*HP.reset(Sprite::Create(3, { 0, 0 }, { 0.5f, 0.5f }));
+	HP->SetPosition({ WinApp::window_width / 2, WinApp::window_height - 72});
 	HP->SetColor({ 0, 0.6f, 0.5f, 0.8f });
-
-	// OBJオブジェクト
-	ground.reset(Object3d::Create("Wall"));
-	for (int e = 0; e < 3; e++)
+	for (int i = 0; i < 2; i++)
 	{
-		enemy.emplace_back(new Enemy);
-	}
+		ammoNum[i].reset(Sprite::Create(4, {0, 0}, {0.5f, 0.5f}));
+		ammoNum[i]->SetPosition({ WinApp::window_width - 136 + (64.0f * i), WinApp::window_height - 72 });
+		ammoNum[i]->SetTexSize({ 64, 72 });
+		ammoNum[i]->SetSize({ 64, 72 });
+		ammoNum[i]->SetColor({ 0, 0.6f, 0.5f, 0.8f });
+	}*/
 
-	// FBXオブェクト
-	player.reset(new Player);
+	// オブジェクト
+	desertModel.reset(Model::Create("Desert"));
+	skyWallModel.reset(Model::Create("SkyWall"));
+	playerModel.reset(Model::Create("Bullet"));
+	enemyModel.reset(Model::Create("Enemy"));
+	bulletModel.reset(Model::Create("Bullet", true));
+
+	desert.reset(Object3d::Create(desertModel.get()));
+	skyWall.reset(Object3d::Create(skyWallModel.get()));
+	for (int i = 0; i < 6; i++)
+	{
+		enemy.emplace_back(new Enemy(enemyModel.get(), bulletModel.get()));
+	}
+	player.reset(new Player(playerModel.get(), bulletModel.get()));
 
 	// その他
 	lockList.reset(new AutoLockOn);
@@ -70,24 +84,33 @@ void GamePlayScene::Initialize()
 void GamePlayScene::InitializeVariable()
 {
 	// 地面
-	float size = 1000;
-	ground->SetPosition({ 0, -size, 0 });
-	ground->SetRotation({ -90, 0, 0 });
-	ground->SetScale({ size, size, size });
-	ground->Update();
+	desert->SetScale({ 1, 1, 1 });
+	desert->Update();
+
+	// 壁
+	skyWall->SetPosition({ 0, -10 * desert->GetScale().y, 0});
+	skyWall->SetScale({ 10 * desert->GetScale().x, 50, 10 * desert->GetScale().z });
+	skyWall->Update();
 
 	// ライト
-	//lightGroup->SetDirLightActive(0, true);
-
-	/*lightGroup->SetPointLightActive(0, false);
-	lightGroup->SetPointLightAtten(0, { 0.01f, 0.01f, 0.01f });
-	lightGroup->SetPointLightColor(0, { 1, 1, 1 });
-	lightGroup->SetPointLightPos(0, { 0, -950 ,-100 });*/
+	lightGroup->SetDirLightActive(0, true);
+	lightGroup->SetDirLightDir(0, { 0, -0.5f, 0, 1 });
+	lightGroup->SetDirLightColor(0, { 1.0f, 1.0f, 1.0f });
+	// 影
+	for (int i = 0; i < 4; i++)
+	{
+		lightGroup->SetCircleShadowActive(i, true);
+		lightGroup->SetCircleShadowDir(i, { 0, -1, 0 });
+		lightGroup->SetCircleShadowAtten(i, { 0.5f, 0.6f, 0.0f });
+		lightGroup->SetCircleShadowFactorAngleCos(i, { 0.0f, 0.5f });
+	}
+	lightGroup->Update();
 
 	// カメラ
+	camera->SetCameraAngles();
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetDistance();
-	camera->Update();
+	camera->UpdateMatView();
 }
 
 void GamePlayScene::Update()
@@ -112,8 +135,27 @@ void GamePlayScene::Update()
 	// 衝突判定
 	CheckAllCollisions();
 
-	// HP
-	HP->SetSize({ 256.0f / 20 * player->GetPlayerHP(), 72});
+	// HP（HUD）
+	//HP->SetSize({ 256.0f / 20 * player->GetPlayerHP(), 72});
+
+	// 球数
+	/*int tmp_num = player->GetBulletCapacity();
+	ammoNum[0]->SetLeftTop({ static_cast<float>(tmp_num / 10) * 64, 0 });
+	tmp_num %= 10;
+	ammoNum[1]->SetLeftTop({ static_cast<float>(tmp_num) * 64, 0 });*/
+
+	// 影
+	lightGroup->SetCircleShadowCasterPos(0, player->GetPosition());
+	int index = 1;
+	for (auto& m : enemy)
+	{
+		if (enemy.size() < index)
+		{
+			break;
+		}
+		lightGroup->SetCircleShadowCasterPos(index, m->GetPosition());
+		index++;
+	}
 
 #pragma endregion
 
@@ -123,7 +165,7 @@ void GamePlayScene::Update()
 	lightGroup->Update();
 	
 	// カメラ更新
-	camera->Update();
+	camera->UpdateMatView();
 
 #pragma endregion
 }
@@ -137,7 +179,7 @@ void GamePlayScene::Draw()
 	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
 	DrawEffect(cmdList);
-	DrawUI(cmdList);
+	DrawHUD(cmdList);
 	//DrawDebugText(cmdList);
 }
 
@@ -157,8 +199,10 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	// OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
+	// 地面
+	desert->Draw();
 	// 壁
-	ground->Draw();
+	skyWall->Draw();
 
 	Object3d::PostDraw();
 
@@ -172,13 +216,17 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	}
 }
 
-void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
+void GamePlayScene::DrawHUD(ID3D12GraphicsCommandList* cmdList)
 {
-	// UI描画
+	// HUD描画
 	Sprite::PreDraw(cmdList);
 
 	reticle->Draw();
-	HP->Draw();
+	/*HP->Draw();
+	for (auto& m : ammoNum)
+	{
+		m->Draw();
+	}*/
 
 	Sprite::PostDraw();
 }
@@ -204,6 +252,18 @@ const float GamePlayScene::Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2)
 
 void GamePlayScene::CheckAllCollisions()
 {
+#pragma region プレイヤーと壁の衝突判定
+
+	CheckPlayer2Wall();
+
+#pragma endregion
+
+#pragma region エネミーと壁の衝突判定
+
+	CheckEnemy2Wall();
+
+#pragma endregion
+
 #pragma region プレイヤーとエネミーの衝突判定
 
 	CheckPlayer2Enemy();
@@ -222,27 +282,9 @@ void GamePlayScene::CheckAllCollisions()
 
 #pragma endregion
 
-#pragma region プレイヤーと壁の衝突判定
+#pragma region 弾と壁の衝突判定
 
-	CheckPlayer2Wall();
-
-#pragma endregion
-
-#pragma region エネミーと壁の衝突判定
-
-	CheckEnemy2Wall();
-
-#pragma endregion
-
-#pragma region プレイヤー弾と壁の衝突判定
-
-	CheckPlayerBullets2Wall();
-
-#pragma endregion
-
-#pragma region エネミー弾と壁の衝突判定
-
-	CheckEnemyBullets2Wall();
+	CheckBullet2Wall();
 
 #pragma endregion
 }
@@ -263,10 +305,10 @@ void GamePlayScene::CheckPlayer2Enemy()
 			{
 				lockList->Lost(m.get());
 			}
-			if (Length(player->GetPosition(), m->GetPosition()) < 150.0f && m->GetAlive() == true)
+			if (Length(player->GetPosition(), m->GetPosition()) < 350.0f && m->GetAlive() == true)
 			{
 				// エネミーの発射
-				//enemy[e]->ShotBullet(playerPos);
+				m->ShotBullet(player->GetPosition());
 			}
 		}
 	}
@@ -278,17 +320,19 @@ void GamePlayScene::CheckPlayer2Enemy()
 	{
 		// まっすぐ飛ぶ
 		reticle->SetPosition({ 0, 0 });
+		reticle->SetInvisible(true);
+
 		player->SetTargetPosition({ 0, 0, 0 });
 		player->SetIsLock(false);
-		reticle->SetInvisible(true);
 	}
 	else
 	{
 		// ロック先に打つ
 		reticle->SetPosition(camera->Convert3DPosTo2DPos(lockList->GetTargetEnemy()->GetPosition()));
+		reticle->SetInvisible(false);
+
 		player->SetTargetPosition(lockList->GetTargetEnemy()->GetPosition());
 		player->SetIsLock(true);
-		reticle->SetInvisible(false);
 	}
 }
 
@@ -301,7 +345,7 @@ void GamePlayScene::CheckPlayerBullets2Enemy()
 		{
 			for (auto& e : enemy)
 			{
-				if (Length(pB->GetPosition(), e->GetPosition()) < 3.0f && e->GetAlive() == true)
+				if (Length(pB->GetPosition(), e->GetPosition()) < 10.0f && e->GetAlive() == true)
 				{
 					pB->SetAlive(false);
 					e->SetAlive(false);
@@ -355,28 +399,10 @@ void GamePlayScene::CheckPlayer2Wall()
 	{
 		XMFLOAT3 playerPos = player->GetPosition();
 
-		if (playerPos.y < -ground->GetScale().y + 5.0f * player->GetPlayerObject()->GetScale().z)
+		if (playerPos.y < 10 + 5.0f * player->GetPlayerObject()->GetScale().z)
 		{
-			playerPos.y = -ground->GetScale().y + 5.0f * player->GetPlayerObject()->GetScale().z;
+			playerPos.y = 10 + 5.0f * player->GetPlayerObject()->GetScale().z;
 			player->OnLand();
-		}
-
-		if (ground->GetScale().x - 5 < playerPos.x)
-		{
-			playerPos.x = ground->GetScale().x - 5;
-		}
-		else if (playerPos.x < -ground->GetScale().x + 5)
-		{
-			playerPos.x = -ground->GetScale().x + 5;
-		}
-
-		if (ground->GetScale().z - 0.5f * player->GetPlayerObject()->GetScale().y < playerPos.z)
-		{
-			playerPos.z = ground->GetScale().z - 0.5f * player->GetPlayerObject()->GetScale().y;
-		}
-		else if (playerPos.z < -ground->GetScale().z + 0.5f * player->GetPlayerObject()->GetScale().y)
-		{
-			playerPos.z = -ground->GetScale().z + 0.5f * player->GetPlayerObject()->GetScale().y;
 		}
 
 		player->SetPosition(playerPos);
@@ -390,74 +416,57 @@ void GamePlayScene::CheckEnemy2Wall()
 		if (m->GetAlive() == true)
 		{
 			XMFLOAT3 enemyPos = m->GetPosition();
-			XMFLOAT3 enemyVel = m->GetVelocity();
 
-			if (enemyPos.y < -ground->GetScale().y + 1.0f * 3)
+			if (enemyPos.y < 50 + 0.25f * m->GetObject3d()->GetScale().y)
 			{
-				enemyPos.y = -ground->GetScale().y + 1.0f * 3;
-			}
-
-			if (ground->GetScale().x - 5 < enemyPos.x)
-			{
-				enemyPos.x = ground->GetScale().x - 5;
-				enemyVel.x = -fabs(enemyVel.x);
-			}
-			else if (enemyPos.x < -ground->GetScale().x + 5)
-			{
-				enemyPos.x = -ground->GetScale().x + 5;
-				enemyVel.x = fabs(enemyVel.x);
-			}
-
-			if (ground->GetScale().z - 0.5f * player->GetPlayerObject()->GetScale().y < enemyPos.z)
-			{
-				enemyPos.z = ground->GetScale().z - 0.5f * player->GetPlayerObject()->GetScale().y;
-				enemyVel.z = -fabs(enemyVel.x);
-			}
-			else if (enemyPos.z < -ground->GetScale().z + 0.5f * player->GetPlayerObject()->GetScale().y)
-			{
-				enemyPos.z = -ground->GetScale().z + 0.5f * player->GetPlayerObject()->GetScale().y;
-				enemyVel.z = fabs(enemyVel.x);
+				enemyPos.y = 50 + 0.25f * m->GetObject3d()->GetScale().y;
 			}
 
 			m->SetPosition(enemyPos);
-			m->SetVelocity(enemyVel);
 		}
 	}
 }
 
-void GamePlayScene::CheckPlayerBullets2Wall()
-{
-	//壁の当たり判定
-	const std::vector<unique_ptr<Bullet>>& playerBullets = player->GetPlayerBullets();
-	for (auto& m : playerBullets)
-	{
-		if (m->GetPosition().x < -ground->GetScale().x || ground->GetScale().x < m->GetPosition().x)
-		{
-			m->SetAlive(false);
-		}
-		else if (m->GetPosition().z < -ground->GetScale().z || ground->GetScale().z < m->GetPosition().z)
-		{
-			m->SetAlive(false);
-		}
-	}
-}
-
-void GamePlayScene::CheckEnemyBullets2Wall()
+void GamePlayScene::CheckBullet2Wall()
 {
 	for (auto& e : enemy)
 	{
 		const std::vector<std::unique_ptr<Bullet>>& enemyrBullets = e->GetEnemyBullet();
-
-		for (auto& eB : enemyrBullets)
+		if (e->GetAlive() == false)
 		{
-			if (eB->GetPosition().x < -ground->GetScale().x|| ground->GetScale().x < eB->GetPosition().x)
+			continue;
+		}
+		for (const auto& eB : enemyrBullets)
+		{
+			if (eB->GetAlive() == false)
+			{
+				continue;
+			}
+			if (eB->GetPosition().x < -700.0f * desert->GetScale().x || 700.0f * desert->GetScale().x < eB->GetPosition().x)
 			{
 				eB->SetAlive(false);
 			}
-			else if (eB->GetPosition().z < -ground->GetScale().z || ground->GetScale().z < eB->GetPosition().z)
+			else if (eB->GetPosition().z < -500.0f * desert->GetScale().z || 500.0f * desert->GetScale().z < eB->GetPosition().z)
 			{
 				eB->SetAlive(false);
 			}
+		}
+	}
+
+	const std::vector<unique_ptr<Bullet>>& playerBullets = player->GetPlayerBullets();
+	for (const auto& pB : playerBullets)
+	{
+		if (pB->GetAlive() == false)
+		{
+			continue;
+		}
+		if (pB->GetPosition().x < -700.0f * desert->GetScale().x || 700.0f * desert->GetScale().x < pB->GetPosition().x)
+		{
+			pB->SetAlive(false);
+		} 
+		else if (pB->GetPosition().z < -500.0f * desert->GetScale().z || 500.0f * desert->GetScale().z < pB->GetPosition().z)
+		{
+			pB->SetAlive(false);
 		}
 	}
 }

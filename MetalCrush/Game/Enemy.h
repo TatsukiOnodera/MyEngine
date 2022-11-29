@@ -1,4 +1,5 @@
 #pragma once
+#include "Model.h"
 #include "Object3d.h"
 #include "Player.h"
 #include "Bullet.h"
@@ -19,7 +20,7 @@ private: // メンバ変数
 	// オブジェクト
 	std::unique_ptr<Object3d> m_object = nullptr;
 	// 座標
-	XMFLOAT3 m_pos = { 0, 0, 50 };
+	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 速度
 	XMFLOAT3 m_vel = { 0, 0, 0 };
 	// 生存フラグ
@@ -30,6 +31,8 @@ private: // メンバ変数
 	//==============================
 	// オブジェクト
 	std::vector<std::unique_ptr<Bullet>> enemyBullets;
+	// モデル
+	Model* m_bulletModel = nullptr;
 	// 発射間隔
 	int m_bulletInterval = 0;
 
@@ -37,7 +40,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Enemy();
+	Enemy(Model* enemyModel, Model* bulletModel);
 
 	/// <summary>
 	/// デストラクタ
@@ -103,6 +106,7 @@ public: //アクセッサ
 	{
 		m_vel = velocity;
 	}
+
 
 	/// <summary>
 	/// 生死フラグの取得

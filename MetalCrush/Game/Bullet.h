@@ -1,8 +1,9 @@
 #pragma once
+#include "Model.h"
+#include "Object3d.h"
+
 #include <DirectXMath.h>
 #include <memory>
-
-#include "Object3d.h"
 
 using namespace std;
 
@@ -17,13 +18,11 @@ public: // エイリアス
 
 private: // メンバ変数
 	// オブジェクト
-	unique_ptr<Object3d> m_object = nullptr;
+	std::shared_ptr<Object3d> m_object;
 	// 座標
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 速度
 	XMFLOAT3 m_vel = { 0, 0, 0 };
-	// 加速度
-	XMFLOAT3 m_acc = { 0, 0, 0 };
 	// 生存フラグ
 	bool m_alive = false;
 
@@ -31,7 +30,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Bullet(const XMFLOAT3& pos = { 0, 0, 0 }, const XMFLOAT3& vel = { 0, 0, 0 }, const XMFLOAT3& acc = { 0, 0, 0 }, const bool& alive = true);
+	Bullet(const XMFLOAT3& pos = { 0, 0, 0 }, const XMFLOAT3& vel = { 0, 0, 0 }, const bool& alive = true, Model* model = nullptr);
 
 	/// <summary>
 	/// デストラクタ
@@ -44,7 +43,7 @@ public: // メンバ関数
 	/// <param name="pos">座標</param>
 	/// <param name="vec">ベクトル</param>
 	/// <param name="alive">生存フラグ</param>
-	void Initialize(const XMFLOAT3& pos, const XMFLOAT3& vel, const XMFLOAT3& acc, const bool& alive);
+	void Initialize(const XMFLOAT3& pos, const XMFLOAT3& vel, const bool& alive);
 
 	/// <summary>
 	///  更新

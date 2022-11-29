@@ -90,7 +90,11 @@ void DirectXCommon::PreDraw()
 	ClearDepth();
 
 	//画面クリア
-	float clearColor[] = { 0.0f, 0.0f, 1.0f , 1.0f };//青っぽい色
+	float R = 86;
+	float G= 119;
+	float B = 252;
+	float A = 255;
+	float clearColor[] = { powf((R / 255), 2.2f), powf((G / 255), 2.2f), powf((B / 255), 2.2f), A / 255 };//青っぽい色
 	cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
 
 	//ビューポート領域の設定

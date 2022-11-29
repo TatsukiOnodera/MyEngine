@@ -1,5 +1,6 @@
 #pragma once
 #include "Input.h"
+#include "Model.h"
 #include "Object3d.h"
 #include "Sprite.h"
 #include "Audio.h"
@@ -68,13 +69,18 @@ private: // インスタンス
 
 	// スプライト
 	std::unique_ptr<Sprite> reticle = nullptr;
-	std::unique_ptr<Sprite> HP = nullptr;
+	/*std::unique_ptr<Sprite> HP = nullptr;
+	std::unique_ptr<Sprite> ammoNum[2];*/
 
-	// OBJオブジェクト
-	std::unique_ptr<Object3d> ground = nullptr;
-	std::list<std::unique_ptr<Enemy>> enemy;
-
-	// FBXオブジェクト
+	// オブジェクト
+	std::unique_ptr<Model> desertModel;
+	std::unique_ptr<Model> skyWallModel;
+	std::unique_ptr<Model> playerModel;
+	std::unique_ptr<Model> enemyModel;
+	std::unique_ptr<Model> bulletModel;
+	std::unique_ptr<Object3d> desert = nullptr;
+	std::unique_ptr<Object3d> skyWall = nullptr;
+	std::vector<std::unique_ptr<Enemy>> enemy;
 	std::unique_ptr<Player> player = nullptr;
 
 	// その他
@@ -127,7 +133,7 @@ public: // メンバ関数
 	/// <summary>
 	/// UI描画
 	/// </summary>
-	void DrawUI(ID3D12GraphicsCommandList* cmdList);
+	void DrawHUD(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// デバッグテキスト描画
@@ -172,13 +178,5 @@ public: // メンバ関数
 	/// </summary>
 	void CheckEnemy2Wall();
 
-	/// <summary>
-	/// プレイヤーの弾と壁の衝突判定
-	/// </summary>
-	void CheckPlayerBullets2Wall();
-	
-	/// <summary>
-	/// エネミーの弾と壁の衝突判定
-	/// </summary>
-	void CheckEnemyBullets2Wall();
+	void CheckBullet2Wall();
 };

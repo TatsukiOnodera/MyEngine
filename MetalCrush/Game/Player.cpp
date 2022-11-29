@@ -9,11 +9,13 @@ Input* Player::s_input = Input::GetInstance();
 
 using namespace DirectX;
 
-Player::Player()
+Player::Player(Model* playerModel, Model* bulletModel)
 {
 	// モデルの読み込み
+	m_bulletModel = bulletModel;
 	m_playerFBX.reset(FbxObject3d::CreateFBXObject("PlayerBone"));
 	m_booster.reset(ParticleManager::Create("Particle/FireParticle.png"));
+	
 
 	// 初期化
 	Initialize();
@@ -21,13 +23,13 @@ Player::Player()
 
 Player::~Player()
 {
-	
+
 }
 
 void Player::Initialize()
 {
 	// nullチェック
-	if (m_playerFBX == nullptr)
+	if (m_playerFBX == nullptr || m_booster == nullptr)
 	{
 		assert(0);
 	}
@@ -76,12 +78,12 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	// 加速度
+	XMFLOAT3 acc = {};	
+
 	// 生きているなら
 	if (m_player.isAlive == true)
 	{
-		// 加速度
-		XMFLOAT3 acc = {};
-
 		// 縦横移動
 		MovePlayer(acc);
 
@@ -95,7 +97,25 @@ void Player::Update()
 		m_gravityTime++;
 
 		// 速度に加速を加算
-		AddAcceleration(acc);
+		m_player.vel.x += acc.x;
+		m_player.vel.z += acc.z;
+		if (c_maxVelXZ < fabs(m_player.vel.x))
+		{
+			float div = fabs(m_player.vel.x) / c_maxVelXZ;
+			m_player.vel.x /= div;
+			m_player.vel.z /= div;
+		}
+		else if (c_maxVelXZ < fabs(m_player.vel.z))
+		{
+			float div = fabs(m_player.vel.z) / c_maxVelXZ;
+			m_player.vel.x /= div;
+			m_player.vel.z /= div;
+		}
+		m_player.vel.y += acc.y;
+		if (c_maxVelY < m_player.vel.y)
+		{
+			m_player.vel.y = c_maxVelY;
+		}
 
 		// ダッシュ
 		DashPlayer();
@@ -116,14 +136,24 @@ void Player::Update()
 		m->Update();
 	}
 
-	// メインブースターのエフェクト
-	MainBooster();
+	// オフセットの更新
+	UpdateOffset();
 
-	// サイドブースターのエフェクト
-	SideBooster();
+	if (m_player.isDash == false)
+	{
+		// メインブースターのエフェクト
+		MainBooster(acc);
 
-	// バックブースターのエフェクト
-	BacktBooster();
+		// サイドブースターのエフェクト
+		SideBooster(acc);
+
+		// バックブースターのエフェクト
+		BacktBooster(acc);
+	}
+	else
+	{
+		DashBooster(acc);
+	}
 
 	// カメラワーク
 	CameraWork();
@@ -168,7 +198,7 @@ void Player::MovePlayer(XMFLOAT3& acc)
 		acc.x += s_input->LeftStickAngle().x * c_accMove;
 		acc.z += s_input->LeftStickAngle().y * c_accMove;
 	}
-	else if (m_player.isDash == false)
+	else
 	{
 		// 減速
 		m_player.vel.x *= c_decMove;
@@ -189,38 +219,10 @@ void Player::MovePlayer(XMFLOAT3& acc)
 void Player::JumpPlayer(XMFLOAT3& acc)
 {
 	// ジャンプ
-	if (s_input->PullLeftTrigger())
+	if (s_input->PullLeftTrigger() && fabs(m_player.vel.y) < c_maxVelY)
 	{
 		acc.y += c_accJump;
 		m_gravityTime = 0;
-	}
-}
-
-void Player::AddAcceleration(const XMFLOAT3& acc)
-{
-	m_player.vel.x += acc.x;
-	m_player.vel.y += acc.y;
-	m_player.vel.z += acc.z;
-
-	// 速度を調整
-	// X軸
-	if (c_maxVelXZ < fabs(m_player.vel.x))
-	{
-		float tmp_div = fabs(m_player.vel.x) / c_maxVelXZ;
-		m_player.vel.z /= tmp_div;
-		m_player.vel.x /= tmp_div;
-	}
-	// Z軸
-	if (c_maxVelXZ < fabs(m_player.vel.z))
-	{
-		float tmp_div = fabs(m_player.vel.z) / c_maxVelXZ;
-		m_player.vel.x /= tmp_div;
-		m_player.vel.z /= tmp_div;
-	}
-	// Y軸
-	if (c_maxVelY < m_player.vel.y)
-	{
-		m_player.vel.y = c_maxVelY;
 	}
 }
 
@@ -283,9 +285,9 @@ void Player::ShotBullet()
 
 				// 長さを正規化して10倍する
 				float len = sqrtf(powf(vel.x, 2) + powf(vel.y, 2) + powf(vel.z, 2));
-				vel.x = vel.x / len * 5;
-				vel.y = vel.y / len * 5;
-				vel.z = vel.z / len * 5;
+				vel.x = vel.x / len * 7;
+				vel.y = vel.y / len * 7;
+				vel.z = vel.z / len * 7;
 			}
 			else
 			{
@@ -302,7 +304,7 @@ void Player::ShotBullet()
 				{
 					if (m->GetAlive() == false)
 					{
-						m->Initialize(m_player.pos, vel, XMFLOAT3(0, 0, 0), true);
+						m->Initialize(m_player.pos, vel, true);
 						m_bulletCapacity--;
 						break;
 					}
@@ -310,7 +312,7 @@ void Player::ShotBullet()
 			}
 			else
 			{
-				m_playerBullets.emplace_back(new Bullet(m_player.pos, vel));
+				m_playerBullets.emplace_back(new Bullet(m_player.pos, vel, true, m_bulletModel));
 				m_bulletCapacity--;
 			}
 		}
@@ -378,13 +380,7 @@ void Player::CameraWork()
 	m_playerFBX->SetRotation(tmp_rot);
 }
 
-void Player::OnLand()
-{
-	m_gravityTime = 0;
-	m_player.vel.y = 0;
-}
-
-void Player::MainBooster()
+void Player::UpdateOffset()
 {
 	// オフセット
 	XMFLOAT3 posA = { 1.0f * m_playerFBX->GetScale().x, 2.5f * m_playerFBX->GetScale().z, -1.5f * m_playerFBX->GetScale().y };
@@ -394,137 +390,154 @@ void Player::MainBooster()
 	m_mBoosterPos[0] = posA;
 	m_mBoosterPos[1] = posB;
 
-	if (0 < m_player.vel.z || 0 < m_player.vel.y)
-	{
-		// ベクトル
-		XMFLOAT3 tmp_vel = {};
-		if (0 < m_player.vel.y)
-		{
-			tmp_vel.y = -normalize(m_player.vel).y;
-		}
-		if (0 < m_player.vel.z)
-		{
-			tmp_vel.z = -normalize(m_player.vel).z;
-		}
-		tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
-
-		if (m_player.isDash == false)
-		{
-			tmp_vel.y *= 0.01f;
-			tmp_vel.z *= 0.01f;
-
-			for (int i = 0; i < 2; i++)
-			{
-				m_booster->Add(5, posA, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.3f, 0.1f, true, &m_mBoosterPos[0]);
-				m_booster->Add(5, posB, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.3f, 0.1f, true, &m_mBoosterPos[1]);
-			}
-		}
-		else
-		{
-			tmp_vel.y = 0;
-			tmp_vel.z *= 1.0f;
-
-			for (int i = 0; i < 3; i++)
-			{
-				m_booster->Add(10, posA, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.5f, 1.5f, true, &m_mBoosterPos[0]);
-				m_booster->Add(10, posB, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.5f, 1.5f, true, &m_mBoosterPos[1]);
-			}
-		}
-	}
-}
-
-void Player::SideBooster()
-{
-	// オフセット
-	XMFLOAT3 posA = { -2.5f * m_playerFBX->GetScale().x, 3.5f * m_playerFBX->GetScale().z, 0 };
+	posA = { -2.5f * m_playerFBX->GetScale().x, 3.5f * m_playerFBX->GetScale().z, 0 };
+	posB = { 2.5f * m_playerFBX->GetScale().x, 3.5f * m_playerFBX->GetScale().z, 0 };
 	posA = s_camera->ConvertWindowYPos(m_player.pos, posA);
-	m_sBoosterPos[0] = posA;
-	XMFLOAT3 posB = { 2.5f * m_playerFBX->GetScale().x, 3.5f * m_playerFBX->GetScale().z, 0 };
 	posB = s_camera->ConvertWindowYPos(m_player.pos, posB);
+	m_sBoosterPos[0] = posA;
 	m_sBoosterPos[1] = posB;
 
-	if (m_player.vel.x != 0)
-	{
-		// ベクトル
-		XMFLOAT3 tmp_vel = {};
-		tmp_vel.x = -normalize(m_player.vel).x;
-		tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
-
-		if (m_player.isDash == false)
-		{
-			tmp_vel.x *= 0.01f;
-
-			if (0 < m_player.vel.x)
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					m_booster->Add(5, posA, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.3f, 0.1f, true, &m_sBoosterPos[0]);
-				}
-			}
-			else if (m_player.vel.z < 0)
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					m_booster->Add(5, posB, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.3f, 0.1f, true, &m_sBoosterPos[1]);
-				}
-			}
-		}
-		else
-		{
-			tmp_vel.x *= 0.5f;
-
-			if (0 < m_player.vel.x)
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					m_booster->Add(10, posA, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.5f, 1.5f, true, &m_sBoosterPos[0]);
-				}
-			}
-			else if (m_player.vel.x < 0)
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					m_booster->Add(10, posB, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.5f, 1.5f, true, &m_sBoosterPos[1]);
-				}
-			}
-		}
-	}
-}
-
-void Player::BacktBooster()
-{
-	// オフセット
-	XMFLOAT3 posA = { -1.0f * m_playerFBX->GetScale().x, 0.5f * m_playerFBX->GetScale().z, 0.5f * m_playerFBX->GetScale().y };
-	XMFLOAT3 posB = { 1.0f * m_playerFBX->GetScale().x, 0.5f * m_playerFBX->GetScale().z, 0.5f * m_playerFBX->GetScale().y };
+	posA = { -1.0f * m_playerFBX->GetScale().x, 0.5f * m_playerFBX->GetScale().z, 0.5f * m_playerFBX->GetScale().y };
+	posB = { 1.0f * m_playerFBX->GetScale().x, 0.5f * m_playerFBX->GetScale().z, 0.5f * m_playerFBX->GetScale().y };
 	posA = s_camera->ConvertWindowYPos(m_player.pos, posA);
 	posB = s_camera->ConvertWindowYPos(m_player.pos, posB);
 	m_bBoosterPos[0] = posA;
 	m_bBoosterPos[1] = posB;
+}
 
-	if (m_player.vel.z < 0)
+void Player::OnLand()
+{
+	m_gravityTime = 0;
+	m_player.vel.y = 0;
+}
+
+void Player::MainBooster(const XMFLOAT3& acc)
+{
+	if (0 < acc.y || 0 < acc.z)
 	{
-		XMFLOAT3 tmp_vel = {};
-		tmp_vel.z = -normalize(m_player.vel).z;
-		tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
-
-		if (m_player.isDash == false)
+		for (int i = 0; i < 2; i++)
 		{
-			tmp_vel.z *= 0.01f;
-
-			for (int i = 0; i < 3; i++)
+			XMFLOAT3 tmp_vel = normalize(m_player.vel);
+			tmp_vel.x = static_cast<float>(rand() % 3 - 1) / 100;
+			if (0 < tmp_vel.y)
 			{
-				m_booster->Add(5, posA, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.3f, 0.1f, true, &m_bBoosterPos[0]);
-				m_booster->Add(5, posB, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.3f, 0.1f, true, &m_bBoosterPos[1]);
+				tmp_vel.y = -fabs(tmp_vel.y) * 0.1f + static_cast<float>(rand() % 3 - 1) / 100;
+			}
+			else
+			{
+				tmp_vel.y = static_cast<float>(rand() % 3 - 1) / 100;
+			}
+			if (0 < tmp_vel.z)
+			{
+				tmp_vel.z = -fabs(tmp_vel.z) * 0.1f + static_cast<float>(rand() % 3 - 1) / 100;
+			}
+			else
+			{
+				tmp_vel.z = static_cast<float>(rand() % 3 - 1) / 100;
+			}
+			tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+			m_booster->Add(5, m_mBoosterPos[0], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.15f, true, &m_mBoosterPos[0]);
+			m_booster->Add(5, m_mBoosterPos[1], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.15f, true, &m_mBoosterPos[1]);
+		}
+	}
+}
+
+void Player::SideBooster(const XMFLOAT3& acc)
+{
+	if (acc.x != 0)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			XMFLOAT3 tmp_vel = normalize(m_player.vel);
+			tmp_vel.x = -(tmp_vel.x * 0.1f) + static_cast<float>(rand() % 3 - 1) / 100;
+			tmp_vel.y = static_cast<float>(rand() % 3 - 1) / 100;
+			tmp_vel.z = static_cast<float>(rand() % 3 - 1) / 100;
+			tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+			if (tmp_vel.x < 0)
+			{
+				m_booster->Add(5, m_sBoosterPos[0], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.15f, true, &m_sBoosterPos[0]);
+			}
+			else
+			{
+				m_booster->Add(5, m_sBoosterPos[1], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.15f, true, &m_sBoosterPos[1]);
+			}
+		}
+	}
+}
+
+void Player::BacktBooster(const XMFLOAT3& acc)
+{
+	if (acc.z < 0)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			XMFLOAT3 tmp_vel = normalize(m_player.vel);
+			tmp_vel.x = static_cast<float>(rand() % 3 - 1) / 100;
+			tmp_vel.y = static_cast<float>(rand() % 3 - 1) / 100;
+			tmp_vel.z = fabs(tmp_vel.z) * 0.1f + static_cast<float>(rand() % 3 - 1) / 100;
+			tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+			m_booster->Add(5, m_bBoosterPos[0], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.15f, true, &m_bBoosterPos[0]);
+			m_booster->Add(5, m_bBoosterPos[1], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.15f, true, &m_bBoosterPos[1]);
+		}
+	}
+}
+
+void Player::DashBooster(const XMFLOAT3& acc)
+{
+	if (acc.x != 0 || acc.z != 0)
+	{
+		if (fabs(acc.x) < fabs(acc.z))
+		{
+			if (0 < acc.z)
+			{
+				for (int i = 0; i < 10; i++)
+				{
+					XMFLOAT3 tmp_vel = normalize(m_player.vel);
+					tmp_vel.x = static_cast<float>(rand() % 21 - 10) / 50;
+					tmp_vel.y = static_cast<float>(rand() % 21 - 10) / 50;
+					tmp_vel.z = -fabs(tmp_vel.z) * 0.4f + static_cast<float>(rand() % 21 - 10) / 50;
+					tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+					m_booster->Add(5, m_mBoosterPos[0], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.9f, true, &m_mBoosterPos[0]);
+					m_booster->Add(5, m_mBoosterPos[1], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.9f, true, &m_mBoosterPos[1]);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < 10; i++)
+				{
+					XMFLOAT3 tmp_vel = normalize(m_player.vel);
+					tmp_vel.x = static_cast<float>(rand() % 21 - 10) / 50;
+					tmp_vel.y = static_cast<float>(rand() % 21 - 10) / 50;
+					tmp_vel.z = fabs(tmp_vel.z) * 0.4f + static_cast<float>(rand() % 21 - 10) / 50;
+					tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+					m_booster->Add(5, m_bBoosterPos[0], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.9f, true, &m_bBoosterPos[0]);
+					m_booster->Add(5, m_bBoosterPos[1], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.9f, true, &m_bBoosterPos[1]);
+				}
 			}
 		}
 		else
 		{
-			tmp_vel.z *= 0.5f;
-
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 10; i++)
 			{
-				m_booster->Add(10, posA, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.5f, 1.5f, true, &m_bBoosterPos[0]);
-				m_booster->Add(10, posB, tmp_vel, { 0, 0, 0 }, { 0.6f, 0.4f, 0.2f, 1.0f }, { 0.4f, 0.2f, 0.6f, 0.0f }, 0.5f, 1.5f, true, &m_bBoosterPos[1]);
+				XMFLOAT3 tmp_vel = normalize(m_player.vel);
+				tmp_vel.x = -(tmp_vel.x * 0.4f) + static_cast<float>(rand() % 21 - 10) / 50;
+				tmp_vel.y = static_cast<float>(rand() % 21 - 10) / 50;
+				tmp_vel.z = static_cast<float>(rand() % 21 - 10) / 50;
+				tmp_vel = s_camera->ConvertWindowYPos({ 0, 0, 0 }, tmp_vel);
+
+				if (tmp_vel.x < 0)
+				{
+					m_booster->Add(5, m_sBoosterPos[0], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.9f, true, &m_sBoosterPos[0]);
+				}
+				else
+				{
+					m_booster->Add(5, m_sBoosterPos[1], tmp_vel, { 0, 0, 0 }, { 1.0f, 0.6f, 0.4f, 1.0f }, { 0.0f, 0.2f, 0.4f, 0.0f }, 0.3f, 0.9f, true, &m_sBoosterPos[1]);
+				}
 			}
 		}
 	}
@@ -541,7 +554,7 @@ const XMFLOAT3 Player::normalize(const XMFLOAT3& tmp)
 {
 	float len = Length(tmp);
 
-	XMFLOAT3 _normalize = { tmp.x / len, tmp.y / len, tmp.z / len };
+	XMFLOAT3 normalize = { tmp.x / len, tmp.y / len, tmp.z / len };
 
-	return _normalize;
+	return normalize;
 }

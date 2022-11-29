@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "WinApp.h"
 
+using namespace std;
 using namespace DirectX;
 
 Camera* Camera::GetInstance()
@@ -28,13 +29,13 @@ void Camera::Initialize()
 
 	// ビュー行列の生成
 	m_dirty = true;
-	Update();
+	UpdateMatView();
 
 	// 透視投影による射影行列の生成
 	UpdateMatProjection();
 }
 
-void Camera::Update()
+void Camera::UpdateMatView()
 {
 	if (m_dirty == true)
 	{
@@ -157,40 +158,40 @@ void Camera::FollowUpCamera(const XMFLOAT3& target, const XMFLOAT3& eyeDistance,
 	XMVECTOR v0 = { eyeDistance.x, eyeDistance.y, eyeDistance.z, 0 };
 
 	//回転行列
-	m_angleX += addAngle.x;
-	if (360 < m_angleX)
+	m_angle.x += addAngle.x;
+	if (360 < m_angle.x)
 	{
-		m_angleX -= 360;
+		m_angle.x -= 360;
 	}
-	else if (m_angleX < 0)
+	else if (m_angle.x < 0)
 	{
-		m_angleX += 360;
-	}
-
-	m_angleY += addAngle.y;
-	if (360 < m_angleY)
-	{
-		m_angleY -= 360;
-	}
-	else if (m_angleY < 0)
-	{
-		m_angleY += 360;
+		m_angle.x += 360;
 	}
 
-	m_angleZ += addAngle.z;
-	if (360 < m_angleZ)
+	m_angle.y += addAngle.y;
+	if (360 < m_angle.y)
 	{
-		m_angleZ -= 360;
+		m_angle.y -= 360;
 	}
-	else if (m_angleZ < 0)
+	else if (m_angle.y < 0)
 	{
-		m_angleZ += 360;
+		m_angle.y += 360;
+	}
+
+	m_angle.z += addAngle.z;
+	if (360 < m_angle.z)
+	{
+		m_angle.z -= 360;
+	}
+	else if (m_angle.z < 0)
+	{
+		m_angle.z += 360;
 	}
 
 	XMMATRIX rotM = XMMatrixIdentity();
-	rotM *= XMMatrixRotationX(XMConvertToRadians(m_angleX));
-	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angleY));
-	rotM *= XMMatrixRotationZ(XMConvertToRadians(m_angleZ));
+	rotM *= XMMatrixRotationX(XMConvertToRadians(m_angle.x));
+	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angle.y));
+	rotM *= XMMatrixRotationZ(XMConvertToRadians(m_angle.z));
 
 	//注視点から始点へのベクトルを求める
 	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
@@ -209,7 +210,7 @@ XMFLOAT3 Camera::ConvertWindowYPos(const XMFLOAT3& pos, const XMFLOAT3& vec)
 
 	// 回転行列
 	XMMATRIX rotM = XMMatrixIdentity();
-	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angleY));
+	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angle.y));
 
 	//正面をもとに移動したベクトルの向きを出す
 	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
@@ -227,8 +228,8 @@ XMFLOAT3 Camera::ConvertWindowXYPos(const XMFLOAT3& pos, const XMFLOAT3& vec)
 
 	//回転行列
 	XMMATRIX rotM = XMMatrixIdentity();
-	rotM *= XMMatrixRotationX(XMConvertToRadians(m_angleX));
-	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angleY));
+	rotM *= XMMatrixRotationX(XMConvertToRadians(m_angle.x));
+	rotM *= XMMatrixRotationY(XMConvertToRadians(m_angle.y));
 
 	//正面をもとに移動したベクトルの向きを出す
 	XMVECTOR V = XMVector3TransformNormal(v0, rotM);
@@ -286,4 +287,27 @@ bool Camera::ObjectComeInSight(const XMFLOAT3& pos)
 	}
 
 	return true;
+}
+
+void Camera::SetDistance(const XMFLOAT3& distance)
+{
+	m_distance.x = distance.x;
+	m_distance.y = distance.y;
+	m_distance.z = distance.z;
+
+	m_eye.x = m_target.x + m_distance.x;
+	m_eye.y = m_target.y + m_distance.y;
+	m_eye.z = m_target.z + m_distance.z;
+
+	m_dirty = true;
+}
+
+void Camera::SetNearFarZ(const float nearZ, const float farZ)
+{
+	m_nearZ = nearZ;
+	m_farZ = farZ;
+
+	UpdateMatProjection();
+
+	m_dirty = true;
 }

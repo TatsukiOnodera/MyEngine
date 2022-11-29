@@ -1,13 +1,13 @@
 #pragma once
-#include <DirectXMath.h>
-#include <memory>
-
 #include "Input.h"
 #include "Camera.h"
 #include "FbxObject3d.h"
 #include "ParticleManager.h"
 
 #include "Bullet.h"
+
+#include <DirectXMath.h>
+#include <memory>
 
 class Player
 {
@@ -17,29 +17,34 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private: // 静的メンバ変数
+private: // デバイス
 	// カメラ
 	static Camera* s_camera;
 	// 操作系
 	static Input* s_input;
 
 private: // 定数
-	// 通常移動の加速度
+	// 通常移動
+	// 加速度
 	const float c_accMove = 0.0325f;
-	// 通常移動の減速度
+	// 減速度
 	const float c_decMove = 0.9f;
-	// 通常移動の最大速度
+	// 最大速度
 	const float c_maxVelXZ = 0.6f;
-	// ジャンプの加速度
+
+	// ジャンプ
+	// 加速度
 	const float c_accJump = 0.05f;
-	// ジャンプの最大速度
+	// 最大速度
 	const float c_maxVelY = 0.6f;
-	// カメラの回転角度
+
+	// カメラ
+	// 回転角度
 	const float c_addAngle = 1.0f;
 
 private: // サブクラス
-	// プレイヤーのステータス
-	struct PlayerStatus
+	// プレイヤーの情報
+	struct PlayerInfo
 	{
 		// HP
 		int HP = 20;
@@ -58,9 +63,9 @@ private: // メンバ変数
 	// 自機
 	//==============================
 	// オブジェクト
-	unique_ptr<FbxObject3d> m_playerFBX = nullptr;
-	// ステータス
-	PlayerStatus m_player;
+	std::unique_ptr<FbxObject3d> m_playerFBX = nullptr;
+	// プレイヤー情報
+	PlayerInfo m_player;
 	// ダッシュの加速度
 	float m_dashAcc = 0;
 	// ダッシュの時間
@@ -75,6 +80,8 @@ private: // メンバ変数
 	//==============================
 	// オブジェクト
 	std::vector<std::unique_ptr<Bullet>> m_playerBullets;
+	// モデル
+	Model* m_bulletModel = nullptr;
 	// 標的の座標
 	XMFLOAT3 m_targetPos = { 0, 0, 0 };
 	// ロック中か
@@ -98,7 +105,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Player();
+	Player(Model* playerModel, Model* bulletModel);
 
 	/// <summary>
 	/// デストラクタ
@@ -133,12 +140,6 @@ public: // メンバ関数
 	void JumpPlayer(XMFLOAT3& acc);
 
 	/// <summary>
-	/// 速度に加速度を加算
-	/// </summary>
-	/// <param name="acc">加速値</param>
-	void AddAcceleration(const XMFLOAT3& acc);
-
-	/// <summary>
 	/// プレイヤーのダッシュ
 	/// </summary>
 	void DashPlayer();
@@ -164,20 +165,24 @@ public: // メンバ関数
 	/// </summary>
 	void OnLand();
 
+	void UpdateOffset();
+
 	/// <summary>
 	/// 背面ブースター
 	/// </summary>
-	void MainBooster();
+	void MainBooster(const XMFLOAT3& acc);
 
 	/// <summary>
 	/// 横ブースター
 	/// </summary>
-	void SideBooster();
+	void SideBooster(const XMFLOAT3& acc);
 
 	/// <summary>
 	/// 前ブースター
 	/// </summary>
-	void BacktBooster();
+	void BacktBooster(const XMFLOAT3& acc);
+
+	void DashBooster(const XMFLOAT3& acc);
 
 	/// <summary>
 	/// 始点から終点への距離
@@ -187,6 +192,11 @@ public: // メンバ関数
 	/// <returns>二点間の距離</returns>
 	const float Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2 = { 0, 0, 0 });
 
+	/// <summary>
+	/// 正規化
+	/// </summary>
+	/// <param name="tmp">正規化する値</param>
+	/// <returns>正規化した値</returns>
 	const XMFLOAT3 normalize(const XMFLOAT3& tmp);
 
 public: // アクセッサ

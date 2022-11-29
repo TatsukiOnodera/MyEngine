@@ -1,6 +1,6 @@
 #pragma once
-#include "InputList.h"
 #include "WinApp.h"
+
 #include <windows.h>
 #include <dinput.h>
 #include <wrl.h>
@@ -8,6 +8,43 @@
 #include <DirectXMath.h>
 #include <Xinput.h>
 
+/// <summary>
+/// ゲームパッド配置（XBOX）
+/// </summary>
+enum BUTTON
+{
+	// 十字
+	U_CROSS = 0x0001,
+	D_CROSS = 0x0002,
+	L_CROSS = 0x0004,
+	R_CROSS = 0x0008,
+	// 中央右
+	START = 0x0010,
+	// 中央左
+	BACK = 0x0020,
+	// スティック
+	L_STICK = 0x0040,
+	R_STICK = 0x0080,
+	// ボタン
+	LB = 0x0100,
+	RB = 0x0200,
+	A = 0x1000,
+	B = 0x2000,
+	X = 0x4000,
+	Y = 0x8000,
+};
+
+/// <summary>
+/// マウス配置
+/// </summary>
+enum MOUSE
+{
+	LEFT, RIGHT, MIDDLE
+};
+
+/// <summary>
+/// 入力処理
+/// </summary>
 class Input
 {
 public: // エイリアス

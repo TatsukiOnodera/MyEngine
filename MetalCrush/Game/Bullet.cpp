@@ -2,10 +2,13 @@
 
 using namespace DirectX;
 
-Bullet::Bullet(const XMFLOAT3& pos, const XMFLOAT3& vel, const XMFLOAT3& acc, const bool& alive)
+Bullet::Bullet(const XMFLOAT3& pos, const XMFLOAT3& vel, const bool& alive, Model* model)
 {
-	m_object.reset(Object3d::Create("Bullet", true));
-	Initialize(pos, vel, acc, alive);
+	// nullチェック
+	assert(model);
+
+	m_object.reset(Object3d::Create(model));
+	Initialize(pos, vel, alive);
 }
 
 Bullet::~Bullet()
@@ -13,7 +16,7 @@ Bullet::~Bullet()
 
 }
 
-void Bullet::Initialize(const XMFLOAT3& pos, const XMFLOAT3& vel, const XMFLOAT3& acc, const bool& alive)
+void Bullet::Initialize(const XMFLOAT3& pos, const XMFLOAT3& vel, const bool& alive)
 {
 	if (m_object == nullptr)
 	{
@@ -22,7 +25,6 @@ void Bullet::Initialize(const XMFLOAT3& pos, const XMFLOAT3& vel, const XMFLOAT3
 
 	m_pos = pos;
 	m_vel = vel;
-	m_acc = acc;
 	m_alive = alive;
 
 	m_object->SetPosition(m_pos);
@@ -35,11 +37,6 @@ void Bullet::Update()
 {
 	if (m_alive == true)
 	{
-		// 速度に加速度を加算
-		m_vel.x += m_acc.x;
-		m_vel.y += m_acc.y;
-		m_vel.z += m_acc.z;
-
 		// 座標に速度を加算
 		m_pos.x += m_vel.x;
 		m_pos.y += m_vel.y;

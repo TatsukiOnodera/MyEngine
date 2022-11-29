@@ -27,7 +27,7 @@ private: // 定数
 	// スポットライトの数
 	static const int c_spotLightNum = 3;
 	// 丸影の数
-	static const int c_circleShadowNum = 1;
+	static const int c_circleShadowNum = 13;
 
 public: // サブクラス
 	// 定数バッファ用データ構造体

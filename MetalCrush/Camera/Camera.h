@@ -1,14 +1,10 @@
 #pragma once
 #include <DirectXMath.h>
-
 #include <list>
-
-using namespace std;
 
 class Camera
 {
 private: // エイリアス
-	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -31,26 +27,22 @@ private: // メンバ変数
 	XMFLOAT3 m_up = { 0, 1, 0 };
 	// 注視点から始点までの距離
 	XMFLOAT3 m_distance = { 0, 0, 0 };
-	// カメラのX回転角
-	float m_angleX = 0.0;
-	// カメラのY回転角
-	float m_angleY = 0.0;
-	// カメラのZ回転角
-	float m_angleZ = 0.0f;
+	// カメラの角度
+	XMFLOAT3 m_angle = { 0, 0, 0 };
 	// カメラの視野角
 	float m_fovAngleY = 60.0f;
 	// カメラの最近Z値
 	float m_nearZ = 0.1f;
 	// カメラの最遠Z値
-	float m_farZ = 2000.0f;
+	float m_farZ = 20000.0f;
 	// ビュー行列
-	XMMATRIX m_matView;
+	XMMATRIX m_matView = {};
 	// 射影行列
-	XMMATRIX m_matProjection;
+	XMMATRIX m_matProjection = {};
 	// ビルボード行列
-	XMMATRIX m_matBillboard;
+	XMMATRIX m_matBillboard = {};
 	// Y軸ビルボード行列
-	XMMATRIX m_matBillboardY;
+	XMMATRIX m_matBillboardY = {};
 	// ダーティーフラグ
 	bool m_dirty = false;
 	//	 更新したか
@@ -75,7 +67,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void UpdateMatView();
 
 	/// <summary>
 	/// 透視投影による射影行列の更新
@@ -94,7 +86,7 @@ public: // メンバ関数
 	/// <param name="target">注視点</param>
 	/// <param name="eyeDistance">注視点から始点への距離</param>
 	/// <param name="addAngle">回転した角度</param>
-	void FollowUpCamera(const XMFLOAT3& target, const XMFLOAT3& eyeDistance, const XMFLOAT3& addAngle = { 0, 0, 0 });
+	void FollowUpCamera(const XMFLOAT3& target, const XMFLOAT3& eyeDistance, const XMFLOAT3& addAngle);
 
 	/// <summary>
 	/// カメラのY軸を元に座標を移動
@@ -131,13 +123,13 @@ public: //アクセッサ
 	/// カメラ座標取得
 	/// </summary>
 	/// <returns>カメラ座標</returns>
-	XMFLOAT3 GetEye() { return m_eye; }
+	inline XMFLOAT3& GetEye() { return m_eye; }
 
 	/// <summary>
 	/// カメラ座標セット
 	/// </summary>
 	/// <param name="eye">カメラ座標</param>
-	void SetEye(const XMFLOAT3& eye)
+	inline void SetEye(const XMFLOAT3& eye)
 	{
 		m_eye = eye;
 
@@ -148,13 +140,13 @@ public: //アクセッサ
 	/// 焦点座標取得
 	/// </summary>
 	/// <returns>頂点座標</returns>
-	XMFLOAT3 GetTarget() { return m_target; }
+	inline XMFLOAT3& GetTarget() { return m_target; }
 
 	/// <summary>
 	/// 焦点座標セット
 	/// </summary>
 	/// <param name="target">焦点座標</param>
-	void SetTarget(const XMFLOAT3& target)
+	inline void SetTarget(const XMFLOAT3& target)
 	{
 		m_target = target;
 
@@ -165,13 +157,13 @@ public: //アクセッサ
 	/// 上下取得
 	/// </summary>
 	/// <returns>上の向き</returns>
-	XMFLOAT3 GetUp() { return m_up; }
+	inline XMFLOAT3& GetUp() { return m_up; }
 
 	/// <summary>
 	/// 上下のセット
 	/// </summary>
 	/// <param name="up">上の向き</param>
-	void SetUp(const XMFLOAT3& up)
+	inline void SetUp(const XMFLOAT3& up)
 	{
 		m_up = up;
 
@@ -182,84 +174,65 @@ public: //アクセッサ
 	/// 注視点から始点までの距離取得
 	/// </summary>
 	/// <returns>注視点から始点までの距離</returns>
-	XMFLOAT3 GetDistance() { return m_distance; }
+	inline XMFLOAT3& GetDistance() { return m_distance; }
 
 	/// <summary>
 	/// 注視点から始点までの距離セット
 	/// </summary>
 	/// <param name="distance">距離</param>
-	void SetDistance(const XMFLOAT3& distance = { 0, 1, -5 })
-	{
-		m_distance.x = distance.x;
-		m_distance.y = distance.y;
-		m_distance.z = distance.z;
-
-		m_eye.x = m_target.x + m_distance.x;
-		m_eye.y = m_target.y + m_distance.y;
-		m_eye.z = m_target.z + m_distance.z;
-
-		m_dirty = true;
-	}
+	void SetDistance(const XMFLOAT3& distance = { 0, 1, -5 });
 
 	/// <summary>
 	/// カメラの回転角のセット
 	/// </summary>
 	/// <param name="cameraAngle">回転角</param>
-	void SetCameraAngle(const XMFLOAT3& cameraAngle = { 0, 0, 0 })
+	inline void SetCameraAngles(const XMFLOAT3& cameraAngle = { 0, 0, 0 })
 	{
-		m_angleX = cameraAngle.x;
-		m_angleY = cameraAngle.y;
-		m_angleZ = cameraAngle.z;
+		m_angle.x = cameraAngle.x;
+		m_angle.y = cameraAngle.y;
+		m_angle.z = cameraAngle.z;
 	}
 
 	/// <summary>
 	/// カメラの最近遠Z値を取得
 	/// </summary>
 	/// <returns>最近遠Z値</returns>
-	XMFLOAT2 GetNearFarZ() { return XMFLOAT2(m_nearZ, m_farZ); }
+	inline XMFLOAT2& GetNearFarZ() { return XMFLOAT2(m_nearZ, m_farZ); }
 
 	/// <summary>
 	/// カメラの最近遠Z値をセット
 	/// </summary>
 	/// <param name="nearZ">最近値</param>
 	/// <param name="farZ">最遠値</param>
-	void SetNearFarZ(const float nearZ, const float farZ)
-	{
-		m_nearZ = nearZ;
-		m_farZ = farZ;
-
-		UpdateMatProjection();
-
-		m_dirty = true;
-	}
+	void SetNearFarZ(const float nearZ, const float farZ);
 
 	/// <summary>
 	/// カメラの回転角度を取得
 	/// </summary>
 	/// <returns>回転角度</returns>
-	XMFLOAT3 GetCameraAngles() { return XMFLOAT3(m_angleX, m_angleY, m_angleZ); }
+	inline XMFLOAT3& GetCameraAngles() { return m_angle; }
 
 	/// <summary>
 	/// ビュー行列の取得
 	/// </summary>
 	/// <returns>ビュー行列</returns>
-	XMMATRIX GetMatView() { return m_matView; }
+	inline XMMATRIX& GetMatView() { return m_matView; }
 
 	/// <summary>
 	/// 射影行列
 	/// </summary>
 	/// <returns>射影行列</returns>
-	XMMATRIX GetMatProject() { return m_matProjection; }
+	inline XMMATRIX& GetMatProject() { return m_matProjection; }
 
 	/// <summary>
 	/// ビルボード行列
 	/// </summary>
 	/// <returns>ビルボード行列</returns>
-	XMMATRIX GetMatBillboard() { return m_matBillboard; }
+	inline XMMATRIX& GetMatBillboard() { return m_matBillboard; }
 
 	/// <summary>
 	/// カメラ更新の成否
 	/// </summary>
 	/// <returns>成否</returns>
-	bool GetDirty() { return m_isDirty; };
+	inline bool GetDirty() { return m_isDirty; };
 };

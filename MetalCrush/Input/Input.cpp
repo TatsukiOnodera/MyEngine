@@ -1,4 +1,5 @@
 #include "Input.h"
+
 #include <assert.h>
 
 using namespace DirectX;
@@ -34,6 +35,7 @@ void Input::Initialize(WinApp* win)
 	devMouse = nullptr;
 	result = dInput->CreateDevice(GUID_SysMouse, &devMouse, NULL);
 
+	// キーボード
 	if (devKeyboard != nullptr)
 	{
 		//入力データ形式のセット
@@ -51,6 +53,7 @@ void Input::Initialize(WinApp* win)
 		}
 	}
 
+	// マウス
 	if (devMouse != nullptr)
 	{
 		//入力データ形式のセット
@@ -103,6 +106,7 @@ bool Input::PushKey(const BYTE key)
 {
 	assert(0 <= key && key < 256);
 
+	// 押しているか
 	if (keys[key])
 	{
 		return true;
@@ -114,6 +118,7 @@ bool Input::TriggerKey(const BYTE key)
 {
 	assert(0 <= key && key < 256);
 
+	// 押しているか
 	if (keys[key] && !oldKeys[key])
 	{
 		return true;
@@ -125,6 +130,7 @@ bool Input::PushMouse(const int Mouse)
 {
 	assert(0 <= Mouse && Mouse < 3);
 
+	// 押しているか
 	if (mouseState.rgbButtons[Mouse])
 	{
 		return true;
@@ -137,6 +143,7 @@ bool Input::TriggerMouse(const int Mouse)
 {
 	assert(0 <= Mouse && Mouse < 3);
 
+	// 押しているか
 	if (mouseState.rgbButtons[Mouse] && !oldMouseState.rgbButtons[Mouse])
 	{
 		return true;
@@ -201,6 +208,7 @@ bool Input::TriggerButton(int Button)
 
 bool Input::PullLeftTrigger()
 {
+	// 押しているか
 	if (gamePadState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 	{
 		return true;
@@ -213,6 +221,7 @@ bool Input::PullLeftTrigger()
 
 bool Input::PullRightTrigger()
 {
+	// 押しているか
 	if (gamePadState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 	{
 		return true;
@@ -225,6 +234,7 @@ bool Input::PullRightTrigger()
 
 bool Input::SwitchLeftTrigger()
 {
+	// 押しているか
 	if (gamePadState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD && !(oldGamePadState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD))
 	{
 		return true;
@@ -237,6 +247,7 @@ bool Input::SwitchLeftTrigger()
 
 bool Input::SwitchRightTrigger()
 {
+	// 押しているか
 	if (gamePadState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD && !(oldGamePadState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD))
 	{
 		return true;

@@ -84,18 +84,6 @@
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\DirectXCommon</Filter>
     </ClCompile>
-    <ClCompile Include="3D\FbxLoader.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FbxModel.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FbxModelMesh.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FbxObject3d.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
-    </ClCompile>
     <ClCompile Include="Base\FrameWork.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Base</Filter>
     </ClCompile>
@@ -104,12 +92,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\Model.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\Object3d.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
     </ClCompile>
     <ClCompile Include="Base\OnoGame.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Base</Filter>
@@ -156,8 +138,32 @@
     <ClCompile Include="Game\AutoLockOn.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Game</Filter>
     </ClCompile>
-    <ClCompile Include="LightGroup.cpp">
+    <ClCompile Include="Light\LightGroup.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\FBX\FbxLoader.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\FBX\FbxModel.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\FBX\FbxModelMesh.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\FBX\FbxObject3d.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\OBJ\Material.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\OBJ\Mesh.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\OBJ\Model.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\OBJ\Object3d.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -188,32 +194,11 @@
     <ClInclude Include="DirectXCommon\DirectXCommon.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\DirectXCommon</Filter>
     </ClInclude>
-    <ClInclude Include="3D\FbxLoader.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FbxModel.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FbxModelMesh.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FbxObject3d.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
-    </ClInclude>
     <ClInclude Include="Base\FrameWork.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Base</Filter>
     </ClInclude>
     <ClInclude Include="Input\Input.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\InputList.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\Object3d.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\Model.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
     </ClInclude>
     <ClInclude Include="Base\OnoGame.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Base</Filter>
@@ -272,9 +257,6 @@
     <ClInclude Include="Light\PointLight.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
     </ClInclude>
-    <ClInclude Include="LightGroup.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
-    </ClInclude>
     <ClInclude Include="Light\DirectionalLight.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
     </ClInclude>
@@ -283,6 +265,33 @@
     </ClInclude>
     <ClInclude Include="Light\CircleShadow.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\LightGroup.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FBX\FbxLoader.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FBX\FbxModel.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FBX\FbxModelMesh.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FBX\FbxObject3d.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\OBJ\Material.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\OBJ\Mesh.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\OBJ\Model.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\OBJ\Object3d.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
