@@ -82,6 +82,7 @@ private: // インスタンス
 	std::unique_ptr<Object3d> skyWall = nullptr;
 	std::vector<std::unique_ptr<Enemy>> enemy;
 	std::unique_ptr<Player> player = nullptr;
+	std::unique_ptr<Object3d> p = nullptr;
 
 	// その他
 	std::unique_ptr<AutoLockOn> lockList = nullptr;

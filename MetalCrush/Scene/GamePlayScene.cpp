@@ -56,17 +56,18 @@ void GamePlayScene::Initialize()
 	// オブジェクト
 	desertModel.reset(Model::Create("Desert"));
 	skyWallModel.reset(Model::Create("SkyWall"));
-	playerModel.reset(Model::Create("Bullet"));
+	playerModel.reset(Model::Create("Body"));
 	enemyModel.reset(Model::Create("Enemy"));
 	bulletModel.reset(Model::Create("Bullet", true));
 
 	desert.reset(Object3d::Create(desertModel.get()));
 	skyWall.reset(Object3d::Create(skyWallModel.get()));
-	for (int i = 0; i < 6; i++)
+	/*for (int i = 0; i < 6; i++)
 	{
 		enemy.emplace_back(new Enemy(enemyModel.get(), bulletModel.get()));
-	}
+	}*/
 	player.reset(new Player(playerModel.get(), bulletModel.get()));
+	p.reset(Object3d::Create(playerModel.get()));
 
 	// その他
 	lockList.reset(new AutoLockOn);
@@ -86,6 +87,9 @@ void GamePlayScene::InitializeVariable()
 	// 地面
 	desert->SetScale({ 1, 1, 1 });
 	desert->Update();
+
+	p->SetPosition({ 0, 12, 0 });
+	p->Update();
 
 	// 壁
 	skyWall->SetPosition({ 0, -10 * desert->GetScale().y, 0});
@@ -203,6 +207,8 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	desert->Draw();
 	// 壁
 	skyWall->Draw();
+
+	p->Draw();
 
 	Object3d::PostDraw();
 
