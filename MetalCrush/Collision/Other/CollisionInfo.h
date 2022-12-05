@@ -4,8 +4,19 @@
 class Object3d;
 class BaseCollider;
 
+/// <summary>
+/// 衝突情報
+/// </summary>
 struct CollisionInfo
 {
+public: //メンバ変数
+	//衝突相手のオブジェクト
+	Object3d* m_object = nullptr;
+	//衝突相手のコライダー
+	BaseCollider* m_collider = nullptr;
+	//衝突点
+	DirectX::XMVECTOR m_inter;
+
 public: //メンバ関数
 	/// <summary>
 	/// コンストラクタ
@@ -15,16 +26,8 @@ public: //メンバ関数
 	/// <param name="inter">衝突点</param>
 	CollisionInfo(Object3d* object, BaseCollider* collider, const DirectX::HXMVECTOR& inter)
 	{
-		this->object = object;
-		this->collider = collider;
-		this->inter = inter;
+		m_object = object;
+		m_collider = collider;
+		m_inter = inter;
 	}
-
-public: //メンバ変数
-	//衝突相手のオブジェクト
-	Object3d* object = nullptr;
-	//衝突相手のコライダー
-	BaseCollider* collider = nullptr;
-	//衝突店
-	DirectX::XMVECTOR inter;
 };

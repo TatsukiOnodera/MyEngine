@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+
 /// <summary>
 /// 当たり判定プリミティブ
 /// </summary>

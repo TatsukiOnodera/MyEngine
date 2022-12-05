@@ -9,13 +9,22 @@ private:
 
 public:
 	/// <summary>
+	/// 球と球の当たり判定
+	/// </summary>
+	/// <param name="sphere1">球1</param>
+	/// <param name="sphere2">球2</param>
+	/// <param name="inter">交点</param>
+	/// <returns>成否</returns>
+	static bool CheckSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2, DirectX::XMVECTOR* inter = nullptr);
+
+	/// <summary>
 	/// 球と平面の当たり判定
 	/// </summary>
 	/// <param name="sphere">球</param>
 	/// <param name="plane">平面</param>
 	/// <param name="inter">交点</param>
 	/// <returns>衝突してるか</returns>
-	static bool CheckSphere2Plane(const Sphere& sphere, const Plane& plane, DirectX::XMVECTOR *inter = nullptr);
+	static bool CheckSphere2Plane(const Sphere& sphere, const Plane& plane, DirectX::XMVECTOR* inter = nullptr);
 
 	/// <summary>
 	/// 点と三角形の最近接点を求める
@@ -42,7 +51,7 @@ public:
 	/// <param name="distance">距離</param>
 	/// <param name="inter">交点</param>
 	/// <returns>交差しているか</returns>
-	static bool CheckRay2Plane(const Ray &ray, const Plane & plane, float *distance = nullptr, DirectX::XMVECTOR *inter = nullptr);
+	static bool CheckRay2Plane(const Ray& ray, const Plane& plane, float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
 
 	/// <summary>
 	/// レイと三角形の当たり判定
@@ -62,5 +71,5 @@ public:
 	/// <param name="distance">距離</param>
 	/// <param name="inter">交点</param>
 	/// <returns>交差しているか</returns>
-	static bool CheckRay2Sphere(const Ray& ray, const Sphere &sphere, float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
+	static bool CheckRay2Sphere(const Ray& ray, const Sphere& sphere, float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
 };

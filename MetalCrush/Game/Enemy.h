@@ -18,7 +18,7 @@ public: // エイリアス
 private: // メンバ変数
 	//Enemy
 	// オブジェクト
-	std::unique_ptr<Object3d> m_object = nullptr;
+	std::unique_ptr<Object3d> m_enemyOBJ = nullptr;
 	// 座標
 	XMFLOAT3 m_pos = { 0, 0, 0 };
 	// 速度
@@ -89,7 +89,7 @@ public: //アクセッサ
 	{
 		m_pos = position;
 
-		m_object->SetPosition(m_pos);
+		m_enemyOBJ->SetPosition(m_pos);
 	}
 
 	/// <summary>
@@ -127,7 +127,7 @@ public: //アクセッサ
 	/// オブジェクト情報を取得
 	/// </summary>
 	/// <returns>オブジェクト</returns>
-	Object3d* GetObject3d() { return m_object.get(); }
+	Object3d* GetObject3d() { return m_enemyOBJ.get(); }
 
 	/// <summary>
 	/// 弾を取得

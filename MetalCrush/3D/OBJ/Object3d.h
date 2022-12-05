@@ -10,6 +10,8 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 
+#include "ParticleManager.h"
+
 class BaseCollider;
 
 class Object3d
@@ -103,6 +105,8 @@ private: //メンバ変数
 	bool m_isBillboard = false;
 	// ペアレント
 	std::unique_ptr<Object3d> m_parent = nullptr;
+	// デバック用
+	const char* name = nullptr;
 	//コライダー
 	std::unique_ptr<BaseCollider> m_collider = nullptr;
 	//ダーティーフラグ
@@ -228,6 +232,12 @@ public: //アクセッサ
 	{
 		m_offset = offset;
 	}
+
+	/// <summary>
+	/// モデルデータの取得
+	/// </summary>
+	/// <returns>モデルデータ</returns>
+	inline Model* GetModel() { return m_model; }
 
 	/// <summary>
 	/// モデルデータセット

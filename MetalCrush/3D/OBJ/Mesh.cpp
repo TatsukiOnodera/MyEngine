@@ -101,22 +101,25 @@ void Mesh::Draw(ID3D12GraphicsCommandList* cmdList)
 
 void Mesh::CalculateSmoothedVertexNormals()
 {
-	auto itr = m_smoothData.begin();
-	for (; itr != m_smoothData.end(); ++itr)
+	if (m_smoothing == true)
 	{
-		//各面の共通頂点コレクション
-		std::vector<uint32_t>& v = itr->second;
-		//全頂点の法線を平均化する
-		XMVECTOR normal = {};
-		for (uint32_t index : v)
+		auto itr = m_smoothData.begin();
+		for (; itr != m_smoothData.end(); ++itr)
 		{
-			normal += XMVectorSet(m_vertices[index].normal.x, m_vertices[index].normal.y, m_vertices[index].normal.z, 0);
-		}
-		normal = XMVector3Normalize(normal / (float)v.size());
-		//共通法線を使用するすべての頂点データに書き込む
-		for (uint32_t index : v)
-		{
-			m_vertices[index].normal = { normal.m128_f32[0], normal.m128_f32[1], normal.m128_f32[2] };
+			//各面の共通頂点コレクション
+			std::vector<uint32_t>& v = itr->second;
+			//全頂点の法線を平均化する
+			XMVECTOR normal = {};
+			for (uint32_t index : v)
+			{
+				normal += XMVectorSet(m_vertices[index].normal.x, m_vertices[index].normal.y, m_vertices[index].normal.z, 0);
+			}
+			normal = XMVector3Normalize(normal / (float)v.size());
+			//共通法線を使用するすべての頂点データに書き込む
+			for (uint32_t index : v)
+			{
+				m_vertices[index].normal = { normal.m128_f32[0], normal.m128_f32[1], normal.m128_f32[2] };
+			}
 		}
 	}
 }

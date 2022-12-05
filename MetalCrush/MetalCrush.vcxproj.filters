@@ -72,12 +72,6 @@
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Collision\Collision.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\CollisionPrimitive.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider</Filter>
-    </ClCompile>
     <ClCompile Include="DebugText\DebugText.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\DebugText</Filter>
     </ClCompile>
@@ -165,6 +159,27 @@
     <ClCompile Include="3D\OBJ\Object3d.cpp">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
     </ClCompile>
+    <ClCompile Include="Collision\Other\Collision.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\Other\CollisionPrimitive.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\SphereCollider\SphereCollider.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\SphereCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib\Tool\Tool.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Lib\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\Other\CollisionManager.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\MeshCollider\MeshCollider.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\MeshCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\Other\TouchableObject.cpp">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\Audio.h">
@@ -172,21 +187,6 @@
     </ClInclude>
     <ClInclude Include="Camera\Camera.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\BaseCollider.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\Collision.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\CollisionInfo.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\CollisionPrimitive.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\CollisionType.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider</Filter>
     </ClInclude>
     <ClInclude Include="DebugText\DebugText.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\DebugText</Filter>
@@ -292,6 +292,39 @@
     </ClInclude>
     <ClInclude Include="3D\OBJ\Object3d.h">
       <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Other\BaseCollider.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Other\Collision.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Other\CollisionInfo.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Other\CollisionPrimitive.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Other\CollisionType.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\SphereCollider\SphereCollider.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\SphereCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Lib\Tool\Tool.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Lib\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Other\CollisionManager.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Other\RayCast.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\MeshCollider\MeshCollider.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\MeshCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Other\TouchableObject.h">
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -434,6 +467,18 @@
     </Filter>
     <Filter Include="シェーダーファイル\OBJ\Bloom">
       <UniqueIdentifier>{390b530d-279c-4e5d-a903-b992fab9c622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Engine\Collider\SphereCollider">
+      <UniqueIdentifier>{8d356cb5-f1bd-4271-aa11-bde3419247bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Engine\Lib\Tool">
+      <UniqueIdentifier>{b3a24c2b-dfa4-4e86-8eb8-f96ede85f917}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Engine\Collider\Other">
+      <UniqueIdentifier>{beaf02c8-6505-4e88-a90e-73470a82b956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース&amp;ヘッダーファイル\Engine\Collider\MeshCollider">
+      <UniqueIdentifier>{ee48aa51-5d6b-4d53-bbe1-54b165c1ca01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

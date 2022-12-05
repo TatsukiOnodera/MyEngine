@@ -2,6 +2,31 @@
 
 using namespace DirectX;
 
+bool Collision::CheckSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2, DirectX::XMVECTOR* inter)
+{
+	// 球と球の距離
+	XMVECTOR s1_s2 = sphere2.center - sphere1.center;
+	float _X = s1_s2.m128_f32[0];
+	float _Y = s1_s2.m128_f32[1];
+	float _Z = s1_s2.m128_f32[2];
+	float s1_s2Length = (_X * _X) + (_Y * _Y) + (_Z * _Z);
+
+	// 接していないなら
+	if (!(s1_s2Length <= sphere1.radius + sphere2.radius))
+	{
+		return false;
+	}
+
+	//疑似交点を計算
+	if (inter)
+	{
+		//平面上の最近接点を、疑似交点とする
+		*inter = sphere1.center + (s1_s2 / 2);
+	}
+
+	return true;
+}
+
 bool Collision::CheckSphere2Plane(const Sphere& sphere, const Plane& plane, DirectX::XMVECTOR* inter)
 {
 	//座標系の原点から球の中心座標までの距離

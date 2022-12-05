@@ -56,6 +56,8 @@ private: // メンバ変数
 	std::unordered_map<uint32_t, std::vector<uint32_t>> m_smoothData;
 	// マテリアル
 	Material* m_material = nullptr;
+	// スムージング
+	bool m_smoothing = false;
 
 public: // メンバ関数
 	/// <summary>
@@ -125,11 +127,16 @@ public: // アクセッサ
 	inline size_t GetVertexCount() { return m_vertices.size(); }
 
 	/// <summary>
-	/// 指定の頂点データ取得
+	/// 頂点データ取得
 	/// </summary>
-	/// <param name="index">指定の番号</param>
 	/// <returns>頂点データ</returns>
-	inline const VertexPosNormalUv& GetVertices(uint32_t index) { return m_vertices[index]; }
+	inline const std::vector<VertexPosNormalUv>& GetVertices() { return m_vertices; }
+
+	/// <summary>
+	/// インデックスデータ取得
+	/// </summary>
+	/// <returns>インデックスデータ</returns>
+	inline const std::vector<uint32_t>& GetIndices() { return m_indices; }
 
 	/// <summary>
 	/// マテリアルの取得
@@ -144,6 +151,15 @@ public: // アクセッサ
 	inline void SetMaterial(Material* material)
 	{
 		m_material = material;
+	}
+
+	/// <summary>
+	/// スムージングフラグセット
+	/// </summary>
+	/// <param name="smoothing">成否</param>
+	inline void SetSmoothing(bool smoothing)
+	{
+		m_smoothing = smoothing;
 	}
 
 	/// <summary>

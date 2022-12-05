@@ -133,7 +133,7 @@ public:// 静的メンバ関数
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static ParticleManager* Create(const std::string& textureName);
+	static ParticleManager* Create(const std::string& textureName = "effect1.png");
 
 private: // メンバ変数
 	//パーティクル配列

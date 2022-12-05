@@ -1,6 +1,7 @@
 #include "GamePlayScene.h"
 #include "SceneManager.h"
 
+#include <Tool.h>
 #include <SafeDelete.h>
 #include <cassert>
 #include <fbxsdk.h>
@@ -54,23 +55,25 @@ void GamePlayScene::Initialize()
 	}*/
 
 	// オブジェクト
-	desertModel.reset(Model::Create("Desert"));
+	desertModel.reset(Model::Create("Desert", true));
 	skyWallModel.reset(Model::Create("SkyWall"));
 	playerModel.reset(Model::Create("Body"));
 	enemyModel.reset(Model::Create("Enemy"));
 	bulletModel.reset(Model::Create("Bullet", true));
 
+	//desert.reset(TouchableObject::Create(desertModel.get()));
 	desert.reset(Object3d::Create(desertModel.get()));
 	skyWall.reset(Object3d::Create(skyWallModel.get()));
-	/*for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		enemy.emplace_back(new Enemy(enemyModel.get(), bulletModel.get()));
-	}*/
+	}
 	player.reset(new Player(playerModel.get(), bulletModel.get()));
 	p.reset(Object3d::Create(playerModel.get()));
 
 	// その他
 	lockList.reset(new AutoLockOn);
+	collisionManager = CollisionManager::GetInstance();
 
 	// オーディオ
 	//audio->Initialize();
@@ -85,15 +88,16 @@ void GamePlayScene::Initialize()
 void GamePlayScene::InitializeVariable()
 {
 	// 地面
-	desert->SetScale({ 1, 1, 1 });
+	desert->SetRotation({ -90, -90, 0 });
+	desert->SetScale({ 0.1f, 0.1f, 0.1f });
 	desert->Update();
 
-	p->SetPosition({ 0, 12, 0 });
+	p->SetPosition({ 0, 5, 0 });
 	p->Update();
 
 	// 壁
-	skyWall->SetPosition({ 0, -10 * desert->GetScale().y, 0});
-	skyWall->SetScale({ 10 * desert->GetScale().x, 50, 10 * desert->GetScale().z });
+	skyWall->SetRotation({ 0, -90, 0});
+	skyWall->SetScale({ 1000 * desert->GetScale().x, 50, 1000 * desert->GetScale().z });
 	skyWall->Update();
 
 	// ライト
@@ -104,7 +108,7 @@ void GamePlayScene::InitializeVariable()
 	for (int i = 0; i < 4; i++)
 	{
 		lightGroup->SetCircleShadowActive(i, true);
-		lightGroup->SetCircleShadowDir(i, { 0, -1, 0 });
+		lightGroup->SetCircleShadowDir(i, { -1, -1, 0 });
 		lightGroup->SetCircleShadowAtten(i, { 0.5f, 0.6f, 0.0f });
 		lightGroup->SetCircleShadowFactorAngleCos(i, { 0.0f, 0.5f });
 	}
@@ -150,15 +154,9 @@ void GamePlayScene::Update()
 
 	// 影
 	lightGroup->SetCircleShadowCasterPos(0, player->GetPosition());
-	int index = 1;
-	for (auto& m : enemy)
+	for (int i = 0; i < enemy.size(); i++)
 	{
-		if (enemy.size() < index)
-		{
-			break;
-		}
-		lightGroup->SetCircleShadowCasterPos(index, m->GetPosition());
-		index++;
+		lightGroup->SetCircleShadowCasterPos(i + 1, enemy[i]->GetPosition());
 	}
 
 #pragma endregion
@@ -249,18 +247,12 @@ void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 	debugText.Draw(cmdList);
 }
 
-const float GamePlayScene::Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2)
-{
-	XMFLOAT3 len = { pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z };
-
-	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
-}
-
 void GamePlayScene::CheckAllCollisions()
 {
 #pragma region プレイヤーと壁の衝突判定
 
 	CheckPlayer2Wall();
+	collisionManager->CheckAllCollisions();
 
 #pragma endregion
 
@@ -287,12 +279,6 @@ void GamePlayScene::CheckAllCollisions()
 	CheckPlayer2EnemyBullets();
 
 #pragma endregion
-
-#pragma region 弾と壁の衝突判定
-
-	CheckBullet2Wall();
-
-#pragma endregion
 }
 
 void GamePlayScene::CheckPlayer2Enemy()
@@ -303,7 +289,7 @@ void GamePlayScene::CheckPlayer2Enemy()
 		if (m->GetAlive() == true)
 		{
 			// ロック
-			if (Length(player->GetPosition(), m->GetPosition()) < 100.0f && camera->ObjectComeInSight(m->GetPosition()) && m->GetAlive() == true)
+			if (Tool::Length3to3(player->GetPosition(), m->GetPosition()) < 100.0f && camera->ObjectComeInSight(m->GetPosition()) && m->GetAlive() == true)
 			{
 				lockList->LockOn(m.get());
 			}
@@ -311,7 +297,7 @@ void GamePlayScene::CheckPlayer2Enemy()
 			{
 				lockList->Lost(m.get());
 			}
-			if (Length(player->GetPosition(), m->GetPosition()) < 350.0f && m->GetAlive() == true)
+			if (Tool::Length3to3(player->GetPosition(), m->GetPosition()) < 350.0f && m->GetAlive() == true)
 			{
 				// エネミーの発射
 				m->ShotBullet(player->GetPosition());
@@ -328,8 +314,7 @@ void GamePlayScene::CheckPlayer2Enemy()
 		reticle->SetPosition({ 0, 0 });
 		reticle->SetInvisible(true);
 
-		player->SetTargetPosition({ 0, 0, 0 });
-		player->SetIsLock(false);
+		player->SetTarget(false);
 	}
 	else
 	{
@@ -337,8 +322,7 @@ void GamePlayScene::CheckPlayer2Enemy()
 		reticle->SetPosition(camera->Convert3DPosTo2DPos(lockList->GetTargetEnemy()->GetPosition()));
 		reticle->SetInvisible(false);
 
-		player->SetTargetPosition(lockList->GetTargetEnemy()->GetPosition());
-		player->SetIsLock(true);
+		player->SetTarget(true, lockList->GetTargetEnemy()->GetPosition());
 	}
 }
 
@@ -351,7 +335,7 @@ void GamePlayScene::CheckPlayerBullets2Enemy()
 		{
 			for (auto& e : enemy)
 			{
-				if (Length(pB->GetPosition(), e->GetPosition()) < 10.0f && e->GetAlive() == true)
+				if (Tool::Length3to3(pB->GetPosition(), e->GetPosition()) < 10.0f && e->GetAlive() == true)
 				{
 					pB->SetAlive(false);
 					e->SetAlive(false);
@@ -360,9 +344,9 @@ void GamePlayScene::CheckPlayerBullets2Enemy()
 					XMFLOAT3 vel = {};
 					for (int i = 0; i < 360; i++)
 					{
-						vel.x += cosf(static_cast<float>(rand() % 360)) * 0.01f;
-						vel.y += sinf(static_cast<float>(rand() % 360)) * 0.01f;
-						vel.z += cosf(static_cast<float>(rand() % 360)) * 0.01f;
+						vel.x += cosf(static_cast<float>(rand() % 21 - 10)) * 0.01f;
+						vel.y += sinf(static_cast<float>(rand() % 11)) * 0.01f;
+						vel.z += cosf(static_cast<float>(rand() % 21 - 10)) * 0.01f;
 						explosion->Add(40, e->GetPosition(), vel, {0, 0, 0}, {0.7f, 0.4f, 0.1f, 0.1f}, {0.0f, 0.0f, 0.0f, 0.0f}, 0.2f, 2.0f, false);
 					}
 				}
@@ -379,7 +363,7 @@ void GamePlayScene::CheckPlayer2EnemyBullets()
 
 		for (const auto& eB : enemyrBullets)
 		{
-			if (Length(eB->GetPosition(), player->GetPosition()) < 3.0f && eB->GetAlive() == true)
+			if (Tool::Length3to3(eB->GetPosition(), player->GetPosition()) < 3.0f && eB->GetAlive() == true)
 			{
 				eB->SetAlive(false);
 				if (0 < player->GetPlayerHP())
@@ -389,9 +373,9 @@ void GamePlayScene::CheckPlayer2EnemyBullets()
 				XMFLOAT3 vel = {};
 				for (int i = 0; i < 360; i++)
 				{
-					vel.x += cosf(static_cast<float>(rand() % 360)) * 0.01f;
-					vel.y += sinf(static_cast<float>(rand() % 360)) * 0.01f;
-					vel.z += cosf(static_cast<float>(rand() % 360)) * 0.01f;
+					vel.x += cosf(static_cast<float>(rand() % 21 - 10)) * 0.01f;
+					vel.y += sinf(static_cast<float>(rand() % 11)) * 0.01f;
+					vel.z += cosf(static_cast<float>(rand() % 21 - 10)) * 0.01f;
 					explosion->Add(40, player->GetPosition(), vel, {0, 0, 0}, {0.7f, 0.4f, 0.1f, 0.1f}, {0.0f, 0.0f, 0.0f, 0.0f}, 0.2f, 2.0f, false);
 				}
 			}
@@ -408,7 +392,7 @@ void GamePlayScene::CheckPlayer2Wall()
 		if (playerPos.y < 10 + 5.0f * player->GetPlayerObject()->GetScale().z)
 		{
 			playerPos.y = 10 + 5.0f * player->GetPlayerObject()->GetScale().z;
-			player->OnLand();
+			player->HitGround();
 		}
 
 		player->SetPosition(playerPos);
@@ -423,56 +407,12 @@ void GamePlayScene::CheckEnemy2Wall()
 		{
 			XMFLOAT3 enemyPos = m->GetPosition();
 
-			if (enemyPos.y < 50 + 0.25f * m->GetObject3d()->GetScale().y)
+			if (enemyPos.y < 10 + 0.25f * m->GetObject3d()->GetScale().y)
 			{
-				enemyPos.y = 50 + 0.25f * m->GetObject3d()->GetScale().y;
+				enemyPos.y = 10 + 0.25f * m->GetObject3d()->GetScale().y;
 			}
 
 			m->SetPosition(enemyPos);
-		}
-	}
-}
-
-void GamePlayScene::CheckBullet2Wall()
-{
-	for (auto& e : enemy)
-	{
-		const std::vector<std::unique_ptr<Bullet>>& enemyrBullets = e->GetEnemyBullet();
-		if (e->GetAlive() == false)
-		{
-			continue;
-		}
-		for (const auto& eB : enemyrBullets)
-		{
-			if (eB->GetAlive() == false)
-			{
-				continue;
-			}
-			if (eB->GetPosition().x < -700.0f * desert->GetScale().x || 700.0f * desert->GetScale().x < eB->GetPosition().x)
-			{
-				eB->SetAlive(false);
-			}
-			else if (eB->GetPosition().z < -500.0f * desert->GetScale().z || 500.0f * desert->GetScale().z < eB->GetPosition().z)
-			{
-				eB->SetAlive(false);
-			}
-		}
-	}
-
-	const std::vector<unique_ptr<Bullet>>& playerBullets = player->GetPlayerBullets();
-	for (const auto& pB : playerBullets)
-	{
-		if (pB->GetAlive() == false)
-		{
-			continue;
-		}
-		if (pB->GetPosition().x < -700.0f * desert->GetScale().x || 700.0f * desert->GetScale().x < pB->GetPosition().x)
-		{
-			pB->SetAlive(false);
-		} 
-		else if (pB->GetPosition().z < -500.0f * desert->GetScale().z || 500.0f * desert->GetScale().z < pB->GetPosition().z)
-		{
-			pB->SetAlive(false);
 		}
 	}
 }

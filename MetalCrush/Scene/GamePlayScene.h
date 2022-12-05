@@ -13,11 +13,13 @@
 #include "LightGroup.h"
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
-
 #include "Player.h"
 #include "Enemy.h"
 #include "Bullet.h"
 #include "AutoLockOn.h"
+#include "CollisionManager.h"
+#include "MeshCollider.h"
+#include "TouchableObject.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -78,6 +80,7 @@ private: // インスタンス
 	std::unique_ptr<Model> playerModel;
 	std::unique_ptr<Model> enemyModel;
 	std::unique_ptr<Model> bulletModel;
+	//std::unique_ptr<TouchableObject> desert = nullptr;
 	std::unique_ptr<Object3d> desert = nullptr;
 	std::unique_ptr<Object3d> skyWall = nullptr;
 	std::vector<std::unique_ptr<Enemy>> enemy;
@@ -86,6 +89,7 @@ private: // インスタンス
 
 	// その他
 	std::unique_ptr<AutoLockOn> lockList = nullptr;
+	CollisionManager* collisionManager = nullptr;
 
 private: // メンバ変数
 	
@@ -141,14 +145,7 @@ public: // メンバ関数
 	/// </summary>
 	void DrawDebugText(ID3D12GraphicsCommandList* cmdList);
 
-	/// <summary>
-	/// 始点から終点への距離
-	/// </summary>
-	/// <param name="pos1">終点</param>
-	/// <param name="pos2">始点</param>
-	/// <returns>二点間の距離</returns>
-	const float Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2 = { 0, 0, 0 });
-
+public: // メンバ関数
 	/// <summary>
 	/// 衝突判定
 	/// </summary>
@@ -179,5 +176,8 @@ public: // メンバ関数
 	/// </summary>
 	void CheckEnemy2Wall();
 
+	/// <summary>
+	/// 
+	/// </summary>
 	void CheckBullet2Wall();
 };

@@ -3,12 +3,14 @@
 #include "Camera.h"
 #include "FbxObject3d.h"
 #include "ParticleManager.h"
-
 #include "Bullet.h"
 
 #include <DirectXMath.h>
 #include <memory>
 
+/// <summary>
+/// プレイヤー
+/// </summary>
 class Player
 {
 public: // エイリアス
@@ -24,23 +26,8 @@ private: // デバイス
 	static Input* s_input;
 
 private: // 定数
-	// 通常移動
-	// 加速度
-	const float c_accMove = 0.0325f;
-	// 減速度
-	const float c_decMove = 0.9f;
-	// 最大速度
-	const float c_maxVelXZ = 0.6f;
-
-	// ジャンプ
-	// 加速度
-	const float c_accJump = 0.05f;
-	// 最大速度
-	const float c_maxVelY = 0.6f;
-
-	// カメラ
-	// 回転角度
-	const float c_addAngle = 1.0f;
+	// 最大弾数
+	static const int c_maxBulletNum = 20;
 
 private: // サブクラス
 	// プレイヤーの情報
@@ -48,6 +35,8 @@ private: // サブクラス
 	{
 		// HP
 		int HP = 20;
+		// ブーストゲージ
+		int boostGauge = 100;
 		// 生存フラグ
 		bool isAlive = false;
 		// ダッシュフラグ
@@ -58,20 +47,91 @@ private: // サブクラス
 		XMFLOAT3 vel = { 0, 0, 0 };
 	};
 
+	//通常 移動パラメータ
+	struct MoveParameter
+	{
+		// 加速度
+		float acc = 0;
+		// 減速度
+		float dec = 0;
+		// 最大速度
+		float maxVelXZ = 0;
+	};
+
+	// ダッシュパラメータ
+	struct DashParameter
+	{
+		// ダッシュの加速度
+		float acc = 0;
+		// ダッシュの時間
+		float time = 0;
+		// 1フレーム当たりの加算（DT = DashTime）
+		float DT = 0;
+	};
+
+	// ジャンプパラメーター
+	struct JumpParameter
+	{
+		// 加速度
+		float acc = 0;
+		// 最大上昇速度
+		float maxVelY = 0;
+	};
+
+	// ブースターオフセット
+	struct BoosterOffset
+	{
+		// メインブースター
+		XMFLOAT3 mainOffset[2] = {};
+		XMFLOAT3 main[2] = {};
+		// サイドブースター
+		XMFLOAT3 sideOffset[2] = {};
+		XMFLOAT3 side[2] = {};
+		// バックブースター
+		XMFLOAT3 backOffset[2] = {};
+		XMFLOAT3 back[2] = {};
+	};
+
+	// バレットパラメーター
+	struct BulletParameter
+	{
+		// 標的の座標
+		XMFLOAT3 targetPos = { 0, 0, 0 };
+		// 装弾数
+		int num = 0;
+		// 弾速
+		float speed = 0;
+		// 発射間隔
+		int interval = 0;
+		// リロードタイム
+		int reloadTimer = 0;
+		// リロード中か
+		bool isReload = false;
+		// ロック中か
+		bool isLock = false;
+	};
+
+	// カメラパラメータ
+	struct CameraParameter
+	{
+		// 回転角度
+		float addAngle = 0;
+	};
+
 private: // メンバ変数
 	//==============================
 	// 自機
 	//==============================
 	// オブジェクト
-	std::unique_ptr<FbxObject3d> m_playerFBX = nullptr;
+	std::unique_ptr<Object3d> m_playerOBJ = nullptr;
 	// プレイヤー情報
 	PlayerInfo m_player;
-	// ダッシュの加速度
-	float m_dashAcc = 0;
-	// ダッシュの時間
-	float m_dashTime = 0;
-	// 1フレーム当たりの加算（DT = DashTime）
-	float m_addDT = 10.0f;
+	// 通常移動
+	MoveParameter m_move;
+	// ダッシュ
+	DashParameter m_dash;
+	// ジャンプ
+	JumpParameter m_jump;
 	// 重力加速値の時間
 	int m_gravityTime = 0;
 
@@ -82,24 +142,21 @@ private: // メンバ変数
 	std::vector<std::unique_ptr<Bullet>> m_playerBullets;
 	// モデル
 	Model* m_bulletModel = nullptr;
-	// 標的の座標
-	XMFLOAT3 m_targetPos = { 0, 0, 0 };
-	// ロック中か
-	bool m_isLock = false;
-	// 発射間隔
-	int m_shotInterval = 0;
-	// 装弾数
-	int m_bulletCapacity = 0;
-	// リロードタイム
-	int m_reloadTimer = 0;
+	// バレット
+	BulletParameter m_bullet;
 
 	//==============================
 	// パーティクル
 	//==============================
+	// オブジェクト
 	std::unique_ptr<ParticleManager> m_booster;
-	XMFLOAT3 m_mBoosterPos[2] = {};
-	XMFLOAT3 m_sBoosterPos[2] = {};
-	XMFLOAT3 m_bBoosterPos[2] = {};
+	// オフセット
+	BoosterOffset m_offset;
+
+	//==============================
+	// カメラ
+	//==============================
+	CameraParameter m_camera;
 
 public: // メンバ関数
 	/// <summary>
@@ -127,6 +184,7 @@ public: // メンバ関数
 	/// </summary>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
+public: // メンバ関数
 	/// <summary>
 	/// プレイヤーの移動
 	/// </summary>
@@ -140,6 +198,12 @@ public: // メンバ関数
 	void JumpPlayer(XMFLOAT3& acc);
 
 	/// <summary>
+	/// 速度の正規化
+	/// </summary>
+	/// <param name="acc">加速値</param>
+	void NormalizeVel(XMFLOAT3& acc);
+
+	/// <summary>
 	/// プレイヤーのダッシュ
 	/// </summary>
 	void DashPlayer();
@@ -150,40 +214,56 @@ public: // メンバ関数
 	void ShotBullet();
 
 	/// <summary>
-	/// 使っていない弾があるか
-	/// </summary>
-	/// <returns>可否</returns>
-	bool CheckNoUsingBullet();
-
-	/// <summary>
 	/// カメラワーク
 	/// </summary>
 	void CameraWork();
 
 	/// <summary>
-	/// 地面に着地したら
+	/// オフセットの更新
 	/// </summary>
-	void OnLand();
-
 	void UpdateOffset();
 
 	/// <summary>
-	/// 背面ブースター
+	/// メインブースター
 	/// </summary>
-	void MainBooster(const XMFLOAT3& acc);
+	void MainBooster();
 
 	/// <summary>
-	/// 横ブースター
+	/// サイドブースター
 	/// </summary>
-	void SideBooster(const XMFLOAT3& acc);
+	void SideBooster();
 
 	/// <summary>
 	/// 前ブースター
 	/// </summary>
-	void BacktBooster(const XMFLOAT3& acc);
+	void BacktBooster();
 
+	/// <summary>
+	/// ダッシュ時のブースター
+	/// </summary>
 	void DashBooster(const XMFLOAT3& acc);
 
+	/// <summary>
+	/// 地面に着地したら
+	/// </summary>
+	inline void HitGround()
+	{
+		m_gravityTime = 0;
+		m_player.vel.y = 0;
+	}
+
+	/// <summary>
+	/// ターゲットを設定
+	/// </summary>
+	/// <param name="pos">ターゲットの座標</param>
+	/// <param name="isTraget">ターゲッティングするか</param>
+	inline void SetTarget(bool isTraget, const XMFLOAT3& pos = { 0, 0, 0 })
+	{
+		m_bullet.isLock = isTraget;
+		m_bullet.targetPos = pos;
+	}
+
+public: // メンバ関数
 	/// <summary>
 	/// 始点から終点への距離
 	/// </summary>
@@ -214,7 +294,7 @@ public: // アクセッサ
 	{
 		m_player.pos = position;
 
-		m_playerFBX->SetPosition(m_player.pos);
+		m_playerOBJ->SetPosition(m_player.pos);
 	}
 
 	/// <summary>
@@ -238,23 +318,6 @@ public: // アクセッサ
 	}
 
 	/// <summary>
-	/// 標的の座標をセット
-	/// </summary>
-	/// <param name="targetPosition">標的の座標</param>
-	inline void SetTargetPosition(const XMFLOAT3& targetPosition)
-	{
-		m_targetPos = targetPosition;
-	}
-
-	/// <summary>
-	/// ロックフラグをセット
-	/// </summary>
-	inline void SetIsLock(const bool isLock)
-	{
-		m_isLock = isLock;
-	}
-
-	/// <summary>
 	/// HPの取得
 	/// </summary>
 	/// <returns>HP</returns>
@@ -273,7 +336,7 @@ public: // アクセッサ
 	/// 装弾数取得
 	/// </summary>
 	/// <returns>装弾数</returns>
-	inline int GetBulletCapacity() { return m_bulletCapacity; }
+	inline int GetBulletCapacity() { return m_bullet.num; }
 
 	/// <summary>
 	/// ダッシュフラグを取得
@@ -283,10 +346,10 @@ public: // アクセッサ
 	/// <summary>
 	/// FBX取得
 	/// </summary>
-	inline FbxObject3d* GetPlayerObject() { return m_playerFBX.get(); }
+	inline Object3d* GetPlayerObject() { return m_playerOBJ.get(); }
 
 	/// <summary>
-	/// 弾を取得
+	/// プレイヤーバレットを取得
 	/// </summary>
 	inline const std::vector<std::unique_ptr<Bullet>>& GetPlayerBullets() { return m_playerBullets; }
 };

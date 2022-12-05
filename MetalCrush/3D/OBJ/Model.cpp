@@ -1,5 +1,6 @@
 #include "Model.h"
 
+#include <SafeDelete.h>
 #include <DirectXMath.h>
 #include <fstream>
 #include <sstream>
@@ -22,7 +23,7 @@ Model::Model()
 
 Model::~Model()
 {
-
+	
 }
 
 void Model::StaticInitialize(ID3D12Device* dev)
@@ -36,7 +37,7 @@ void Model::StaticInitialize(ID3D12Device* dev)
 	Mesh::StaticInitialize(dev);
 }
 
-Model *Model::Create(const std::string& modelName, const bool smooting)
+Model *Model::Create(const std::string& modelName, const bool smoothing)
 {
 	//インスタンス生成
 	Model* model = new Model;
@@ -45,12 +46,12 @@ Model *Model::Create(const std::string& modelName, const bool smooting)
 	model->m_graphicsPipeline.reset(new PipelineManager(s_dev));
 
 	// 初期化
-	model->Initialize(modelName, smooting);
+	model->Initialize(modelName, smoothing);
 
 	return model;
 }
 
-void Model::Initialize(const std::string& modelName, const bool smooting)
+void Model::Initialize(const std::string& modelName, const bool smoothing)
 {
 	HRESULT result = S_FALSE;
 
@@ -87,6 +88,24 @@ void Model::Initialize(const std::string& modelName, const bool smooting)
 		string key;
 		getline(line_stream, key, ' ');
 
+		// 先頭文字列がgならグループの開始
+		if (key == "g")
+		{
+			// カレントメッシュの情報が揃っているなら
+			if (mesh->GetName().size() > 0 && mesh->GetVertexCount() > 0)
+			{
+				// コンテナに登録
+				m_meshes.emplace_back(mesh);
+				// 次のメッシュ生成
+				mesh = new Mesh;
+				indexCountTex = 0;
+			}
+			// グループ名読み込み
+			string groupName;
+			line_stream >> groupName;
+			// メッシュに名前をセット
+			mesh->SetName(groupName);
+		}
 		//先頭の文字がｖなら頂点座標
 		if (key == "v")
 		{
@@ -176,9 +195,10 @@ void Model::Initialize(const std::string& modelName, const bool smooting)
 					}
 				}
 				//エッジ平滑化用のデータを追加
-				if (smooting == true)
+				if (smoothing == true)
 				{
 					mesh->AddSmoothData(indexPosition, (unsigned short)mesh->GetVertexCount() - 1);
+					mesh->SetSmoothing(true);
 				}
 				//インデックスデータに追加
 				if (faceIndexCount < 3)
@@ -220,24 +240,6 @@ void Model::Initialize(const std::string& modelName, const bool smooting)
 			line_stream >> filename;
 			//マテリアルの読み込み
 			LoadMaterial(directoryPath, filename);
-		}
-		// 先頭文字列がgならグループの開始
-		if (key == "g")
-		{
-			// カレントメッシュの情報が揃っているなら
-			if (mesh->GetName().size() > 0 && mesh->GetVertexCount() > 0)
-			{
-				// コンテナに登録
-				m_meshes.emplace_back(mesh);
-				// 次のメッシュ生成
-				mesh = new Mesh;
-				indexCountTex = 0;
-			}
-			// グループ名読み込み
-			string groupName;
-			line_stream >> groupName;
-			// メッシュに名前をセット
-			mesh->SetName(groupName);
 		}
 	}
 	file.close();

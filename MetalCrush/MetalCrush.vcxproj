@@ -45,12 +45,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\</IncludePath>
+    <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\;$(ProjectDir)Lib\Tool\</IncludePath>
     <LibraryPath>$(ProjectDir)Lib\FBX_SDK\lib\;$(ProjectDir)Lib\DirectXTex\lib\Debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\</IncludePath>
+    <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\;$(ProjectDir)Lib\Tool\</IncludePath>
     <LibraryPath>$(ProjectDir)Lib\FBX_SDK\lib\;$(ProjectDir)Lib\DirectXTex\lib\Release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -59,7 +59,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game\;$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\FBX\;$(ProjectDir)3D\OBJ\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game\;$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText\;$(ProjectDir)Collision\MeshCollider\;$(ProjectDir)Collision\SphereCollider\;$(ProjectDir)Collision\Other\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\FBX\;$(ProjectDir)3D\OBJ\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -85,7 +85,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game\;$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText;$(ProjectDir)Collision\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\FBX\;$(ProjectDir)3D\OBJ\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game\;$(ProjectDir)Window\;$(ProjectDir)Scene\;$(ProjectDir)Effect\;$(ProjectDir)Input\;$(ProjectDir)DirectXCommon\;$(ProjectDir)DebugText\;$(ProjectDir)Collision\MeshCollider\;$(ProjectDir)Collision\SphereCollider\;$(ProjectDir)Collision\Other\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Audio\;$(ProjectDir)3D\FBX\;$(ProjectDir)3D\OBJ\;$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Light\;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -119,8 +119,12 @@
     <ClCompile Include="Base\FrameWork.cpp" />
     <ClCompile Include="Base\OnoGame.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
-    <ClCompile Include="Collision\Collision.cpp" />
-    <ClCompile Include="Collision\CollisionPrimitive.cpp" />
+    <ClCompile Include="Collision\MeshCollider\MeshCollider.cpp" />
+    <ClCompile Include="Collision\Other\Collision.cpp" />
+    <ClCompile Include="Collision\Other\CollisionManager.cpp" />
+    <ClCompile Include="Collision\Other\CollisionPrimitive.cpp" />
+    <ClCompile Include="Collision\Other\TouchableObject.cpp" />
+    <ClCompile Include="Collision\SphereCollider\SphereCollider.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="DirectXCommon\DirectXCommon.cpp" />
     <ClCompile Include="DirectXCommon\PipelineManager.cpp" />
@@ -131,6 +135,7 @@
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="Lib\Tool\Tool.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\EndScene.cpp" />
@@ -154,11 +159,16 @@
     <ClInclude Include="Base\FrameWork.h" />
     <ClInclude Include="Base\OnoGame.h" />
     <ClInclude Include="Camera\Camera.h" />
-    <ClInclude Include="Collision\BaseCollider.h" />
-    <ClInclude Include="Collision\Collision.h" />
-    <ClInclude Include="Collision\CollisionInfo.h" />
-    <ClInclude Include="Collision\CollisionPrimitive.h" />
-    <ClInclude Include="Collision\CollisionType.h" />
+    <ClInclude Include="Collision\MeshCollider\MeshCollider.h" />
+    <ClInclude Include="Collision\Other\BaseCollider.h" />
+    <ClInclude Include="Collision\Other\Collision.h" />
+    <ClInclude Include="Collision\Other\CollisionInfo.h" />
+    <ClInclude Include="Collision\Other\CollisionManager.h" />
+    <ClInclude Include="Collision\Other\CollisionPrimitive.h" />
+    <ClInclude Include="Collision\Other\CollisionType.h" />
+    <ClInclude Include="Collision\Other\RayCast.h" />
+    <ClInclude Include="Collision\Other\TouchableObject.h" />
+    <ClInclude Include="Collision\SphereCollider\SphereCollider.h" />
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="DirectXCommon\DirectXCommon.h" />
     <ClInclude Include="DirectXCommon\PipelineManager.h" />
@@ -170,6 +180,7 @@
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="lib\SafeDelete.h" />
+    <ClInclude Include="Lib\Tool\Tool.h" />
     <ClInclude Include="Light\CircleShadow.h" />
     <ClInclude Include="Light\DirectionalLight.h" />
     <ClInclude Include="Light\LightGroup.h" />

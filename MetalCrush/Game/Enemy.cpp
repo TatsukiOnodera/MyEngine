@@ -1,9 +1,10 @@
 #include "Enemy.h"
+#include "SphereCollider.h"
 
 Enemy::Enemy(Model* enemyModel, Model* bulletModel)
 {
 	// モデルの読み込み
-	m_object.reset(Object3d::Create(enemyModel));
+	m_enemyOBJ.reset(Object3d::Create(enemyModel));
 	m_bulletModel = bulletModel;
 
 	// 初期化
@@ -18,7 +19,7 @@ Enemy::~Enemy()
 void Enemy::Initialize()
 {
 	// nullチェック
-	if (m_object == nullptr)
+	if (m_enemyOBJ == nullptr)
 	{
 		assert(0);
 	}
@@ -34,10 +35,11 @@ void Enemy::Initialize()
 	m_bulletInterval = 0;
 
 	// オブジェクト
-	m_object->SetPosition(m_pos);
-	m_object->SetScale({ 3, 3, 3 });
-	m_object->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
-	m_object->Update();
+	m_enemyOBJ->SetPosition(m_pos);
+	m_enemyOBJ->SetScale({ 3, 3, 3 });
+	m_enemyOBJ->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
+	m_enemyOBJ->SetCollider(new SphereCollider({ 0, 0, 0 }, 3));
+	m_enemyOBJ->Update();
 }
 
 void Enemy::Update()
@@ -50,7 +52,7 @@ void Enemy::Update()
 		m_pos.y += m_vel.y;
 		m_pos.z += m_vel.z;
 
-		m_object->SetPosition(m_pos);
+		m_enemyOBJ->SetPosition(m_pos);
 
 		// 弾の間隔
 		m_bulletInterval++;
@@ -74,7 +76,7 @@ void Enemy::Draw(ID3D12GraphicsCommandList* cmdList)
 	
 	if (m_alive == true)
 	{
-		m_object->Draw();
+		m_enemyOBJ->Draw();
 	}
 	if (0 < enemyBullets.size())
 	{

@@ -1,6 +1,8 @@
 #include "Object3d.h"
 #include "BaseCollider.h"
+#include "CollisionManager.h"
 
+#include <SafeDelete.h>
 #include <cassert>
 #include <d3dx12.h>
 #include <d3dcompiler.h>
@@ -19,7 +21,10 @@ LightGroup* Object3d::s_lightGroup = nullptr;
 
 Object3d::~Object3d()
 {
-
+	if (m_collider)
+	{
+		CollisionManager::GetInstance()->RemoveCollider(m_collider.get());
+	}
 }
 
 bool Object3d::StaticInitialize(ID3D12Device* device)
@@ -76,6 +81,9 @@ void Object3d::Initialize()
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&m_constBuff));
+	
+	// クラス名取得
+	name = typeid(*this).name();
 }
 
 void Object3d::Update()
@@ -155,7 +163,7 @@ void Object3d::Draw()
 
 	//更新
 	Update();
-
+	
 	//NULLチェック
 	assert(s_cmdList);
 
@@ -176,11 +184,13 @@ void Object3d::Draw()
 void Object3d::SetCollider(BaseCollider* collider)
 {
 	collider->SetObject(this);
-
 	this->m_collider.reset(collider);
+
+	CollisionManager::GetInstance()->AddCollider(collider);
+	m_collider->Update();
 }
 
 void Object3d::OnCollision(const CollisionInfo& info)
 {
-
+	
 }

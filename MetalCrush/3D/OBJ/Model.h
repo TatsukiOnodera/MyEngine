@@ -36,9 +36,9 @@ public: // 静的メンバ関数
 	/// モデル生成
 	/// </summary>
 	/// <param name="modelName">モデルのパス</param>
-	/// <param name="smooting">スムースシェーディングの有無</param>
+	/// <param name="smooting">スムーズシェーディングの有無</param>
 	/// <returns>モデル</returns>
-	static Model* Create(const std::string& modelName, const bool smooting = false);
+	static Model* Create(const std::string& modelName, const bool smoothing = false);
 
 private: // メンバ変数
 	// グラフィックスパイプライン
@@ -69,8 +69,8 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <param name="modelName">モデルのパス</param>
-	/// <param name="smooting">スムースシェーディングの有無</param>
-	void Initialize(const std::string& modelName, const bool smooting);
+	/// <param name="smooting">スムーズシェーディングの有無</param>
+	void Initialize(const std::string& modelName, const bool smoothing);
 
 	/// <summary>
 	/// 描画
@@ -100,6 +100,12 @@ public: // メンバ関数
 	void LoadTextures();
 
 public: // アクセッサ
+	/// <summary>
+	/// メッシュ配列取得
+	/// </summary>
+	/// <returns>メッシュ配列</returns>
+	inline const std::vector<std::unique_ptr<Mesh>>& GetMeshes() { return m_meshes; }
+
 	/// <summary>
 	/// パイプラインステートを取得
 	/// </summary>
