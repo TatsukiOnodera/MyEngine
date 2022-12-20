@@ -54,7 +54,7 @@ void GamePlayScene::Initialize()
 	bulletModel.reset(Model::Create("Bullet", true));
 
 	// OBJ
-	desert.reset(TouchableObject::Create(desertModel.get(), 4));
+	desert.reset(TouchableObject::Create(desertModel.get()));
 	//desert.reset(Object3d::Create(desertModel.get()));
 	skyWall.reset(Object3d::Create(skyWallModel.get()));
 	for (int i = 0; i < 10; i++)
