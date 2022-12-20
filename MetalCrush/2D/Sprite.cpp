@@ -202,6 +202,12 @@ void Sprite::LoadTexture(const UINT texNumber, const wchar_t* filename)
 	//異常な番号の指定を検出
 	assert(texNumber <= c_spriteSRVCount - 1);
 
+	// 既にあるなら
+	if (s_texBuff[texNumber])
+	{
+		return;
+	}
+
 	HRESULT result;
 
 	//WICテクスチャのロード

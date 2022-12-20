@@ -13,11 +13,11 @@ private: // エイリアス
 
 private: // メンバ変数
 	// ロックオンした対象の座標を記録
-	std::list<Enemy*> enemysList;
+	std::list<Enemy*> m_enemysList;
 	// 今ロックオンしている座標
-	Enemy* targetEnemy = nullptr;
+	Enemy* m_targetEnemy = nullptr;
 	// 標的の番号
-	int targetNum = 0;
+	int m_targetNum = 0;
 
 public: // メンバ関数
 	/// <summary>
@@ -63,17 +63,17 @@ public: // メンバ関数
 	/// <returns>対象のエネミー</returns>
 	Enemy* GetTargetEnemy()
 	{ 
-		if (targetEnemy == nullptr)
+		if (m_targetEnemy == nullptr)
 		{
 			assert(0);
 		}
 
-		return targetEnemy;
+		return m_targetEnemy;
 	}
 
 	/// <summary>
 	/// 標的の番号取得
 	/// </summary>
 	/// <returns>標的の番号</returns>
-	const int GetTargetNum() { return targetNum; }
+	const int GetTargetNum() { return m_targetNum; }
 };

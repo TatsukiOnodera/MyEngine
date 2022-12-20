@@ -38,6 +38,7 @@ private: // 定数
 	// デバッグテキスト用テクスチャの番号
 	const int fontNumber = 0;
 
+private: // サブクラス
 	// シェーダーの種類
 	enum ShadersType
 	{
@@ -70,29 +71,37 @@ private: // インスタンス
 	std::unique_ptr<ParticleManager> explosion = nullptr;
 
 	// スプライト
-	std::unique_ptr<Sprite> reticle = nullptr;
-	/*std::unique_ptr<Sprite> HP = nullptr;
-	std::unique_ptr<Sprite> ammoNum[2];*/
+	std::unique_ptr<Sprite> Reticle = nullptr;
+	std::unique_ptr<Sprite> HPFrame = nullptr;
+	std::unique_ptr<Sprite> HP = nullptr;
+	std::unique_ptr<Sprite> BoosterFrame = nullptr;
+	std::unique_ptr<Sprite> Booster = nullptr;
+	std::unique_ptr<Sprite> Monitor = nullptr;
+	std::unique_ptr<Sprite> GameOver = nullptr;
+	std::unique_ptr<Sprite> BulletNum[2];
+	std::unique_ptr<Sprite> BulletNumFrame = nullptr;
+	std::unique_ptr<Sprite> Rader = nullptr;
+	std::vector<std::unique_ptr<Sprite>> enemysMarker;
 
-	// オブジェクト
+	// モデル
 	std::unique_ptr<Model> desertModel;
 	std::unique_ptr<Model> skyWallModel;
-	std::unique_ptr<Model> playerModel;
 	std::unique_ptr<Model> enemyModel;
 	std::unique_ptr<Model> bulletModel;
-	//std::unique_ptr<TouchableObject> desert = nullptr;
-	std::unique_ptr<Object3d> desert = nullptr;
+
+	// OBJ
+	std::unique_ptr<TouchableObject> desert = nullptr;
+	//std::unique_ptr<Object3d> desert = nullptr;
 	std::unique_ptr<Object3d> skyWall = nullptr;
 	std::vector<std::unique_ptr<Enemy>> enemy;
 	std::unique_ptr<Player> player = nullptr;
-	std::unique_ptr<Object3d> p = nullptr;
 
 	// その他
 	std::unique_ptr<AutoLockOn> lockList = nullptr;
 	CollisionManager* collisionManager = nullptr;
 
 private: // メンバ変数
-	
+	bool isEnd = true;
 
 public: // メンバ関数
 	/// <summary>
@@ -118,7 +127,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 変数初期化
 	/// </summary>
-	void InitializeVariable();
+	void InitializeParameter();
 
 	/// <summary>
 	/// 背景スプライト描画

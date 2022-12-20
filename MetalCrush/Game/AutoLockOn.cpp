@@ -13,51 +13,51 @@ AutoLockOn::~AutoLockOn()
 
 void AutoLockOn::Update()
 {
-	if (enemysList.empty() == true)
+	if (m_enemysList.empty() == true)
 	{
-		targetEnemy = nullptr;
-		targetNum = 0;
+		m_targetEnemy = nullptr;
+		m_targetNum = 0;
 	}
 	else
 	{
-		if (targetEnemy == nullptr)
+		if (m_targetEnemy == nullptr)
 		{
-			targetEnemy = enemysList.front();
+			m_targetEnemy = m_enemysList.front();
 		}
 	}
 }
 
 void AutoLockOn::ChangeTargetLock()
 {
-	targetNum += 1;
+	m_targetNum += 1;
 
-	if (enemysList.empty() == false)
+	if (m_enemysList.empty() == false)
 	{
 		int tmp_count = 0;
-		if (enemysList.size() < targetNum)
+		if (m_enemysList.size() < m_targetNum)
 		{
-			targetNum = 1;
+			m_targetNum = 1;
 		}
-		else if (targetNum < 1)
+		else if (m_targetNum < 1)
 		{
-			targetNum = static_cast<int>(enemysList.size());
+			m_targetNum = static_cast<int>(m_enemysList.size());
 		}
-		for (auto& m : enemysList)
+		for (auto& m : m_enemysList)
 		{
 			tmp_count++;
-			if (m == targetEnemy)
+			if (m == m_targetEnemy)
 			{
 				continue;
 			}
-			if (tmp_count == targetNum)
+			if (tmp_count == m_targetNum)
 			{
-				targetEnemy = m;
+				m_targetEnemy = m;
 			}
 		}
 	}
 	else
 	{
-		targetNum = 0;
+		m_targetNum = 0;
 	}
 }
 
@@ -65,31 +65,31 @@ void AutoLockOn::LockOn(Enemy* enemy)
 {
 	if (InList(enemy) == false)
 	{
-		enemysList.emplace_back(enemy);
+		m_enemysList.emplace_back(enemy);
 
-		if (targetEnemy == nullptr)
+		if (m_targetEnemy == nullptr)
 		{
-			targetEnemy = enemy;
+			m_targetEnemy = enemy;
 		}
-		if (targetNum == 0)
+		if (m_targetNum == 0)
 		{
-			targetNum = 1;
+			m_targetNum = 1;
 		}
 	}
 }
 
 void AutoLockOn::Lost(Enemy * enemy)
 {
-	enemysList.remove(enemy);
-	if (targetEnemy == enemy)
+	m_enemysList.remove(enemy);
+	if (m_targetEnemy == enemy)
 	{
-		targetEnemy = nullptr;
+		m_targetEnemy = nullptr;
 	}
 }
 
 bool AutoLockOn::InList(Enemy * enemy)
 {
-	for (auto& m : enemysList)
+	for (auto& m : m_enemysList)
 	{
 		if (enemy == m)
 		{

@@ -104,7 +104,7 @@ private: //メンバ変数
 	// ビルボード
 	bool m_isBillboard = false;
 	// ペアレント
-	std::unique_ptr<Object3d> m_parent = nullptr;
+	Object3d* m_parent = nullptr;
 	// デバック用
 	const char* name = nullptr;
 	//コライダー
@@ -137,6 +137,21 @@ public: //メンバ関数
 	/// 描画
 	/// </summary>
 	virtual void Draw();
+
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
+	virtual void OnCollision(const CollisionInfo& info);
+
+	/// <summary>
+	/// シェーダーの変更
+	/// </summary>
+	/// <param name="shaderName">シェーダー名</param>
+	inline void ChangeShaderPipeline(std::wstring shaderName)
+	{
+		m_model->ChangeShaderPipeline(shaderName);
+	}
 
 public: //アクセッサ
 	/// <summary>
@@ -265,9 +280,9 @@ public: //アクセッサ
 	/// ペアレントのワールド行列を取得
 	/// </summary>
 	/// <param name="parent">ペアレントのワールド行列</param>
-	inline void SetParent(Object3d& parent)
+	inline void SetParent(Object3d* parent)
 	{ 
-		m_parent.reset(&parent);
+		m_parent = parent;
 	}
 
 	/// <summary>
@@ -275,10 +290,4 @@ public: //アクセッサ
 	/// </summary>
 	/// <param name="collider">コライダー</param>
 	void SetCollider(BaseCollider* collider);
-
-	/// <summary>
-	/// 衝突時コールバック関数
-	/// </summary>
-	/// <param name="info">衝突情報</param>
-	virtual void OnCollision(const CollisionInfo& info);
 };

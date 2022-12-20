@@ -9,12 +9,12 @@
 
 using namespace Microsoft::WRL;
 
-PipelineManager::PipelineManager(ID3D12Device* dev)
+PipelineManager::PipelineManager(ID3D12Device* dev, std::wstring shaderName)
 {
-	CreateShaderPipeline(dev);
+	CreateShaderPipeline(dev, shaderName);
 }
 
-void PipelineManager::CreateShaderPipeline(ID3D12Device* dev)
+void PipelineManager::CreateShaderPipeline(ID3D12Device* dev, std::wstring shaderName)
 {
 	HRESULT result = S_FALSE;
 
@@ -22,9 +22,13 @@ void PipelineManager::CreateShaderPipeline(ID3D12Device* dev)
 	ComPtr<ID3DBlob>psBlob; // ピクセルシェーダオブジェクト
 	ComPtr<ID3DBlob>errorBlob; // エラーオブジェクト
 
+	std::wstring directoryPath = L"Resources/Shaders/" + shaderName + L"/";
+	std::wstring vsFileName = directoryPath +  shaderName + L"VS.hlsl";
+	std::wstring psFileName = directoryPath + shaderName + L"PS.hlsl";
+
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/Phong/PhongVS.hlsl",	// シェーダファイル名
+		vsFileName.c_str(), // シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -47,7 +51,7 @@ void PipelineManager::CreateShaderPipeline(ID3D12Device* dev)
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/Shaders/Phong/PhongPS.hlsl",	// シェーダファイル名
+		psFileName.c_str(),	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定

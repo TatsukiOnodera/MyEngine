@@ -43,7 +43,7 @@ Model *Model::Create(const std::string& modelName, const bool smoothing)
 	Model* model = new Model;
 
 	//グラフィックスパイプライン生成
-	model->m_graphicsPipeline.reset(new PipelineManager(s_dev));
+	model->m_graphicsPipeline.reset(new PipelineManager(s_dev, L"Phong"));
 
 	// 初期化
 	model->Initialize(modelName, smoothing);
@@ -114,6 +114,35 @@ void Model::Initialize(const std::string& modelName, const bool smoothing)
 			line_stream >> position.x;
 			line_stream >> position.y;
 			line_stream >> position.z;
+
+			// 最大値を超えていれば更新
+			if (positivePosition.x < position.x)
+			{
+				positivePosition.x = position.x;
+			}
+			if (positivePosition.y < position.y)
+			{
+				positivePosition.y = position.y;
+			}
+			if (positivePosition.z < position.z)
+			{
+				positivePosition.z = position.z;
+			}
+
+			// 最小値を超えていれば更新
+			if (position.x < negativePosition.x)
+			{
+				negativePosition.x = position.x;
+			}
+			if (position.y < negativePosition.y)
+			{
+				negativePosition.y = position.y;
+			}
+			if (position.z < negativePosition.z)
+			{
+				negativePosition.z = position.z;
+			}
+
 			//座標データに追加
 			positions.emplace_back(position);
 		}
@@ -420,4 +449,9 @@ void Model::LoadTextures()
 		}
 		textureIndex++;
 	}
+}
+
+void Model::ChangeShaderPipeline(std::wstring shaderName)
+{
+	m_graphicsPipeline->CreateShaderPipeline(s_dev, shaderName);
 }

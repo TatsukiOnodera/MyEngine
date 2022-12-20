@@ -53,6 +53,10 @@ private: // メンバ変数
 	Material* defaultMaterial = nullptr;
 	// デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> m_descHeap;
+	// 正の最大座標
+	XMFLOAT3 positivePosition = { 0, 0, 0 };
+	// 負の最大座標
+	XMFLOAT3 negativePosition = { 0, 0, 0 };
 
 public: // メンバ関数
 	/// <summary>
@@ -99,7 +103,25 @@ public: // メンバ関数
 	/// </summary>
 	void LoadTextures();
 
+	/// <summary>
+	/// シェーダー変更
+	/// </summary>
+	/// <param name="shaderName">シェーダー名</param>
+	void ChangeShaderPipeline(std::wstring shaderName);
+
 public: // アクセッサ
+	/// <summary>
+	/// 正の最大座標を取得
+	/// </summary>
+	/// <returns>正の最大座標</returns>
+	inline XMFLOAT3 GetPositivePos() { return positivePosition; }
+
+	/// <summary>
+	/// 負の最小座標
+	/// </summary>
+	/// <returns>負の最小座標</returns>
+	inline XMFLOAT3 GetNegativePos() { return negativePosition; }
+
 	/// <summary>
 	/// メッシュ配列取得
 	/// </summary>

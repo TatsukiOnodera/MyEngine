@@ -11,13 +11,14 @@ public: // メンバ関数
 	/// オブジェクト生成
 	/// </summary>
 	/// <param name="model">モデルデータ</param>
+	/// <param name="div">縦横を何分割にするか</param>
 	/// <returns>接触可能オブジェクト</returns>
-	static TouchableObject* Create(Model* model = nullptr);
+	static TouchableObject* Create(Model* model = nullptr, int div = 1);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="model">モデルデータ</param>
 	/// <returns>成否</returns>
-	bool Initialize(Model* model);
+	bool Initialize(Model* model, int div);
 };

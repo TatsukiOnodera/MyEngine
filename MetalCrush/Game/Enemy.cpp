@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "SphereCollider.h"
+#include <Tool.h>
 
 Enemy::Enemy(Model* enemyModel, Model* bulletModel)
 {
@@ -25,10 +26,11 @@ void Enemy::Initialize()
 	}
 
 	// 座標
-	m_pos = { static_cast<float>(rand() % 1001 - 500), 100, 100 };
+	m_pos = { static_cast<float>(rand() % 1501 - 750), 100, static_cast<float>(rand() % 1501) };
 	// 速度
-	m_vel = { static_cast<float>(rand() % 5 - 2) / 10, -9.8f, static_cast<float>(rand() % 5 - 2) / 10 };
-	//m_vel = { 0, -9.8f, 0 };
+	m_vel = { static_cast<float>(rand() % 11 - 5) / 50, -9.8f, static_cast<float>(rand() %11 - 5) / 50 };
+	// HP
+	m_HP = 3;
 	// 生存フラグ
 	m_alive = true;
 	// 発射間隔
@@ -36,8 +38,7 @@ void Enemy::Initialize()
 
 	// オブジェクト
 	m_enemyOBJ->SetPosition(m_pos);
-	m_enemyOBJ->SetScale({ 3, 3, 3 });
-	m_enemyOBJ->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
+	m_enemyOBJ->SetScale({ 2, 2, 2 });
 	m_enemyOBJ->SetCollider(new SphereCollider({ 0, 0, 0 }, 3));
 	m_enemyOBJ->Update();
 }
@@ -82,6 +83,7 @@ void Enemy::Draw(ID3D12GraphicsCommandList* cmdList)
 	{
 		for (auto& m : enemyBullets)
 		{
+			m->GetObject3d()->SetScale({ 2, 2, 2 });
 			m->Draw();
 		}
 	}
@@ -103,9 +105,9 @@ void Enemy::ShotBullet(const XMFLOAT3& targetPos)
 
 		// 長さを1にして10倍する
 		float len = sqrtf(powf(vel.x, 2) + powf(vel.y, 2) + powf(vel.z, 2));
-		vel.x = vel.x / len * 2.0f;
-		vel.y = vel.y / len * 2.0f;
-		vel.z = vel.z / len * 2.0f;
+		vel.x = vel.x / len * 8.0f;
+		vel.y = vel.y / len * 8.0f;
+		vel.z = vel.z / len * 8.0f;
 
 		if (CheckNoUsingBullet() == true)
 		{
@@ -146,4 +148,27 @@ bool Enemy::CheckNoUsingBullet()
 	{
 		return false;
 	}
+}
+
+bool Enemy::SearchTarget(const XMFLOAT3& target)
+{
+	// 範囲内なら
+	if (Tool::LengthFloat3(m_pos, target) < 300.0f)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Enemy::EnemyDamage(int num)
+{
+	m_HP -= num;
+	if (m_HP <= 0)
+	{
+		m_HP = 0;
+		return true;
+	}
+
+	return false;
 }

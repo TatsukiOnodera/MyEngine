@@ -28,8 +28,8 @@ void Bullet::Initialize(const XMFLOAT3& pos, const XMFLOAT3& vel, const bool& al
 	m_alive = alive;
 
 	m_object->SetPosition(m_pos);
-	m_object->SetScale({ 1.0f, 1.0f, 1.0f });
-	m_object->SetColor({ 0.9f, 0.1f, 0.3f, 1.0f });
+	m_object->SetScale({ 0.5f, 0.5f, 0.5f });
+	m_object->SetColor({ 0.9f, 0.3f, 0.1f, 1.0f });
 	m_object->Update();
 }
 

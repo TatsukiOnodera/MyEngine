@@ -64,6 +64,12 @@
     <FxCompile Include="Resources\Shaders\Bloom\BloomVS.hlsl">
       <Filter>シェーダーファイル\OBJ\Bloom</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\Texture\TexturePS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Texture\TextureVS.hlsl">
+      <Filter>シェーダーファイル\OBJ\Texture</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -358,6 +364,9 @@
     <None Include="Resources\Shaders\Bloom\Bloom.hlsli">
       <Filter>シェーダーファイル\OBJ\Bloom</Filter>
     </None>
+    <None Include="Resources\Shaders\Texture\Texture.hlsli">
+      <Filter>シェーダーファイル\OBJ\Texture</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="シェーダーファイル">
@@ -479,6 +488,9 @@
     </Filter>
     <Filter Include="ソース&amp;ヘッダーファイル\Engine\Collider\MeshCollider">
       <UniqueIdentifier>{ee48aa51-5d6b-4d53-bbe1-54b165c1ca01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\OBJ\Texture">
+      <UniqueIdentifier>{960f8b92-227f-4985-b0a7-fda4470d3c9c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

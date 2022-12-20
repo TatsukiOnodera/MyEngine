@@ -2,7 +2,7 @@
 #include "MeshCollider.h"
 #include <assert.h>
 
-TouchableObject* TouchableObject::Create(Model* model)
+TouchableObject* TouchableObject::Create(Model* model, int div)
 {
     TouchableObject* instance = new TouchableObject;
     if (instance == nullptr)
@@ -10,7 +10,7 @@ TouchableObject* TouchableObject::Create(Model* model)
         return nullptr;
     }
 
-    if (instance->Initialize(model) == false)
+    if (instance->Initialize(model, div) == false)
     {
         delete instance;
         assert(0);
@@ -19,7 +19,7 @@ TouchableObject* TouchableObject::Create(Model* model)
     return instance;
 }
 
-bool TouchableObject::Initialize(Model* model)
+bool TouchableObject::Initialize(Model* model, int div)
 {
     Object3d::Initialize();
 
@@ -28,7 +28,7 @@ bool TouchableObject::Initialize(Model* model)
     // コライダー追加
     MeshCollider* collider = new MeshCollider;
     SetCollider(collider);
-    collider->ConstructTriangles(model);
+    collider->ConstructTriangles(model, div);
 
     return true;
 }

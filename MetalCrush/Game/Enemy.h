@@ -25,6 +25,8 @@ private: // メンバ変数
 	XMFLOAT3 m_vel = { 0, 0, 0 };
 	// 生存フラグ
 	bool m_alive = false;
+	// HP
+	int m_HP = 0;
 
 	//==============================
 	// エネミーの弾
@@ -73,6 +75,19 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>可否</returns>
 	bool CheckNoUsingBullet();
+
+	/// <summary>
+	/// 射程にいるか
+	/// </summary>
+	/// <param name="target">対象の座標</param>
+	bool SearchTarget(const XMFLOAT3& target);
+
+	/// <summary>
+	/// ダメージを受ける
+	/// </summary>
+	/// <param name="num">ダメージ数</param>
+	/// <returns>HPが０か</returns>
+	bool EnemyDamage(int num);
 
 public: //アクセッサ
 	/// <summary>

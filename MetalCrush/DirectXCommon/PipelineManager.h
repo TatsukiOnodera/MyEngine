@@ -3,6 +3,7 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include <DirectXMath.h>
+#include <string>
 
 class PipelineManager
 {
@@ -21,13 +22,15 @@ public: //メンバ関数
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="dev">デバイス</param>
-	PipelineManager(ID3D12Device* dev);
+	/// <param name="shaderName">シェーダー名</param>
+	PipelineManager(ID3D12Device* dev, std::wstring shaderName);
 
 	/// <summary>
 	/// フォンシェーダー
 	/// </summary>
 	/// <param name="dev">デバイス</param>
-	void CreateShaderPipeline(ID3D12Device* dev);
+	/// <param name="shaderName">シェーダー名</param>
+	void CreateShaderPipeline(ID3D12Device* dev, std::wstring shaderName);
 
 	/// <summary>
 	/// パイプラインステートを取得

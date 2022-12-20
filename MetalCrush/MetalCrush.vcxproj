@@ -45,12 +45,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\;$(ProjectDir)Lib\Tool\</IncludePath>
+    <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\;$(ProjectDir)Lib\Tool\;$(ProjectDir)Lib\Ease\</IncludePath>
     <LibraryPath>$(ProjectDir)Lib\FBX_SDK\lib\;$(ProjectDir)Lib\DirectXTex\lib\Debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\;$(ProjectDir)Lib\Tool\</IncludePath>
+    <IncludePath>$(ProjectDir)Lib\;$(ProjectDir)Lib\DirectXTex\include\;$(ProjectDir)Lib\FBX_SDK\include\;$(ProjectDir)Lib\Tool\;$(ProjectDir)Lib\Ease\</IncludePath>
     <LibraryPath>$(ProjectDir)Lib\FBX_SDK\lib\;$(ProjectDir)Lib\DirectXTex\lib\Release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -272,6 +272,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\Texture\TexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Texture\TextureVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\Toon\ToonPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -291,6 +299,7 @@
     <None Include="Resources\Shaders\PostEffect\PostEffect.hlsli" />
     <None Include="Resources\Shaders\SpecularMap\SpecularMap.hlsli" />
     <None Include="Resources\Shaders\Sprite\Sprite.hlsli" />
+    <None Include="Resources\Shaders\Texture\Texture.hlsli" />
     <None Include="Resources\Shaders\Toon\Toon.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

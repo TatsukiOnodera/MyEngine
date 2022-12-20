@@ -102,4 +102,6 @@ public: // アクセッサ
 	{
 		m_alive = alive;
 	}
+
+	Object3d* GetObject3d() { return m_object.get(); };
 };
