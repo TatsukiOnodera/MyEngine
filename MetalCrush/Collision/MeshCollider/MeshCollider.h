@@ -10,7 +10,7 @@
 class MeshCollider : public BaseCollider
 {
 private: // 定数
-	static const int c_maxAreaX = 10;
+	static const int c_maxAreaX = 16;
 	static const int c_maxAreaY = c_maxAreaX;
 
 private: // サブクラス
