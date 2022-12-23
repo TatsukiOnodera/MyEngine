@@ -34,10 +34,6 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private: // 定数
-	// デバッグテキスト用テクスチャの番号
-	const int fontNumber = 0;
-
 private: // サブクラス
 	// シェーダーの種類
 	enum ShadersType

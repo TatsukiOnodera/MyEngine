@@ -19,18 +19,14 @@ void TitleScene::Initialize()
 	audio = Audio::GetInstance();
 	camera = Camera::GetInstance();
 
-	//スプライトテクスチャ読み込み
-	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-	Sprite::LoadTexture(1, L"Resources/startScreen.png");
-
 	//前景スプライト
-	debugText.Initialize(fontNumber);
+	debugText.Initialize(0);
 
 	//パーティクル
 	//particle.reset(ParticleManager::Create());
 
 	//スプライト
-	startScreen.reset(Sprite::Create(1));
+	startScreen.reset(Sprite::Create(12));
 
 	//オブジェクト
 

@@ -5,6 +5,11 @@ class OnoGame : public FrameWork
 {
 public: //ŠÖ”
 	/// <summary>
+	/// ƒŠƒ\[ƒX‚Ì“Ç‚İ‚İ
+	/// </summary>
+	void LoadResources();
+
+	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>
 	void Initialize() override;

@@ -23,26 +23,12 @@ void GamePlayScene::Initialize()
 	// サウンドファイル読み込み
 	//audio->LoadSound("Resources");
 
-	// スプライトテクスチャ読み込み
-	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-	Sprite::LoadTexture(1, L"Resources/Reticle.png");
-	Sprite::LoadTexture(2, L"Resources/NumberText.png");
-	Sprite::LoadTexture(3, L"Resources/HPFrame.png");
-	Sprite::LoadTexture(4, L"Resources/HPGauge.png");
-	Sprite::LoadTexture(5, L"Resources/BoosterFrame.png");
-	Sprite::LoadTexture(6, L"Resources/BoosterGauge.png");
-	Sprite::LoadTexture(7, L"Resources/Monitor.png");
-	Sprite::LoadTexture(8, L"Resources/GameOverScreen.png");
-	Sprite::LoadTexture(9, L"Resources/BulletNumFrame.png");
-	Sprite::LoadTexture(10, L"Resources/Rader.png");
-	Sprite::LoadTexture(11, L"Resources/RaderEnemy.png");
-
 	// ライト生成
 	lightGroup.reset(LightGroup::Create());
 	Object3d::SetGroupLight(lightGroup.get());
 
 	// デバックテキスト
-	debugText.Initialize(fontNumber);
+	debugText.Initialize(0);
 
 	// パーティクル
 	explosion.reset(ParticleManager::Create("Particle/FireParticle.png"));

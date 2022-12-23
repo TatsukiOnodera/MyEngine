@@ -19,18 +19,14 @@ void EndScene::Initialize()
 	audio = Audio::GetInstance();
 	camera = Camera::GetInstance();
 
-	//スプライトテクスチャ読み込み
-	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-	Sprite::LoadTexture(1, L"Resources/EndScreen.png");
-
 	//前景スプライト
-	debugText.Initialize(fontNumber);
+	debugText.Initialize(0);
 
 	//パーティクル
 	//particle.reset(ParticleManager::Create());
 
 	//スプライト
-	endScreen.reset(Sprite::Create(1));
+	endScreen.reset(Sprite::Create(13));
 
 	//オブジェクト
 
