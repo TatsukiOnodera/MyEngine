@@ -79,15 +79,8 @@ private: // インスタンス
 	std::unique_ptr<Sprite> Rader = nullptr;
 	std::vector<std::unique_ptr<Sprite>> enemysMarker;
 
-	// モデル
-	std::unique_ptr<Model> desertModel;
-	std::unique_ptr<Model> skyWallModel;
-	std::unique_ptr<Model> enemyModel;
-	std::unique_ptr<Model> bulletModel;
-
 	// OBJ
 	std::unique_ptr<TouchableObject> desert = nullptr;
-	//std::unique_ptr<Object3d> desert = nullptr;
 	std::unique_ptr<Object3d> skyWall = nullptr;
 	std::vector<std::unique_ptr<Enemy>> enemy;
 	std::unique_ptr<Player> player = nullptr;

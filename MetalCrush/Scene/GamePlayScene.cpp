@@ -33,21 +33,14 @@ void GamePlayScene::Initialize()
 	// パーティクル
 	explosion.reset(ParticleManager::Create("Particle/FireParticle.png"));
 
-	// モデル
-	desertModel.reset(Model::Create("Desert", true));
-	skyWallModel.reset(Model::Create("SkyWall"));
-	enemyModel.reset(Model::Create("Tank"));
-	bulletModel.reset(Model::Create("Bullet", true));
-
 	// OBJ
-	desert.reset(TouchableObject::Create(desertModel.get()));
-	//desert.reset(Object3d::Create(desertModel.get()));
-	skyWall.reset(Object3d::Create(skyWallModel.get()));
+	desert.reset(TouchableObject::Create(0));
+	skyWall.reset(Object3d::Create(1));
 	for (int i = 0; i < 10; i++)
 	{
-		enemy.emplace_back(new Enemy(enemyModel.get(), bulletModel.get()));
+		enemy.emplace_back(new Enemy);
 	}
-	player.reset(new Player(bulletModel.get()));
+	player.reset(new Player);
 
 	// スプライト
 	Reticle.reset(Sprite::Create(1, { 0, 0 }, { 0.5f, 0.5f }));

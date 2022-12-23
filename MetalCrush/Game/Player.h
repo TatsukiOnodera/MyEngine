@@ -158,8 +158,6 @@ private: // メンバ変数
 	//==============================
 	// オブジェクト
 	std::vector<std::unique_ptr<Bullet>> m_playerBullets;
-	// モデル
-	Model* m_bulletModel = nullptr;
 	// バレット
 	BulletParameter m_bullet;
 
@@ -180,7 +178,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Player(Model* bulletModel);
+	Player();
 
 	/// <summary>
 	/// デストラクタ

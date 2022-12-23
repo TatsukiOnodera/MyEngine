@@ -20,13 +20,13 @@ Audio::Audio()
 Audio::~Audio()
 {
 	//音声データ解放
-	std::map<std::string, SoundData>::iterator it = soundList.begin();
-	while (it != soundList.end())
+	std::map<std::string, SoundData>::iterator it = m_soundList.begin();
+	while (it != m_soundList.end())
 	{
 		DeleteSoundList(&it->second);
 		++it;
 	}
-	soundList.clear();
+	m_soundList.clear();
 }
 
 bool Audio::Initialize()
@@ -36,14 +36,14 @@ bool Audio::Initialize()
 	IXAudio2MasteringVoice* masterVoice;
 
 	// XAudioエンジンのインスタンスを生成
-	result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	result = XAudio2Create(&m_xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
 	if FAILED(result) {
 		assert(0);
 		return false;
 	}
 
 	// マスターボイスを生成
-	result = xAudio2->CreateMasteringVoice(&masterVoice);
+	result = m_xAudio2->CreateMasteringVoice(&masterVoice);
 	if FAILED(result) {
 		assert(0);
 		return false;
@@ -56,9 +56,9 @@ void Audio::PlayWave(const std::string& fileName, const bool& loop, const float&
 {
 	HRESULT result = S_FALSE;
 
-	std::map<std::string, SoundData>::iterator it = soundList.find(fileName);
+	std::map<std::string, SoundData>::iterator it = m_soundList.find(fileName);
 	//未読み込みの検出
-	assert(it != soundList.end());
+	assert(it != m_soundList.end());
 
 	//サウンドデータの参照を取得
 	SoundData& soundData = it->second;
@@ -93,7 +93,7 @@ void Audio::LoadSound(const std::string& fileName)
 	HRESULT result = S_FALSE;
 
 	// 重複しているか
-	if (soundList.find(fileName) != soundList.end())
+	if (m_soundList.find(fileName) != m_soundList.end())
 	{
 		// 何もせず抜ける
 		return;
@@ -143,14 +143,14 @@ void Audio::LoadSound(const std::string& fileName)
 	soundData.bufferSize = data.size;
 
 	//サウンドデータを連想配列に格納
-	soundList.insert(std::make_pair(fileName, soundData));
+	m_soundList.insert(std::make_pair(fileName, soundData));
 }
 
 void Audio::StopSound(const std::string& fileName)
 {
-	std::map<std::string, SoundData>::iterator it = soundList.find(fileName);
+	std::map<std::string, SoundData>::iterator it = m_soundList.find(fileName);
 	//未読み込みの検出
-	assert(it != soundList.end());
+	assert(it != m_soundList.end());
 	//サウンドデータの参照を取得
 	SoundData& soundData = it->second;
 
@@ -162,7 +162,7 @@ void Audio::StopSound(const std::string& fileName)
 	// 停止
 	soundData.sourceVoice->Stop(0);
 	soundData.sourceVoice->FlushSourceBuffers();
-	soundData.sourceVoice->SubmitSourceBuffer(&buf);
+	soundData.sourceVoice->SubmitSourceBuffer(&m_buf);
 
 	soundData.playNow = false;
 }
@@ -172,7 +172,7 @@ void Audio::CreateSoundData(SoundData& soundData)
 	HRESULT result = S_FALSE;
 
 	// 波形フォーマットを元にSourceVoiceの生成
-	result = xAudio2->CreateSourceVoice(&soundData.sourceVoice, &soundData.wfex, 0, 2.0f, &voiceCallback);
+	result = m_xAudio2->CreateSourceVoice(&soundData.sourceVoice, &soundData.wfex, 0, 2.0f, &m_voiceCallback);
 	assert(SUCCEEDED(result));
 }
 

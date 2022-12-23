@@ -1,5 +1,7 @@
 #include "OnoGame.h"
 #include "SceneFactory.h"
+#include "Sprite.h"
+#include "Object3d.h"
 
 void OnoGame::LoadResources()
 {
@@ -20,7 +22,13 @@ void OnoGame::LoadResources()
 	Sprite::LoadTexture(13, L"Resources/EndScreen.png");
 
 	// OBJモデル読み込み
-
+	Object3d::LoadModel(0, "Desert", true);
+	Object3d::LoadModel(1, "SkyWall");
+	Object3d::LoadModel(2, "Tank");
+	Object3d::LoadModel(3, "Bullet", true);
+	Object3d::LoadModel(4, "Leg");
+	Object3d::LoadModel(5, "Body");
+	Object3d::LoadModel(6, "Arm");
 
 	// FBXモデル読み込み
 
@@ -36,6 +44,9 @@ void OnoGame::Initialize()
 	SceneManager::GetInstance()->SetSceneFactory(scene_factory.get());
 	//シーンセット
 	SceneManager::GetInstance()->ChangeScene("GAME");
+
+	// リソースのロード
+	LoadResources();
 }
 
 void OnoGame::Finalize()

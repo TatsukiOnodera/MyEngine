@@ -184,7 +184,7 @@
       <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\MeshCollider</Filter>
     </ClCompile>
     <ClCompile Include="Collision\Other\TouchableObject.cpp">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -330,7 +330,7 @@
       <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\MeshCollider</Filter>
     </ClInclude>
     <ClInclude Include="Collision\Other\TouchableObject.h">
-      <Filter>ソース&amp;ヘッダーファイル\Engine\Collider\Other</Filter>
+      <Filter>ソース&amp;ヘッダーファイル\Engine\Object\3D\OBJ</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

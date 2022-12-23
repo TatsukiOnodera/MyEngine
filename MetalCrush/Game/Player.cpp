@@ -9,13 +9,12 @@ Input* Player::s_input = Input::GetInstance();
 
 using namespace DirectX;
 
-Player::Player(Model* bulletModel)
+Player::Player()
 {
 	// ƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ý
-	m_bulletModel = bulletModel;
-	m_playerLeg.reset(Object3d::Create(Model::Create("Leg")));
-	m_playerBody.reset(Object3d::Create(Model::Create("Body")));
-	m_playerArm.reset(Object3d::Create(Model::Create("Arm")));
+	m_playerLeg.reset(Object3d::Create(4));
+	m_playerBody.reset(Object3d::Create(5));
+	m_playerArm.reset(Object3d::Create(6));
 	m_booster.reset(ParticleManager::Create("Particle/FireParticle.png"));
 
 	// ‰Šú‰»
@@ -345,7 +344,7 @@ void Player::ShotBullet()
 			vel = s_camera->ConvertWindowXYPos({ 0, 0, 0 }, vel);
 		}
 
-		m_playerBullets.emplace_back(new Bullet(m_player.pos, vel, true, m_bulletModel));
+		m_playerBullets.emplace_back(new Bullet(m_player.pos, vel, true));
 		m_bullet.num--;
 
 		if (m_bullet.num == 0)

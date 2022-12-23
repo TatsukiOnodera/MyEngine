@@ -38,7 +38,7 @@ public: // 静的メンバ関数
 	/// <param name="modelName">モデルのパス</param>
 	/// <param name="smooting">スムーズシェーディングの有無</param>
 	/// <returns>モデル</returns>
-	static Model* Create(const std::string& modelName, const bool smoothing = false);
+	static Model* Create(const std::string& modelName, bool smoothing);
 
 private: // メンバ変数
 	// グラフィックスパイプライン

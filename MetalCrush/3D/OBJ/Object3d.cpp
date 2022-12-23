@@ -18,6 +18,7 @@ ID3D12Device* Object3d::s_dev = nullptr;
 ID3D12GraphicsCommandList* Object3d::s_cmdList = nullptr;
 Camera *Object3d::s_camera = nullptr;
 LightGroup* Object3d::s_lightGroup = nullptr;
+std::unique_ptr<Model> Object3d::s_modelList[c_modelMaxCount];
 
 Object3d::~Object3d()
 {
@@ -56,11 +57,44 @@ void Object3d::PostDraw()
 	s_cmdList = nullptr;
 }
 
-Object3d* Object3d::Create(Model* model)
+Model* Object3d::GetModel(const UINT modelNumber)
 {
+	assert(modelNumber <= c_modelMaxCount - 1);
+
+	// 既にあるなら
+	if (!(s_modelList[modelNumber]))
+	{
+		assert(0);
+	}
+
+	return s_modelList[modelNumber].get();
+}
+
+void Object3d::LoadModel(const UINT modelNumber, const std::string& modelName, bool smoothing)
+{
+	assert(modelNumber <= c_modelMaxCount - 1);
+
+	// 既にあるなら
+	if (s_modelList[modelNumber])
+	{
+		return;
+	}
+
+	// モデル作成
+	s_modelList[modelNumber].reset(Model::Create(modelName, smoothing));
+}
+
+Object3d* Object3d::Create(const UINT modelNumber)
+{
+	// モデルがあるか
+	if (!(s_modelList[modelNumber]))
+	{
+		assert(0);
+	}
+
 	Object3d* object = new Object3d;
 
-	object->SetModel(model);
+	object->SetModel(s_modelList[modelNumber].get());
 
 	object->Initialize();
 
@@ -90,34 +124,8 @@ void Object3d::Update()
 {
 	if (m_dirty == true || s_camera->GetDirty() == true)
 	{
-		//ワールド行列の更新
-		if (m_isBillboard)
-		{
-			//ビルボード行列の更新
-			m_matWorld = XMMatrixIdentity(); //単位行列
-			//拡大行列
-			m_matWorld *= XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-			//回転行列
-			m_matWorld *= XMMatrixRotationX(XMConvertToRadians(m_rotation.x));
-			m_matWorld *= XMMatrixRotationY(XMConvertToRadians(m_rotation.y));
-			m_matWorld *= XMMatrixRotationZ(XMConvertToRadians(m_rotation.z));
-			//ビルボード行列
-			m_matWorld *= m_isBillboard;
-			//平行移動行列
-			m_matWorld *= XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
-		} 
-		else
-		{
-			m_matWorld = XMMatrixIdentity(); //単位行列
-			//拡大行列
-			m_matWorld *= XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-			//回転行列
-			m_matWorld *= XMMatrixRotationX(XMConvertToRadians(m_rotation.x));
-			m_matWorld *= XMMatrixRotationY(XMConvertToRadians(m_rotation.y));
-			m_matWorld *= XMMatrixRotationZ(XMConvertToRadians(m_rotation.z));
-			//平行移動行列
-			m_matWorld *= XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
-		}
+		// 行列の更新
+		UpdateWorldMatrix();
 
 		// ビュー行列
 		const XMMATRIX& matView = s_camera->GetMatView();
@@ -150,6 +158,38 @@ void Object3d::Update()
 		}
 
 		m_dirty = false;
+	}
+}
+
+void Object3d::UpdateWorldMatrix()
+{
+	// ワールド行列の更新
+	if (m_isBillboard)
+	{
+		//ビルボード行列の更新
+		m_matWorld = XMMatrixIdentity(); //単位行列
+		//拡大行列
+		m_matWorld *= XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
+		//回転行列
+		m_matWorld *= XMMatrixRotationX(XMConvertToRadians(m_rotation.x));
+		m_matWorld *= XMMatrixRotationY(XMConvertToRadians(m_rotation.y));
+		m_matWorld *= XMMatrixRotationZ(XMConvertToRadians(m_rotation.z));
+		//ビルボード行列
+		m_matWorld *= m_isBillboard;
+		//平行移動行列
+		m_matWorld *= XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
+	}
+	else
+	{
+		m_matWorld = XMMatrixIdentity(); //単位行列
+		//拡大行列
+		m_matWorld *= XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
+		//回転行列
+		m_matWorld *= XMMatrixRotationX(XMConvertToRadians(m_rotation.x));
+		m_matWorld *= XMMatrixRotationY(XMConvertToRadians(m_rotation.y));
+		m_matWorld *= XMMatrixRotationZ(XMConvertToRadians(m_rotation.z));
+		//平行移動行列
+		m_matWorld *= XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
 	}
 }
 

@@ -33,8 +33,6 @@ private: // メンバ変数
 	//==============================
 	// オブジェクト
 	std::vector<std::unique_ptr<Bullet>> enemyBullets;
-	// モデル
-	Model* m_bulletModel = nullptr;
 	// 発射間隔
 	int m_bulletInterval = 0;
 
@@ -42,7 +40,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Enemy(Model* enemyModel, Model* bulletModel);
+	Enemy();
 
 	/// <summary>
 	/// デストラクタ

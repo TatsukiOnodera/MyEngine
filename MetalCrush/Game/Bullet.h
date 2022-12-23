@@ -30,7 +30,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Bullet(const XMFLOAT3& pos = { 0, 0, 0 }, const XMFLOAT3& vel = { 0, 0, 0 }, const bool& alive = true, Model* model = nullptr);
+	Bullet(const XMFLOAT3& pos = { 0, 0, 0 }, const XMFLOAT3& vel = { 0, 0, 0 }, const bool& alive = true);
 
 	/// <summary>
 	/// デストラクタ

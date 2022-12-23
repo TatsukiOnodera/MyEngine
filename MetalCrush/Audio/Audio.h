@@ -38,6 +38,9 @@ public:
 	STDMETHOD_(void, OnVoiceError) (THIS_ void* pBufferContext, HRESULT Error) {};
 };
 
+/// <summary>
+/// オーディオ
+/// </summary>
 class Audio
 {
 private: // エイリアス
@@ -90,10 +93,10 @@ public: // 静的メンバ関数
 	static Audio* GetInstance();
 
 private: // メンバ変数
-	ComPtr<IXAudio2> xAudio2;
-	XAudio2VoiceCallback voiceCallback;
-	std::map<std::string, SoundData> soundList;
-	XAUDIO2_BUFFER buf{};
+	ComPtr<IXAudio2> m_xAudio2;
+	XAudio2VoiceCallback m_voiceCallback;
+	std::map<std::string, SoundData> m_soundList;
+	XAUDIO2_BUFFER m_buf{};
 
 public: //メンバ関数
 	/// <summary>

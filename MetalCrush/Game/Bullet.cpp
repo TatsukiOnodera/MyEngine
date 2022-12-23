@@ -2,12 +2,9 @@
 
 using namespace DirectX;
 
-Bullet::Bullet(const XMFLOAT3& pos, const XMFLOAT3& vel, const bool& alive, Model* model)
+Bullet::Bullet(const XMFLOAT3& pos, const XMFLOAT3& vel, const bool& alive)
 {
-	// nullチェック
-	assert(model);
-
-	m_object.reset(Object3d::Create(model));
+	m_object.reset(Object3d::Create(3));
 	Initialize(pos, vel, alive);
 }
 

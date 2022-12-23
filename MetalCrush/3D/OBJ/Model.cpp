@@ -37,7 +37,7 @@ void Model::StaticInitialize(ID3D12Device* dev)
 	Mesh::StaticInitialize(dev);
 }
 
-Model *Model::Create(const std::string& modelName, const bool smoothing)
+Model *Model::Create(const std::string& modelName, bool smoothing)
 {
 	//インスタンス生成
 	Model* model = new Model;

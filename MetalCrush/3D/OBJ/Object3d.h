@@ -23,6 +23,9 @@ public: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+private: // 定数
+	static const int c_modelMaxCount = 32;
+
 private: //静的メンバ変数
 	// デバイス
 	static ID3D12Device* s_dev;
@@ -32,6 +35,8 @@ private: //静的メンバ変数
 	static Camera *s_camera;
 	//ライトグループクラス
 	static LightGroup* s_lightGroup;
+	// モデルデータ
+	static std::unique_ptr<Model> s_modelList[c_modelMaxCount];
 
 public: //サブクラス
 //定数バッファ用データ構造体
@@ -58,19 +63,18 @@ public: //静的関数
 	static bool StaticInitialize(ID3D12Device* device);
 
 	/// <summary>
+	/// モデルデータの読み込み
+	/// </summary>
+	/// <param name="modelNumber">モデルの割り振り番号</param>
+	/// <param name="modelName">モデルの名前</param>
+	static void LoadModel(const UINT modelNumber, const std::string& modelName, bool smoothing = false);
+
+	/// <summary>
 	/// オブジェクト生成
 	/// </summary>
-	static Object3d* Create(Model* model);
-
-	/// <summary>
-	/// カメラセット
-	/// </summary>
-	inline static Camera* GetCamera() { return s_camera; };
-
-	/// <summary>
-	/// ライトセット
-	/// </summary>
-	static void SetGroupLight(LightGroup* lightGroup) { Object3d::s_lightGroup = lightGroup; }
+	/// <param name="modelNumber">モデルの割り振り番号</param>
+	/// <returns>OBJオブジェクト</returns>
+	static Object3d* Create(const UINT modelNumber);
 
 	/// <summary>
 	/// 描画前処理
@@ -81,6 +85,19 @@ public: //静的関数
 	/// 描画後処理
 	/// </summary>
 	static void PostDraw();
+
+public: // 静的メンバ関数
+	/// <summary>
+	/// モデルリストから取得
+	/// </summary>
+	/// <param name="modelNumber">モデルの割り振り番号</param>
+	/// <returns>OBJモデル</returns>
+	static Model* GetModel(const UINT modelNumber);
+
+	/// <summary>
+	/// ライトセット
+	/// </summary>
+	static void SetGroupLight(LightGroup* lightGroup) { Object3d::s_lightGroup = lightGroup; }
 
 private: //メンバ変数
 	//定数バッファ
@@ -132,6 +149,11 @@ public: //メンバ関数
 	/// 更新
 	/// </summary>
 	virtual void Update();
+
+	/// <summary>
+	/// 行列の更新
+	/// </summary>
+	void UpdateWorldMatrix();
 
 	/// <summary>
 	/// 描画

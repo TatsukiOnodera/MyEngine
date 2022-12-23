@@ -2,11 +2,10 @@
 #include "SphereCollider.h"
 #include <Tool.h>
 
-Enemy::Enemy(Model* enemyModel, Model* bulletModel)
+Enemy::Enemy()
 {
 	// ÉÇÉfÉãÇÃì«Ç›çûÇ›
-	m_enemyOBJ.reset(Object3d::Create(enemyModel));
-	m_bulletModel = bulletModel;
+	m_enemyOBJ.reset(Object3d::Create(2));
 
 	// èâä˙âª
 	Initialize();
@@ -122,7 +121,7 @@ void Enemy::ShotBullet(const XMFLOAT3& targetPos)
 		}
 		else
 		{
-			enemyBullets.emplace_back(new Bullet(m_pos, vel, true, m_bulletModel));
+			enemyBullets.emplace_back(new Bullet(m_pos, vel, true));
 		}
 	}
 }
