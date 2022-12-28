@@ -4,13 +4,18 @@
 
 class BaseCollider
 {
-protected: //メンバ変数
-	//オブジェクト格納先
-	Object3d* m_object3d = nullptr;
-	//形状タイプ
-	CollisionShapeType m_shapeType = SHAPE_UNKNOWN;
+public:
+	friend class CollisionManager;
 
-public: //メンバ関数
+protected: // メンバ変数
+	// オブジェクト格納先
+	Object3d* m_object3d = nullptr;
+	// 形状タイプ
+	CollisionShapeType m_shapeType = SHAPE_UNKNOWN;
+	// 属性
+	unsigned short m_attribute = 0b1111111111111111;
+
+public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -44,6 +49,33 @@ public: // アクセッサ
 	/// </summary>
 	/// <returns>格納したオブジェクト</returns>
 	inline Object3d* GetObject3d() { return m_object3d; }
+
+	/// <summary>
+	/// 属性をセット
+	/// </summary>
+	/// <param name="attribute">属性</param>
+	inline void SetAttribute(unsigned short attribute)
+	{
+		m_attribute = attribute;
+	}
+
+	/// <summary>
+	/// 属性を追加
+	/// </summary>
+	/// <param name="attribute">属性</param>
+	inline void AddAttribute(unsigned short attribute)
+	{
+		m_attribute |= attribute;
+	}
+
+	/// <summary>
+	/// 属性を削除
+	/// </summary>
+	/// <param name="attribute">属性</param>
+	inline void RemoveAttribute(unsigned short attribute)
+	{
+		m_attribute &= !attribute;
+	}
 
 	/// <summary>
 	/// 形状タイプ取得

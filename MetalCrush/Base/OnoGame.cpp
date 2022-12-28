@@ -13,7 +13,7 @@ void OnoGame::LoadResources()
 	Sprite::LoadTexture(4, L"Resources/HPGauge.png");
 	Sprite::LoadTexture(5, L"Resources/BoosterFrame.png");
 	Sprite::LoadTexture(6, L"Resources/BoosterGauge.png");
-	Sprite::LoadTexture(7, L"Resources/Monitor.png");
+	//Sprite::LoadTexture(7, L"Resources/");
 	Sprite::LoadTexture(8, L"Resources/GameOverScreen.png");
 	Sprite::LoadTexture(9, L"Resources/BulletNumFrame.png");
 	Sprite::LoadTexture(10, L"Resources/Rader.png");

@@ -65,10 +65,21 @@ public: // メンバ関数
 	/// レイキャスト
 	/// </summary>
 	/// <param name="ray">レイ</param>
+	/// <param name="attribute">当たり判定属性</param>
 	/// <param name="hitInfo">衝突情報</param>
 	/// <param name="maxDistance">最大距離</param>
 	/// <returns>成否</returns>
-	bool RayCastHit(const Ray& ray, RayCast* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
+	bool Raycast(const Ray& ray, unsigned short attribute, RayCastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
+
+	/// <summary>
+	/// レイキャスト(属性なし)
+	/// </summary>
+	/// <param name="ray">レイ</param>
+	/// <param name="attribute">当たり判定属性</param>
+	/// <param name="hitInfo">衝突情報</param>
+	/// <param name="maxDistance">最大距離</param>
+	/// <returns>成否</returns>
+	bool RaycastNoAtt(const Ray& ray, RayCastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
 
 	/// <summary>
 	/// すべての衝突チェック

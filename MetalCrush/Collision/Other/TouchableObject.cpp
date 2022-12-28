@@ -1,5 +1,6 @@
 #include "TouchableObject.h"
 #include "MeshCollider.h"
+#include "CollisionAttribute.h"
 #include <assert.h>
 
 TouchableObject* TouchableObject::Create(const UINT modelNumber)
@@ -30,6 +31,7 @@ bool TouchableObject::Initialize(const UINT modelNumber)
     MeshCollider* collider = new MeshCollider;
     SetCollider(collider);
     collider->ConstructTriangles(model);
+    collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
 
     return true;
 }

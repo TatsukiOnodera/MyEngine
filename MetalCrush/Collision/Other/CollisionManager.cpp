@@ -10,7 +10,7 @@ CollisionManager* CollisionManager::GetInstance()
 	return &instance;
 }
 
-bool CollisionManager::RayCastHit(const Ray& ray, RayCast* hitInfo, float maxDistance)
+bool CollisionManager::Raycast(const Ray& ray, unsigned short attribute, RayCastHit* hitInfo, float maxDistance)
 {
 	bool result = false;
 	// ‘–¸—p
@@ -26,6 +26,11 @@ bool CollisionManager::RayCastHit(const Ray& ray, RayCast* hitInfo, float maxDis
 	for (; it != m_colliders.end(); ++it)
 	{
 		BaseCollider* colA = *it;
+
+		if (!(colA->m_attribute & attribute))
+		{
+			continue;
+		}
 
 		// ‹…
 		if (colA->GetShapeType() == COLLISONSHAPE_SPHERE)
@@ -61,7 +66,7 @@ bool CollisionManager::RayCastHit(const Ray& ray, RayCast* hitInfo, float maxDis
 				continue;
 			}
 			// ‹——£‚ªÅ’Z‚Å‚È‚¢‚È‚çœŠO
-			if (tempDistance >= distance)
+			if (distance <= tempDistance)
 			{
 				continue;
 			}
@@ -83,6 +88,11 @@ bool CollisionManager::RayCastHit(const Ray& ray, RayCast* hitInfo, float maxDis
 	}
 
 	return result;
+}
+
+bool CollisionManager::RaycastNoAtt(const Ray& ray, RayCastHit* hitInfo, float maxDistance)
+{
+	return Raycast(ray, 0xffff, hitInfo, maxDistance);
 }
 
 void CollisionManager::CheckAllCollisions()

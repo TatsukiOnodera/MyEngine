@@ -27,6 +27,8 @@ private: // メンバ変数
 	bool m_alive = false;
 	// HP
 	int m_HP = 0;
+	// 重力加速値の時間
+	int m_gravityTime = 0;
 
 	//==============================
 	// エネミーの弾
@@ -86,6 +88,11 @@ public: // メンバ関数
 	/// <param name="num">ダメージ数</param>
 	/// <returns>HPが０か</returns>
 	bool EnemyDamage(int num);
+
+	/// <summary>
+	/// 地面に着地したら
+	/// </summary>
+	void CheckCollision();
 
 public: //アクセッサ
 	/// <summary>

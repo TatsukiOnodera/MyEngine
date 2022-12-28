@@ -267,11 +267,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 地面に着地したら
 	/// </summary>
-	inline void HitGround()
-	{
-		m_gravityTime = 0;
-		m_player.vel.y = 0;
-	}
+	void CheckCollision();
 
 	/// <summary>
 	/// 射程にいるか
@@ -289,22 +285,6 @@ public: // メンバ関数
 		m_bullet.isLock = isTraget;
 		m_bullet.targetPos = pos;
 	}
-
-public: // メンバ関数
-	/// <summary>
-	/// 始点から終点への距離
-	/// </summary>
-	/// <param name="pos1">終点</param>
-	/// <param name="pos2">始点</param>
-	/// <returns>二点間の距離</returns>
-	const float Length(const XMFLOAT3& pos1, const XMFLOAT3& pos2 = { 0, 0, 0 });
-
-	/// <summary>
-	/// 正規化
-	/// </summary>
-	/// <param name="tmp">正規化する値</param>
-	/// <returns>正規化した値</returns>
-	const XMFLOAT3 normalize(const XMFLOAT3& tmp);
 
 public: // アクセッサ
 	/// <summary>

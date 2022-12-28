@@ -146,6 +146,7 @@ void Object3d::Update()
 			constMap->world = m_matWorld;
 			constMap->cameraPos = s_camera->GetEye();
 			constMap->color = m_color;
+			constMap->shininess = m_shininess;
 			constMap->tiling = m_tiling;
 			constMap->offset = m_offset;
 			m_constBuff->Unmap(0, nullptr);
@@ -232,5 +233,5 @@ void Object3d::SetCollider(BaseCollider* collider)
 
 void Object3d::OnCollision(const CollisionInfo& info)
 {
-	
+
 }

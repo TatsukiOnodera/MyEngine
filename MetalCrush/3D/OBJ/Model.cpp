@@ -88,8 +88,8 @@ void Model::Initialize(const std::string& modelName, const bool smoothing)
 		string key;
 		getline(line_stream, key, ' ');
 
-		// 先頭文字列がgならグループの開始
-		if (key == "g")
+		// 先頭文字列がoならグループの開始
+		if (key == "o")
 		{
 			// カレントメッシュの情報が揃っているなら
 			if (mesh->GetName().size() > 0 && mesh->GetVertexCount() > 0)

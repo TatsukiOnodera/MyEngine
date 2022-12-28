@@ -36,7 +36,7 @@ void GamePlayScene::Initialize()
 	// OBJ
 	desert.reset(TouchableObject::Create(0));
 	skyWall.reset(Object3d::Create(1));
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		enemy.emplace_back(new Enemy);
 	}
@@ -78,11 +78,11 @@ void GamePlayScene::Initialize()
 void GamePlayScene::InitializeParameter()
 {
 	// 地面
-	desert->SetScale({ 0.1f, 0.1f, 0.1f });
+	desert->SetScale({ 1, 1, 1 });
 	desert->Update();
 
 	// 壁
-	XMFLOAT3 scale = { desert->GetScale().x * 1000, desert->GetScale().y * 1000, desert->GetScale().z * 1000 };
+	XMFLOAT3 scale = { desert->GetScale().x * 100, desert->GetScale().y * 100, desert->GetScale().z * 100 };
 	skyWall->SetScale(scale);
 	skyWall->ChangeShaderPipeline(L"Texture");
 	skyWall->Update();
@@ -306,24 +306,6 @@ void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::CheckAllCollisions()
 {
-#pragma region コリジョンマネージャー
-
-	collisionManager->CheckAllCollisions();
-
-#pragma endregion
-
-#pragma region プレイヤーと壁の衝突判定
-
-	CheckPlayer2Wall();
-
-#pragma endregion
-
-#pragma region エネミーと壁の衝突判定
-
-	CheckEnemy2Wall();
-
-#pragma endregion
-
 #pragma region プレイヤーとエネミーの衝突判定
 
 	CheckPlayer2Enemy();
@@ -453,40 +435,6 @@ void GamePlayScene::CheckPlayer2EnemyBullets()
 					explosion->Add(60, player->GetPosition(), vel, {0, 0, 0}, {0.8f, 0.5f, 0.2f, 0.1f}, {0.0f, 0.0f, 0.0f, 0.0f}, 0.2f, 2.0f, false);
 				}
 			}
-		}
-	}
-}
-
-void GamePlayScene::CheckPlayer2Wall()
-{
-	if (player->GetAlive() == true)
-	{
-		XMFLOAT3 playerPos = player->GetPosition();
-
-		if (playerPos.y < 10 + 5.0f * player->GetPlayerObject()->GetScale().z)
-		{
-			playerPos.y = 10 + 5.0f * player->GetPlayerObject()->GetScale().z;
-			player->HitGround();
-		}
-
-		player->SetPosition(playerPos);
-	}
-}
-
-void GamePlayScene::CheckEnemy2Wall()
-{
-	for (auto& m : enemy)
-	{
-		if (m->GetAlive() == true)
-		{
-			XMFLOAT3 enemyPos = m->GetPosition();
-
-			if (enemyPos.y < 10 + 0.25f * m->GetObject3d()->GetScale().y)
-			{
-				enemyPos.y = 10 + 0.25f * m->GetObject3d()->GetScale().y;
-			}
-
-			m->SetPosition(enemyPos);
 		}
 	}
 }

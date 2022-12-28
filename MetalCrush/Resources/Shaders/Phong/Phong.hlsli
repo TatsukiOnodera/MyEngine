@@ -1,19 +1,20 @@
 cbuffer cbuff0 : register(b0)
 {
-	matrix viewproj; //ビュープロジェクション行列
-	matrix world; //ワールド行列
-	float3 cameraPos; //カメラ座標
-	float4 color; //色
+	matrix viewproj; //cビュープロジェクション行列
+	matrix world; //cワールド行列
+	float3 cameraPos; //cカメラ座標
+	float shininess; // 光沢度
+	float4 color; //c色
 	float2 tiling; // タイリング
 	float2 offset; // オフセット
 };
 
 cbuffer cbuff1 : register(b1)
 {
-	float3 m_ambient : packoffset(c0); //アンビエント係数
-	float3 m_diffuse : packoffset(c1); //ディフューズ係数
-	float3 m_specular : packoffset(c2); //スペキュラー係数
-	float m_alpha : packoffset(c2.w); //アルファ
+	float3 m_ambient : packoffset(c0); //ア ンビエント係数
+	float3 m_diffuse : packoffset(c1); // ディフューズ係数
+	float3 m_specular : packoffset(c2); // スペキュラー係数
+	float m_alpha : packoffset(c2.w); // アルファ
 };
 
 // 平行光源の数
@@ -22,7 +23,7 @@ static const int DIRLIGHT_NUM = 3;
 struct DirLight
 {
 	float3 lightDir;    // ライトへの方向の単位ベクトル
-	float3 lightColor;    // ライトの色(RGB)
+	float3 lightColor;    // ライトの色 (RGB)
 	uint active;
 };
 
@@ -32,7 +33,7 @@ static const int POINTLIGHT_NUM = 3;
 struct PointLight
 {
 	float3 lightPos;    // ライト座標
-	float3 lightColor;  // ライトの色(RGB)
+	float3 lightColor;  // ライトの色 (RGB)
 	float3 lightAtten;	// ライト距離減衰係数
 	uint active;
 };

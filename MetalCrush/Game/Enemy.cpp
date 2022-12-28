@@ -1,5 +1,7 @@
 #include "Enemy.h"
 #include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "CollisionAttribute.h"
 #include <Tool.h>
 
 Enemy::Enemy()
@@ -25,20 +27,24 @@ void Enemy::Initialize()
 	}
 
 	// 座標
-	m_pos = { static_cast<float>(rand() % 1501 - 750), 100, static_cast<float>(rand() % 1501) };
+	m_pos = { static_cast<float>(rand() % 1501 - 750), 10, static_cast<float>(rand() % 1501) };
 	// 速度
-	m_vel = { static_cast<float>(rand() % 11 - 5) / 50, -9.8f, static_cast<float>(rand() %11 - 5) / 50 };
+	m_vel = { static_cast<float>(rand() % 11 - 5) / 50, 0, static_cast<float>(rand() %11 - 5) / 50 };
 	// HP
 	m_HP = 3;
 	// 生存フラグ
 	m_alive = true;
 	// 発射間隔
 	m_bulletInterval = 0;
+	// 重力加速値の時間
+	m_gravityTime = 0;
 
 	// オブジェクト
 	m_enemyOBJ->SetPosition(m_pos);
 	m_enemyOBJ->SetScale({ 2, 2, 2 });
-	m_enemyOBJ->SetCollider(new SphereCollider({ 0, 0, 0 }, 3));
+	SphereCollider* collider = new SphereCollider({ 0, 0, 0 }, 2);
+	collider->SetAttribute(COLLISION_ATTR_ENEMYS);
+	m_enemyOBJ->SetCollider(collider);
 	m_enemyOBJ->Update();
 }
 
@@ -47,6 +53,16 @@ void Enemy::Update()
 	// エネミーの更新
 	if (m_alive == true)
 	{
+		XMFLOAT3 acc = {};
+		acc.y += (-0.98f * 0.25f) * powf(static_cast<float>(m_gravityTime) / 60, 2);
+
+		// 重力時間
+		m_gravityTime++;
+
+		m_vel.x += acc.x;
+		m_vel.y += acc.y;
+		m_vel.z += acc.z;
+
 		// 座標に速度を加算
 		m_pos.x += m_vel.x;
 		m_pos.y += m_vel.y;
@@ -60,6 +76,9 @@ void Enemy::Update()
 		{
 			m_bulletInterval = 90;
 		}
+
+		// 当たり判定
+		CheckCollision();
 	}
 
 	// 弾の更新
@@ -170,4 +189,25 @@ bool Enemy::EnemyDamage(int num)
 	}
 
 	return false;
+}
+
+void Enemy::CheckCollision()
+{
+	SphereCollider* collider = dynamic_cast<SphereCollider*>(m_enemyOBJ->GetCollider());
+
+	m_enemyOBJ->Update();
+
+	Ray ray;
+	ray.start = collider->center;
+	ray.start.m128_f32[1] += collider->GetRadius();
+	ray.dir = { 0, -1, 0, 0 };
+
+	RayCastHit rayHit;
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &rayHit, collider->GetRadius() * 2.0f + 0.2f))
+	{
+		m_pos.y -= (rayHit.m_distance - collider->GetRadius() * 2);
+		m_vel.y = 0;
+		m_enemyOBJ->SetPosition(m_pos);
+		m_gravityTime = 0;
+	}
 }

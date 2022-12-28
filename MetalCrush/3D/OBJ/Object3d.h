@@ -14,6 +14,9 @@
 
 class BaseCollider;
 
+/// <summary>
+/// OBJオブジェクト
+/// </summary>
 class Object3d
 {
 public: // エイリアス
@@ -45,7 +48,7 @@ public: //サブクラス
 		XMMATRIX viewproj; //ビュープロジェクション行列
 		XMMATRIX world; //ワールド行列
 		XMFLOAT3 cameraPos; //カメラ座標(ワールド座標)
-		float pad; //パディング
+		float shininess; // 光沢度
 		XMFLOAT4 color; //色(RGBA)
 		XMFLOAT2 tiling; // タイリング
 		XMFLOAT2 offset; // オフセット
@@ -114,6 +117,8 @@ private: //メンバ変数
 	XMFLOAT2 m_tiling = { 1, 1 };
 	// オフセット
 	XMFLOAT2 m_offset = { 0, 0 };
+	// 光沢度
+	float m_shininess = 30.0f;
 	//ワールド行列
 	XMMATRIX m_matWorld = {};
 	//モデルデータ
@@ -271,6 +276,21 @@ public: //アクセッサ
 	}
 
 	/// <summary>
+	/// 光沢度の取得
+	/// </summary>
+	/// <returns></returns>
+	inline float GetShininess() { return m_shininess; }
+
+	/// <summary>
+	/// 光沢度のセット
+	/// </summary>
+	/// <param name="shininess">光沢度</param>
+	inline void SetShininess(float shininess)
+	{
+		m_shininess = shininess;
+	}
+
+	/// <summary>
 	/// モデルデータの取得
 	/// </summary>
 	/// <returns>モデルデータ</returns>
@@ -306,6 +326,12 @@ public: //アクセッサ
 	{ 
 		m_parent = parent;
 	}
+
+	/// <summary>
+	/// コライダーの取得
+	/// </summary>
+	/// <returns>コライダー</returns>
+	inline BaseCollider* GetCollider() { return m_collider.get(); }
 
 	/// <summary>
 	/// コライダーのセット

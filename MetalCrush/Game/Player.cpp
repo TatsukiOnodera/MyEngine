@@ -2,6 +2,8 @@
 #include "Model.h"
 #include "Player.h"
 #include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "CollisionAttribute.h"
 #include <Tool.h>
 
 Camera* Player::s_camera = Camera::GetInstance();
@@ -39,17 +41,17 @@ void Player::Initialize()
 	m_player.isDash = false;
 	m_player.boostGauge = 360;
 	m_player.HP = 20;
-	m_player.pos = { 0, 0, -100 };
+	m_player.pos = { 0, 20, -100 };
 	m_player.vel = { 0, 0, 0 };
 
 	// 通常移動
-	m_move.acc = 0.0325f;
+	m_move.acc = 0.05f;
 	m_move.dec = 0.7f;
-	m_move.maxVelXZ = 0.8f;
+	m_move.maxVelXZ = 1.0f;
 
-	// ジャンぴ
-	m_jump.acc = 0.025f;
-	m_jump.maxVelY = 0.8f;
+	// ジャンプ
+	m_jump.acc = 0.05f;
+	m_jump.maxVelY = 1.0f;
 
 	// ダッシュ
 	m_dash.acc = 0;
@@ -100,7 +102,9 @@ void Player::Initialize()
 	m_playerLeg->SetPosition(m_player.pos);
 	m_playerLeg->SetScale({ 0.25f, 0.25f, 0.25f });
 	m_playerLeg->SetRotation({ 0, -90, 0 });
-	m_playerLeg->SetCollider(new SphereCollider({ 0, 0, 0 }, 3));
+	SphereCollider *collider = new SphereCollider({ 0, 1, 0 }, 2);
+	collider->SetAttribute(COLLISION_ATTR_ALLIES);
+	m_playerLeg->SetCollider(collider);
 	m_playerLeg->Update();
 	m_playerBody->SetParent(m_playerLeg.get());
 	m_playerBody->SetPosition({ 0, 1.5f, 0 });
@@ -168,6 +172,9 @@ void Player::Update()
 
 		// ブーストゲージ
 		BoosterGauge();
+
+		// 当たり判定
+		CheckCollision();
 	}
 
 	// 弾の更新
@@ -554,6 +561,27 @@ void Player::BoosterGauge()
 	if (m_gauge.max < m_player.boostGauge)
 	{
 		m_player.boostGauge = m_gauge.max;
+	}
+}
+
+void Player::CheckCollision()
+{
+	SphereCollider* collider = dynamic_cast<SphereCollider*>(m_playerLeg->GetCollider());
+
+	m_playerLeg->Update();
+
+	Ray ray;
+	ray.start = collider->center;
+	ray.start.m128_f32[1] += collider->GetRadius();
+	ray.dir = { 0, -1, 0, 0 };
+
+	RayCastHit rayHit;
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &rayHit, collider->GetRadius() * 2.0f + 0.2f))
+	{
+		m_player.pos.y -= (rayHit.m_distance - collider->GetRadius() * 2);
+		m_player.vel.y = 0;
+		m_playerLeg->SetPosition(m_player.pos);
+		m_gravityTime = 0;
 	}
 }
 

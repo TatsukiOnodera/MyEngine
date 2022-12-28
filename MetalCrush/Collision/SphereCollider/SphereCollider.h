@@ -32,8 +32,32 @@ public: // メンバ関数
 
 public: // アクセッサ
 	/// <summary>
+	/// 半径を取得
+	/// </summary>
+	/// <returns></returns>
+	inline float GetRadius() { return m_radius; }
+
+	/// <summary>
 	/// 半径をセット
 	/// </summary>
 	/// <param name="radius">半径</param>
-	inline void SetRadius(float radius) { m_radius = radius; }
+	inline void SetRadius(float radius)
+	{ 
+		m_radius = radius;
+	}
+
+	/// <summary>
+	/// オフセットを取得
+	/// </summary>
+	/// <returns>オフセット</returns>
+	inline const XMVECTOR& GetOffset() { return m_offset; }
+
+	/// <summary>
+	/// オフセットをセット
+	/// </summary>
+	/// <param name="offset">オフセット</param>
+	inline void SetOffset(const XMVECTOR& offset)
+	{
+		m_offset = offset;
+	}
 };

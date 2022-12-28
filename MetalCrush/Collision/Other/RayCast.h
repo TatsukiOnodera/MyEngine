@@ -7,7 +7,7 @@ class Object3d;
 /// <summary>
 /// レイキャストの情報
 /// </summary>
-struct RayCast
+struct RayCastHit
 {
 	// 衝突相手のオブジェクト
 	Object3d* m_object = nullptr;

@@ -163,19 +163,4 @@ public: // メンバ関数
 	/// プレイヤーとエネミーの弾の衝突判定
 	/// </summary>
 	void CheckPlayer2EnemyBullets();
-
-	/// <summary>
-	/// プレイヤーと壁の衝突判定
-	/// </summary>
-	void CheckPlayer2Wall();
-	
-	/// <summary>
-	/// エネミーと壁の衝突判定
-	/// </summary>
-	void CheckEnemy2Wall();
-
-	/// <summary>
-	/// 
-	/// </summary>
-	void CheckBullet2Wall();
 };

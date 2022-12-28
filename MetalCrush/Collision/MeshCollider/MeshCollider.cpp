@@ -63,21 +63,64 @@ void MeshCollider::SortOutTriangleArea(const Triangle& tri)
 	// 縦のエリア一つ分の長さ
 	float hDiv = height / c_maxAreaY;
 
+	// p0
 	// 横のエリアの番号
-	int wNum = static_cast<int>((tri.p0.m128_f32[0] - negativePosition.x) / wDiv);
-	if (c_maxAreaX <= wNum)
+	int wNumP0 = static_cast<int>((tri.p0.m128_f32[0] - negativePosition.x) / wDiv);
+	if (c_maxAreaX <= wNumP0)
 	{
-		wNum = c_maxAreaX - 1;
+		wNumP0 = c_maxAreaX - 1;
 	}
 	// 縦のエリアの番号
-	int hNum = static_cast<int>((tri.p0.m128_f32[2] - negativePosition.z) / hDiv);
-	if (c_maxAreaY <= hNum)
+	int hNumP0 = static_cast<int>((tri.p0.m128_f32[2] - negativePosition.z) / hDiv);
+	if (c_maxAreaY <= hNumP0)
 	{
-		hNum = c_maxAreaY - 1;
+		hNumP0 = c_maxAreaY - 1;
+	}
+	// 該当エリアに入れる
+	m_area[hNumP0][wNumP0].triangle.emplace_back(tri);
+
+	// p1
+	// 横のエリアの番号
+	int wNumP1 = static_cast<int>((tri.p1.m128_f32[0] - negativePosition.x) / wDiv);
+	if (c_maxAreaX <= wNumP1)
+	{
+		wNumP1 = c_maxAreaX - 1;
+	}
+	// 縦のエリアの番号
+	int hNumP1 = static_cast<int>((tri.p1.m128_f32[2] - negativePosition.z) / hDiv);
+	if (c_maxAreaY <= hNumP1)
+	{
+		hNumP1 = c_maxAreaY - 1;
+	}
+	// p0と違うなら
+	if (wNumP0 != wNumP1 || hNumP0 != hNumP1)
+	{
+		// 該当エリアに入れる
+		m_area[hNumP1][wNumP1].triangle.emplace_back(tri);
 	}
 
-	// 該当エリアに入れる
-	m_area[hNum][wNum].triangle.emplace_back(tri);
+	// p2
+	// 横のエリアの番号
+	int wNumP2 = static_cast<int>((tri.p2.m128_f32[0] - negativePosition.x) / wDiv);
+	if (c_maxAreaX <= wNumP2)
+	{
+		wNumP2 = c_maxAreaX - 1;
+	}
+	// 縦のエリアの番号
+	int hNumP2 = static_cast<int>((tri.p2.m128_f32[2] - negativePosition.z) / hDiv);
+	if (c_maxAreaY <= hNumP2)
+	{
+		hNumP2 = c_maxAreaY - 1;
+	}
+	// p0と違うなら
+	if (wNumP0 != wNumP2 || hNumP0 != hNumP2)
+	{
+		if (wNumP1 != wNumP2 || hNumP1 != hNumP2)
+		{
+			// 該当エリアに入れる
+			m_area[hNumP2][wNumP2].triangle.emplace_back(tri);
+		}
+	}
 }
 
 std::vector<Triangle>  MeshCollider::GetPositionAreaNumber(const DirectX::XMVECTOR& pos)
