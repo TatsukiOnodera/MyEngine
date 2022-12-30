@@ -70,6 +70,12 @@
     <FxCompile Include="Resources\Shaders\Texture\TextureVS.hlsl">
       <Filter>シェーダーファイル\OBJ\Texture</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\ShadowMapPS.hlsl">
+      <Filter>シェーダーファイル\OBJ\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\ShadowMapVS.hlsl">
+      <Filter>シェーダーファイル\OBJ\ShadowMap</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp">
@@ -367,6 +373,9 @@
     <None Include="Resources\Shaders\Texture\Texture.hlsli">
       <Filter>シェーダーファイル\OBJ\Texture</Filter>
     </None>
+    <None Include="Resources\Shaders\ShadowMap\ShadowMap.hlsli">
+      <Filter>シェーダーファイル\OBJ\ShadowMap</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="シェーダーファイル">
@@ -491,6 +500,9 @@
     </Filter>
     <Filter Include="シェーダーファイル\OBJ\Texture">
       <UniqueIdentifier>{960f8b92-227f-4985-b0a7-fda4470d3c9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダーファイル\OBJ\ShadowMap">
+      <UniqueIdentifier>{10aea5da-d62e-401a-8fe9-70667e9331e2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
