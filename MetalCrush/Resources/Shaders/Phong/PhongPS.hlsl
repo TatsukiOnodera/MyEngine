@@ -3,6 +3,7 @@
 Texture2D<float4> tex : register(t0);  // 0番スロットに設定されたテクスチャ
 SamplerState smp : register(s0);      // 0番スロットに設定されたサンプラー
 
+// 平行光源
 float3 GetDirectionalLight(VSOutput input, int num, float shininess, float3 eyeDir)
 {
 	// ライトに向かうベクトルと法線の内積
@@ -17,6 +18,7 @@ float3 GetDirectionalLight(VSOutput input, int num, float shininess, float3 eyeD
 	return (diffuse + specular) * dirLights[num].lightColor;
 }
 
+// 点光源
 float3 GetPointLight(VSOutput input, int num, float shininess, float3 eyeDir)
 {
 	// ライトへの方向ベクトル
@@ -39,6 +41,7 @@ float3 GetPointLight(VSOutput input, int num, float shininess, float3 eyeDir)
 	return atten * (diffuse + specular) * pointLights[num].lightColor;
 }
 
+// スポットライト
 float3 GetSpotLight(VSOutput input, int num, float shininess, float3 eyeDir)
 {
 	// ライトへの方向ベクトル
@@ -68,6 +71,7 @@ float3 GetSpotLight(VSOutput input, int num, float shininess, float3 eyeDir)
 	return atten * (diffuse + specular) * pointLights[num].lightColor;
 }
 
+// 丸影
 float GetCircleShadow(VSOutput input, int num)
 {
 	// オブジェクト表面からキャスターへのベクトル
@@ -94,6 +98,7 @@ float GetCircleShadow(VSOutput input, int num)
 	return -atten;
 }
 
+// シェーディング
 float4 main(VSOutput input) : SV_TARGET
 {
 	//テクスチャマッピング

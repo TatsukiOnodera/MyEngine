@@ -1,8 +1,10 @@
 #include "ShadowMap.hlsli"
 
 Texture2D<float4> tex : register(t0);  // 0番スロットに設定されたテクスチャ
+Texture2D<float> depth : register(t1);  // 1番スロットに設定されたテクスチャ
 SamplerState smp : register(s0);      // 0番スロットに設定されたサンプラー
 
+// 平行光源
 float3 GetDirectionalLight(VSOutput input, int num, float shininess, float3 eyeDir)
 {
 	// ライトに向かうベクトルと法線の内積
@@ -17,6 +19,7 @@ float3 GetDirectionalLight(VSOutput input, int num, float shininess, float3 eyeD
 	return (diffuse + specular) * dirLights[num].lightColor;
 }
 
+// 点光源
 float3 GetPointLight(VSOutput input, int num, float shininess, float3 eyeDir)
 {
 	// ライトへの方向ベクトル
@@ -39,6 +42,7 @@ float3 GetPointLight(VSOutput input, int num, float shininess, float3 eyeDir)
 	return atten * (diffuse + specular) * pointLights[num].lightColor;
 }
 
+// スポットライト
 float3 GetSpotLight(VSOutput input, int num, float shininess, float3 eyeDir)
 {
 	// ライトへの方向ベクトル
@@ -68,6 +72,7 @@ float3 GetSpotLight(VSOutput input, int num, float shininess, float3 eyeDir)
 	return atten * (diffuse + specular) * pointLights[num].lightColor;
 }
 
+// 丸影
 float GetCircleShadow(VSOutput input, int num)
 {
 	// オブジェクト表面からキャスターへのベクトル
@@ -94,53 +99,58 @@ float GetCircleShadow(VSOutput input, int num)
 	return -atten;
 }
 
+// シェーディング
 float4 main(VSOutput input) : SV_TARGET
 {
-	//テクスチャマッピング
-	float4 texColor = tex.Sample(smp, input.uv * tiling + offset) * color;
-	//頂点から視点へのベクトル
-	float3 eyeDir = normalize(cameraPos - input.worldpos.xyz);
-	//環境反射光
-	float3 ambient = ambientColor * m_ambient;
-	//シェーディングによる色
-	float4 shadeColor = float4(ambient, m_alpha);
+	////テクスチャマッピング
+	//float4 texColor = tex.Sample(smp, input.uv * tiling + offset) * color;
+	////頂点から視点へのベクトル
+	//float3 eyeDir = normalize(cameraPos - input.worldpos.xyz);
+	////環境反射光
+	//float3 ambient = ambientColor * m_ambient;
+	////シェーディングによる色
+	//float4 shadeColor = float4(ambient, m_alpha);
 
-	// 平行光源
-	for (int i = 0; i < DIRLIGHT_NUM; i++)
-	{
-		if (dirLights[i].active)
-		{
-			shadeColor.rgb += GetDirectionalLight(input, i, shininess, eyeDir);
-		}
-	}
+	//// 平行光源
+	//for (int i = 0; i < DIRLIGHT_NUM; i++)
+	//{
+	//	if (dirLights[i].active)
+	//	{
+	//		shadeColor.rgb += GetDirectionalLight(input, i, shininess, eyeDir);
+	//	}
+	//}
 
-	// 点光源
-	for (i = 0; i < POINTLIGHT_NUM; i++)
-	{
-		if (pointLights[i].active)
-		{
-			shadeColor.rgb += GetPointLight(input, i, shininess, eyeDir);
-		}
-	}
+	//// 点光源
+	//for (i = 0; i < POINTLIGHT_NUM; i++)
+	//{
+	//	if (pointLights[i].active)
+	//	{
+	//		shadeColor.rgb += GetPointLight(input, i, shininess, eyeDir);
+	//	}
+	//}
 
-	// スポットライト
-	for (i = 0; i < SPOTLIGHT_NUM; i++)
-	{
-		if (spotLights[i].active)
-		{
-			shadeColor.rgb += GetSpotLight(input, i, shininess, eyeDir);
-		}
-	}
+	//// スポットライト
+	//for (i = 0; i < SPOTLIGHT_NUM; i++)
+	//{
+	//	if (spotLights[i].active)
+	//	{
+	//		shadeColor.rgb += GetSpotLight(input, i, shininess, eyeDir);
+	//	}
+	//}
 
-	// 丸影
-	for (i = 0; i < CIRCLESHADOW_NUM; i++)
-	{
-		if (circleShadows[i].active)
-		{
-			shadeColor.rgb += GetCircleShadow(input, i);
-		}
-	}
+	//// 丸影
+	//for (i = 0; i < CIRCLESHADOW_NUM; i++)
+	//{
+	//	if (circleShadows[i].active)
+	//	{
+	//		shadeColor.rgb += GetCircleShadow(input, i);
+	//	}
+	//}
 
-	//出力
-	return shadeColor * texColor;
+	////出力
+	//return shadeColor * texColor;
+
+	float dep = pow(depth.Sample(smp, input.uv * tiling + offset), 20);
+
+	return float4(dep, dep, dep, 1);
 }

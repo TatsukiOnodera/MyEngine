@@ -42,7 +42,7 @@ void Enemy::Initialize()
 	// オブジェクト
 	m_enemyOBJ->SetPosition(m_pos);
 	m_enemyOBJ->SetScale({ 2, 2, 2 });
-	SphereCollider* collider = new SphereCollider({ 0, 0, 0 }, 2);
+	SphereCollider* collider = new SphereCollider({ 0, 2, 0 }, 2);
 	collider->SetAttribute(COLLISION_ATTR_ENEMYS);
 	m_enemyOBJ->SetCollider(collider);
 	m_enemyOBJ->Update();
@@ -203,7 +203,7 @@ void Enemy::CheckCollision()
 	ray.dir = { 0, -1, 0, 0 };
 
 	RayCastHit rayHit;
-	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &rayHit, collider->GetRadius() * 2.0f + 0.2f))
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &rayHit, collider->GetRadius() * 2.0f))
 	{
 		m_pos.y -= (rayHit.m_distance - collider->GetRadius() * 2);
 		m_vel.y = 0;
